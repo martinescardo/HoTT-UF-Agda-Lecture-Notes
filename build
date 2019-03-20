@@ -6,6 +6,7 @@ cd lagda
 cd ..
 jekyll build
 mkdir -p previous-version
+rm -rf previous-version/*
 mv ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/* previous-version/
 cp -a  _site/* ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
 rm -f   ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/*~

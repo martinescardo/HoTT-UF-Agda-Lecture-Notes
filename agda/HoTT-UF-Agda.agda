@@ -695,6 +695,17 @@ equiv-to-singleton : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
 equiv-to-singleton' : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
                     → X ≃ Y → is-singleton X → is-singleton Y
 
+subtypes-of-sets-are-sets : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (m : X → Y)
+                          → left-cancellable m → is-set Y → is-set X
+
+pr₁-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇} → ((x : X) → is-subsingleton (A x))
+       → left-cancellable  (λ (t : Σ A) → pr₁ t)
+
+subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇)
+                         → is-set X
+                         → ((x : X) → is-subsingleton(A x))
+                         → is-set(Σ \(x : X) → A x)
+
 pr₁-equivalence : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
                 → ((x : X) → is-singleton (A x))
                 → is-equiv (λ (t : Σ A) → pr₁ t)
@@ -789,6 +800,19 @@ equivs-closed-under-∼' f g e h = equivs-closed-under-∼ f g e (λ x → (h x)
 equiv-to-singleton X Y e = retract-of-singleton (≃-gives-◁ X Y e)
 
 equiv-to-singleton' X Y e = retract-of-singleton (≃-gives-▷ X Y e)
+
+subtypes-of-sets-are-sets {𝓤} {𝓥} {X} m i h = ≡-collapsibles-are-sets X c
+ where
+  f : (x x' : X) → x ≡ x' → x ≡ x'
+  f x x' r = i (ap m r)
+  κ : (x x' : X) (r s : x ≡ x') → f x x' r ≡ f x x' s
+  κ x x' r s = ap i (h (m x) (m x') (ap m r) (ap m s))
+  c : ≡-collapsible X
+  c x x' = f x x' , κ x x'
+
+pr₁-lc i p = to-Σ-≡ (p , i _ _ _)
+
+subsets-of-sets-are-sets X A h p = subtypes-of-sets-are-sets pr₁ (pr₁-lc p) h
 
 pr₁-equivalence {𝓤} {𝓥} X A s = invertibles-are-equivs pr₁ (g , η , ε)
  where

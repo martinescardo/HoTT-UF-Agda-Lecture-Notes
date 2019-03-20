@@ -199,8 +199,9 @@ we can use `is-inhabited` instead of `∥_∥` if we wish.
 
 \begin{code}
   AC : ∀ 𝓣 (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
-    → is-set X → ((x : X) → is-set (A x)) → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥  ̇
+     → is-set X → ((x : X) → is-set (A x)) → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥  ̇
   AC 𝓣 X A i j = (R : (x : X) → A x → 𝓣 ̇ )
+               → ((x : X) (a : A x) → is-prop (R x a))
                → ((x : X) → ∃ \(a : A x) → R x a)
                → ∃ \(f : (x : X) → A x) → (x : X) → R x (f x)
 
@@ -230,18 +231,45 @@ generalize `non-empty` to `inhabited`.
             → IAC X Y i j
 \end{code}
 
+These two forms of choice are logically equivalent (and hence
+equivalent, as both are subsingletons):
+
 \begin{code}
-{- TODO
   Choice-gives-IChoice : Choice 𝓤 → IChoice 𝓤
-  Choice-gives-IChoice ac X Y i j φ = {!!}
+  Choice-gives-IChoice {𝓤} ac X Y i j φ = γ
+   where
+    R : (x : X) → Y x → 𝓤 ̇
+    R x y = x ≡ x -- Any singleton type in 𝓤 will do.
+    k : (x : X) (y : Y x) → is-prop (R x y)
+    k x y = i x x
+    h : (x : X) → Y x → Σ \(y : Y x) → R x y
+    h x y = (y , refl x)
+    g : (x : X) → ∃ \(y : Y x) → R x y
+    g x = ∥∥-functor (h x) (φ x)
+    c : ∃ \(f : Π Y) → (x : X) → R x (f x)
+    c = ac X Y i j R k g
+    γ : ∥ Π Y ∥
+    γ = ∥∥-functor pr₁ c
 
   IChoice-gives-Choice : IChoice 𝓤 → Choice 𝓤
-  IChoice-gives-Choice = {!!}
--}
+  IChoice-gives-Choice {𝓤} iac X A i j R k ψ = γ
+   where
+    Y : X → 𝓤 ̇
+    Y x = Σ \(a : A x) → R x a
+    l : (x : X) → is-set (Y x)
+    l x = subsets-of-sets-are-sets (A x) (R x) (j x) (k x)
+    a : ∥ Π Y ∥
+    a = iac X Y i l ψ
+    h : Π Y → Σ \(f : Π A) → (x : X) → R x (f x)
+    h g = (λ x → pr₁ (g x)) , (λ x → pr₂ (g x))
+    γ : ∃ \(f : Π A) → (x : X) → R x (f x)
+    γ = ∥∥-functor h a
 \end{code}
 
-For more information with Agda code, see this
-[this](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-Choice.html).
+For more information with Agda code, see
+[this](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-Choice.html), which
+in particular has a proof that univalent choice implies univalent
+excluded middle.
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="sip"></a> Structure of identity principle
