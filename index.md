@@ -76,7 +76,7 @@ set-based mathematics may be shocking at firt sight:
     - Sets, also called 0-groupoids, are particular kinds of types.
     - So we have more general objects as a starting point.
     - E.g. the type `ℕ` of natural numbers is a set, and this is a theorem, not a definition.
-    - E.g. the type of monoids is not a set, but instead a 1-groupoid, automatically.
+    - E.g. the type of monoids is not a set, but instead a `1`-groupoid, automatically.
     - E.g. the type of categories is a `2`-groupoid, again automatically.
 
  2. The treatment of logic.
