@@ -1141,7 +1141,7 @@ write the definiens as
 
 or, with our `Π` notation,
 
-   > `Π \x → f x ≡ g x.
+   > `Π \x → f x ≡ g x`
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="negation"></a> Proofs involving negation
@@ -1174,13 +1174,13 @@ contrapositive : {A : 𝓤 ̇ } {B : 𝓤 ̇ } → (A → B) → (¬ B → ¬ A)
 contrapositive f v a = v (f a)
 \end{code}
 
-And from this we get the three negations imply one:
+And from this we get that three negations imply one:
 \begin{code}
 tno : {A : 𝓤 ̇ } → ¬¬¬ A → ¬ A
 tno = contrapositive dni
 \end{code}
 
-We now define a symbol for the negation of identity equality.
+We now define a symbol for the negation of equality.
 
 \begin{code}
 _≢_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
@@ -1311,8 +1311,8 @@ is a type.
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="infix"></a> Operator fixities and precedences
 
-Without the following the following list of operator precedence and
-associativity (left or right), this agda file doesn't parse and is
+Without the following the following list of operator precedences and
+associativities (left or right), this agda file doesn't parse and is
 rejected by Agda.
 
 \begin{code}
