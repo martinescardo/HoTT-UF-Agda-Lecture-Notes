@@ -1093,7 +1093,7 @@ introduce notation to be able to write e.g.
 
 as a synonym of the expression `p ∙ q` with some of the implicit arguments of `_∙_` made
 explicit. We have one ternary *mixfix* operator `_≡⟨_⟩_` and one unary
-"postfix" operator _∎.
+"postfix" operator `_∎`.
 
 \begin{code}
 _≡⟨_⟩_ : {X : 𝓤 ̇ } (x : X) {y z : X} → x ≡ y → y ≡ z → x ≡ z
@@ -1133,6 +1133,15 @@ will be [equivalent to equality of functions](FunExt.html#hfunext).
 _∼_ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ((x : X) → A x) → ((x : X) → A x) → 𝓤 ⊔ 𝓥 ̇
 f ∼ g = ∀ x → f x ≡ g x
 \end{code}
+
+The symbol `∀` is a built-in notation for `Π` . We could equivalently
+write the definiens as
+
+   > `(x : _) → f x ≡ g x`,
+
+or, with our `Π` notation,
+
+   > `Π \x → f x ≡ g x.
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="negation"></a> Proofs involving negation
