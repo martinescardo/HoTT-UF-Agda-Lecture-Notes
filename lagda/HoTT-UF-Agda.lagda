@@ -87,9 +87,10 @@ Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → is-set X × (X → X → X)
 \end{code}
 
-The type `Magma 𝓤` collects all magmas in a universe `𝓤`.  Thus, this
-doesn't define what a magma is as a property. It defines the type of
-magmas. A magma is an element of this type.
+The type `Magma 𝓤` collects all magmas in a universe `𝓤` and lives in
+the next universe `𝓤 ⁺`.  Thus, this doesn't define what a magma is as
+a property. It defines the type of magmas. A magma is an element of
+this type.
 
 Given a magma `M = (X , i , _·_)` we denote by `⟨ M ⟩` its underlying set `X` and by `magma-operation M` its multiplication `_·_`:
 
@@ -234,7 +235,7 @@ to be the case, it is absolutely necessary that the carrier of a
 monoid is a set rather than an arbitrary type, for otherwise the
 monoid equations can hold in many possible ways, and we would need to
 consider a notion of monoid isomorphism that in addition to preserving
-neutral element and the multiplication, preserves the equations, and
+the neutral element and the multiplication, preserves the equations, and
 the preservations of the equations, and the preservation of the
 preservations of the equations, and so on.
 
