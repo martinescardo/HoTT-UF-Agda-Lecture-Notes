@@ -931,7 +931,7 @@ foundations. It is generic in the sense that to explain what happens
 with all identifications `p : x ≡ y` between any two points `x` and
 `y` of a type `X`, it suffices to explain what happens with the
 identification `refl x : x ≡ x` for all points `x : X`. This
-what the induction principle for identity given by Martin-Löf says,
+is what the induction principle for identity given by Martin-Löf says,
 which he called `J` (we could have called it `≡-induction`, but we
 prefer to honour `MLTT` tradition):
 
