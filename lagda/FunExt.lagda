@@ -498,7 +498,7 @@ inversion-involutive f e = refl f
 \end{code}
 
 *Exercise.* The hlevels are closed under `Σ` and, using `hfunext`, also
-under Π. Univalence is not needed, but makes the proof easier.  (If
+under `Π`. Univalence is not needed, but makes the proof easier.  (If
 you don't use univalence, you will need to show that hlevels are
 closed under equivalence.)
 

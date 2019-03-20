@@ -58,7 +58,7 @@ inhabited-recursion X P s f φ = φ P s f
 \end{code}
 
 Although we [don't necessarily have](Appendix.html#moreexercices) that
-`¬¬ P → P`, we do have that `is-inhabited P → P`:
+`¬¬ P → P`, we do have that `is-inhabited P → P` if `P` is a subsingleton:
 
 \begin{code}
 inhabited-gives-pointed-for-subsingletons : (P : 𝓤 ̇ ) → is-subsingleton P → is-inhabited P → P
