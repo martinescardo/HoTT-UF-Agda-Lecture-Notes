@@ -173,7 +173,7 @@ it).
 Lastly, univalent type theories don't assume the axiom of choice or
 the principle of excluded middle, and so in some sense they are
 constructive by default. But we emphasize that these two axioms are
-constistent and hence can be safely used as assumptions. However,
+consistent and hence can be safely used as assumptions. However,
 virtually all theorems of univalent mathematics, e.g. in UniMath, have
 been proved without assuming them, with natural mathematical
 arguments. The formulation of theses principles in univalent
@@ -196,7 +196,7 @@ theorems and proofs of univalent mathematics don't require univalence
 or propositional truncation, and so can be developed in a version of
 the original Martin-Löf type theories, and this is what happens in
 these notes, and what Voevodsky did in his brilliant [original
-development in computer system
+development in the computer system
 Coq](https://github.com/UniMath/Foundations). Our use of Agda, rather
 than Coq, is a personal matter of taste only, and the students are
 encouraged to learn Coq, too.
