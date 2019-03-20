@@ -181,7 +181,7 @@ only get that
 instead.
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
-### <a name="hfunext"></a> Variations of function extensionality and their equivalence
+### <a name="hfunext"></a> Variations of function extensionality and their logical equivalence
 
 Dependent function extensionality:
 

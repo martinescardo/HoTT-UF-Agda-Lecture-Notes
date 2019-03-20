@@ -53,7 +53,7 @@ date : 2019-03-04
      1. [Exercises](HoTT-UF-Agda.html#lefttothereader)
      1. [Solutions](HoTT-UF-Agda.html#solutions)
      1. [Function extensionality from univalence](FunExt.html#funextfromua)
-     1. [Variations of function extensionality and their equivalence](FunExt.html#hfunext)
+     1. [Variations of function extensionality and their logical equivalence](FunExt.html#hfunext)
      1. [The univalence axiom is a (sub)singleton type](FunExt.html#univalencesubsingleton)
      1. [`hfunext` and `vvfunext` are subsingletons](FunExt.html#hfunextsubsingleton)
      1. [More applications of function extensionality](FunExt.html#morefunextuses)
