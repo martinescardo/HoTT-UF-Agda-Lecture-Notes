@@ -22,11 +22,13 @@ them for logical and mathematical correctness.
 
 Agda is a constructive mathematical system by default, which amounts
 to saying that it can also be considered as a programming
-language. But we can postulate the [univalent axiom of
-choice](HoTT-UF-Agda.html#em) or the [univalent principle of excluded
-middle](Inhabitation.html#choice) for pieces of mathematics that require
-them, at the cost of losing the implicit programming-language
-character of Agda.
+language. But we can postulate the axiom of choice or the principle of
+excluded middle for pieces of mathematics that require them, at the
+cost of losing the implicit programming-language character of
+Agda. For a fully constructive development of univalent mathematics in
+Agda, we would need to use its new [cubical](https://homotopytypetheory.org/2018/12/06/cubical-agda/) flavour, and
+we hope these notes provide the base for researchers interested in
+learning Cubical Type Theory and Cubical Agda as the next step.
 
 For a fully constructive development of univalent mathematics, we
 would need to use [Cubical
@@ -43,11 +45,15 @@ Agda as the next step.
   universe. Constructive mathematics. Agda. Cubical type
   theory. Cubical Agda. Computer-verified mathematics.
 
-**About this document.** This is a so-called *literate* Agda file,
-with the formal, verified, mathematical development within *code*
-environments, and the usual mathematical discussion outside them. Most
-of this file is not Agda code, and is in markdown format, and the html
-web page is generated automatically from it using Agda and other
+**About this document.**
+[This](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes) is
+a so-called
+[literate](https://agda.readthedocs.io/en/latest/tools/literate-programming.html)
+Agda file, with the formal, verified, mathematical development within
+*code* environments, and the usual mathematical discussion outside
+them. Most of this file is not Agda code, and is in markdown format,
+and the html web page is generated automatically from it using Agda
+and other
 tools. [Github](https://github.com/martinescardo/TypeTopology) pull
 requests by students to fix typos or mistakes and clarify ambiguities
 are welcome.
