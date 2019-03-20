@@ -1375,7 +1375,7 @@ is-univalent 𝓤 = (X Y : 𝓤 ̇ ) → is-equiv (Id-to-Eq X Y)
 
 We emphasize that this doesn't posit that univalence holds. It says
 what univalence is (like the type that says what the [twin-prime
-conjecture is](MLTT-Agda.html#twinprime).
+conjecture](MLTT-Agda.html#twinprime) is.
 
 \begin{code}
 Eq-to-Id : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → X ≃ Y → X ≡ Y
@@ -1485,8 +1485,8 @@ For more examples, see [[Kraus and Sattler](https://arxiv.org/abs/1311.4002)].
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="lefttothereader"></a> Exercises
 
-Here are some facts whose proofs are left to the reader but we will
-need from the next section onwards. Sample solutions are given
+Here are some facts whose proofs are left to the reader but that we
+will need from the next section onwards. Sample solutions are given
 [below](HoTT-UF-Agda.html#solutions).
 
 Define functions for the following type declarations. As a matter of
