@@ -22,7 +22,7 @@ open import HoTT-UF-Agda
 
 Function extensionality says that any two pointwise equal functions
 are equal. This is known to be not provable or disprovable in
-`MLTT`. It is an independent statement, which we abbreviate `funext`.
+`MLTT`. It is an independent statement, which we abbreviate as `funext`.
 
 \begin{code}
 funext : ∀ 𝓤 𝓥 → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
@@ -206,7 +206,8 @@ hfunext-gives-dfunext hfe {X} {A} {f} {g} = inverse (happly f g) (hfe f g)
 \end{code}
 
 Voevodsky showed that all notions of function extensionaliry are
-equivalent to saying that products of singletons are singletons:
+logically equivalent to saying that products of singletons are
+singletons:
 
 \begin{code}
 vvfunext : ∀ 𝓤 𝓥 → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
