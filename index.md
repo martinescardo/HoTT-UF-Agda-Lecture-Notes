@@ -25,18 +25,12 @@ to saying that it can also be considered as a programming
 language. But we can postulate the axiom of choice or the principle of
 excluded middle for pieces of mathematics that require them, at the
 cost of losing the implicit programming-language character of
-Agda. For a fully constructive development of univalent mathematics in
-Agda, we would need to use its new [cubical](https://homotopytypetheory.org/2018/12/06/cubical-agda/) flavour, and
-we hope these notes provide the base for researchers interested in
-learning Cubical Type Theory and Cubical Agda as the next step.
+Agda.
 
-For a fully constructive development of univalent mathematics, we
-would need to use [Cubical
-Agda](https://homotopytypetheory.org/2018/12/06/cubical-agda/)
-instead, and we hope these notes provide the base for researchers
-interested in learning [Cubical Type
-Theory](https://ncatlab.org/nlab/show/cubical+type+theory) and Cubical
-Agda as the next step.
+For a fully constructive development of univalent mathematics in
+Agda, we would need to use its new [cubical](https://homotopytypetheory.org/2018/12/06/cubical-agda/) flavour, and
+we hope these notes provide a base for researchers interested in
+learning Cubical Type Theory and Cubical Agda as the next step.
 
 **Keywords.** Univalent mathematics. Univalent foundations. Univalent
   type theory. Univalence axiom. `∞`-Groupoid. Homotopy type. Type
