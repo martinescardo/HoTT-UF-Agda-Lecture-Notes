@@ -1,2 +1,2 @@
-# HoTT-UF-Agda-Lecture-Notes
-Lecture notes on univalent foundations with Agda
+Sources and scripts to generate the lecture notes available at
+https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/index.html
