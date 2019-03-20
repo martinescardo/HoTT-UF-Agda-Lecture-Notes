@@ -2,7 +2,7 @@
 
 * This script also generates (illiterate) `../agda/*.agda` files using the script `illiterate`, which calls the Haskell program `illiterator.hs`.
 
-* The program `agdatomd` converts from `.lagda` to `.md` for use by the script `fastloop`.
+* The program `agdatomd.hs` converts from `.lagda` to `.md` for use by the script `fastloop`.
 
 * This script is used for editing the notes in conjunction with `jekyll serve` so that after an update it is only necessary to reload the page on the brouwser to view it.
 
