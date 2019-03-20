@@ -22,7 +22,7 @@ them for logical and mathematical correctness.
 
 Agda is a constructive mathematical system by default, which amounts
 to saying that it can also be considered as a programming
-language. But we can postulate the axiom of choice or the principle of
+language. But we can assume the axiom of choice or the principle of
 excluded middle for pieces of mathematics that require them, at the
 cost of losing the implicit programming-language character of
 Agda.
