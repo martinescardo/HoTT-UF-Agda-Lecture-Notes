@@ -27,7 +27,7 @@ excluded middle for pieces of mathematics that require them, at the
 cost of losing the implicit programming-language character of the system.
 
 For a fully constructive development of univalent mathematics in
-Agda, we would need to use its new [cubical](https://homotopytypetheory.org/2018/12/06/cubical-agda/) flavour, and
+Agda, we would need to use its new [cubical flavour](https://homotopytypetheory.org/2018/12/06/cubical-agda/), and
 we hope these notes provide a base for researchers interested in
 learning Cubical Type Theory and Cubical Agda as the next step.
 
