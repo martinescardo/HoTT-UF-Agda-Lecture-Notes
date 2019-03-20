@@ -211,7 +211,7 @@ type `𝟙` satify a given property `A`.
 
   * In Agda above `Π`-type is written as
 
-    > `(A : 𝟙 → 𝓤 ̇ ) → A * → (x : 𝟙) → A x`.
+    > `(A : 𝟙 → 𝓤 ̇ ) → A ⋆ → (x : 𝟙) → A x`.
 
     This is the type of functions with three arguments `A : 𝟙 → 𝓤 ̇` &nbsp;
     and `a : A ⋆` and `x : 𝟙`, with value in the type `A x`.
@@ -231,7 +231,7 @@ equation:
 \end{code}
 
 Notice that we supply `A` and `a` as arbitrary arguments, but instead of
-an arbitrary `x : X` we have written "`⋆`". Agda accepts this because it
+an arbitrary `x : 𝟙` we have written "`⋆`". Agda accepts this because it
 knows from the definition of `𝟙` that "`⋆`" is the only element of the
 type `𝟙`. This mechanism is called *pattern matching*.
 
