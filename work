@@ -1,0 +1,4 @@
+jekyll serve &
+cd lagda
+./fastloop &
+./slowloop &

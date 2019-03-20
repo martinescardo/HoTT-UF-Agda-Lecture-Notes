@@ -29,8 +29,9 @@ Agda. For a fully constructive development of univalent mathematics,
 we would need to use [Cubical
 Agda](https://homotopytypetheory.org/2018/12/06/cubical-agda/)
 instead, and we hope these notes provide the base for researchers
-interested in learning Cubical Type Theory and Cubical Agda as the
-next step.
+interested in learning [Cubical Type
+Theory](https://ncatlab.org/nlab/show/cubical+type+theory) and Cubical
+Agda as the next step.
 
 **Keywords.** Univalent mathematics. Univalent foundations. Univalent
   type theory. Univalence axiom. `∞`-Groupoid. Homotopy type. Type
