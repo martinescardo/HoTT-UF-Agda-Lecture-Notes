@@ -732,7 +732,7 @@ sets-are-≡-collapsible X s x y = (f , κ)
   κ p q = s x y p q
 \end{code}
 
-And the converse is the contents of Hedberg's Theorem.
+And the converse is the content of Hedberg's Theorem.
 
 \begin{code}
 ≡-collapsibles-are-sets : (X : 𝓤 ̇ ) → ≡-collapsible X → is-set X
@@ -767,7 +767,7 @@ subsingletons-are-sets X s = ≡-collapsibles-are-sets X (subsingletons-are-≡-
 ### <a name="hlevel1subsingleton"></a> The types of hlevel 1 are the subsingletons
 
 Then with the above we get our desired characterization of the types of
-hlevel `1` as immediate consequences:
+hlevel `1` as an immediate consequence:
 
 \begin{code}
 subsingletons-are-of-hlevel-1 : (X : 𝓤 ̇ ) → is-subsingleton X → X is-of-hlevel 1
@@ -846,12 +846,6 @@ the type of monoids has minimal hlevel `3`.
 
 We first prove the remaining Peano axioms.
 
-The following is how one proves in `MLTT` that `succ x ≢ 0`. Agda
-allows one to prove this rather easily with `()` patterns instead, but
-this mechanism is beyond the realm of `MLTT`. For this reason, we are
-using this feature only once, to prove `𝟘-induction` as
-[above](MLTT-Agda.html#emptytype).
-
 \begin{code}
 positive-not-zero : (x : ℕ) → succ x ≢ 0
 positive-not-zero x p = 𝟙-is-not-𝟘 (g p)
@@ -889,8 +883,9 @@ With this we have proved all the Peano axioms.
 
 *Exercise.* Students should do this kind of thing at least once in
 their academic life: rewrite the above proof of the decidability of
-equality of `ℕ` to use `ℕ-induction` instead of pattern matching and
-recursion, to understand by themselves that this can be done.
+equality of `ℕ` to use the `ℕ-induction` principle `J` (or its
+alternative `H`) instead of pattern matching and recursion, to
+understand by themselves that this can be done.
 
 And using the decidability of equality we can define a `wconstant`
 function `x ≡ y → x ≡ y` and hence conclude that ℕ is a set. This
