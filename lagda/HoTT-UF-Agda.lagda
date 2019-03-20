@@ -563,7 +563,7 @@ above.
 
 Voevodsky came up with a definition of a type "`f` is an equivalence"
 which is always a subsingleton: a given function `f` can be an
-equivalence in an most one way. But we first discuss *hlevels*.
+equivalence in at most one way. But we first discuss *hlevels*.
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="hlevel"></a> Voevodsky's notion of hlevel
