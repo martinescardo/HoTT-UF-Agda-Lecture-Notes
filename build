@@ -5,9 +5,10 @@ cd lagda
 ./illiterate
 cd ..
 jekyll build
+rm -f _site/*~
+rm -f _site/*.md
+rm -rf _site/lagda
+rm -rf _site/agda
+rm -f _site/deploy
+rm -f _site/build
 cp -a _site/* ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-rm -f ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/*~
-rm -rf ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/lagda
-rm -rf ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/agda
-rm -f ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/deploy
-rm -f ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/build
