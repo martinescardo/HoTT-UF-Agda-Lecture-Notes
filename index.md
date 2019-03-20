@@ -22,11 +22,14 @@ them for logical and mathematical correctness.
 
 Agda is a constructive mathematical system by default, which amounts
 to saying that it can also be considered as a programming
-language. But we can postulate the axiom of choice or the principle of
-excluded middle for pieces of mathematics that require them, at the
-cost of losing the implicit programming-language character of
-Agda. For a fully constructive development of univalent mathematics,
-we would need to use [Cubical
+language. But we can postulate the [univalent axiom of
+choice](HoTT-UF-Agda.html#em) or the [univalent principle of excluded
+middle](Inhabitation.html#choice) for pieces of mathematics that require
+them, at the cost of losing the implicit programming-language
+character of Agda.
+
+For a fully constructive development of univalent mathematics, we
+would need to use [Cubical
 Agda](https://homotopytypetheory.org/2018/12/06/cubical-agda/)
 instead, and we hope these notes provide the base for researchers
 interested in learning [Cubical Type

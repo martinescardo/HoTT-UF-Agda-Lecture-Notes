@@ -79,11 +79,8 @@ This universe assignment for functoriality is fairly restrictive, but is the onl
 With this notion, we can define the image of a function as follows:
 
 \begin{code}
-∃ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) → (𝓤 ⊔ 𝓥)⁺ ̇
-∃ {𝓤} {𝓥} {X} A = is-inhabited (Σ \(x : X) → A x)
-
 image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)⁺ ̇
-image f = Σ \(y : codomain f) → ∃ \(x : domain f) → f x ≡ y
+image f = Σ \(y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
 \end{code}
 
 *Exercise.* An attempt to define the image of `f` without the
@@ -109,7 +106,7 @@ corestriction f x = f x , pointed-is-inhabited (x , refl (f x))
 And we can define the notion of surjection as follows:
 \begin{code}
 is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)⁺ ̇
-is-surjection f = (y : codomain f) → ∃ \(x : domain f) → f x ≡ y
+is-surjection f = (y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
 \end{code}
 
 *Exercise.* The type `(y : codomain f) → Σ \(x : domain f) → f x ≡ y`
@@ -155,6 +152,43 @@ record propositional-truncations-exist : 𝓤ω where
 This is the approach we adopt in our [personal Agda
 development](http://www.cs.bham.ac.uk/~mhe/agda-new/).
 
+We now assume that propositional truncations exist for the remainder
+of this file, and we `open` the assumption to make the above fields
+visible.
+
+\begin{code}
+
+module basic-truncation-development
+         (pt : propositional-truncations-exist)
+         (fe : global-dfunext)
+       where
+
+  open propositional-truncations-exist pt public
+
+  ∥∥-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
+  ∥∥-functor f = ∥∥-rec ∥∥-is-a-prop (λ x → ∣ f x ∣)
+
+  ∃ : {X : 𝓤 ̇ } → (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+  ∃ Y = ∥ Σ Y ∥
+
+\end{code}
+
+The propositional truncation of a type and its inhabitation are
+logically equivalent propositions:
+
+\begin{code}
+  ∥∥-agrees-with-inhabitation : (X : 𝓤 ̇) → ∥ X ∥ ⇔ is-inhabited X
+  ∥∥-agrees-with-inhabitation X = a , b
+   where
+    a : ∥ X ∥ → is-inhabited X
+    a = ∥∥-rec (inhabitation-is-a-subsingleton fe X) pointed-is-inhabited
+    b : is-inhabited X → ∥ X ∥
+    b = inhabited-recursion X ∥ X ∥ ∥∥-is-a-prop ∣_∣
+\end{code}
+
+Hence they only differ in size, and when size doesn't get on the way,
+we can use `is-inhabited` instead of `∥_∥` if we wish.
+
 *Exercise*. If `X` and `Y` are types obtained by summing `x-` and
   `y`-many copies of the type `𝟙`, respectively, as in `𝟙 + 𝟙 + ... + 𝟙` , where `x`
   and `y` are natural numbers, then `∥ X = Y ∥ = (x ≡ y)` and the type
@@ -163,7 +197,51 @@ development](http://www.cs.bham.ac.uk/~mhe/agda-new/).
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="choice"></a> The univalent axiom of choice
 
-For the moment see [this](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-Choice.html).
+\begin{code}
+  AC : ∀ 𝓣 (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+    → is-set X → ((x : X) → is-set (A x)) → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥  ̇
+  AC 𝓣 X A i j = (R : (x : X) → A x → 𝓣 ̇ )
+               → ((x : X) → ∃ \(a : A x) → R x a)
+               → ∃ \(f : (x : X) → A x) → (x : X) → R x (f x)
+
+  Choice : ∀ 𝓤 → 𝓤 ⁺ ̇
+  Choice 𝓤 = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ )
+             (i : is-set X) (j : (x : X) → is-set (A x))
+           → AC 𝓤 X A i j
+\end{code}
+
+This axiom is consistent, because Voevodsky's [simplicial-set
+model](https://arxiv.org/abs/1211.2851) validates it. But it is
+important that we have the condition that `A` is a set-indexed family
+of sets. For general higher groupoids, it is not in general possible
+to perform the choice functorially. This is equivalent to another
+familiar formulation of choice, namely that a set-indexed product of
+non-empty sets is non-empty, where in a constructive setting we
+generalize `non-empty` to `inhabited`.
+
+\begin{code}
+  IAC : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+      → is-set X → ((x : X) → is-set (Y x)) → 𝓤 ⊔ 𝓥 ̇
+  IAC X Y i j = ((x : X) → ∥ Y x ∥) → ∥ Π Y ∥
+
+  IChoice : ∀ 𝓤 → 𝓤 ⁺ ̇
+  IChoice 𝓤 = (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ )
+             (i : is-set X) (j : (x : X) → is-set (Y x))
+            → IAC X Y i j
+\end{code}
+
+\begin{code}
+{- TODO
+  Choice-gives-IChoice : Choice 𝓤 → IChoice 𝓤
+  Choice-gives-IChoice ac X Y i j φ = {!!}
+
+  IChoice-gives-Choice : IChoice 𝓤 → Choice 𝓤
+  IChoice-gives-Choice = {!!}
+-}
+\end{code}
+
+For more information with Agda code, see this
+[this](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-Choice.html).
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="sip"></a> Structure of identity principle
