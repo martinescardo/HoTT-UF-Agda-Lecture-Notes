@@ -176,7 +176,7 @@ constructive by default. But we emphasize that these two axioms are
 consistent and hence can be safely used as assumptions. However,
 virtually all theorems of univalent mathematics, e.g. in UniMath, have
 been proved without assuming them, with natural mathematical
-arguments. The formulation of theses principles in univalent
+arguments. The formulations of theses principles in univalent
 mathematics differs from their traditional formulations in MLTT, and
 hence we sometimes refer to them as the *univalent* principle of
 excluded middle and the *univalent* axiom of choice.
