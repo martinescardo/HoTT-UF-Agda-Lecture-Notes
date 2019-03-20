@@ -296,7 +296,7 @@ data 𝟘 : 𝓤₀ ̇  where
 
 That's the complete definition. This has a dual interpretation,
 mathematically as the empty set (we can actually prove that this type
-is a set, once we know the definition of set - **exercise**), and
+is a set, once we know the definition of set), and
 logically as the truth-value *false*. To prove that a property of
 elements of the empty type holds for all elements of the empty type we
 have to do nothing.
@@ -712,8 +712,8 @@ pr₂ (x , y) = y
 \end{code}
 
 To prove that `A z` holds for all `z : Σ Y`, for a given
-property `A`, we just prove that we have `A(x , y)` for all given `x :
-X and for all y : Y x`.  This is called `Σ` induction or `Σ`
+property `A`, we just prove that we have `A(x , y)` for all `x :
+X` and `y : Y x`.  This is called `Σ` induction or `Σ`
 elimination, or `uncurry`, after [Haskell
 Curry](https://en.wikipedia.org/wiki/Haskell_Curry).
 \begin{code}
