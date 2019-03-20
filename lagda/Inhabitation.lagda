@@ -71,7 +71,6 @@ inhabited-functorial fe X Y f = inhabited-recursion
                                   (is-inhabited Y)
                                   (inhabitation-is-a-subsingleton fe Y)
                                   (pointed-is-inhabited ∘ f)
-
 \end{code}
 
 This universe assignment for functoriality is fairly restrictive, but is the only possible one.
@@ -121,7 +120,7 @@ There are two problems with this definition of inhabitation:
 
 In particular, it is not possible to show that the map `X →
 is-inhabited X` is a surjection, or that `X → Y` gives `is-inhabited X
-→ is-inhabited Y`.
+→ is-inhabited Y` for `X` and `Y` in arbitrary universes.
 
 There are two proposed ways to solve this:
 
