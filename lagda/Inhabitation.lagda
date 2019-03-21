@@ -273,7 +273,7 @@ in particular has a proof that univalent choice implies univalent
 excluded middle.
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
-### <a name="sip"></a> Structure of identity principle
+### <a name="sip"></a> Structure identity principle
 
 For the moment, see [this](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-StructureIdentityPrinciple.html).
 

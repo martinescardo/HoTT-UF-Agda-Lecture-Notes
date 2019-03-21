@@ -58,7 +58,7 @@ date : 2019-03-04
      1. [More applications of function extensionality](FunExt.html#morefunextuses)
      1. [Subsingleton truncation](Inhabitation.html#truncation)
      1. [The univalent axiom of choice](Inhabitation.html#choice)
-     1. [Structure of identity principle](Inhabitation.html#sip)
+     1. [Structure identity principle](Inhabitation.html#sip)
      1. [Operator fixities and precedences](HoTT-UF-Agda.html#infix)
   1. [Appendix](Appendix.html)
      1. [Additional exercises](Appendix.html#moreexercises)
