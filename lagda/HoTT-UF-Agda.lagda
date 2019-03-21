@@ -1493,7 +1493,7 @@ Therefore if the universe `𝓤₀` were a set, then the identifications
     q = s 𝟚 𝟚 p₀ p₁
 \end{code}
 
-For more examples, see [[Kraus and Sattler](https://arxiv.org/abs/1311.4002)].
+For more examples, see [Kraus and Sattler](https://arxiv.org/abs/1311.4002).
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="lefttothereader"></a> Exercises

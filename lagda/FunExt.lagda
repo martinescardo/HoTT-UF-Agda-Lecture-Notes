@@ -25,7 +25,7 @@ are equal. This is known to be not provable or disprovable in
 `MLTT`. It is an independent statement, which we abbreviate as `funext`.
 
 \begin{code}
-funext : ∀ 𝓤 𝓥 → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
+funext : ∀ 𝓤 𝓥 → (𝓤 ⊔ 𝓥)⁺ ̇
 funext 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y} → f ∼ g → f ≡ g
 \end{code}
 
@@ -267,13 +267,13 @@ vvfunext-gives-hfunext {𝓤} {𝓥} vfe {X} {Y} f = γ
   γ = NatΣ-equiv-gives-fiberwise-equiv (λ g → f ≡ g) (λ g → f ∼ g) (happly f) i
 \end{code}
 
-And finally the seemingly rather weak, non-dependent funext implies
-the seemingly strongest one, which closes the circle of logical
-equivalences.
+And finally the seemingly rather weak, non-dependent version `funext`
+implies the seemingly strongest version, which closes the circle of
+logical equivalences.
 
 \begin{code}
 funext-gives-vvfunext : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → vvfunext 𝓤 𝓥
-funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = retract-of-singleton (r , s , rs) i
+funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
   where
    f : Σ A → X
    f = pr₁
@@ -291,6 +291,8 @@ funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = retract-of-singleton (r 
    s φ = (λ x → x , φ x) , refl id
    rs : ∀ φ → r (s φ) ≡ φ
    rs φ = refl (r (s φ))
+   γ : is-singleton (Π A)
+   γ = retract-of-singleton (r , s , rs) i
 \end{code}
 
 Corollaries:

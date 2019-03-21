@@ -6,7 +6,7 @@ open import Universes
 open import MLTT-Agda
 open import HoTT-UF-Agda
 
-funext : ∀ 𝓤 𝓥 → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
+funext : ∀ 𝓤 𝓥 → (𝓤 ⊔ 𝓥)⁺ ̇
 funext 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y} → f ∼ g → f ≡ g
 
 transport-is-pre-comp : (ua : is-univalent 𝓤) {X Y Z : 𝓤 ̇ } (e : X ≃ Y) (g : Y → Z)
