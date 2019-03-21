@@ -39,7 +39,7 @@ learning Cubical Type Theory and Cubical Agda as the next step.
   theory. Cubical Agda. Computer-verified mathematics.
 
 **About this document.**
-[This](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes) is a set
+[This[](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes) is a set
 of so-called
 [literate](https://agda.readthedocs.io/en/latest/tools/literate-programming.html)
 Agda files, with the formal, verified, mathematical development within
@@ -134,15 +134,15 @@ postulate univalence. In fact, as the reader will see, we will do a
 fair amount of univalent mathematics before we formulate or assume the
 univalence axiom.
 
-All of (4)-(6) crucially rely on Martin-Löf's
-identity type. [Initially](http://math.ucr.edu/home/baez/Voevodsky_note.ps), Voevodsky thought that a new concept would
-be needed in the type theory to achieve (4)-(6) and hence (1) and
-(3) above. But he eventually discovered that Martin-Löf's identity
-type is precisely what he needed.
+All of (4)-(6) crucially rely on Martin-Löf's identity
+type. Initially, Voevodsky thought that a new concept would be needed
+in the type theory to achieve (4)-(6) and hence (1) and (3) above. But
+he eventually discovered that Martin-Löf's identity type is precisely
+what he needed.
 
 It may be considered somewhat miraculous that the addition of the
 univalence axiom alone to `MLTT` can achieve (1) and (3). Martin-Löf
-type theory was designed to achieve (2), and, regarding (1), types
+type theory was designed to achieve (2), and, 1 (regarding), types
 were imagined/conceived as sets (and even named *sets* in some of the
 original expositions by Martin-Löf), and the identity type was
 imagined/conceived as having at most one element, even if `MLTT`
@@ -248,6 +248,11 @@ starting points:
    - Agda [further references](https://wiki.portal.chalmers.se/agda/pmwiki.php?n=Main.Documentation).
    - [Cubical Agda blog post](https://homotopytypetheory.org/2018/12/06/cubical-agda/).
    - [Cubical Agda documentation](https://agda.readthedocs.io/en/latest/language/cubical.html#cubical).
+
+Regarding the genesis of the subject:
+
+   - [A very short note on homotopy λ-calculus](http://math.ucr.edu/home/baez/Voevodsky_note.ps)
+   - [Notes on homotopy λ-calculus](https://github.com/vladimirias/2006_03_Homotopy_lambda_calculus/blob/master/homotopy_lambda_calculus_Mar_5_2006.pdf)
 
 We have based these lecture notes
 on the slides of our talk [*logic in univalent type theory*](https://www.newton.ac.uk/seminar/20170711100011001).
