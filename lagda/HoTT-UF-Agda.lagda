@@ -153,7 +153,7 @@ Any identification of magmas gives rise to a magma isomorphism by transport:
 ⌜⌝-is-iso (refl M) = id-is-magma-iso M
 \end{code}
 
-The isomorphisms can be collected into a type:
+The isomorphisms can be collected in a type:
 
 \begin{code}
 _≅ₘ_ : Magma 𝓤 → Magma 𝓤 → 𝓤 ̇
