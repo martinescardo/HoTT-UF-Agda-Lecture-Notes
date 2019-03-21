@@ -1063,7 +1063,7 @@ A pointwise retraction gives  a retraction of the total spaces:
                x , a           ∎
 \end{code}
 
-And we can reindex retracts of Σ types as follows:
+And we can reindex retracts of `Σ` types as follows:
 
 \begin{code}
 Σ-retract-reindexing : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → 𝓦 ̇ } (r : Y → X)
@@ -1360,7 +1360,7 @@ Characterization of equality in `Σ` types:
 Σ-≡-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ τ : Σ A)
           → (σ ≡ τ) ≃ (Σ \(p : pr₁ σ ≡ pr₁ τ) → pr₂ σ ≡[ p / A ] pr₂ τ)
 Σ-≡-equiv  {𝓤} {𝓥} {X} {A}  σ τ = from-Σ-≡ ,
-                                        invertibles-are-equivs from-Σ-≡ (to-Σ-≡ , ε , η)
+                                  invertibles-are-equivs from-Σ-≡ (to-Σ-≡ , ε , η)
  where
   η : (w : Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ) → from-Σ-≡ (to-Σ-≡ w) ≡ w
   η (refl p , refl q) = refl (refl p , refl q)
@@ -1373,9 +1373,9 @@ Characterization of equality in `Σ` types:
 
 There is a canonical transformation `(X Y : 𝓤 ̇ ) → X ≡ Y → X ≃ Y` that
 sends the identity identification `refl X : X ≡ X` to the identity
-equivalence `≃-refl X` by induction on identifications. The univalence
-axiom, for the universe `𝓤`, says that this canonical map is itself an
-equivalence.
+equivalence `≃-refl X : X ≃ X` by induction on identifications. The
+univalence axiom, for the universe `𝓤`, says that this canonical map
+is itself an equivalence.
 
 \begin{code}
 Id-to-Eq : (X Y : 𝓤 ̇ ) → X ≡ Y → X ≃ Y
@@ -1417,8 +1417,9 @@ formulate it.
 
 *Remark*. If we formulate univalence with invertible maps instead of
 equivalences, we get a statement that is provable false, and this is
-why Voevodsky's notion of equivalence is important. This is Exercise
-4.6 of the [HoTT book](https://homotopytypetheory.org/book/). There is a [solution in
+one of the reasons why Voevodsky's notion of equivalence is
+important. This is Exercise 4.6 of the [HoTT
+book](https://homotopytypetheory.org/book/). There is a [solution in
 Coq](https://github.com/HoTT/HoTT/blob/master/contrib/HoTTBookExercises.v)
 by [Mike Shulman](https://home.sandiego.edu/~shulman/).
 
