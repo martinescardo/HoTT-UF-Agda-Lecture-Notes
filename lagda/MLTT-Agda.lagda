@@ -695,7 +695,7 @@ types for them.
 
 *Remark.* Beginners may safely ignore this remark: Normally people
 will call these two fields something like `pr₁` and `pr₂`, or `fst`
-and `snd`, for first and second projection), rather than `x` and `y`,
+and `snd`, for first and second projection, rather than `x` and `y`,
 and then do `open Σ public` and have the projections available as
 functions automatically. But we will deliberately not do that, and
 instead define the projections ourselves, because this is confusing
@@ -1311,7 +1311,7 @@ is a type.
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="infix"></a> Operator fixities and precedences
 
-Without the following the following list of operator precedences and
+Without the following list of operator precedences and
 associativities (left or right), this agda file doesn't parse and is
 rejected by Agda.
 

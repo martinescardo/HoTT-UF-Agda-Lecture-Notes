@@ -22,7 +22,7 @@ open import MLTT-Agda
 ### <a name="axiomaticutt"></a> Our univalent type theory
 
   * Spartan `MLTT` [as above](MLTT-Agda.html#spartanmltt).
-  * [Univalence axiom](HoTT-UF-Agda.html#univalence).
+  * Univalence axiom as [below](HoTT-UF-Agda.html#univalence).
 
 But, as discussed above, rather than postulating univalence we will
 use it as an explicit assumption each time it is needed.
@@ -1626,7 +1626,7 @@ NatΣ-equiv-gives-fiberwise-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X �
 [<sub>Table of contents ⇑</sub>](toc.html#contents) [<sub> HoTT/UF continued ⇓ </sub>](FunExt)
 ### <a name="infix"></a> Operator fixities and precedences
 
-Without the following the following list of operator precedence and
+Without the following list of operator precedence and
 associativity (left or right), this agda file doesn't parse and is
 rejected by Agda.
 
