@@ -85,7 +85,7 @@ set-based mathematics may be shocking at first sight:
     - Truth values are particular kinds of types, called `-1`-groupoids, with at most one element.
     - Logical operations are particular cases of mathematical operations on types.
     - The mathematics comes first, with logic as a derived concept.
-    - E.g. when we say "and", we are taking the cartesian product of two types, which may or may not be be truth values.
+    - E.g. when we say "and", we are taking the cartesian product of two types, which may or may not be truth values.
 
  3. The treatment of equality.
 
