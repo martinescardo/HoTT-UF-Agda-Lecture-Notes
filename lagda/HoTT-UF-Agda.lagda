@@ -351,6 +351,32 @@ transport∙ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y z : X} (p : x ≡ y) (q 
 transport∙ A p (refl y) = refl (transport A p)
 \end{code}
 
+Functions of a type into a universe can be considered as generalized
+presheafs, which we could perhaps call `∞`-presheafs. Their morphisms
+are natural transformations:
+
+\begin{code}
+Nat : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+Nat A B = (x : domain A) → A x → B x
+\end{code}
+
+We don't need to specify the naturality condition, because it is
+automatic:
+
+\begin{code}
+Nats-are-natural : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (τ : Nat A B)
+                 → {x y : X} (p : x ≡ y) → τ y ∘ transport A p ≡ transport B p ∘ τ x
+Nats-are-natural A B τ (refl x) = refl (τ x)
+\end{code}
+
+We will have the opportunity to use the following construction a
+number of times:
+
+\begin{code}
+NatΣ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → Σ A → Σ B
+NatΣ τ (x , a) = (x , τ x a)
+\end{code}
+
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="dependentequality"></a> Identifications that depend on identifications, and equality in Σ-types
 
@@ -916,21 +942,6 @@ practice your Agda skills.
 hlevel `3` (they are `1`-groupoids) but not hlevel `2` (they are not
 sets).  Prove that this is their minimal level. Can you do this with
 what we have learned so far?
-
-[<sub>Table of contents ⇑</sub>](toc.html#contents)
-### <a name="naturaltranformations"></a> Natural transformations
-
-\begin{code}
-Nat : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-Nat A B = (x : domain A) → A x → B x
-
-Nats-are-natural : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (τ : Nat A B)
-                 → {x y : X} (p : x ≡ y) → τ y ∘ transport A p ≡ transport B p ∘ τ x
-Nats-are-natural A B τ (refl x) = refl (τ x)
-
-NatΣ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → Σ A → Σ B
-NatΣ τ (x , a) = (x , τ x a)
-\end{code}
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="retracts"></a> Retracts

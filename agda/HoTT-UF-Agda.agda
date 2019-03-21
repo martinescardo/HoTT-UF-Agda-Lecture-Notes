@@ -67,13 +67,13 @@ magma-≡-to-iso p = (⌜ p ⌝ , ⌜⌝-is-iso p )
 ∞-Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → X → X → X
 
 left-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
-left-neutral {𝓤} {X} e _·_ = (x : X) → e · x ≡ x
+left-neutral e _·_ = ∀ x → e · x ≡ x
 
 right-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
-right-neutral {𝓤} {X} e _·_ = (x : X) → x ≡ e · x
+right-neutral e _·_ = ∀ x → x · e ≡ x
 
 associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
-associative {𝓤} {X} _·_ = (x y z : X) → (x · y) · z ≡ x · (y · z)
+associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
 
 Monoid : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Monoid 𝓤 = Σ \(X : 𝓤 ̇ ) → is-set X
@@ -116,6 +116,16 @@ ap-∙ f p (refl y) = refl (ap f p)
 transport∙ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y z : X} (p : x ≡ y) (q : y ≡ z)
            → transport A (p ∙ q) ≡ transport A q ∘ transport A p
 transport∙ A p (refl y) = refl (transport A p)
+
+Nat : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+Nat A B = (x : domain A) → A x → B x
+
+Nats-are-natural : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (τ : Nat A B)
+                 → {x y : X} (p : x ≡ y) → τ y ∘ transport A p ≡ transport B p ∘ τ x
+Nats-are-natural A B τ (refl x) = refl (τ x)
+
+NatΣ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → Σ A → Σ B
+NatΣ τ (x , a) = (x , τ x a)
 
 data Color : 𝓤₀ ̇  where
  Black White : Color
@@ -318,16 +328,6 @@ succ-lc = ap pred
     κ : (d : (x ≡ y) + ¬(x ≡ y)) → wconstant (f d)
     κ (inl p) q r = refl p
     κ (inr g) q r = !𝟘 (f (inr g) q ≡ f (inr g) r) (g q)
-
-Nat : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-Nat A B = (x : domain A) → A x → B x
-
-Nats-are-natural : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (τ : Nat A B)
-                 → {x y : X} (p : x ≡ y) → τ y ∘ transport A p ≡ transport B p ∘ τ x
-Nats-are-natural A B τ (refl x) = refl (τ x)
-
-NatΣ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → Σ A → Σ B
-NatΣ τ (x , a) = (x , τ x a)
 
 has-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 has-section r = Σ \(s : codomain r → domain r) → r ∘ s ∼ id

@@ -45,7 +45,6 @@ date : 2019-03-04
      1. [The types of hlevel 2 are the sets](HoTT-UF-Agda.html#hlevel2set)
      1. [The hlevels are upper closed](HoTT-UF-Agda.html#hlevelsupper)
      1. [Example: ℕ is a set](HoTT-UF-Agda.html#naturalsset)
-     1. [Natural transformations](HoTT-UF-Agda.html#naturaltranformations)
      1. [Retracts](HoTT-UF-Agda.html#retracts)
      1. [Voevodsky' notion of equivalence](HoTT-UF-Agda.html#fibersandequivalences)
      1. [Voevodsky's univalence axiom](HoTT-UF-Agda.html#univalence)
