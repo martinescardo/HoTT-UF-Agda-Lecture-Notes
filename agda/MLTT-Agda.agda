@@ -297,13 +297,13 @@ not-zero-is-one ₀ f = !𝟘 (₀ ≡ ₁) (f (refl ₀))
 not-zero-is-one ₁ f = refl ₁
 
 inl-inr-disjoint-images : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y} → inl x ≢ inr y
-inl-inr-disjoint-images {𝓤} {𝓥} {X} {Y} p = 𝟙-is-not-𝟘 r
+inl-inr-disjoint-images {𝓤} {𝓥} {X} {Y} p = 𝟙-is-not-𝟘 q
  where
   f : X + Y → 𝓤₀ ̇
   f (inl x) = 𝟙
   f (inr y) = 𝟘
-  r : 𝟙 ≡ 𝟘
-  r = ap f p
+  q : 𝟙 ≡ 𝟘
+  q = ap f p
 
 module twin-primes where
 
