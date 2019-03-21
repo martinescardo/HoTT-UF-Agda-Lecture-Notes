@@ -186,13 +186,13 @@ We first define the three laws:
 
 \begin{code}
 left-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
-left-neutral {𝓤} {X} e _·_ = (x : X) → e · x ≡ x
+left-neutral e _·_ = ∀ x → e · x ≡ x
 
 right-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
-right-neutral {𝓤} {X} e _·_ = (x : X) → x ≡ e · x
+right-neutral e _·_ = ∀ x → x ≡ e · x
 
 associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
-associative {𝓤} {X} _·_ = (x y z : X) → (x · y) · z ≡ x · (y · z)
+associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
 \end{code}
 
 Then a monoid is a set equipped with such `e` and `_·_` satisfying these
