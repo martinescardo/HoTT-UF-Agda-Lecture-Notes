@@ -39,7 +39,7 @@ learning Cubical Type Theory and Cubical Agda as the next step.
   theory. Cubical Agda. Computer-verified mathematics.
 
 **About this document.**
-[This[](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes) is a set
+[This](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes) is a set
 of so-called
 [literate](https://agda.readthedocs.io/en/latest/tools/literate-programming.html)
 Agda files, with the formal, verified, mathematical development within

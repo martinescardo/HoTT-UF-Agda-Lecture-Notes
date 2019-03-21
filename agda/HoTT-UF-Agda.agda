@@ -140,7 +140,7 @@ syntax dId A p a b = a ≡[ p / A ] b
 ≡[]-on-refl-is-≡ A {x} a b = refl (a ≡ b)
 
 ≡[]-on-refl-is-≡' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x : X} (a b : A x)
-                → (a ≡[ refl x / A ] b) ≡ (a ≡ b)
+                  → (a ≡[ refl x / A ] b) ≡ (a ≡ b)
 
 ≡[]-on-refl-is-≡' {𝓤} {𝓥} {X} A {x} a b = refl {𝓥 ⁺} {𝓥 ̇ } (a ≡ b)
 
