@@ -79,7 +79,7 @@ axiom.
 ### <a name="magmasandmonoids"></a> Example: the types of magmas and monoids
 
 A magma is a *set* equipped with a binary operation subject to no laws
-(Bourbaki).  We can define the type of Magmas in a universe `𝓤`, which
+(Bourbaki).  We can define the type of magmas in a universe `𝓤`, which
 lives in the successor universe `𝓤⁺`, as follows.
 
 \begin{code}
