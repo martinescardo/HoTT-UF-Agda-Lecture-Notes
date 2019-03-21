@@ -98,7 +98,7 @@ module MLTT-Agda where
 
  * Every Agda file is a
   [module](https://agda.readthedocs.io/en/latest/language/module-system.html).
-  These lecture notes are a set of Agda files, which is converted to
+  These lecture notes are a set of Agda files, which are converted to
   html by Agda after it successfully checks the mathematical
   development for correctness.
 
