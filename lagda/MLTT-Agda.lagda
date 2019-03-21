@@ -539,10 +539,10 @@ that are [subsingletons](HoTT-UF-Agda.html#subsingletonsandsets).
 
 
 If we are doing applied mathematics and want to actually compute, we
-can define a type for binary notation for efficiency, and of course
-people have done that. Here we are not concerned with efficiency but
-only with understanding how to codify mathematics in (univalent) type
-theory and in Agda.
+can define a type for binary notation for the sake of efficiency, and
+of course people have done that. Here we are not concerned with
+efficiency but only with understanding how to codify mathematics in
+(univalent) type theory and in Agda.
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="binarysum"></a> The binary sum type constructor `_+_`
