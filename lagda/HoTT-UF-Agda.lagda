@@ -352,7 +352,7 @@ transport∙ A p (refl y) = refl (transport A p)
 \end{code}
 
 Functions of a type into a universe can be considered as generalized
-presheafs, which we could perhaps call `∞`-presheafs. Their morphisms
+presheaves, which we could perhaps call `∞`-presheafs. Their morphisms
 are natural transformations:
 
 \begin{code}
