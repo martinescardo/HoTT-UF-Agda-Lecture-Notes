@@ -261,7 +261,7 @@ An introduction at the [Bulletin of the
 AMS](https://www.ams.org/publications/journals/journalsframework/bull)
 by [Dan Grayson](https://faculty.math.illinois.edu/~dan/):
 
-    - [An introduction to univalent foundations for mathematicians](https://www.ams.org/journals/bull/2018-55-04/S0273-0979-2018-01616-9/).
+   - [An introduction to univalent foundations for mathematicians](https://www.ams.org/journals/bull/2018-55-04/S0273-0979-2018-01616-9/).
 
 We have based these lecture notes
 on the slides of our talk [*logic in univalent type theory*](https://www.newton.ac.uk/seminar/20170711100011001).
