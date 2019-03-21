@@ -156,7 +156,6 @@ of this file, and we `open` the assumption to make the above fields
 visible.
 
 \begin{code}
-
 module basic-truncation-development
          (pt : propositional-truncations-exist)
          (fe : global-dfunext)
@@ -169,7 +168,6 @@ module basic-truncation-development
 
   ∃ : {X : 𝓤 ̇ } → (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
   ∃ Y = ∥ Σ Y ∥
-
 \end{code}
 
 The propositional truncation of a type and its inhabitation are
@@ -231,7 +229,8 @@ generalize `non-empty` to `inhabited`.
 \end{code}
 
 These two forms of choice are logically equivalent (and hence
-equivalent, as both are subsingletons):
+equivalent, as both are subsingletons assuming function
+extensionality):
 
 \begin{code}
   Choice-gives-IChoice : Choice 𝓤 → IChoice 𝓤
