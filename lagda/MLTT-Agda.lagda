@@ -1263,7 +1263,7 @@ doesn't need to use the hypothesis `f : ₁ ≡ ₀ → 𝟘`, because the
 desired conclusion holds right away, as it is `₁ ≡ ₁`, which is proved
 by `refl ₁`. But notice that there is nothing wrong with the
 hypothesis `f : ₁ ≡ ₀ → 𝟘`. For example, we can call `not-zero-is-one`
-with `n = ₀` and `f = ₁-is-not-₀`, so that the hypothesis can be
+with `n = ₀` and `f = ₁-is-not-₀`, so that the hypotheses can be
 fulfilled in the second equation.
 
 \begin{code}
