@@ -110,12 +110,12 @@ to account for this distinction.
 Voevodsky's way to achive this is to start with a Martin-Löf type
 theory (`MLTT`), including identity types and type universes, and
 postulate a single axiom, named *univalence*. This axiom stipulates a
-canonical bijection between *type equivalences* (in a suitable sense
-defined by Voevodsky in type theory) and type identifications (in the
-original sense of Martin-Löf's identity type). Voevodsky's notion of
-type equivalence, formulated in `MLTT`, is a refinement of the notion
-of isomorphism, which works uniformly for all higher groupoids,
-i.e. types.
+[canonical](http://mathworld.wolfram.com/Canonical.html) bijection
+between *type equivalences* (in a suitable sense defined by Voevodsky
+in type theory) and type identifications (in the original sense of
+Martin-Löf's identity type). Voevodsky's notion of type equivalence,
+formulated in `MLTT`, is a refinement of the notion of isomorphism,
+which works uniformly for all higher groupoids, i.e. types.
 
 In particular, Voevodsky didn't design a new type theory, but instead
 gave an axiom for an existing type theory (or any of a family of
