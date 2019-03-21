@@ -171,7 +171,7 @@ magma-≡-to-iso p = (⌜ p ⌝ , ⌜⌝-is-iso p )
 
 If we omit the set-hood condition in the definition of the type of
 magmas, we get the type of what we could call `∞`-magmas (then the
-type of magmas could be called `1-Magma`).
+type of magmas could be called `0-Magma`).
 
 \begin{code}
 ∞-Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
