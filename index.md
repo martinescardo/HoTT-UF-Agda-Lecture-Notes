@@ -142,11 +142,12 @@ what he needed.
 
 It may be considered somewhat miraculous that the addition of the
 univalence axiom alone to `MLTT` can achieve (1) and (3). Martin-Löf
-type theory was designed to achieve (2), and, 1 (regarding), types
+type theory was designed to achieve (2), and, regarding (1), types
 were imagined/conceived as sets (and even named *sets* in some of the
-original expositions by Martin-Löf), and the identity type was
-imagined/conceived as having at most one element, even if `MLTT`
-cannot prove or disprove this statement, as was eventually shown by
+original expositions by Martin-Löf), and, regarding (3), the identity
+type was imagined/conceived as having at most one element, even if
+`MLTT` cannot prove or disprove this statement, as was eventually
+shown by
 [Hofmann](https://www.tcs.ifi.lmu.de/mitarbeiter/martin-hofmann) and
 [Streicher](https://en.wikipedia.org/wiki/Thomas_Streicher) with their
 [groupoid model of types](https://ieeexplore.ieee.org/document/316071)
@@ -253,8 +254,8 @@ starting points:
 
 Regarding the genesis of the subject:
 
-   - [A very short note on homotopy λ-calculus](http://math.ucr.edu/home/baez/Voevodsky_note.ps)
-   - [Notes on homotopy λ-calculus](https://github.com/vladimirias/2006_03_Homotopy_lambda_calculus/blob/master/homotopy_lambda_calculus_Mar_5_2006.pdf)
+   - [A very short note on homotopy λ-calculus](http://math.ucr.edu/home/baez/Voevodsky_note.ps).
+   - [Notes on homotopy λ-calculus](https://github.com/vladimirias/2006_03_Homotopy_lambda_calculus/blob/master/homotopy_lambda_calculus_Mar_5_2006.pdf).
 
 We have based these lecture notes
 on the slides of our talk [*logic in univalent type theory*](https://www.newton.ac.uk/seminar/20170711100011001).
