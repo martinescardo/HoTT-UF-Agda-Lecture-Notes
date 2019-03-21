@@ -1160,7 +1160,8 @@ the use of brackets.
 To prove that `A → ¬¬ A`, that is, `A → ((A → 𝟘) → 𝟘)`, we start with
 a hypothetical element `a : A` and a hypothetical function `u : A → 𝟘`
 and the goal is to get an element of `𝟘`. All we need to do is to
-apply the function `u` to `a`.
+apply the function `u` to `a`. This gives double-negation
+introduction:
 
 \begin{code}
 dni : {A : 𝓤 ̇ } → A → ¬¬ A
@@ -1205,7 +1206,7 @@ identification `p : 𝟙 ≡ 𝟘`, then we get a function `𝟙 → 𝟘`. We a
 this function to `⋆ : 𝟙` to conclude the proof.
 
 \begin{code}
-𝟙-is-not-𝟘 : ¬(𝟙 ≡ 𝟘)
+𝟙-is-not-𝟘 : 𝟙 ≢ 𝟘
 𝟙-is-not-𝟘 p = f p ⋆
  where
   f : 𝟙 ≡ 𝟘 → 𝟙 → 𝟘
@@ -1217,7 +1218,7 @@ not equal, we reduce to the above case. We start with a hypothetical
 identification `p : ₁ ≡ ₀`.
 
 \begin{code}
-₁-is-not-₀ : ¬(₁ ≡ ₀)
+₁-is-not-₀ : ₁ ≢ ₀
 ₁-is-not-₀ p = 𝟙-is-not-𝟘 q
  where
   f : 𝟚 → 𝓤₀ ̇
