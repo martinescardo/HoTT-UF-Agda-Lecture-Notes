@@ -330,7 +330,7 @@ is-empty X = X → 𝟘
 
 This says that a type is empty precisely when we have a function to
 the empty type. Assuming [univalence](HoTT-UF-Agda.html#univalence),
-once we have defined equality type former
+once we have defined the equality type former
 [`_≡_`](MLTT-Agda.html#identitytype), we will be able to prove that
 `(is-empty X) ≡ (X ≡ 𝟘)`. We will also be able to prove things like
 `(2 + 2 ≡ 5) ≡ 𝟘` and `(2 + 2 ≡ 4) ≡ 𝟙`.
