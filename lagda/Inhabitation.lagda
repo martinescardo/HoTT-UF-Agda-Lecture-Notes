@@ -143,10 +143,11 @@ called the propositional truncation of `X`:
 \begin{code}
 record propositional-truncations-exist : 𝓤ω where
  field
-  ∥_∥ : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
+  ∥_∥          : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
   ∥∥-is-a-prop : {𝓤 : Universe} {X : 𝓤 ̇ } → is-prop ∥ X ∥
-  ∣_∣ : {𝓤 : Universe} {X : 𝓤 ̇ } → X → ∥ X ∥
-  ∥∥-rec : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {P : 𝓥 ̇ } → is-prop P → (X → P) → ∥ X ∥ → P
+  ∣_∣         : {𝓤 : Universe} {X : 𝓤 ̇ } → X → ∥ X ∥
+  ∥∥-rec       : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {P : 𝓥 ̇ }
+              → is-prop P → (X → P) → ∥ X ∥ → P
 \end{code}
 
 This is the approach we adopt in our [personal Agda
