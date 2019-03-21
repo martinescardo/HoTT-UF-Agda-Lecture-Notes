@@ -189,7 +189,7 @@ left-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
 left-neutral e _·_ = ∀ x → e · x ≡ x
 
 right-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
-right-neutral e _·_ = ∀ x → x ≡ e · x
+right-neutral e _·_ = ∀ x → x · e ≡ x
 
 associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
 associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
