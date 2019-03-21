@@ -64,7 +64,7 @@ data ℕ : 𝓤₀ ̇  where
             → X
             → (X → X)
             → ℕ → X
-ℕ-iteration A a f = ℕ-recursion A a (λ _ a → f a)
+ℕ-iteration X x f = ℕ-recursion X x (λ _ x → f x)
 
 module Arithmetic where
 

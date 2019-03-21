@@ -438,7 +438,7 @@ The following special case occurs often (and is related to the fact that `ℕ` i
             → X
             → (X → X)
             → ℕ → X
-ℕ-iteration A a f = ℕ-recursion A a (λ _ a → f a)
+ℕ-iteration X x f = ℕ-recursion X x (λ _ x → f x)
 \end{code}
 
 Agda checks that any recursive definition as above is well founded,
