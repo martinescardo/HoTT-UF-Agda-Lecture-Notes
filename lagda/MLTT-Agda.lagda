@@ -1072,8 +1072,8 @@ p ∙ q = transport (lhs p ≡_) q p
 \end{code}
 
 Here we are considering the family `A t = (x ≡ t)`, and using the
-identification `q` to transport `A y` to `A z`, that is `x ≡ y` to `x
-≡ z`.
+identification `q : y ≡ z` to transport `A y` to `A z`, that is `x ≡
+y` to `x ≡ z`.
 
 *Exercise.* define an alternative version that uses `p` to
 transport. Can you prove that the two versions give equal results?
@@ -1090,7 +1090,7 @@ introduce notation to be able to write e.g.
 
 as a synonym of the expression `p ∙ q` with some of the implicit arguments of `_∙_` made
 explicit. We have one ternary *mixfix* operator `_≡⟨_⟩_` and one unary
-"postfix" operator `_∎`.
+`postfix` operator `_∎`.
 
 \begin{code}
 _≡⟨_⟩_ : {X : 𝓤 ̇ } (x : X) {y z : X} → x ≡ y → y ≡ z → x ≡ z
