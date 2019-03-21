@@ -428,7 +428,7 @@ is the function that transforms identifications into functions, which
 has already occurred [above](MLTT-Agda.html#negation) in a special case.
 
 More generally, we want to consider the situation in which we replace
-the identity function `id` of the universe where `A` and `B` live to
+the identity function `id` of the universe where `A` and `B` live by
 an arbitrary type family, which is what we do now.
 
 If we have a type
