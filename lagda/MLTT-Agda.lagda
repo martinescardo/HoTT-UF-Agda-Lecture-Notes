@@ -492,7 +492,6 @@ module Arithmetic' where
     h : ℕ → ℕ
     h = ℕ-iteration ℕ x succ
 
-
   x × y = h y
    where
     h : ℕ → ℕ
@@ -615,7 +614,7 @@ We can define induction on 𝟚 directly by pattern matching:
 𝟚-induction A a₀ a₁ ₁ = a₁
 \end{code}
 
-Or can can prove it by induction on `_+_` and `𝟙`:
+Or we can prove it by induction on `_+_` and `𝟙`:
 \begin{code}
 𝟚-induction' : (A : 𝟚 → 𝓤 ̇ ) → A ₀ → A ₁ → (n : 𝟚) → A n
 𝟚-induction' A a₀ a₁ = +-induction A
