@@ -186,8 +186,8 @@ logically equivalent propositions:
     b = inhabited-recursion X ∥ X ∥ ∥∥-is-a-prop ∣_∣
 \end{code}
 
-Hence they differ only in size, and when size doesn't get on the way,
-we can use `is-inhabited` instead of `∥_∥` if we wish.
+Hence they differ only in size, and when size matters don't get on the
+way, we can use `is-inhabited` instead of `∥_∥` if we wish.
 
 *Exercise*. If `X` and `Y` are types obtained by summing `x-` and
   `y`-many copies of the type `𝟙`, respectively, as in `𝟙 + 𝟙 + ... + 𝟙` , where `x`
