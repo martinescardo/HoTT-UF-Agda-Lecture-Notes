@@ -92,7 +92,8 @@ a property. It defines the type of magmas. A magma is an element of
 this type, that is, a triple `(X , i , _·_)` with `X : 𝓤 ̇` and `i :
 is-set X` and `_·_ : X → X → X`.
 
-Given a magma `M = (X , i , _·_)` we denote by `⟨ M ⟩` its underlying set `X` and by `magma-operation M` its multiplication `_·_`:
+Given a magma `M = (X , i , _·_)` we denote by `⟨ M ⟩` its underlying
+set `X` and by `magma-operation M` its multiplication `_·_`:
 
 \begin{code}
 ⟨_⟩ : Magma 𝓤 → 𝓤 ̇
@@ -116,7 +117,7 @@ the equality sign. In any case, the point is that this time we need
 such a mechanism because in order to be able to mention arbitrary `x`
 and `y`, we first need to know their types, which is `⟨ M ⟩` and hence
 `M` has to occur before `x` and `y` in the definition of
-`magma-operation`.
+`magma-operation`. The syntax declaration circumvents this.
 
 A function of the underlying sets of two magmas is a called a
 homomorphism when it commutes with the magma operations:
