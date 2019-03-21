@@ -130,7 +130,8 @@ There are two proposed ways to solve this:
     of the system with such rules is an open question.
 
   * The HoTT book works with certain higher inductive types (HIT's).
-    This is the same approach taken by cubical Agda.
+    This is the same approach adopted by cubical type theory and cubical
+    Agda.
 
 A third possibility is to work with propositional truncations
 [axiomatically](https://lmcs.episciences.org/3217), which is compatible
