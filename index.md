@@ -147,8 +147,10 @@ were imagined/conceived as sets (and even named *sets* in some of the
 original expositions by Martin-Löf), and the identity type was
 imagined/conceived as having at most one element, even if `MLTT`
 cannot prove or disprove this statement, as was eventually shown by
-[Hofmann](https://www.tcs.ifi.lmu.de/mitarbeiter/martin-hofmann) and [Streicher](https://en.wikipedia.org/wiki/Thomas_Streicher) with their [groupoid model of types](https://ieeexplore.ieee.org/document/316071) in the early
-1990's.
+[Hofmann](https://www.tcs.ifi.lmu.de/mitarbeiter/martin-hofmann) and
+[Streicher](https://en.wikipedia.org/wiki/Thomas_Streicher) with their
+[groupoid model of types](https://ieeexplore.ieee.org/document/316071)
+in the early 1990's.
 
 Another important aspect of univalent mathematics is the presence of
 explicit mechanisms for distinguishing

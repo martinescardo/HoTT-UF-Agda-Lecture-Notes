@@ -297,7 +297,7 @@ data 𝟘 : 𝓤₀ ̇  where
 That's the complete definition. This has a dual interpretation,
 mathematically as the empty set (we can actually prove that this type
 is a set, once we know the definition of set), and
-logically as the truth-value *false*. To prove that a property of
+logically as the truth value *false*. To prove that a property of
 elements of the empty type holds for all elements of the empty type we
 have to do nothing.
 
