@@ -385,7 +385,7 @@ elements `a : A` and `b : B`, we cannot ask directly whether `a ≡ b`,
 because although the types are identified by `p`, they are not
 necessarily the same, in the sense of definitional equality. This is
 not merely a syntactical restriction of our formal system, but instead
-is a fundamental fact that reflects the philosophy of univalent
+a fundamental fact that reflects the philosophy of univalent
 mathematics. For instance, consider the type
 
 \begin{code}
@@ -526,7 +526,7 @@ of a type that happens to be a universe.
 
 \begin{code}
 ≡[]-on-refl-is-≡' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x : X} (a b : A x)
-                → (a ≡[ refl x / A ] b) ≡ (a ≡ b)
+                  → (a ≡[ refl x / A ] b) ≡ (a ≡ b)
 
 ≡[]-on-refl-is-≡' {𝓤} {𝓥} {X} A {x} a b = refl {𝓥 ⁺} {𝓥 ̇ } (a ≡ b)
 \end{code}
@@ -621,8 +621,8 @@ X is-of-hlevel (succ n) = (x x' : X) → ((x ≡ x') is-of-hlevel n)
 \end{code}
 
 It is often convenient in practice to have equivalent formulations of
-the levels `1` (as subsingletons) and `2` (as sets), which we now
-develop.
+the levels `1` (as subsingletons) and `2` (as sets), which we will
+develop [soon](HoTT-UF-Agda.html#setscharacterization).
 
 When working with singleton types, it will be convenient to have
 distinghished names for the two projections:
@@ -688,7 +688,7 @@ To characterize sets as the types of hlevel 2, we first need to show
 that subsingletons are sets, and this is not easy. We use an argument
 due to
 [Hedberg](https://homotopytypetheory.org/references/hedberg/). This
-argument also shows that [Voevodsky's hlevel are upper
+argument also shows that [Voevodsky's hlevels are upper
 closed](HoTT-UF-Agda.html#hlevelsupper).
 
 We choose to present an [alternative formulation of Hedberg's
