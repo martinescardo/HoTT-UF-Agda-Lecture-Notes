@@ -1117,6 +1117,11 @@ ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x x' : X} → x ≡ x' → f x
 ap f p = transport (λ - → f (lhs p) ≡ f -) p (refl (f (lhs p)))
 \end{code}
 
+Here the symbol "`-`", which is not to be confused with the symbol
+"`_`", is a variable. We will adopt the convetion in these notes of
+using this variable name "`-`" to make clear which part of an
+expression we are replacing with `transport`.
+
 Notice that we have so far used the recursion principle `transport`
 only. To reason about `transport`, `_∙_`, `_⁻¹` and `ap`, we [will
 need](HoTT-UF-Agda.html#identitytypeuf) to use the full induction
