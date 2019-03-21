@@ -236,7 +236,7 @@ knows from the definition of `𝟙` that "`⋆`" is the only element of the
 type `𝟙`. This mechanism is called *pattern matching*.
 
 A particular case of `𝟙-induction` occurs when the family `A` is constant
-with value `B`, which can be written as variously as `A = λ (x : 𝟙) → B`,
+with value `B`, which can be written variously as `A = λ (x : 𝟙) → B`,
 or `A = λ x → B` if we want Agda to figure out the type of `x` by itself,
 or `A = λ _ → B` if we don't want to name the argument of `A` because it
 is not used. In usual mathematical practice, such a [lambda expression](https://plato.stanford.edu/entries/lambda-calculus/) is [often
