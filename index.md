@@ -123,20 +123,20 @@ possible type theories, to be more precise).
 
 The main *technical* contributions in type theory by Voevodsky are:
 
-<ol type="i">
+<ol start="4">
    <li>The definition of type levels in MLTT, classifying them as n-groupoids including the possibility n=∞.</li>
    <li>The (simple and elegant) definition of type equivalence that works uniformly for all type levels in MLTT.</li>
    <li> The formulation of the univalence axiom in MLTT.</li>
 </ol>
 
-Univalent mathematics begins within `MLTT` with (i) and (ii) before we
+Univalent mathematics begins within `MLTT` with (4) and (5) before we
 postulate univalence. In fact, as the reader will see, we will do a
 fair amount of univalent mathematics before we formulate or assume the
 univalence axiom.
 
-All of (i)-(iii) crucially rely on Martin-Löf's
+All of (4)-(6) crucially rely on Martin-Löf's
 identity type. [Initially](http://math.ucr.edu/home/baez/Voevodsky_note.ps), Voevodsky thought that a new concept would
-be needed in the type theory to achieve (i)-(iii) and hence (1) and
+be needed in the type theory to achieve (4)-(6) and hence (1) and
 (3) above. But he eventually discovered that Martin-Löf's identity
 type is precisely what he needed.
 
@@ -153,7 +153,7 @@ cannot prove or disprove this statement, as was eventually shown by
 Another important aspect of univalent mathematics is the presence of
 explicit mechanisms for distinguishing
 
-<ol type="a">
+<ol start="7">
  <li>property (e.g. an unspecified thing exists),</li>
  <li>data or structure (e.g. a designated thing exists or is given),</li>
 </ol>
@@ -162,12 +162,11 @@ which are common place in current mathematical practice
 (e.g. cartesian closedness of a category is a property in some sense
 (up to isomorphism), whereas monoidal closedness is given structure).
 
-In summary, univalent mathematics is characterized by (1)-(3),
-(i)-(iii) and (a)-(b) above, and not by the univalence axiom
-alone. In fact, 3/4 of theses notes begin *without* the univalence
-axiom (as measured by the number of lines in the source code for these
-lecture notes until we formulate the univalence axiom and start to use
-it).
+In summary, univalent mathematics is characterized by (1)-(8) and not
+by the univalence axiom alone. In fact, 3/4 of theses notes begin
+*without* the univalence axiom (as measured by the number of lines in
+the source code for these lecture notes until we formulate the
+univalence axiom and start to use it).
 
 Lastly, univalent type theories don't assume the axiom of choice or
 the principle of excluded middle, and so in some sense they are
