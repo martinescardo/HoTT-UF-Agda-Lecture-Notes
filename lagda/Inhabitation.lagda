@@ -129,9 +129,10 @@ There are two proposed ways to solve this:
     subsingletons. At the time of writing, the (relative) consistency
     of the system with such rules is an open question.
 
-  * The HoTT book works with certain higher inductive types (HIT's).
-    This is the same approach adopted by cubical type theory and cubical
-    Agda.
+  * The HoTT book works with certain higher inductive types (HIT's),
+    which are known to have models and hence to be (relatively)
+    consistent.  This is the same approach adopted by cubical type
+    theory and cubical Agda.
 
 A third possibility is to work with propositional truncations
 [axiomatically](https://lmcs.episciences.org/3217), which is compatible
@@ -185,7 +186,7 @@ logically equivalent propositions:
     b = inhabited-recursion X ∥ X ∥ ∥∥-is-a-prop ∣_∣
 \end{code}
 
-Hence they only differ in size, and when size doesn't get on the way,
+Hence they differ only in size, and when size doesn't get on the way,
 we can use `is-inhabited` instead of `∥_∥` if we wish.
 
 *Exercise*. If `X` and `Y` are types obtained by summing `x-` and
