@@ -656,7 +656,7 @@ algorithms in the implementation of Agda. In such cases we can write
    > `Σ λ(x : X) → Y x`,
 
 because `Y = λ (x : X) → Y x` by a so-called η-rule. However, we will
-often use the synonym `\` of `λ` for Σ, as if considering it as part
+often use the synonym `\` of `λ` for `Σ`, as if considering it as part
 of the `Σ` syntax.
 
    > `Σ \(x : X) → Y x`.
@@ -985,7 +985,7 @@ Js-agreement : (X : 𝓤 ̇ ) (A : (x y : X) → x ≡ y → 𝓥 ̇ )
 Js-agreement X A f x x (refl x) = refl (f x)
 \end{code}
 
-Similarly define `H'` from `J` without using pattern matching on refl
+Similarly define `H'` from `J` without using pattern matching on `refl`
 and show that it coincides with `H` (possibly using pattern maatching
 on `refl`). This is
 [harder](http://www.cse.chalmers.se/~coquand/singl.pdf).
@@ -1041,8 +1041,8 @@ All the above transports coincide:
 
 \begin{code}
 transports-agreement : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
-                     → (transportH A p ≡ transportH A p)
-                     × (transportJ A p ≡ transportH A p)
+                     → (transportH A p ≡ transport A p)
+                     × (transportJ A p ≡ transport A p)
 transports-agreement A (refl x) = refl (transport A (refl x)) ,
                                   refl (transport A (refl x))
 \end{code}

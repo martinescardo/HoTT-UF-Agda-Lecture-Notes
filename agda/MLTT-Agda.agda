@@ -220,8 +220,8 @@ transportH : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
 transportH {𝓤} {𝓥} {X} A {x} {y} p a = nondep-H x A a y p
 
 transports-agreement : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
-                     → (transportH A p ≡ transportH A p)
-                     × (transportJ A p ≡ transportH A p)
+                     → (transportH A p ≡ transport A p)
+                     × (transportJ A p ≡ transport A p)
 transports-agreement A (refl x) = refl (transport A (refl x)) ,
                                   refl (transport A (refl x))
 
