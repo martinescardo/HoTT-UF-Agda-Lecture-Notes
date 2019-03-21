@@ -205,8 +205,8 @@ type `𝟙` satify a given property `A`.
     > `Π (A : 𝟙 → 𝓤), A ⋆ → Π (x : 𝟙), A x`.
 
   * We read this in natural language as "for any given property `A` of
-    elements of the type `𝟙`, if we can show that `A ⋆` holds, then it
-    follows that `A x` holds for all `x : 𝟙`".
+    elements of the type `𝟙`, if `A ⋆` holds, then it follows that `A
+    x` holds for all `x : 𝟙`".
 
 
   * In Agda above `Π`-type is written as
