@@ -68,7 +68,7 @@ to come in the foreseeable future before the foundations of univalent
 mathematics stabilize).
 
 The salient differences between univalent mathematics and traditional,
-set-based mathematics may be shocking at firt sight:
+set-based mathematics may be shocking at first sight:
 
  1. The kinds of objects we take as basic.
 
