@@ -89,7 +89,7 @@ Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → is-set X × (X → X → X)
 The type `Magma 𝓤` collects all magmas in a universe `𝓤` and lives in
 the next universe `𝓤 ⁺`.  Thus, this doesn't define what a magma is as
 a property. It defines the type of magmas. A magma is an element of
-this type, that is, a triple `(X , i , _·)` with `X : 𝓤` and `i :
+this type, that is, a triple `(X , i , _·_)` with `X : 𝓤` and `i :
 is-set X` and `_·_ : X → X → X`.
 
 Given a magma `M = (X , i , _·_)` we denote by `⟨ M ⟩` its underlying set `X` and by `magma-operation M` its multiplication `_·_`:
