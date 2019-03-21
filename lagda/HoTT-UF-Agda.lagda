@@ -721,7 +721,7 @@ collapser-wconstancy X (f , w) = w
 \end{code}
 
 The point is that a type is a set if and only if its identity types
-all have wconstant endomaps:
+all have `wconstant` endomaps:
 
 \begin{code}
 hedberg : {X : 𝓤 ̇ } (x : X)
@@ -940,7 +940,7 @@ practice your Agda skills.
 
 *Exercise.* Prove that the types of magmas, monoids and groups have
 hlevel `3` (they are `1`-groupoids) but not hlevel `2` (they are not
-sets).  Prove that this is their minimal level. Can you do this with
+sets).  Prove that this is their minimal hlevel. Can you do this with
 what we have learned so far?
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
