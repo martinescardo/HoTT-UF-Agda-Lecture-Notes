@@ -325,7 +325,7 @@ univalence-gives-vvfunext ua = univalence-gives-vvfunext' ua ua
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
-### <a name="univalencesubsingleton"></a> The univalence axiom is a (sub)singleton type
+### <a name="univalencesubsingleton"></a> The univalence axiom is a subsingleton type
 
 If we use a type as an axiom, it should better have at most one element. We
 prove some generally useful lemmas first.

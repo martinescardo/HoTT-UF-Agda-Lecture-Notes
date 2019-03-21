@@ -173,7 +173,7 @@ vvfunext-gives-hfunext {𝓤} {𝓥} vfe {X} {Y} f = γ
   γ = NatΣ-equiv-gives-fiberwise-equiv (λ g → f ≡ g) (λ g → f ∼ g) (happly f) i
 
 funext-gives-vvfunext : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → vvfunext 𝓤 𝓥
-funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = retract-of-singleton (r , s , rs) i
+funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
   where
    f : Σ A → X
    f = pr₁
@@ -191,6 +191,8 @@ funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = retract-of-singleton (r 
    s φ = (λ x → x , φ x) , refl id
    rs : ∀ φ → r (s φ) ≡ φ
    rs φ = refl (r (s φ))
+   γ : is-singleton (Π A)
+   γ = retract-of-singleton (r , s , rs) i
 
 funext-gives-hfunext : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → hfunext 𝓤 𝓥
 funext-gives-hfunext fe fe' = vvfunext-gives-hfunext (funext-gives-vvfunext fe fe')
