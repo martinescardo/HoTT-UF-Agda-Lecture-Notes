@@ -257,6 +257,12 @@ Regarding the genesis of the subject:
    - [A very short note on homotopy λ-calculus](http://math.ucr.edu/home/baez/Voevodsky_note.ps).
    - [Notes on homotopy λ-calculus](https://github.com/vladimirias/2006_03_Homotopy_lambda_calculus/blob/master/homotopy_lambda_calculus_Mar_5_2006.pdf).
 
+An introduction at the [Bulletin of the
+AMS](https://www.ams.org/publications/journals/journalsframework/bull)
+by [Dan Grayson](https://faculty.math.illinois.edu/~dan/):
+
+    - [An introduction to univalent foundations for mathematicians](https://www.ams.org/journals/bull/2018-55-04/S0273-0979-2018-01616-9/).
+
 We have based these lecture notes
 on the slides of our talk [*logic in univalent type theory*](https://www.newton.ac.uk/seminar/20170711100011001).
 

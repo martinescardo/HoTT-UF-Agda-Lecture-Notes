@@ -7,8 +7,8 @@ date : 2019-03-04
 
 ### <a name="contents"></a> Table of contents
 
-  1. [Front matter](index.html#lecturenotes)
-     1. [Lecture Notes in Univalent mathematics with Agda](index.html#lecturenotes)
+  1. [Front matter](index.html)
+     1. [First page](index.html)
      1. [Introduction](index.html#introduction)
      1. [Homotopy type theory](index.html#homotopytypetheory)
      1. [General references](index.html#generalreferences)
