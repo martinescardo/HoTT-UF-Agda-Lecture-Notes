@@ -58,7 +58,7 @@ These notes were originally developed for the
 ### <a name="introduction"></a> Introduction
 
 A univalent type theory is the underlying formal system for a
-foundation for univalent mathematics as conceived by [Voevodsky](http://www.math.ias.edu/Voevodsky/).
+foundation of univalent mathematics as conceived by [Voevodsky](http://www.math.ias.edu/Voevodsky/).
 
 In the same way as there isn't just one set theory (we have e.g. [ZFC](https://en.wikipedia.org/wiki/Zermelo%E2%80%93Fraenkel_set_theory)
 and [NBG](https://en.wikipedia.org/wiki/Von_Neumann%E2%80%93Bernays%E2%80%93G%C3%B6del_set_theory) among others), there isn't just one univalent type theory (we
