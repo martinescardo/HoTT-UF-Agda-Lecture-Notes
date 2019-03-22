@@ -1168,20 +1168,87 @@ dni : {A : 𝓤 ̇ } → A → ¬¬ A
 dni a u = u a
 \end{code}
 
-The reasoning is similar for the following. We assume we are given
-hypothetical `f : A → B`, `v : B → 𝟘` and `a : A` and our goal is to
-get an element of `𝟘`.
+Mathematically, this says that if we have a point of `A` (we say that
+`A` is pointed) then `A` is nonempty. There is no general procedure to
+implement the converse, that is, from a function `(A → 𝟘) → 𝟘` to get
+a point of `A`. For [truth
+values](HoTT-UF-Agda.html#subsingletonsandsets) `A`, we can assume
+this as an axiom if we wish, because it is [equivalent to the
+principle excluded middle](Appendix.html). For arbitrary types `A`,
+this would be a form of [global
+choice](https://en.wikipedia.org/wiki/Axiom_of_global_choice) for type
+theory.  However, global choice is inconsistent with univalence ([HoTT
+book](https://homotopytypetheory.org/book/), Theorem 3.2.2), because
+there is no way to choose an element of every non-empty type in a way
+that is invariant under automorphisms. However, the [axiom of
+choice](Inhabitedness.html#choice) *is* consistent with univalent type
+theory, as stated in the [introduction](index.html).
+
+In the proof of the following, we assume we are given hypothetical
+functions `f : A → B` and `v : B → 𝟘`, and a hypothetical element `a :
+A`, and our goal is to get an element of `𝟘`. But this is easy,
+because `f a : B` and hence `v (f a) : 𝟘`.
 
 \begin{code}
 contrapositive : {A : 𝓤 ̇ } {B : 𝓤 ̇ } → (A → B) → (¬ B → ¬ A)
 contrapositive f v a = v (f a)
 \end{code}
 
+We have given a logical name to this function. Mathematically, this
+says that if we have a function `A → B` and `B` is empty, then `A`
+must be empty, too. The proof is by assuming that `A` would have an
+inhabitant `a`, to get a contradiction, namely that `B` would have an
+inhabitant, too, showing that there can't be any such inhabitant `a`
+of `A` after all. See
+[Bauer](http://math.andrej.com/2010/03/29/proof-of-negation-and-proof-by-contradiction/)
+for a general discussion.
+
 And from this we get that three negations imply one:
 \begin{code}
 tno : {A : 𝓤 ̇ } → ¬¬¬ A → ¬ A
 tno = contrapositive dni
 \end{code}
+
+Hence, using `dni` once again, we get that `¬¬¬ A` if and only if `¬
+A`.  It is entertaining to see how Brouwer formulated and proved this
+fact in his [Cambridge Lectures on
+Intuitionism](https://mathscinet.ams.org/mathscinet/search/publdoc.html?arg3=&co4=AND&co5=AND&co6=AND&co7=AND&dr=all&pg4=AUCN&pg5=TI&pg6=PC&pg7=ALLF&pg8=ET&r=1&review_format=html&s4=&s5=cambridge%20lectures%20on%20intuitionism&s6=&s7=&s8=All&sort=Newest&vfpref=html&yearRangeFirst=&yearRangeSecond=&yrop=eq):
+
+<blockquote>
+    Theorem. Absurdity of absurdity of absurdity is equivalent to absurdity.
+</blockquote>
+<blockquote>
+    Proof. <em>Firstly</em>, since implication of the assertion &#119910; by the
+    assertion &#119909; implies implication of absurdity of &#119909; by absurdity
+    of &#119910;, the implication of <em>absurdity of absurdity</em> by <em>truth</em>
+    (which is an established fact) implies the implication of
+    <em>absurdity of truth</em>, that is to say of <em>absurdity</em>, by <em>absurdity
+    of absurdity of absurdity</em>. <em>Secondly</em>, since truth of an assertion
+    implies absurdity of its absurdity, in particular truth of
+    absurdity implies absurdity of absurdity of absurdity.
+</blockquote>
+
+If we define *logical equivalence* by
+\begin{code}
+_⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+X ⇔ Y = (X → Y) × (Y → X)
+\end{code}
+
+then we can render Brouwer's argument in Agda as follows, where the
+"established fact" is `dni`:
+
+\begin{code}
+absurdity³-is-absurdity : {A : 𝓤 ̇ } → ¬¬¬ A ⇔ ¬ A
+absurdity³-is-absurdity {𝓤} {A} = firstly , secondly
+ where
+  firstly : ¬¬¬ A → ¬ A
+  firstly = contrapositive dni
+  secondly : ¬ A → ¬¬¬ A
+  secondly = dni
+\end{code}
+
+But of course Brouwer, as is well known, was averse to formalism, and
+hence wouldn't approve of such a sacrilege.
 
 We now define a symbol for the negation of equality.
 
@@ -1201,16 +1268,35 @@ that inverts identifications with `u`:
 
 To show that the type `𝟙` is not equal to the type `𝟘`, we use that
 `transport id` gives `𝟙 ≡ 𝟘 → id 𝟙 ≡ id 𝟘` where `id` is the [identity
-function](MLTT-Agda.html#pitypes). So if we have a hypothetical
-identification `p : 𝟙 ≡ 𝟘`, then we get a function `𝟙 → 𝟘`. We apply
-this function to `⋆ : 𝟙` to conclude the proof.
+function](MLTT-Agda.html#pitypes) of the universe `𝓤₀`. More
+generally, we have the following conversion of type identifications
+into functions:
+
+\begin{code}
+Id-to-Fun : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
+Id-to-Fun = transport id
+\end{code}
+
+Here the identity function is that of the universe `𝓤` where the types
+`X` and `Y` live. An equivalent definition is the following, where
+this time the identity function is that of the type `X`:
+
+\begin{code}
+Id-to-Fun' : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
+Id-to-Fun' (refl X) = id
+
+Id-to-Funs-agree : {X Y : 𝓤 ̇ } (p : X ≡ Y)
+                 → Id-to-Fun p ≡ Id-to-Fun' p
+Id-to-Funs-agree (refl X) = refl id
+\end{code}
+
+So if we have a hypothetical identification `p : 𝟙 ≡ 𝟘`, then we get a
+function `𝟙 → 𝟘`. We apply this function to `⋆ : 𝟙` to conclude the
+proof.
 
 \begin{code}
 𝟙-is-not-𝟘 : 𝟙 ≢ 𝟘
-𝟙-is-not-𝟘 p = f p ⋆
- where
-  f : 𝟙 ≡ 𝟘 → 𝟙 → 𝟘
-  f = transport id
+𝟙-is-not-𝟘 p = Id-to-Fun p ⋆
 \end{code}
 
 To show that the elements `₁` and `₀` of the two-point type `𝟚` are

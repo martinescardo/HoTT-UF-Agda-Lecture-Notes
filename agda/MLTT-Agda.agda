@@ -262,17 +262,35 @@ contrapositive f v a = v (f a)
 tno : {A : 𝓤 ̇ } → ¬¬¬ A → ¬ A
 tno = contrapositive dni
 
+_⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+X ⇔ Y = (X → Y) × (Y → X)
+
+absurdity³-is-absurdity : {A : 𝓤 ̇ } → ¬¬¬ A ⇔ ¬ A
+absurdity³-is-absurdity {𝓤} {A} = firstly , secondly
+ where
+  firstly : ¬¬¬ A → ¬ A
+  firstly = contrapositive dni
+  secondly : ¬ A → ¬¬¬ A
+  secondly = dni
+
 _≢_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
 x ≢ y = ¬(x ≡ y)
 
 ≢-sym : {X : 𝓤 ̇ } {x y : X} → x ≢ y → y ≢ x
 ≢-sym {𝓤} {X} {x} {y} u = λ (p : y ≡ x) → u (p ⁻¹)
 
+Id-to-Fun : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
+Id-to-Fun = transport id
+
+Id-to-Fun' : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
+Id-to-Fun' (refl X) = id
+
+Id-to-Funs-agree : {X Y : 𝓤 ̇ } (p : X ≡ Y)
+                 → Id-to-Fun p ≡ Id-to-Fun' p
+Id-to-Funs-agree (refl X) = refl id
+
 𝟙-is-not-𝟘 : 𝟙 ≢ 𝟘
-𝟙-is-not-𝟘 p = f p ⋆
- where
-  f : 𝟙 ≡ 𝟘 → 𝟙 → 𝟘
-  f = transport id
+𝟙-is-not-𝟘 p = Id-to-Fun p ⋆
 
 ₁-is-not-₀ : ₁ ≢ ₀
 ₁-is-not-₀ p = 𝟙-is-not-𝟘 q

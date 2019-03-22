@@ -154,9 +154,6 @@ from-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
          → Σ \(p : pr₁ σ ≡ pr₁ τ) → pr₂ σ ≡[ p / A ] pr₂ τ
 from-Σ-≡ (refl (x , a)) = (refl x , refl a)
 
-_⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-X ⇔ Y = (X → Y) × (Y → X)
-
 is-singleton : 𝓤 ̇ → 𝓤 ̇
 is-singleton X = Σ \(c : X) → (x : X) → c ≡ x
 
@@ -571,11 +568,8 @@ Eq-to-Id ua X Y = inverse (Id-to-Eq X Y) (ua X Y)
 Id-to-fun : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
 Id-to-fun {𝓤} {X} {Y} p = Eq-to-fun (Id-to-Eq X Y p)
 
-Id-to-fun' : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
-Id-to-fun' = transport id
-
 Id-to-funs-agree : {X Y : 𝓤 ̇ } (p : X ≡ Y)
-                 → Id-to-fun p ≡ Id-to-fun' p
+                 → Id-to-fun p ≡ Id-to-Fun p
 Id-to-funs-agree (refl X) = refl id
 
 swap₂ : 𝟚 → 𝟚

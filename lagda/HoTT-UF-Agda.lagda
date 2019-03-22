@@ -553,14 +553,7 @@ from-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
 from-Σ-≡ (refl (x , a)) = (refl x , refl a)
 \end{code}
 
-If we define *logical equivalence* by
-
-\begin{code}
-_⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-X ⇔ Y = (X → Y) × (Y → X)
-\end{code}
-
-then the above gives
+The above gives
 
    > `(σ ≡ τ) ⇔ Σ \(p : pr₁ σ ≡ pr₁ τ) → pr₂ σ ≡[ p / A ] pr₂ τ`.
 
@@ -1394,26 +1387,24 @@ Eq-to-Id : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → X ≃ Y → X ≡ Y
 Eq-to-Id ua X Y = inverse (Id-to-Eq X Y) (ua X Y)
 \end{code}
 
-Two equivalent ways to convert a type equality into a function:
+Here is a [third way](MLTT-Agda.html#negation) to convert a type
+identification into a function:
 
 \begin{code}
 Id-to-fun : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
 Id-to-fun {𝓤} {X} {Y} p = Eq-to-fun (Id-to-Eq X Y p)
 
-Id-to-fun' : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
-Id-to-fun' = transport id
-
 Id-to-funs-agree : {X Y : 𝓤 ̇ } (p : X ≡ Y)
-                 → Id-to-fun p ≡ Id-to-fun' p
+                 → Id-to-fun p ≡ Id-to-Fun p
 Id-to-funs-agree (refl X) = refl id
 \end{code}
 
-What characterizes univalent mathematics is not the univalence axiom. We have defined and studied the main
-concepts of univalent mathematics in a pure, spartan `MLTT`. It is the
-concepts of hlevel, including singleton, subsingleton and set, and the
-notion of equivalence. Univalence *is* a fundamental ingredient, but
-first we need the correct notion of equivalence to be able to
-formulate it.
+What characterizes univalent mathematics is not the univalence
+axiom. We have defined and studied the main concepts of univalent
+mathematics in a pure, spartan `MLTT`. It is the concepts of hlevel,
+including singleton, subsingleton and set, and the notion of
+equivalence. Univalence *is* a fundamental ingredient, but first we
+need the correct notion of equivalence to be able to formulate it.
 
 *Remark*. If we formulate univalence with invertible maps instead of
 equivalences, we get a statement that is provable false, and this is
