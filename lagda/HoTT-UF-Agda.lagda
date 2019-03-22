@@ -78,8 +78,8 @@ axiom.
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="magmasandmonoids"></a> Example: the types of magmas and monoids
 
-A magma is a *set* equipped with a binary operation subject to no laws
-(Bourbaki).  We can define the type of magmas in a universe `𝓤` as follows:
+A [magma](https://en.wikipedia.org/wiki/Magma_(algebra)) is a *set* equipped with a binary operation subject to no laws
+([Bourbaki](https://books.google.co.uk/books?id=STS9aZ6F204C&pg=PA1&redir_esc=y#v=onepage&q&f=false)).  We can define the type of magmas in a universe `𝓤` as follows:
 
 \begin{code}
 Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
@@ -89,7 +89,7 @@ Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → is-set X × (X → X → X)
 The type `Magma 𝓤` collects all magmas in a universe `𝓤`, and lives in
 the successor universe `𝓤 ⁺`.  Thus, this doesn't define what a magma is as
 a property. It defines the type of magmas. A magma is an element of
-this type, that is, a triple `(X , i , _·_)` with `X : 𝓤 ̇` and `i :
+this type, that is, a triple `(X , i , _·_)` with `X : 𝓤` and `i :
 is-set X` and `_·_ : X → X → X`.
 
 Given a magma `M = (X , i , _·_)` we denote by `⟨ M ⟩` its underlying
@@ -165,8 +165,8 @@ univalence, so that the identifications of magmas are in one-to-one
 correspondence with the magma isomorphisms:
 
 \begin{code}
-magma-≡-to-iso : {M N : Magma 𝓤} → M ≡ N → M ≅ₘ N
-magma-≡-to-iso p = (⌜ p ⌝ , ⌜⌝-is-iso p )
+magma-Id-to-iso : {M N : Magma 𝓤} → M ≡ N → M ≅ₘ N
+magma-Id-to-iso p = (⌜ p ⌝ , ⌜⌝-is-iso p )
 \end{code}
 
 If we omit the set-hood condition in the definition of the type of
@@ -178,7 +178,7 @@ type of magmas could be called `0-Magma`).
 ∞-Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → X → X → X
 \end{code}
 
-A monoid is a set equipped with an associative binary operation and
+A [monoid](https://en.wikipedia.org/wiki/Monoid) is a set equipped with an associative binary operation and
 with a two-sided neutral element, and so we get the type of monoids as
 follows.
 
@@ -225,7 +225,7 @@ monoids (with sets as carriers) the neutrality and associativity
 equations can hold in at most one way, by definition of set. But if we
 drop the set-hood requirement, then the equations can hold in multiple
 ways. And then one is forced to consider equations between the
-witnesses of the equations (all the way up in the ∞-case), which is
+identifications (all the way up in the ∞-case), which is
 what "[coherence](https://ncatlab.org/nlab/show/coherence+law) data"
 means. The wildness or incoherence amounts to the absence of such
 data.
@@ -238,14 +238,16 @@ monoid equations can hold in many possible ways, and we would need to
 consider a notion of monoid isomorphism that in addition to preserving
 the neutral element and the multiplication, preserves the equations, and
 the preservations of the equations, and the preservation of the
-preservations of the equations, and so on.
+preservations of the equations, *ad infinitum*.
 
-*Exercise.* Define the type of groups (with sets as carriers).
+*Exercise.* Define the type of [groups](https://en.wikipedia.org/wiki/Group_(mathematics)) (with sets as carriers).
 
-*Exercise.* Write down the various types of categories defined in the
-HoTT book in Agda.
+*Exercise.* Write down the various types of
+[categories](https://en.wikipedia.org/wiki/Category_(mathematics))
+defined in the HoTT book in Agda.
 
-*Exercise.* Try to define a type of topological spaces.
+*Exercise.* Try to define a type of [topological
+ spaces](https://en.wikipedia.org/wiki/Topological_space).
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="identitytypeuf"></a> The identity type in univalent mathematics
@@ -304,7 +306,7 @@ we can consider the identity type `p ≡ q`, and given
 
    > `u v : p ≡ q`
 
-we can consider the type `u ≡ v`, and so on ad infinitum.
+we can consider the type `u ≡ v`, and so on *ad infinitum*.
 See [[van den Berg and Garner](https://arxiv.org/abs/0812.0298)] and
 [[Lumsdaine](https://lmcs.episciences.org/1062)].
 
@@ -963,7 +965,7 @@ set, this datum is not property, and we may well have an element
 `(s , η')` of the type `has-section r` with `η'` distinct from `η` for the same `s`.
 
 We say that *`X` is a retract of `Y`*, written `X ◁ Y`, if we
-have a function `X → Y` which has a section:
+have a function `Y → X` which has a section:
 
 \begin{code}
 _◁_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
