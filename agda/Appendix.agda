@@ -36,6 +36,10 @@ Up-left-≃ : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → Up 𝓦 X ≃ Y
 
 ap-Up-≃ : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → Up 𝓦 X ≃ Up 𝓣 Y
 
+uptwo : is-univalent 𝓤₀
+      → is-univalent 𝓤₁
+      → (𝟚 ≡ 𝟚) ≡ Up 𝓤₁ 𝟚
+
 DNE : ∀ 𝓤 → 𝓤 ⁺ ̇
 DNE 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → ¬¬ P → P
 
@@ -154,6 +158,13 @@ Up-left-≃ {𝓤} {𝓥} {𝓦} X Y e = Up 𝓦 X ≃⟨ Up-≃ X ⟩
 ap-Up-≃ {𝓤} {𝓥} {𝓦} {𝓣} X Y e = Up 𝓦 X  ≃⟨ Up-left-≃ X Y e ⟩
                                  Y       ≃⟨ ≃-sym (Up-≃ Y) ⟩
                                  Up 𝓣 Y  ■
+
+uptwo ua₀ ua₁ = Eq-to-Id ua₁ (𝟚 ≡ 𝟚) (Up 𝓤₁ 𝟚) e
+ where
+  e = (𝟚 ≡ 𝟚) ≃⟨ Id-to-Eq 𝟚 𝟚 , ua₀ 𝟚 𝟚 ⟩
+      (𝟚 ≃ 𝟚) ≃⟨ 𝟚-has-𝟚-automorphisms (univalence-gives-dfunext ua₀) ⟩
+      𝟚       ≃⟨ ≃-sym (Up-≃ 𝟚) ⟩
+      Up 𝓤₁ 𝟚 ■
 
 neg-is-subsingleton fe X f g = fe (λ x → !𝟘 (f x ≡ g x) (f x))
 

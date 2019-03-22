@@ -45,6 +45,10 @@ cantors-diagonal : ¬(Σ \(e : ℕ → (ℕ → ℕ)) → (α : ℕ → ℕ) →
 𝟚-has-𝟚-automorphisms : dfunext 𝓤₀ 𝓤₀ → (𝟚 ≃ 𝟚) ≃ 𝟚
 \end{code}
 
+Now we would like to have `(𝟚 ≡ 𝟚) ≡ 𝟚` with univalence, but the
+problem is that the type `𝟚 ≡ 𝟚` lives in `𝓤₁` whereas `𝟚` lives in
+`𝓤₀` and so, having different types, can't be compared for equality.
+
 Universes are not cumulative in Agda, in the sense that from `X : 𝓤`
 we would get `X : 𝓤⁺` or `X : 𝓤 ⊔ 𝓥`.  The usual approach is to
 consider embeddings of universes into larger universes:
@@ -76,6 +80,14 @@ Up-≃ : (X : 𝓤 ̇ ) → Up 𝓥 X ≃ X
 Up-left-≃ : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → Up 𝓦 X ≃ Y
 
 ap-Up-≃ : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → Up 𝓦 X ≃ Up 𝓣 Y
+\end{code}
+
+With this we can show:
+
+\begin{code}
+uptwo : is-univalent 𝓤₀
+      → is-univalent 𝓤₁
+      → (𝟚 ≡ 𝟚) ≡ Up 𝓤₁ 𝟚
 \end{code}
 
 We now discuss alternative formulations of the principle of excluded middle.
@@ -213,6 +225,13 @@ Up-left-≃ {𝓤} {𝓥} {𝓦} X Y e = Up 𝓦 X ≃⟨ Up-≃ X ⟩
 ap-Up-≃ {𝓤} {𝓥} {𝓦} {𝓣} X Y e = Up 𝓦 X  ≃⟨ Up-left-≃ X Y e ⟩
                                  Y       ≃⟨ ≃-sym (Up-≃ Y) ⟩
                                  Up 𝓣 Y  ■
+
+uptwo ua₀ ua₁ = Eq-to-Id ua₁ (𝟚 ≡ 𝟚) (Up 𝓤₁ 𝟚) e
+ where
+  e = (𝟚 ≡ 𝟚) ≃⟨ Id-to-Eq 𝟚 𝟚 , ua₀ 𝟚 𝟚 ⟩
+      (𝟚 ≃ 𝟚) ≃⟨ 𝟚-has-𝟚-automorphisms (univalence-gives-dfunext ua₀) ⟩
+      𝟚       ≃⟨ ≃-sym (Up-≃ 𝟚) ⟩
+      Up 𝓤₁ 𝟚 ■
 
 neg-is-subsingleton fe X f g = fe (λ x → !𝟘 (f x ≡ g x) (f x))
 

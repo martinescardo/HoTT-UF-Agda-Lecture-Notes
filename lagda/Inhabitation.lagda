@@ -191,7 +191,7 @@ way, we can use `is-inhabited` instead of `∥_∥` if we wish.
 
 *Exercise*. If `X` and `Y` are types obtained by summing `x-` and
   `y`-many copies of the type `𝟙`, respectively, as in `𝟙 + 𝟙 + ... + 𝟙` , where `x`
-  and `y` are natural numbers, then `∥ X = Y ∥ = (x ≡ y)` and the type
+  and `y` are natural numbers, then `∥ X ≡ Y ∥ = (x ≡ y)` and the type
   `X ≡ X` has `x!` elements.
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)

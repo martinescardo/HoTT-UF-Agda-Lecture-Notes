@@ -66,13 +66,13 @@ module basic-truncation-development
 
   open propositional-truncations-exist pt public
 
-  ∥∥-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
+  ∥∥-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → ∥ X ∥ → ∥ Y ∥
   ∥∥-functor f = ∥∥-rec ∥∥-is-a-prop (λ x → ∣ f x ∣)
 
   ∃ : {X : 𝓤 ̇ } → (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
   ∃ Y = ∥ Σ Y ∥
 
-  ∥∥-agrees-with-inhabitation : (X : 𝓤 ̇) → ∥ X ∥ ⇔ is-inhabited X
+  ∥∥-agrees-with-inhabitation : (X : 𝓤 ̇ ) → ∥ X ∥ ⇔ is-inhabited X
   ∥∥-agrees-with-inhabitation X = a , b
    where
     a : ∥ X ∥ → is-inhabited X
