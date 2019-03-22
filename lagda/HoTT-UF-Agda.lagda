@@ -306,7 +306,7 @@ we can consider the identity type `p ≡ q`, and given
 
    > `u v : p ≡ q`
 
-we can consider the type `u ≡ v`, and so on *ad infinitum*.
+we can consider the type `u ≡ v`, and so on.
 See [[van den Berg and Garner](https://arxiv.org/abs/0812.0298)] and
 [[Lumsdaine](https://lmcs.episciences.org/1062)].
 
@@ -1586,13 +1586,13 @@ equiv-to-singleton : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
 equiv-to-singleton' : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
                     → X ≃ Y → is-singleton X → is-singleton Y
 
-subtypes-of-sets-are-sets : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (m : X → Y)
+subtypes-of-sets-are-sets : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                           → left-cancellable m → is-set Y → is-set X
 
-pr₁-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇} → ((x : X) → is-subsingleton (A x))
+pr₁-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ((x : X) → is-subsingleton (A x))
        → left-cancellable  (λ (t : Σ A) → pr₁ t)
 
-subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇)
+subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
                          → is-set X
                          → ((x : X) → is-subsingleton(A x))
                          → is-set(Σ \(x : X) → A x)

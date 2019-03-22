@@ -60,8 +60,8 @@ id-is-magma-iso M = id-is-magma-hom M ,
 _≅ₘ_ : Magma 𝓤 → Magma 𝓤 → 𝓤 ̇
 M ≅ₘ N = Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-magma-iso M N f
 
-magma-≡-to-iso : {M N : Magma 𝓤} → M ≡ N → M ≅ₘ N
-magma-≡-to-iso p = (⌜ p ⌝ , ⌜⌝-is-iso p )
+magma-Id-to-iso : {M N : Magma 𝓤} → M ≡ N → M ≅ₘ N
+magma-Id-to-iso p = (⌜ p ⌝ , ⌜⌝-is-iso p )
 
 ∞-Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
 ∞-Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → X → X → X
