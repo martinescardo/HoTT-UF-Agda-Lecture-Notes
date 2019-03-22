@@ -1343,12 +1343,12 @@ The following is more interesting. We consider the two possible cases
 for `n`. The first one assumes a hypothetical function `f : ₀ ≡ ₀ →
 𝟘`, from which we get `f (refl ₀) : 𝟘`, and then, using `!𝟘`, we get
 an element of any type we like, which we choose to be `₀ ≡ ₁`, and we
-are done. Of course, we will never be able to call the function
+are done. Of course, we will never be able to use the function
 `not-zero-is-one` with such outrageous inputs. The other case `n = ₁`
 doesn't need to use the hypothesis `f : ₁ ≡ ₀ → 𝟘`, because the
 desired conclusion holds right away, as it is `₁ ≡ ₁`, which is proved
 by `refl ₁`. But notice that there is nothing wrong with the
-hypothesis `f : ₁ ≡ ₀ → 𝟘`. For example, we can call `not-zero-is-one`
+hypothesis `f : ₁ ≡ ₀ → 𝟘`. For example, we can use `not-zero-is-one`
 with `n = ₀` and `f = ₁-is-not-₀`, so that the hypotheses can be
 fulfilled in the second equation.
 
