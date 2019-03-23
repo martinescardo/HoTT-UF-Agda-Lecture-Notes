@@ -47,7 +47,7 @@ Agda files, with the formal, verified, mathematical development within
 them. Most of this file is not Agda code, and is in markdown format,
 and the html web page is generated automatically from it using Agda
 and other
-tools. [Github](https://github.com/martinescardo/TypeTopology) pull
+tools. [Github](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes) pull
 requests by students to fix typos or mistakes and clarify ambiguities
 are welcome.
 
