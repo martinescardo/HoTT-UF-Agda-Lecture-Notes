@@ -98,7 +98,7 @@ set-based mathematics may be shocking at first sight:
 The important word in the above description of univalent foundations
 is *automatic*. For example, we don't *define* equality of monoids to
 be isomorphism. Instead, we define the collection of monoids as the
-(large) type of (small) types that are sets, equipped with a binary
+large type of small types that are sets, equipped with a binary
 multiplication operation and a unit satisfying associativity of
 multiplication and neutrality of the unit in the usual way, and then
 we *prove* that the native notion of equality that comes with
