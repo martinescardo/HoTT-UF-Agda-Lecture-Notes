@@ -175,8 +175,9 @@ Lastly, univalent type theories don't assume the axiom of choice or
 the principle of excluded middle, and so in some sense they are
 constructive by default. But we emphasize that these two axioms are
 consistent and hence can be safely used as assumptions. However,
-virtually all theorems of univalent mathematics, e.g. in UniMath, have
-been proved without assuming them, with natural mathematical
+virtually all theorems of univalent mathematics, e.g. in
+[UniMath]((https://github.com/UniMath/UniMath/blob/master/README.md),
+have been proved without assuming them, with natural mathematical
 arguments. The formulations of theses principles in univalent
 mathematics differ from their traditional formulations in MLTT, and
 hence we sometimes refer to them as the *univalent* principle of
@@ -271,7 +272,7 @@ on the slides of our talk [*logic in univalent type theory*](https://www.newton.
 
 This is intended as an introductory graduate course. We include what
 we regard as the essence of univalent foundations and univalent
-mathematics, but we are certainly ommiting important material that is
+mathematics, but we are certainly omiting important material that is
 needed to do univalent mathematics in practice, and the readers who wish
 to practice univalent mathematics should consult the above references.
 

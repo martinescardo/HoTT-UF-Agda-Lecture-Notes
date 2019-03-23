@@ -256,7 +256,7 @@ f ∼ g = ∀ x → f x ≡ g x
 dni : {A : 𝓤 ̇ } → A → ¬¬ A
 dni a u = u a
 
-contrapositive : {A : 𝓤 ̇ } {B : 𝓤 ̇ } → (A → B) → (¬ B → ¬ A)
+contrapositive : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → (¬ B → ¬ A)
 contrapositive f v a = v (f a)
 
 tno : {A : 𝓤 ̇ } → ¬¬¬ A → ¬ A

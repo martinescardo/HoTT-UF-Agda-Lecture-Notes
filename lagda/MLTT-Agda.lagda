@@ -1190,7 +1190,7 @@ A`, and our goal is to get an element of `𝟘`. But this is easy,
 because `f a : B` and hence `v (f a) : 𝟘`.
 
 \begin{code}
-contrapositive : {A : 𝓤 ̇ } {B : 𝓤 ̇ } → (A → B) → (¬ B → ¬ A)
+contrapositive : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → (¬ B → ¬ A)
 contrapositive f v a = v (f a)
 \end{code}
 
