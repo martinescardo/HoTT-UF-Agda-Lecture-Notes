@@ -910,7 +910,7 @@ alternative `H`) instead of pattern matching and recursion, to
 understand by themselves that this can be done.
 
 And using the decidability of equality we can define a `wconstant`
-function `x ≡ y → x ≡ y` and hence conclude that ℕ is a set. This
+function `x ≡ y → x ≡ y` and hence conclude that `ℕ` is a set. This
 argument is due to Hedberg.
 
 \begin{code}

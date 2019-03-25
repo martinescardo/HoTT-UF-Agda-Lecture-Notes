@@ -267,6 +267,11 @@ by [Dan Grayson](https://faculty.math.illinois.edu/~dan/):
 We have based these lecture notes
 on the slides of our talk [*logic in univalent type theory*](https://www.newton.ac.uk/seminar/20170711100011001).
 
+We also have a [development](http://www.cs.bham.ac.uk/~mhe/agda-new/) of [univalent foundations](http://www.cs.bham.ac.uk/~mhe/agda-new/UF.html) which is applied to work on
+[injective types](http://www.cs.bham.ac.uk/~mhe/agda-new/InjectiveTypes-article.html)
+[compact (or searchable) types](http://www.cs.bham.ac.uk/~mhe/agda-new/Compactness.html),
+[compact ordinals](http://www.cs.bham.ac.uk/~mhe/agda-new/Ordinals.html) and [more](http://www.cs.bham.ac.uk/~mhe/agda-new/SafeModulesIndex.html).
+
 [<sub>Table of contents ⇓</sub>](toc.html#contents)
 ### <a name="plan"></a> Choice of material
 
