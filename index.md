@@ -176,7 +176,7 @@ the principle of excluded middle, and so in some sense they are
 constructive by default. But we emphasize that these two axioms are
 consistent and hence can be safely used as assumptions. However,
 virtually all theorems of univalent mathematics, e.g. in
-[UniMath]((https://github.com/UniMath/UniMath/blob/master/README.md),
+[UniMath](https://github.com/UniMath/UniMath/blob/master/README.md),
 have been proved without assuming them, with natural mathematical
 arguments. The formulations of theses principles in univalent
 mathematics differ from their traditional formulations in MLTT, and
