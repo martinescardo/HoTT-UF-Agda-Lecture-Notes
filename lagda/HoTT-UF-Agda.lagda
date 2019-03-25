@@ -1382,7 +1382,7 @@ is-univalent 𝓤 = (X Y : 𝓤 ̇ ) → is-equiv (Id-to-Eq X Y)
 
 We emphasize that this doesn't posit that univalence holds. It says
 what univalence is (like the type that says what the [twin-prime
-conjecture](MLTT-Agda.html#twinprime) is.
+conjecture](MLTT-Agda.html#twinprime) is).
 
 \begin{code}
 Eq-to-Id : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → X ≃ Y → X ≡ Y
