@@ -220,7 +220,7 @@ way, we can use `is-inhabited` instead of `∥_∥` if we wish.
            → AC 𝓤 X A i j
 \end{code}
 
-This axiom is relatovely consistent, because Voevodsky's
+This axiom is relatively consistent, because Voevodsky's
 [simplicial-set model](https://arxiv.org/abs/1211.2851) validates
 it. But it is important that we have the condition that `A` is a
 set-indexed family of sets. For general higher groupoids, it is not in

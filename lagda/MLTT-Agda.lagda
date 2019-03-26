@@ -920,7 +920,7 @@ underspecification of the identity types: (1) We can consider the `K`
 axiom, which postulates that all types are sets, or (2) we can
 consider the univalence axiom, arriving at univalent mathematics,
 which gives rise to types that are more general than sets, the
-`n`-gropoids and `∞`-groupoids.  In fact, the univalence axiom will
+`n`-groupoids and `∞`-groupoids.  In fact, the univalence axiom will
 say, in particular, that for some types `X` and elements `x y : X`, the
 identity type `x ≡ y` does have more than one element.
 
@@ -962,7 +962,7 @@ However, we will not always use this induction principle, because we
 can instead work with the instances we need by pattern matching on
 `refl` (which is just what we did to define the principle itself) and
 there is a [theorem by Jesper
-Cockx](<https://dl.acm.org/citation.cfm?id=2628139) which says that
+Cockx](https://dl.acm.org/citation.cfm?id=2628139) which says that
 with the Agda option `without-K`, pattern matching on `refl` can
 define/prove precisely what `J` can.
 
@@ -989,7 +989,7 @@ Js-agreement X A f x x (refl x) = refl (f x)
 \end{code}
 
 Similarly define `H'` from `J` without using pattern matching on `refl`
-and show that it coincides with `H` (possibly using pattern maatching
+and show that it coincides with `H` (possibly using pattern matching
 on `refl`). This is
 [harder](http://www.cse.chalmers.se/~coquand/singl.pdf).
 
@@ -1270,7 +1270,7 @@ that inverts identifications with `u`:
 \end{code}
 
 To show that the type `𝟙` is not equal to the type `𝟘`, we use that
-`transport id` gives `𝟙 ≡ 𝟘 → id 𝟙 ≡ id 𝟘` where `id` is the [identity
+`transport id` gives `𝟙 ≡ 𝟘 → id 𝟙 → id 𝟘` where `id` is the [identity
 function](MLTT-Agda.html#pitypes) of the universe `𝓤₀`. More
 generally, we have the following conversion of type identifications
 into functions:
