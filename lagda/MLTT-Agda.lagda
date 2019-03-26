@@ -1129,7 +1129,7 @@ equality of functions, defined as follows, which, using univalence,
 will be [equivalent to equality of functions](FunExt.html#hfunext).
 
 \begin{code}
-_∼_ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ((x : X) → A x) → ((x : X) → A x) → 𝓤 ⊔ 𝓥 ̇
+_∼_ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → Π A → Π A → 𝓤 ⊔ 𝓥 ̇
 f ∼ g = ∀ x → f x ≡ g x
 \end{code}
 
