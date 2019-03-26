@@ -1277,7 +1277,7 @@ id-is-equiv : (X : 𝓤 ̇ ) → is-equiv (id {𝓤} {X})
 id-is-equiv = singleton-types-are-singletons
 \end{code}
 
-An `abstract` definition is not expanded during typechecking. One
+An `abstract` definition is not expanded during type checking. One
 possible use of this is efficiency. In our case, it saves 30s in the
 checking of the module [`FunExt`](FunExt.html).
 
