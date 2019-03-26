@@ -877,7 +877,12 @@ positive-not-zero x p = 𝟙-is-not-𝟘 (g p)
   f (succ x) = 𝟙
   g : succ x ≡ 0 → 𝟙 ≡ 𝟘
   g = ap f
+\end{code}
 
+To show that the successor function is left cancellable, we can use
+the following predecessor function.
+
+\begin{code}
 pred : ℕ → ℕ
 pred 0 = 0
 pred (succ n) = n
