@@ -13,39 +13,39 @@ date : 2019-03-04
 
 **Abstract.** We introduce [Voevodsky](http://www.math.ias.edu/Voevodsky/)'s [univalent foundations](http://www.ams.org/journals/bull/2018-55-04/S0273-0979-2018-01616-9/) and
 [univalent mathematics](https://github.com/UniMath/UniMath/blob/master/README.md), and explain how to develop them with the
-computer system [Agda](https://wiki.portal.chalmers.se/agda/pmwiki.php), which based on [Martin-Löf type theory](https://github.com/michaelt/martin-lof).
+computer system [`Agda`](https://wiki.portal.chalmers.se/agda/pmwiki.php), which based on [Martin-Löf type theory](https://github.com/michaelt/martin-lof).
 
-Agda allows one to write mathematical definitions, constructions,
+`Agda` allows one to write mathematical definitions, constructions,
 theorems and proofs, for example in number theory, analysis, group
 theory, topology, category theory or programming language theory, checking
 them for logical and mathematical correctness.
 
-Agda is a constructive mathematical system by default, which amounts
+`Agda` is a constructive mathematical system by default, which amounts
 to saying that it can also be considered as a programming
 language. But we can assume the axiom of choice or the principle of
 excluded middle for pieces of mathematics that require them, at the
 cost of losing the implicit programming-language character of the system.
 
 For a fully constructive development of univalent mathematics in
-Agda, we would need to use its new [cubical flavour](https://homotopytypetheory.org/2018/12/06/cubical-agda/), and
+`Agda`, we would need to use its new [cubical flavour](https://homotopytypetheory.org/2018/12/06/cubical-agda/), and
 we hope these notes provide a base for researchers interested in
-learning Cubical Type Theory and Cubical Agda as the next step.
+learning Cubical Type Theory and Cubical `Agda` as the next step.
 
 **Keywords.** Univalent mathematics. Univalent foundations. Univalent
   type theory. Univalence axiom. `∞`-Groupoid. Homotopy type. Type
   theory. Homotopy type theory. Intensional Martin-Löf type
   theory. Dependent type theory. Identity type. Type
-  universe. Constructive mathematics. Agda. Cubical type
-  theory. Cubical Agda. Computer-verified mathematics.
+  universe. Constructive mathematics. `Agda`. Cubical type
+  theory. Cubical `Agda`. Computer-verified mathematics.
 
 **About this document.**
 [This](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes) is a set
 of so-called
 [literate](https://agda.readthedocs.io/en/latest/tools/literate-programming.html)
-Agda files, with the formal, verified, mathematical development within
+`Agda` files, with the formal, verified, mathematical development within
 *code* environments, and the usual mathematical discussion outside
-them. Most of this file is not Agda code, and is in markdown format,
-and the html web page is generated automatically from it using Agda
+them. Most of this file is not `Agda` code, and is in markdown format,
+and the html web page is generated automatically from it using `Agda`
 and other
 tools. [Github](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes) pull
 requests by students to fix typos or mistakes and clarify ambiguities
@@ -183,7 +183,7 @@ mathematics differ from their traditional formulations in `MLTT`, and
 hence we sometimes refer to them as the *univalent* principle of
 excluded middle and the *univalent* axiom of choice.
 
-In these notes we will explore the above ideas, using Agda to write
+In these notes we will explore the above ideas, using `Agda` to write
 `MLTT` definitions, constructions, theorems and proofs, with
 univalence as an explicit assumption each time it is needed. We will
 have a further assumption, the existence of certain subsingleton (or
@@ -199,9 +199,9 @@ or propositional truncation, and so can be developed in a version of
 the original Martin-Löf type theories, and this is what happens in
 these notes, and what Voevodsky did in his brilliant [original
 development in the computer system
-Coq](https://github.com/UniMath/Foundations). Our use of Agda, rather
-than Coq, is a personal matter of taste only, and the students are
-encouraged to learn Coq, too.
+Coq](https://github.com/UniMath/Foundations). Our use of `Agda`, rather
+than `Coq`, is a personal matter of taste only, and the students are
+encouraged to learn `Coq`, too.
 
 [<sub>Table of contents ⇓</sub>](toc.html#contents)
 #### <a name="homotopytypetheory"></a> Homotopy type theory
@@ -244,12 +244,12 @@ And, after the reader has gained enough experience:
    - [Coq HoTT library](https://github.com/HoTT/HoTT).
    - [Agda HoTT library](https://github.com/HoTT/HoTT-Agda).
 
-Regarding the computer language Agda, we recommend the following as
+Regarding the computer language `Agda`, we recommend the following as
 starting points:
 
    - [Agda wiki](https://wiki.portal.chalmers.se/agda/pmwiki.php).
    - [Agda reference manual](https://agda.readthedocs.io/en/latest/getting-started/index.html).
-   - Agda [further references](https://wiki.portal.chalmers.se/agda/pmwiki.php?n=Main.Documentation).
+   - `Agda` [further references](https://wiki.portal.chalmers.se/agda/pmwiki.php?n=Main.Documentation).
    - [Cubical Agda blog post](https://homotopytypetheory.org/2018/12/06/cubical-agda/).
    - [Cubical Agda documentation](https://agda.readthedocs.io/en/latest/language/cubical.html#cubical).
 
@@ -281,4 +281,4 @@ mathematics, but we are certainly omiting important material that is
 needed to do univalent mathematics in practice, and the readers who wish
 to practice univalent mathematics should consult the above references.
 
-[<sub>Table of contents ⇓</sub>](toc.html#contents) [<sub>`MLTT` in Agda ⇓</sub>](MLTT-Agda.html)
+[<sub>Table of contents ⇓</sub>](toc.html#contents) [<sub>`MLTT` in `Agda` ⇓</sub>](MLTT-Agda.html)
