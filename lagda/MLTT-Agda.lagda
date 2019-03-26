@@ -1059,7 +1059,7 @@ rhs {𝓤} {X} {x} {y} p = y
 
 *Composition of identifications.*
 Given two identifications `p : x ≡ y` and `q : y ≡ z`, we can compose them
-to get an identification `p ∙ q : x ≡ y`. This can also be seen as
+to get an identification `p ∙ q : x ≡ z`. This can also be seen as
 transitivity of equality. Because the type of composition doesn't
 mention `p` and `q`, we can use the non-dependent version of `≡`-induction.
 
