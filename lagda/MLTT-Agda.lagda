@@ -77,7 +77,7 @@ subset of Agda where everything in our spartan MLTT can be expressed.
 ### <a name="gettingstartedagda"></a> Getting started with Agda
 
 We don't use any Agda library. For pedagogical purposes, we start from
-scratch, and here is our first line of code:
+scratch, and here are our first two lines of code:
 
 \begin{code}
 {-# OPTIONS --without-K --exact-split --safe #-}
