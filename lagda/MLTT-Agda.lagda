@@ -1115,7 +1115,7 @@ ap f p = transport (λ - → f (lhs p) ≡ f -) p (refl (f (lhs p)))
 \end{code}
 
 Here the symbol "`-`", which is not to be confused with the symbol
-"`_`", is a variable. We will adopt the convetion in these notes of
+"`_`", is a variable. We will adopt the convention in these notes of
 using this variable name "`-`" to make clear which part of an
 expression we are replacing with `transport`.
 
