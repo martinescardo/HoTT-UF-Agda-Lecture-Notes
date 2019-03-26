@@ -1,4 +1,4 @@
-# Lecture notes on univalent foundations of mathematics with Agda
+# Introduction to univalent foundations of mathematics with Agda
 
 Sources and scripts to generate the lecture notes available at
 https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/index.html
