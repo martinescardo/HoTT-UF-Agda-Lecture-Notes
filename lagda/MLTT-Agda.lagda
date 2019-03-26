@@ -894,7 +894,7 @@ is the only element of `x ≡ x` for an arbitrary type `X`. This
 non-provability result was established by [Hofmann and
 Streicher](https://ieeexplore.ieee.org/document/316071), by giving a
 model of type theory in which types are interpreted as
-[groupoids](https://en.wikipedia.org/wiki/Groupoid).
+[`1`-groupoids](https://en.wikipedia.org/wiki/Groupoid).
 
 However, for the elements of *some* types, such as `ℕ`, it is possible
 to prove that any identity type `x ≡ y` has at most one element. Such
