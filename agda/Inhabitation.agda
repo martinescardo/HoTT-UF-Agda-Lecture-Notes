@@ -69,8 +69,17 @@ module basic-truncation-development
   ∥∥-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → ∥ X ∥ → ∥ Y ∥
   ∥∥-functor f = ∥∥-rec ∥∥-is-a-prop (λ x → ∣ f x ∣)
 
-  ∃ : {X : 𝓤 ̇ } → (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-  ∃ Y = ∥ Σ Y ∥
+  ∃ : {X : 𝓤 ̇ } → (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+  ∃ A = ∥ Σ A ∥
+
+  ∃! : {X : 𝓤 ̇ } → (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+  ∃! A = is-singleton (Σ A)
+
+  _∨_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+  A ∨ B = ∥ A + B ∥
+
+  _⊕_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+  A ⊕ B = is-singleton (A + B)
 
   ∥∥-agrees-with-inhabitation : (X : 𝓤 ̇ ) → ∥ X ∥ ⇔ is-inhabited X
   ∥∥-agrees-with-inhabitation X = a , b
