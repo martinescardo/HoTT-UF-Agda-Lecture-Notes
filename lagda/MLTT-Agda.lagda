@@ -473,7 +473,7 @@ module Arithmetic where
 The above `infix` operations allow us to indicate the precedences
 (multiplication has higher precedence than addition) and their
 associativity (here we take left-associativity as the convention, so that
-e.g. `x+y+z` parses as `(x+y)+z`.
+e.g. `x+y+z` parses as `(x+y)+z`).
 
 Equivalent definitions use `ℕ-induction` on the second argument `y`, via
 `ℕ-iteration`:
