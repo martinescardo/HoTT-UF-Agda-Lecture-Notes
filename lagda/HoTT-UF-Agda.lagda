@@ -396,10 +396,10 @@ data Color : 𝓤₀ ̇  where
 \end{code}
 
 With univalence, we will have that `Color ≡ 𝟚` where `𝟚` is the
-[two-point type](MLTT-Agda.html#binarysum) `𝟙 + 𝟙` with points `₀` and `₁`.  But
-there will be two identifications `p₀ p₁ : Color ≡ 𝟚`, one that
-identifies `Black` with `₀` and `White` with `₁`, and another that
-identifies `Black` with `₁` and `White` with `₀`. There is no
+[two-point type](MLTT-Agda.html#binarysum) `𝟙 + 𝟙` with points `₀` and
+`₁`.  But there will be two identifications `p₀ p₁ : Color ≡ 𝟚`, one
+that identifies `Black` with `₀` and `White` with `₁`, and another one
+that identifies `Black` with `₁` and `White` with `₀`. There is no
 preferred coding of binary colors as bits.  And, precisely because of
 that, even if univalence does give inhabitants of the type `Colour ≡
 𝟚`, it doesn't make sense to ask whether `Black ≡ ₀` holds without
