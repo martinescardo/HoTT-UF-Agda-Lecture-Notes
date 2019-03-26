@@ -930,8 +930,7 @@ argument is due to Hedberg.
 \end{code}
 
 *Exercise.* Hedberg proved this for any type with decidable
-equality. Generalize the above to account for this and hence develop /
-practice your Agda skills.
+equality. Generalize the above to account for this.
 
 *Exercise.* Prove that the types of magmas, monoids and groups have
 hlevel `3` (they are `1`-groupoids) but not hlevel `2` (they are not
