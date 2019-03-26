@@ -472,7 +472,6 @@ hlevel-relation-is-subsingleton {𝓤} fe (succ n) X =
 Composition of equivalences is associative:
 
 \begin{code}
-{- Commenting this out because type checking this takes 30s on this alone
 ●-assoc : dfunext 𝓣 (𝓤 ⊔ 𝓣) → dfunext (𝓤 ⊔ 𝓣) (𝓤 ⊔ 𝓣)
         → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {T : 𝓣 ̇ }
           (α : X ≃ Y) (β : Y ≃ Z) (γ : Z ≃ T)
@@ -485,7 +484,7 @@ Composition of equivalences is associative:
 
   q : d ≡ e
   q = being-an-equiv-is-a-subsingleton fe fe' (h ∘ g ∘ f) _ _
--}
+
 inversion-involutive : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                      → inverse (inverse f e) (inverse-is-equiv f e) ≡ f
 inversion-involutive f e = refl f
