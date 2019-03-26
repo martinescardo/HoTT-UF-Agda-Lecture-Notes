@@ -502,13 +502,12 @@ id-invertible X = id , refl , refl
 id-is-equiv : (X : 𝓤 ̇ ) → is-equiv (id {𝓤} {X})
 id-is-equiv = singleton-types-are-singletons
 
-abstract
- ∘-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {g : Y → Z}
-            → is-equiv g → is-equiv f → is-equiv (g ∘ f)
- ∘-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} i j =
-       invertibles-are-equivs (g ∘ f)
-        (∘-invertible (equivs-are-invertible g i)
-                      (equivs-are-invertible f j))
+∘-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {g : Y → Z}
+           → is-equiv g → is-equiv f → is-equiv (g ∘ f)
+abstract ∘-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} i j =
+              invertibles-are-equivs (g ∘ f)
+               (∘-invertible (equivs-are-invertible g i)
+                             (equivs-are-invertible f j))
 
 _≃_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ≃ Y = Σ \(f : X → Y) → is-equiv f

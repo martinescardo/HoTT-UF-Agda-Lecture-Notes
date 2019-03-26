@@ -1282,13 +1282,12 @@ possible use of this is efficiency. In our case, it saves 30s in the
 checking of the module [`FunExt`](FunExt.html).
 
 \begin{code}
-abstract
- ∘-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {g : Y → Z}
-            → is-equiv g → is-equiv f → is-equiv (g ∘ f)
- ∘-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} i j =
-       invertibles-are-equivs (g ∘ f)
-        (∘-invertible (equivs-are-invertible g i)
-                      (equivs-are-invertible f j))
+∘-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {g : Y → Z}
+           → is-equiv g → is-equiv f → is-equiv (g ∘ f)
+abstract ∘-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} i j =
+              invertibles-are-equivs (g ∘ f)
+               (∘-invertible (equivs-are-invertible g i)
+                             (equivs-are-invertible f j))
 \end{code}
 
 The type of equivalences is defined as follows:
