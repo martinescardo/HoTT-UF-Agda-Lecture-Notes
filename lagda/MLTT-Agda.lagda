@@ -416,7 +416,7 @@ case* `a₀ : A 0`, an *induction step* `f : (n : ℕ) → A n → A (succ n)` a
 an element of the type `A n` by [primitive
 recursion](https://www.encyclopediaofmath.org/index.php/Primitive_recursion).
 
-Notice also that ℕ-induction is the dependently typed version of
+Notice also that `ℕ-induction` is the dependently typed version of
 primitive recursion, where the non-dependently type version is
 
 \begin{code}
