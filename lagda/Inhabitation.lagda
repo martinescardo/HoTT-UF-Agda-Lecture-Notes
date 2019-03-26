@@ -172,8 +172,14 @@ module basic-truncation-development
   ∃ : {X : 𝓤 ̇ } → (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
   ∃ A = ∥ Σ A ∥
 
+  ∃! : {X : 𝓤 ̇ } → (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+  ∃! A = is-singleton (Σ A)
+
   _∨_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
   A ∨ B = ∥ A + B ∥
+
+  _⊕_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+  A ⊕ B = is-singleton (A + B)
 \end{code}
 
 The propositional truncation of a type and its inhabitation are

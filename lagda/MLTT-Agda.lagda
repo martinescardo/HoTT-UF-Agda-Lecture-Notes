@@ -209,7 +209,7 @@ type `𝟙` satify a given property `A`.
     x` holds for all `x : 𝟙`".
 
 
-  * In Agda above `Π`-type is written as
+  * In Agda above `Π` type is written as
 
     > `(A : 𝟙 → 𝓤 ̇ ) → A ⋆ → (x : 𝟙) → A x`.
 
@@ -620,7 +620,7 @@ Or we can prove it by induction on `_+_` and `𝟙`:
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
-### <a name="sigmatypes"></a> `Σ`-types
+### <a name="sigmatypes"></a> `Σ` types
 
 Given universes `𝓤` and `𝓥`, a type
 
@@ -773,9 +773,9 @@ We have the following uses of `Σ`.
     `∥ A x ∥` and write `Σ \(x : X), ∥ A x ∥`.
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
-### <a name="pitypes"></a> `Π`-types
+### <a name="pitypes"></a> `Π` types
 
-`Π`-types are builtin with a different notation in Agda, as discussed
+`Π` types are builtin with a different notation in Agda, as discussed
 above, but we can introduce the notation `Π` for them, similar to that for `Σ`:
 
 \begin{code}
