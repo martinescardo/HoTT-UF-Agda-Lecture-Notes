@@ -257,7 +257,7 @@ the truth value *true*.
 
 The unique function to `𝟙` will be named `!𝟙`. We define two versions
 to illustrate [implicit
-arguments](https://agda.readthedocs.io/en/language/implicit-arguments.html)
+arguments](https://agda.readthedocs.io/en/language/implicit-arguments.html),
 which correspond in mathematics to "subscripts that are omitted when
 the reader can safely infer them", as for example for the identity
 function of a set or the identity arrow of an object of a category.
