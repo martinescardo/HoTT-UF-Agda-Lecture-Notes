@@ -503,7 +503,8 @@ function "`x +_`" to `0`.
 
 As another example, we define the less-than-or-equal relation by
 nested induction, on the first argument and then the second, but we
-use pattern matching for the sake of readability.
+use pattern
+matching for the sake of readability.
 
 *Exercise.* Write it using `ℕ-induction`, recursion or iteration, as
 appropriate.
@@ -552,7 +553,7 @@ are stipulated to be of the forms
 
    > `inl x` and `inr y`
 
-for `x : X` and `y : Y`. If `X : 𝓤` and `Y : 𝓥`, we stipulate that
+with `x : X` and `y : Y`. If `X : 𝓤` and `Y : 𝓥`, we stipulate that
 `X + Y : 𝓤 ⊔ 𝓥 `, where
 
    > `𝓤 ⊔ 𝓥 `
