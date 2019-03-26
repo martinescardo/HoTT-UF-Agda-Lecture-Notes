@@ -605,7 +605,7 @@ is-singleton X = Σ \(c : X) → (x : X) → c ≡ x
 𝟙-is-singleton = ⋆ , 𝟙-induction (λ x → ⋆ ≡ x) (refl ⋆)
 \end{code}
 
-Then the hlevel relation is defined by induction on ℕ, with the
+Then the hlevel relation is defined by induction on `ℕ`, with the
 induction step working with the identity types of the elements of the
 type in question:
 
