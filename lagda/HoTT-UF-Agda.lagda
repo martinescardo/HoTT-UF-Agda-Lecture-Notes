@@ -1428,7 +1428,7 @@ equivalence. Univalence *is* a fundamental ingredient, but first we
 need the correct notion of equivalence to be able to formulate it.
 
 *Remark*. If we formulate univalence with invertible maps instead of
-equivalences, we get a statement that is provable false, and this is
+equivalences, we get a statement that is provably false, and this is
 one of the reasons why Voevodsky's notion of equivalence is
 important. This is Exercise 4.6 of the [HoTT
 book](https://homotopytypetheory.org/book/). There is a [solution in
