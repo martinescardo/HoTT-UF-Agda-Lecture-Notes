@@ -71,7 +71,7 @@ spartan
 We will also be rather spartan with the subset of Agda that we choose
 to discuss. Many things we do here can be written in more concise ways
 using more advanced features. Here we introduce a minimal
-subset of Agda where everything in our spartan `MLTT` can be expressed.
+subset of Agda where everything in our spartan MLTT can be expressed.
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="gettingstartedagda"></a> Getting started with Agda
@@ -454,7 +454,7 @@ allows us to define functions by structural recursion, like we defined
 We now define addition and multiplication for the sake of illustration.
 We first do it in Peano style. We will create a local [`module`](https://agda.readthedocs.io/en/latest/language/module-system.html#) so that the
 definitions are not globally visible, as we want to have the symbols
-`+` and `×` free for type operations of `MLTT` to be defined soon. The
+`+` and `×` free for type operations of MLTT to be defined soon. The
 things in the module are indented and are visible outside the module
 only if we [`open`](https://agda.readthedocs.io/en/latest/language/module-system.html#) the module or if we write them as
 e.g. `Arithmetic.+` in the following example.
@@ -661,7 +661,7 @@ of the `Σ` syntax.
 
    > `Σ \(x : X) → Y x`.
 
-In `MLTT` we would write this as `Σ (x : X), Y x` or
+In MLTT we would write this as `Σ (x : X), Y x` or
 [similar](https://en.wikipedia.org/wiki/Summation), for example with
 the indexing `x : X` written as a subscript of `Σ` or under it.
 
@@ -834,7 +834,7 @@ type-of {𝓤} {X} x = X
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="identitytype"></a> The identity type former `Id`, also written `_≡_`
 
-We now introduce the central type constructor of `MLTT` from the point
+We now introduce the central type constructor of MLTT from the point
 of view of univalent mathematics. In Agda we can define Martin-Löf's
 identity type as follows:
 
@@ -930,7 +930,7 @@ with all identifications `p : x ≡ y` between any two points `x` and
 identification `refl x : x ≡ x` for all points `x : X`. This
 is what the induction principle for identity given by Martin-Löf says,
 which he called `J` (we could have called it `≡-induction`, but we
-prefer to honour `MLTT` tradition):
+prefer to honour MLTT tradition):
 
 \begin{code}
 J : (X : 𝓤 ̇ ) (A : (x y : X) → x ≡ y → 𝓥 ̇ )
@@ -999,9 +999,9 @@ on `refl`). This is
   understand this as indicating that there are multiple ways of
   identifying two things in general.
 
-With this, we have concluded the rendering of our spartan `MLTT` in
+With this, we have concluded the rendering of our spartan MLTT in
 Agda notation. Before embarking on the development of univalent
-mathematics within our spartan `MLTT`, we pause to discuss some
+mathematics within our spartan MLTT, we pause to discuss some
 basic examples of mathematics in Martin-Löf type theory.
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
@@ -1376,7 +1376,7 @@ inl-inr-disjoint-images {𝓤} {𝓥} {X} {Y} p = 𝟙-is-not-𝟘 q
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="twinprime"></a> Example: formulation of the twin-prime conjecture
 
-We illustrate the above constructs of `MLTT` to formulate this
+We illustrate the above constructs of MLTT to formulate this
 conjecture.
 
 \begin{code}

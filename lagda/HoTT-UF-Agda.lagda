@@ -21,7 +21,7 @@ open import MLTT-Agda
 
 ### <a name="axiomaticutt"></a> Our univalent type theory
 
-  * Spartan `MLTT` [as above](MLTT-Agda.html#spartanmltt).
+  * Spartan MLTT [as above](MLTT-Agda.html#spartanmltt).
   * Univalence axiom as [below](HoTT-UF-Agda.html#univalence).
 
 But, as discussed above, rather than postulating univalence we will
@@ -214,8 +214,8 @@ in Agda rather than iterated `Σ`s as above ([recall](MLTT-Agda.html#sigmatypes)
 `Σ` using a record). This is fine, because records amount to iterated
 `Σ` types ([recall](MLTT-Agda.html#sigmatypes) that also `_×_` is a `Σ` type, by
 definition). Here, however, we are being deliberately spartan. Once we
-have defined our Agda notation for `MLTT`, we want to stick to
-it. This is for teaching purposes (of `MLTT`, encoded in Agda, not of
+have defined our Agda notation for MLTT, we want to stick to
+it. This is for teaching purposes (of MLTT, encoded in Agda, not of
 Agda itself in its full glory).
 
 We could drop the `is-set X` condition, but then we wouldn't get
@@ -1117,7 +1117,7 @@ retract-of-singleton (r , s , η) (c , φ) = r c , γ
 ### <a name="fibersandequivalences"></a> Voevodsky's notion of equivalence
 
 The main notions of univalent mathematics conceived by Voevodsky, with
-formulations in `MLTT`, are those of [singleton
+formulations in MLTT, are those of [singleton
 type](HoTT-UF-Agda.html#hlevels) (or contractible type),
 [hlevel](HoTT-UF-Agda.html#hlevels) (including the notions of
 subsingleton and set), and of type equivalence, which we define now.
@@ -1403,7 +1403,7 @@ Id-to-funs-agree (refl X) = refl id
 
 What characterizes univalent mathematics is not the univalence
 axiom. We have defined and studied the main concepts of univalent
-mathematics in a pure, spartan `MLTT`. It is the concepts of hlevel,
+mathematics in a pure, spartan MLTT. It is the concepts of hlevel,
 including singleton, subsingleton and set, and the notion of
 equivalence. Univalence *is* a fundamental ingredient, but first we
 need the correct notion of equivalence to be able to formulate it.
