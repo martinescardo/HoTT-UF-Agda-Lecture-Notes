@@ -1013,11 +1013,11 @@ We can define the composition of two retractions as follows:
 \begin{code}
 _◁∘_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ◁ Y → Y ◁ Z → X ◁ Z
 
-(r , s , η) ◁∘ (r' , s' , η') = (r ∘ r' , s' ∘ s , p)
+(r , s , η) ◁∘ (r' , s' , η') = (r ∘ r' , s' ∘ s , η'')
  where
-  p = λ x → r (r' (s' (s x))) ≡⟨ ap r (η' (s x)) ⟩
-            r (s x)           ≡⟨ η x ⟩
-            x                 ∎
+  η'' = λ x → r (r' (s' (s x))) ≡⟨ ap r (η' (s x)) ⟩
+              r (s x)           ≡⟨ η x ⟩
+              x                 ∎
 \end{code}
 
 We also define composition with an implicit argument made explicit:
