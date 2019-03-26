@@ -864,7 +864,7 @@ has minimal hlevel `2`. More ambitiously, when you have
 the type of monoids has minimal hlevel `3`.
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
-### <a name="naturalsset"></a> Example: ℕ is a set
+### <a name="naturalsset"></a> Example: `ℕ` is a set
 
 We first prove the remaining Peano axioms.
 
