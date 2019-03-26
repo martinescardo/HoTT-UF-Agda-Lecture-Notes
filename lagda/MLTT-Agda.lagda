@@ -214,7 +214,7 @@ type `𝟙` satify a given property `A`.
     > `(A : 𝟙 → 𝓤 ̇ ) → A ⋆ → (x : 𝟙) → A x`.
 
     This is the type of functions with three arguments `A : 𝟙 → 𝓤 ̇` &nbsp;
-    and `a : A ⋆` and `x : 𝟙`, with value in the type `A x`.
+    and `a : A ⋆` and `x : 𝟙`, with values in the type `A x`.
 
   * A proof of a mathematical statement rendered as a type is a
     construction of an element of the type.  In our example, we have
