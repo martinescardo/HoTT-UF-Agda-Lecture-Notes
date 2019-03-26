@@ -29,14 +29,14 @@ cost of losing the implicit programming-language character of the system.
 For a fully constructive development of univalent mathematics in
 `Agda`, we would need to use its new [cubical flavour](https://homotopytypetheory.org/2018/12/06/cubical-agda/), and
 we hope these notes provide a base for researchers interested in
-learning Cubical Type Theory and Cubical `Agda` as the next step.
+learning Cubical Type Theory and `Cubical Agda` as the next step.
 
 **Keywords.** Univalent mathematics. Univalent foundations. Univalent
   type theory. Univalence axiom. `∞`-Groupoid. Homotopy type. Type
   theory. Homotopy type theory. Intensional Martin-Löf type
   theory. Dependent type theory. Identity type. Type
   universe. Constructive mathematics. `Agda`. Cubical type
-  theory. Cubical `Agda`. Computer-verified mathematics.
+  theory. `Cubical Agda`. Computer-verified mathematics.
 
 **About this document.**
 [This](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes) is a set
