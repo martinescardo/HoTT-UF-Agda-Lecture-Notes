@@ -200,8 +200,8 @@ the original Martin-Löf type theories, and this is what happens in
 these notes, and what Voevodsky did in his brilliant [original
 development in the computer system
 Coq](https://github.com/UniMath/Foundations). Our use of Agda, rather
-than `Coq`, is a personal matter of taste only, and the students are
-encouraged to learn `Coq`, too.
+than Coq, is a personal matter of taste only, and the students are
+encouraged to learn Coq, too.
 
 [<sub>Table of contents ⇓</sub>](toc.html#contents)
 #### <a name="homotopytypetheory"></a> Homotopy type theory
