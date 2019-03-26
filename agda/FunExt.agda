@@ -311,22 +311,20 @@ hlevel-relation-is-subsingleton {𝓤} fe (succ n) X =
     (λ x → Π-is-subsingleton fe
             (λ x' → hlevel-relation-is-subsingleton {𝓤} fe n (x ≡ x')))
 
+{- Commenting out because type checking this takes 30s
 ●-assoc : dfunext 𝓣 (𝓤 ⊔ 𝓣) → dfunext (𝓤 ⊔ 𝓣) (𝓤 ⊔ 𝓣)
         → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {T : 𝓣 ̇ }
           (α : X ≃ Y) (β : Y ≃ Z) (γ : Z ≃ T)
         → α ● (β ● γ) ≡ (α ● β) ● γ
-●-assoc fe fe' (f , a) (g , b) (h , c) = to-Σ-≡ (p , q)
+●-assoc fe fe' (f , a) (g , b) (h , c) = ap (λ - → (h ∘ g ∘ f , -)) q
  where
-  p : (h ∘ g) ∘ f ≡ h ∘ (g ∘ f)
-  p = refl (h ∘ g ∘ f)
-
   d e : is-equiv (h ∘ g ∘ f)
-  d = ∘-is-equiv (∘-is-equiv c b) a
-  e = ∘-is-equiv c (∘-is-equiv b a)
+  d = ∘-is-equiv (∘-is-equiv c b) a   -- Culprit.
+  e = ∘-is-equiv c (∘-is-equiv b a)   -- Culprit.
 
-  q : transport is-equiv p d ≡ e
+  q : d ≡ e
   q = being-an-equiv-is-a-subsingleton fe fe' (h ∘ g ∘ f) _ _
-
+-}
 inversion-involutive : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                      → inverse (inverse f e) (inverse-is-equiv f e) ≡ f
 inversion-involutive f e = refl f

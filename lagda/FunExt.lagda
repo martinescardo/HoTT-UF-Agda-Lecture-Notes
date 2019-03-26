@@ -22,7 +22,7 @@ open import HoTT-UF-Agda
 
 Function extensionality says that any two pointwise equal functions
 are equal. This is known to be not provable or disprovable in
-`MLTT`. It is an independent statement, which we abbreviate as `funext`.
+MLTT. It is an independent statement, which we abbreviate as `funext`.
 
 \begin{code}
 funext : ∀ 𝓤 𝓥 → (𝓤 ⊔ 𝓥)⁺ ̇
@@ -378,11 +378,11 @@ univalence-is-a-subsingleton {𝓤} ua⁺ ua ua' = p
 
 So if all universes are univalent then "being univalent" is a
 subsingleton, and hence a singleton. This hypothesis of global
-univalence cannot be expressed in our `MLTT` that only has `ω`
+univalence cannot be expressed in our MLTT that only has `ω`
 many universes, because global univalence would have to live in the
 first universe after them. Agda does have such a universe `𝓤ω,` and so
 we can formulate it here. There would be no problem in extending our
-`MLTT` to have such a universe if we so wished, in which case we would
+MLTT to have such a universe if we so wished, in which case we would
 be able to formulate and prove:
 
 \begin{code}
@@ -402,9 +402,9 @@ univalence-is-a-singleton {𝓤} γ = pointed-subsingletons-are-singletons
 That the type `global-univalence` would be a subsingleton can't even be formulated in
 the absence of a universe of level `ω + 1`.
 
-In the absence of a universe `𝓤ω` in our `MLTT`, we can simply have an
+In the absence of a universe `𝓤ω` in our MLTT, we can simply have an
 axiom scheme, consisting of `ω`-many axioms, stating that each
-universe is univalent. Then we can prove in our `MLTT` that the univalence property
+universe is univalent. Then we can prove in our MLTT that the univalence property
 for each inverse is a (sub)singleton, with `ω`-many proofs.
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
@@ -472,22 +472,20 @@ hlevel-relation-is-subsingleton {𝓤} fe (succ n) X =
 Composition of equivalences is associative:
 
 \begin{code}
+{- Commenting out because type checking this takes 30s
 ●-assoc : dfunext 𝓣 (𝓤 ⊔ 𝓣) → dfunext (𝓤 ⊔ 𝓣) (𝓤 ⊔ 𝓣)
         → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {T : 𝓣 ̇ }
           (α : X ≃ Y) (β : Y ≃ Z) (γ : Z ≃ T)
         → α ● (β ● γ) ≡ (α ● β) ● γ
-●-assoc fe fe' (f , a) (g , b) (h , c) = to-Σ-≡ (p , q)
+●-assoc fe fe' (f , a) (g , b) (h , c) = ap (λ - → (h ∘ g ∘ f , -)) q
  where
-  p : (h ∘ g) ∘ f ≡ h ∘ (g ∘ f)
-  p = refl (h ∘ g ∘ f)
-
   d e : is-equiv (h ∘ g ∘ f)
-  d = ∘-is-equiv (∘-is-equiv c b) a
-  e = ∘-is-equiv c (∘-is-equiv b a)
+  d = ∘-is-equiv (∘-is-equiv c b) a   -- Culprit.
+  e = ∘-is-equiv c (∘-is-equiv b a)   -- Culprit.
 
-  q : transport is-equiv p d ≡ e
+  q : d ≡ e
   q = being-an-equiv-is-a-subsingleton fe fe' (h ∘ g ∘ f) _ _
-
+-}
 inversion-involutive : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                      → inverse (inverse f e) (inverse-is-equiv f e) ≡ f
 inversion-involutive f e = refl f
