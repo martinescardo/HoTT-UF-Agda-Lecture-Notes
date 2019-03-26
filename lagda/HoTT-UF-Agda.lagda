@@ -944,8 +944,8 @@ We use retracts as a mathematical technique to transfer properties
 between types. For instance, retracts of singletons are
 singletons. Showing that a particular type `X` is a singleton may be
 rather difficult to do directly by applying the definition of
-singleton type and the definition of the particular type, but it may
-be easy to show that `X` is a retract of `Y` for a type `Y` that is
+singleton and the definition of the particular type, but it may be
+easy to show that `X` is a retract of `Y` for a type `Y` that is
 already known to be a singleton. In these notes, a major application
 will be to get a simple proof of the known fact that invertible maps
 are equivalences in the sense of Voevodsky.
