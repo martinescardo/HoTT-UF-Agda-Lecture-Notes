@@ -956,7 +956,7 @@ However, we will not always use this induction principle, because we
 can instead work with the instances we need by pattern matching on
 `refl` (which is just what we did to define the principle itself) and
 there is a [theorem by Jesper
-Cockx](<https://dl.acm.org/citation.cfm?id=2628139) which says that
+Cockx](https://dl.acm.org/citation.cfm?id=2628139) which says that
 with the Agda option `without-K`, pattern matching on `refl` can
 define/prove precisely what `J` can.
 
