@@ -249,7 +249,7 @@ starting points:
 
    - [Agda wiki](https://wiki.portal.chalmers.se/agda/pmwiki.php).
    - [Agda reference manual](https://agda.readthedocs.io/en/latest/getting-started/index.html).
-   - Agda [further references](https://wiki.portal.chalmers.se/agda/pmwiki.php?n=Main.Documentation).
+   - [Agda further references](https://wiki.portal.chalmers.se/agda/pmwiki.php?n=Main.Documentation).
    - [Cubical Agda blog post](https://homotopytypetheory.org/2018/12/06/cubical-agda/).
    - [Cubical Agda documentation](https://agda.readthedocs.io/en/latest/language/cubical.html#cubical).
 
