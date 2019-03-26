@@ -1279,7 +1279,7 @@ id-is-equiv = singleton-types-are-singletons
 
 An `abstract` definition is not expanded during typechecking. One
 possible use of this is efficiency. In our case, it saves 30s in the
-checking of the module [`FunExT`](FunExt.html).
+checking of the module [`FunExt`](FunExt.html).
 
 \begin{code}
 abstract
