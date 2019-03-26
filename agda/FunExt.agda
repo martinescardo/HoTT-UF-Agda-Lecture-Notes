@@ -318,8 +318,8 @@ hlevel-relation-is-subsingleton {𝓤} fe (succ n) X =
 ●-assoc fe fe' (f , a) (g , b) (h , c) = ap (h ∘ g ∘ f ,_) q
  where
   d e : is-equiv (h ∘ g ∘ f)
-  d = ∘-is-equiv (∘-is-equiv c b) a   -- Culprit.
-  e = ∘-is-equiv c (∘-is-equiv b a)   -- Culprit.
+  d = ∘-is-equiv (∘-is-equiv c b) a
+  e = ∘-is-equiv c (∘-is-equiv b a)
 
   q : d ≡ e
   q = being-an-equiv-is-a-subsingleton fe fe' (h ∘ g ∘ f) _ _
