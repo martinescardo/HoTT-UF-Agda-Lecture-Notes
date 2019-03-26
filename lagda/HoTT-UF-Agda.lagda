@@ -427,7 +427,7 @@ and `B` live, and hence
   > `transport id : A ≡ B → (A → B)`
 
 is the function that transforms identifications into functions, which
-has already occurred [above](MLTT-Agda.html#negation) in a special case.
+has already occurred [above](MLTT-Agda.html#negation).
 
 More generally, we want to consider the situation in which we replace
 the identity function `id` of the universe where `A` and `B` live by
