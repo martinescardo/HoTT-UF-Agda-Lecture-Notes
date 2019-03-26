@@ -198,7 +198,7 @@ equivalence:
 happly : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f g : Π A) → f ≡ g → f ∼ g
 happly f g p x = ap (λ - → - x) p
 
-hfunext : ∀ 𝓤 𝓥 → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
+hfunext : ∀ 𝓤 𝓥 → (𝓤 ⊔ 𝓥)⁺ ̇
 hfunext 𝓤 𝓥 = {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f g : Π A) → is-equiv (happly f g)
 
 hfunext-gives-dfunext : hfunext 𝓤 𝓥 → dfunext 𝓤 𝓥
