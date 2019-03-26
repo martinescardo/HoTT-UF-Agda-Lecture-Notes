@@ -1112,7 +1112,7 @@ retract-of-singleton (r , s , η) (c , φ) = r c , γ
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
-### <a name="fibersandequivalences"></a> Voevodsky's notion of equivalence
+### <a name="fibersandequivalences"></a> Voevodsky's notion of type equivalence
 
 The main notions of univalent mathematics conceived by Voevodsky, with
 formulations in MLTT, are those of [singleton
