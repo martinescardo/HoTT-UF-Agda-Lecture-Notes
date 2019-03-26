@@ -1665,7 +1665,7 @@ infixr 0 _≃⟨_⟩_
 infix  1 _■
 \end{code}
 
-[<sub>Table of contents ⇑</sub>](toc.html#contents) [<sub> HoTT/UF continued ⇓ </sub>](FunExt)
+[<sub>Table of contents ⇑</sub>](toc.html#contents) [<sub> HoTT/UF continued ⇓</sub>](FunExt.html)
 ### <a name="solutions"></a> Solutions
 
 Spoiler alert.

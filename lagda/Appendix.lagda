@@ -107,7 +107,7 @@ DNE-gives-EM : dfunext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
 EM-gives-DNE : EM 𝓤 → DNE 𝓤
 \end{code}
 
-The following says that, under univalence, excluded middle holds iff
+The following says that, under univalence, excluded middle holds if
 and only if every subsingleton is the negation of some type (maybe you
 want to formulate and prove this - no solution given).
 
