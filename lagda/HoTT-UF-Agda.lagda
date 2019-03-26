@@ -380,7 +380,7 @@ NatΣ τ (x , a) = (x , τ x a)
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
-### <a name="dependentequality"></a> Identifications that depend on identifications, and equality in Σ-types
+### <a name="dependentequality"></a> Identifications that depend on identifications, and equality in Σ types
 
 If we have an identification `p : A ≡ B` of two types `A` and `B`, and
 elements `a : A` and `b : B`, we cannot ask directly whether `a ≡ b`,

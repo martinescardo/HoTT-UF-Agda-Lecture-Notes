@@ -35,7 +35,7 @@ date : 2019-03-04
      1. [Example: the types of magmas and monoids](HoTT-UF-Agda.html#magmasandmonoids)
      1. [The identity type in univalent mathematics](HoTT-UF-Agda.html#identitytypeuf)
      1. [Identifications that depend on identifications](HoTT-UF-Agda.html#dependentequality)
-     1. [Equality in Σ-types](HoTT-UF-Agda.html#sigmaequality)
+     1. [Equality in Σ types](HoTT-UF-Agda.html#sigmaequality)
      1. [Voevodsky's notion of hlevel](HoTT-UF-Agda.html#hlevel)
      1. [The univalent principle of excluded middle](HoTT-UF-Agda.html#em)
      1. [Hedberg's Theorem](HoTT-UF-Agda.html#hedberg)
