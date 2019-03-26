@@ -55,7 +55,7 @@ This says that given the universe level `𝓤`, we get the type universe
 the superscript dot notation is just a (postfix) synonym for (prefix)
 `Type`, which is just a synonym for `Set`, which means type in Agda.
 
-We name a few of the initial few universes:
+We name a few of the initial universes:
 
 \begin{code}
 𝓤₁ = 𝓤₀ ⁺
