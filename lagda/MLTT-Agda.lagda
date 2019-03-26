@@ -1264,7 +1264,7 @@ that inverts identifications with `u`:
 \end{code}
 
 To show that the type `𝟙` is not equal to the type `𝟘`, we use that
-`transport id` gives `𝟙 ≡ 𝟘 → id 𝟙 ≡ id 𝟘` where `id` is the [identity
+`transport id` gives `𝟙 ≡ 𝟘 → id 𝟙 → id 𝟘` where `id` is the [identity
 function](MLTT-Agda.html#pitypes) of the universe `𝓤₀`. More
 generally, we have the following conversion of type identifications
 into functions:
