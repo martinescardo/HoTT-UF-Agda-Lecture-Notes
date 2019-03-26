@@ -28,7 +28,7 @@ Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → is-set X × (X → X → X)
 ⟨ X , i , _·_ ⟩ = X
 
 magma-operation : (M : Magma 𝓤) → ⟨ M ⟩ → ⟨ M ⟩ → ⟨ M ⟩
-magma-operation ( X , i , _·_ ) = _·_
+magma-operation (X , i , _·_) = _·_
 
 syntax magma-operation M x y = x ·⟨ M ⟩ y
 

@@ -100,7 +100,7 @@ set `X` and by `magma-operation M` its multiplication `_·_`:
 ⟨ X , i , _·_ ⟩ = X
 
 magma-operation : (M : Magma 𝓤) → ⟨ M ⟩ → ⟨ M ⟩ → ⟨ M ⟩
-magma-operation ( X , i , _·_ ) = _·_
+magma-operation (X , i , _·_) = _·_
 \end{code}
 
 The following [syntax declaration](https://agda.readthedocs.io/en/latest/language/syntax-declarations.html)
@@ -342,7 +342,7 @@ ap-∙ f p (refl y) = refl (ap f p)
 
 Transport is also functorial with respect to identification
 composition and function composition. By construction, it maps the
-neutral element to the identity function. The apparent contravarience
+neutral element to the identity function. The apparent contravariance
 takes place because we have defined function composition in the usual
 order, but identification composition in diagramatic order (as is
 customary in each case).
