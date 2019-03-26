@@ -124,9 +124,9 @@ possible type theories, to be more precise).
 The main *technical* contributions in type theory by Voevodsky are:
 
 <ol start="4">
-   <li>The definition of type levels in MLTT, classifying them as n-groupoids including the possibility n=∞.</li>
-   <li>The (simple and elegant) definition of type equivalence that works uniformly for all type levels in MLTT.</li>
-   <li> The formulation of the univalence axiom in MLTT.</li>
+   <li>The definition of type levels in `MLTT`, classifying them as n-groupoids including the possibility n=∞.</li>
+   <li>The (simple and elegant) definition of type equivalence that works uniformly for all type levels in `MLTT`.</li>
+   <li> The formulation of the univalence axiom in `MLTT`.</li>
 </ol>
 
 Univalent mathematics begins within `MLTT` with (4) and (5) before we
@@ -179,7 +179,7 @@ virtually all theorems of univalent mathematics, e.g. in
 [UniMath](https://github.com/UniMath/UniMath/blob/master/README.md),
 have been proved without assuming them, with natural mathematical
 arguments. The formulations of theses principles in univalent
-mathematics differ from their traditional formulations in MLTT, and
+mathematics differ from their traditional formulations in `MLTT`, and
 hence we sometimes refer to them as the *univalent* principle of
 excluded middle and the *univalent* axiom of choice.
 
@@ -281,4 +281,4 @@ mathematics, but we are certainly omiting important material that is
 needed to do univalent mathematics in practice, and the readers who wish
 to practice univalent mathematics should consult the above references.
 
-[<sub>Table of contents ⇓</sub>](toc.html#contents) [<sub>MLTT in Agda ⇓</sub>](MLTT-Agda.html)
+[<sub>Table of contents ⇓</sub>](toc.html#contents) [<sub>`MLTT` in Agda ⇓</sub>](MLTT-Agda.html)
