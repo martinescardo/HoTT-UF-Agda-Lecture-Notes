@@ -1415,8 +1415,8 @@ Eq-to-Id : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → X ≃ Y → X ≡ Y
 Eq-to-Id ua X Y = inverse (Id-to-Eq X Y) (ua X Y)
 \end{code}
 
-Here is a [third way](MLTT-Agda.html#negation) to convert a type
-identification into a function:
+Here is a third way to [convert a type identification into a
+function](MLTT-Agda.html#negation):
 
 \begin{code}
 Id-to-fun : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
