@@ -758,9 +758,9 @@ We have the following uses of `Σ`.
   * The more general type `Σ \(x : X), A x`, if the type `X` stands
     for a mathematical object and `A` stands for a mathematical
     statement, represents *designated* existence "there is a
-    designated `x : X` with `A x`".  To prove this, one has to provide
-    a specific `x : X` and a proof `a : A x`, together in a pair
-    `(x , a)`.
+    designated `x : X` with `A x`".  To prove this, we have to provide
+    a specific `x : X` and a proof `a : A x`, together in a pair `(x ,
+    a)`.
 
   * Later we will discuss *unspecified* existence `∃ \(x : X) → A x`,
     which will be obtained by a sort of quotient of `Σ \(x : X), A x`,
