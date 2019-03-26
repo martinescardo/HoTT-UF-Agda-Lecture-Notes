@@ -255,10 +255,6 @@ has a dual interpretation as a mathematical function, and as the
 statement "`B` implies (*true* implies `B`)" where `𝟙` is the type encoding
 the truth value *true*.
 
-We will not use this induction principle directly, as we can
-prove properties of `𝟙` by pattern matching on `⋆ : 𝟙`, just as we defined the
-induction principle.
-
 The unique function to `𝟙` will be named `!𝟙`. We define two versions
 to illustrate [implicit
 arguments](https://agda.readthedocs.io/en/language/implicit-arguments.html)
