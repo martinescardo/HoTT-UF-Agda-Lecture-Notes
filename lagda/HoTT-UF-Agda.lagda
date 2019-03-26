@@ -1192,7 +1192,7 @@ inverse f e y = fiber-point (center (fiber f y) (e y))
 
 inverse-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                    → (y : Y) → f (inverse f e y) ≡ y
-inverse-is-section f e y = pr₂ (center (fiber f y) (e y))
+inverse-is-section f e y = fiber-identification (center (fiber f y) (e y))
 
 inverse-centrality : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f) (y : Y)
                    → (t : fiber f y) → (inverse f e y , inverse-is-section f e y) ≡ t
