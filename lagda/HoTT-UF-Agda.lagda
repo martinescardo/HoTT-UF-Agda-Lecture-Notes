@@ -1083,8 +1083,10 @@ And we can reindex retracts of `Σ` types as follows:
 \end{code}
 
 We have defined [the property of a type being a
-singleton](HoTT-UF-Agda.html#hlevel). The following defines singleton
-types, which have the property of being singletons.
+singleton](HoTT-UF-Agda.html#hlevel). The singleton type `Σ \(y : X) →
+x ≡ y` induced by a point `x : X` of a type `X` is denoted by
+`singleton-type x`. The terminology is justified by the fact that it
+is indeed a singleton in the sense defined above.
 
 \begin{code}
 singleton-type : {X : 𝓤 ̇ } → X → 𝓤 ̇
