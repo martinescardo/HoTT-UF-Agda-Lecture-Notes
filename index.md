@@ -92,7 +92,7 @@ set-based mathematics may be shocking at first sight:
     - The value of an equality `x ≡ y` is a type, called the *identity type*, which is not necessarily a truth value.
     - It collects the ways in which the mathematical objects `x` and `y` are identified.
     - E.g. it is a truth value for elements of `ℕ`, as there is at most one way for two natural numbers to be equal.
-    - E.g. for the [type of monoids](HoTT-UF-Agda.html(#magmasandmonoids), it is a set, amounting to the type of monoid isomorphisms, automatically.
+    - E.g. for the [type of monoids](HoTT-UF-Agda.html#magmasandmonoids), it is a set, amounting to the type of monoid isomorphisms, automatically.
     - E.g. for the type of categories, it is a `1`-groupoid, amounting to the type of equivalences of categories, again automatically.
 
 The important word in the above description of univalent foundations
