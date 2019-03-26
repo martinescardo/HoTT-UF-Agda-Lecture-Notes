@@ -655,7 +655,7 @@ EM' 𝓤 = (X : 𝓤 ̇ ) → is-subsingleton X → is-singleton X + is-empty X
 
 Notice that the above don't assert excluded middle, but instead say
 what excluded middle is (like when we said what the twin-prime
-conjecture is), in two logically equivalence versions:
+conjecture is), in two logically equivalent versions:
 
 \begin{code}
 EM-gives-EM' : EM 𝓤 → EM' 𝓤
