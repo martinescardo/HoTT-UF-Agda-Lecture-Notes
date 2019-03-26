@@ -144,12 +144,18 @@ in Agda code. We have that the universe `𝓤₀` is a type in the universe
 
    > `       ⋮ `
 
-The assumption that
-`𝓤₀ : 𝓤₀` or that any universe is in itself or a smaller universe [gives
-rise to a contradiction](https://link.springer.com/article/10.1007/BF01995104), similar to [Russell's Paradox](https://plato.stanford.edu/entries/russell-paradox/).
+The assumption that `𝓤₀ : 𝓤₀` or that any universe is in itself or a
+smaller universe [gives rise to a
+contradiction](https://link.springer.com/article/10.1007/BF01995104),
+similar to [Russell's
+Paradox](https://plato.stanford.edu/entries/russell-paradox/).
 
-The least upper bound of two
-universes `𝓤` and `𝓥` is written
+Given a universe `𝓤`, we denote by
+
+   > `𝓤 ⁺`
+
+its successor universe. For example, if `𝓤` is `𝓤₀` then `𝓤 ⁺` is
+`𝓤₁`. The least upper bound of two universes `𝓤` and `𝓥` is written
 
    > `𝓤 ⊔ 𝓥`.
 
