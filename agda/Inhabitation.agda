@@ -78,9 +78,6 @@ module basic-truncation-development
   _∨_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
   A ∨ B = ∥ A + B ∥
 
-  _⊕_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-  A ⊕ B = is-singleton (A + B)
-
   ∥∥-agrees-with-inhabitation : (X : 𝓤 ̇ ) → ∥ X ∥ ⇔ is-inhabited X
   ∥∥-agrees-with-inhabitation X = a , b
    where
