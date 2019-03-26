@@ -914,7 +914,7 @@ underspecification of the identity types: (1) We can consider the `K`
 axiom, which postulates that all types are sets, or (2) we can
 consider the univalence axiom, arriving at univalent mathematics,
 which gives rise to types that are more general than sets, the
-`n`-gropoids and `∞`-groupoids.  In fact, the univalence axiom will
+`n`-groupoids and `∞`-groupoids.  In fact, the univalence axiom will
 say, in particular, that for some types `X` and elements `x y : X`, the
 identity type `x ≡ y` does have more than one element.
 
@@ -983,7 +983,7 @@ Js-agreement X A f x x (refl x) = refl (f x)
 \end{code}
 
 Similarly define `H'` from `J` without using pattern matching on `refl`
-and show that it coincides with `H` (possibly using pattern maatching
+and show that it coincides with `H` (possibly using pattern matching
 on `refl`). This is
 [harder](http://www.cse.chalmers.se/~coquand/singl.pdf).
 
