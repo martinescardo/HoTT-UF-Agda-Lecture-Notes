@@ -1494,8 +1494,8 @@ With this assumption, we get two different identifications of the type `𝟚` wi
         e₁              ∎
 \end{code}
 
-Therefore if the universe `𝓤₀` were a set, then the identifications
-`p₀` and `p₁` defined above would be equal:
+If the universe `𝓤₀` were a set, then the identifications `p₀` and
+`p₁` defined above would be equal, and therefore it is not a set.
 
 \begin{code}
   𝓤₀-is-not-a-set :  ¬(is-set (𝓤₀ ̇ ))
