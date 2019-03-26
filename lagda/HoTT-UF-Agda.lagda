@@ -1018,7 +1018,6 @@ _◁∘_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ◁ Y → Y ◁ Z 
 We also define composition with an implicit argument made explicit:
 
 \begin{code}
-
 _◁⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ◁ Y → Y ◁ Z → X ◁ Z
 X ◁⟨ ρ ⟩ σ = ρ ◁∘ σ
 \end{code}
