@@ -137,7 +137,7 @@ There are two proposed ways to solve this:
 A third possibility is to work with propositional truncations
 [axiomatically](https://lmcs.episciences.org/3217), which is compatible
 with the above two proposals. We write this axiom as a record type
-rather than as an iterated `Σ-type` for simplicity, where we use the
+rather than as an iterated `Σ type` for simplicity, where we use the
 HoTT-book notation `∥ X ∥` for the inhabitation of `X`,
 called the propositional truncation of `X`:
 

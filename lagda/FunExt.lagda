@@ -36,7 +36,7 @@ the canonical map `(f ≡ g) → (f ∼ g) ` is an equivalence.
 *Exercise.* Assuming `funext`, prove that, if `f : X → Y` is an equivalence
 then so is the function `(-) ∘ f : (Y → Z) → (X → Z)`.
 
-The crucial step in [Voevodsky's proof](http://www.math.uwo.ca/faculty/kapulkin/notes/ua_implies_fe.pdf) that univalence implies funext
+The crucial step in [Voevodsky's proof](http://www.math.uwo.ca/faculty/kapulkin/notes/ua_implies_fe.pdf) that univalence implies `funext`
 is to establish the conclusion of the above exercise assuming
 univalence instead.  This relies on the following lemma, which
 describes pre-composition of equivalences in terms of `transport`.
@@ -325,7 +325,7 @@ univalence-gives-vvfunext ua = univalence-gives-vvfunext' ua ua
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
-### <a name="univalencesubsingleton"></a> The univalence axiom is a subsingleton type
+### <a name="univalencesubsingleton"></a> The univalence axiom is a (sub)singleton
 
 If we use a type as an axiom, it should better have at most one element. We
 prove some generally useful lemmas first.
