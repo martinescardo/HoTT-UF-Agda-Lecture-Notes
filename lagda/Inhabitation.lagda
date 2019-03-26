@@ -169,8 +169,11 @@ module basic-truncation-development
   ∥∥-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → ∥ X ∥ → ∥ Y ∥
   ∥∥-functor f = ∥∥-rec ∥∥-is-a-prop (λ x → ∣ f x ∣)
 
-  ∃ : {X : 𝓤 ̇ } → (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-  ∃ Y = ∥ Σ Y ∥
+  ∃ : {X : 𝓤 ̇ } → (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+  ∃ A = ∥ Σ A ∥
+
+  _∨_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+  A ∨ B = ∥ A + B ∥
 \end{code}
 
 The propositional truncation of a type and its inhabitation are
