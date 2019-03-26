@@ -1157,10 +1157,10 @@ fiber f y = Σ \(x : domain f) → f x ≡ y
 
 So the type `fiber f y` collects the points `x : X` which are mapped
 to a point identified with `y`, including the identification
-data. Voevodsky's insight is that a general notion of equivalence can
+datum. Voevodsky's insight is that a general notion of equivalence can
 be formulated in MLTT by requiring the fibers to be singletons. It is
 important here that not only the `y : Y` with `f x ≡ y` is unique, but
-also that the identification data `p : f x ≡ y` is unique. This is
+also that the identification datum `p : f x ≡ y` is unique. This is
 similar to, or even a generalization of the categorical
 notion of "uniqueness up to a unique isomorphism".
 
