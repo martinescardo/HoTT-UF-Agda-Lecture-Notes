@@ -950,7 +950,7 @@ In summary, Martin-Löf's identity type is given by the data
   * `Id`,
   * `refl`,
   * `J`,
-  * The above equation for `J`.
+  * the above equation for `J`.
 
 However, we will not use this induction principle, because we can
 instead work with the instances we need by pattern matching on `refl`
