@@ -218,9 +218,9 @@ hedberg {𝓤} {X} x c y p q =
  q                       ∎
  where
   f : (y : X) → x ≡ y → x ≡ y
-  f y = pr₁ (c y)
+  f y = collapser (x ≡ y) (c y)
   κ : (y : X) (p q : x ≡ y) → f y p ≡ f y q
-  κ y = pr₂ (c y)
+  κ y = collapser-wconstancy (x ≡ y) (c y)
   a : (y : X) (p : x ≡ y) → p ≡ (f x (refl x))⁻¹ ∙ f y p
   a x (refl x) = (⁻¹-left∙ (f x (refl x)))⁻¹
 
@@ -606,7 +606,7 @@ e₀-is-not-e₁ : e₀ ≢ e₁
 e₀-is-not-e₁ p = ₁-is-not-₀ r
  where
   q : id ≡ swap₂
-  q = ap pr₁ p
+  q = ap Eq-to-fun p
   r : ₁ ≡ ₀
   r = ap (λ - → - ₁) q
 
