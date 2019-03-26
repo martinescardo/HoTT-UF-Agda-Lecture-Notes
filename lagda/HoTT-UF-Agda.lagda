@@ -1092,10 +1092,10 @@ singleton-type-centered : {X : 𝓤 ̇ } (x y : X) (p : y ≡ x) → singleton-t
 singleton-type-centered x x (refl x) = refl (singleton-type-center x)
 
 singleton-types-are-singletons : (X : 𝓤 ̇ ) (x : X) → is-singleton (singleton-type x)
-singleton-types-are-singletons X x = singleton-type-center x , a
+singleton-types-are-singletons X x = singleton-type-center x , φ
  where
-  a : (σ : singleton-type x) → singleton-type-center x ≡ σ
-  a (y , p) = singleton-type-centered x y p
+  φ : (σ : singleton-type x) → singleton-type-center x ≡ σ
+  φ (y , p) = singleton-type-centered x y p
 \end{code}
 
 The following gives a technique for showing that some types are singletons:
