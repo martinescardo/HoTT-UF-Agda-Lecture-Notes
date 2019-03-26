@@ -244,15 +244,15 @@ being-an-equiv-is-a-subsingleton fe fe' f =
 univalence-is-a-subsingleton : is-univalent (𝓤 ⁺) → is-subsingleton (is-univalent 𝓤)
 univalence-is-a-subsingleton {𝓤} ua⁺ ua ua' = p
  where
-  fe₀ : funext 𝓤 𝓤
-  fe₀ = univalence-gives-funext ua
-  fe₁ : funext 𝓤 (𝓤 ⁺)
-  fe₁ = univalence-gives-funext ua⁺
-  fe₂ : funext (𝓤 ⁺) (𝓤 ⁺)
-  fe₂ = univalence-gives-funext ua⁺
+  fe₀  : funext 𝓤 𝓤
+  fe₁  : funext 𝓤 (𝓤 ⁺)
+  fe₂  : funext (𝓤 ⁺) (𝓤 ⁺)
   dfe₁ : dfunext 𝓤 (𝓤 ⁺)
-  dfe₁ = funext-gives-dfunext fe₁ fe₀
   dfe₂ : dfunext (𝓤 ⁺) (𝓤 ⁺)
+  fe₀  = univalence-gives-funext ua
+  fe₁  = univalence-gives-funext ua⁺
+  fe₂  = univalence-gives-funext ua⁺
+  dfe₁ = funext-gives-dfunext fe₁ fe₀
   dfe₂ = funext-gives-dfunext fe₂ fe₂
 
   i : is-subsingleton (is-univalent 𝓤)
