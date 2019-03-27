@@ -1167,8 +1167,8 @@ apply the function `u` to `a`. This gives double-negation
 introduction:
 
 \begin{code}
-dni : {A : 𝓤 ̇ } → A → ¬¬ A
-dni a u = u a
+dni : (A : 𝓤 ̇ ) → A → ¬¬ A
+dni A a u = u a
 \end{code}
 
 Mathematically, this says that if we have a point of `A` (we say that
@@ -1208,8 +1208,8 @@ for a general discussion.
 
 And from this we get that three negations imply one:
 \begin{code}
-tno : {A : 𝓤 ̇ } → ¬¬¬ A → ¬ A
-tno = contrapositive dni
+tno : (A : 𝓤 ̇ ) → ¬¬¬ A → ¬ A
+tno A = contrapositive (dni A)
 \end{code}
 
 Hence, using `dni` once again, we get that `¬¬¬ A` if and only if `¬
@@ -1245,9 +1245,9 @@ absurdity³-is-absurdity : {A : 𝓤 ̇ } → ¬¬¬ A ⇔ ¬ A
 absurdity³-is-absurdity {𝓤} {A} = firstly , secondly
  where
   firstly : ¬¬¬ A → ¬ A
-  firstly = contrapositive dni
+  firstly = contrapositive (dni A)
   secondly : ¬ A → ¬¬¬ A
-  secondly = dni
+  secondly = dni (¬ A)
 \end{code}
 
 But of course Brouwer, as is well known, was averse to formalism, and

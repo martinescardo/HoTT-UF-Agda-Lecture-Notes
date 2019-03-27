@@ -194,9 +194,9 @@ SN-gives-DNE {𝓤} sn P i = h
   f' : ¬¬ P → ¬(¬¬ X)
   f' = contrapositive (contrapositive f)
   h : ¬¬ P → P
-  h = g ∘ tno ∘ f'
+  h = g ∘ tno X ∘ f'
   h' : ¬¬ P → P
   h' φ = g (λ (x : X) → φ (λ (p : P) → f p x))
 
-DNE-gives-SN dne P i = (¬ P) , dni , dne P i
+DNE-gives-SN dne P i = (¬ P) , dni P , dne P i
 

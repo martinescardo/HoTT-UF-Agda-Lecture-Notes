@@ -253,14 +253,14 @@ f ∼ g = ∀ x → f x ≡ g x
 ¬¬  A = ¬(¬ A)
 ¬¬¬ A = ¬(¬¬ A)
 
-dni : {A : 𝓤 ̇ } → A → ¬¬ A
-dni a u = u a
+dni : (A : 𝓤 ̇ ) → A → ¬¬ A
+dni A a u = u a
 
 contrapositive : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → (¬ B → ¬ A)
 contrapositive f v a = v (f a)
 
-tno : {A : 𝓤 ̇ } → ¬¬¬ A → ¬ A
-tno = contrapositive dni
+tno : (A : 𝓤 ̇ ) → ¬¬¬ A → ¬ A
+tno A = contrapositive (dni A)
 
 _⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ⇔ Y = (X → Y) × (Y → X)
@@ -269,9 +269,9 @@ absurdity³-is-absurdity : {A : 𝓤 ̇ } → ¬¬¬ A ⇔ ¬ A
 absurdity³-is-absurdity {𝓤} {A} = firstly , secondly
  where
   firstly : ¬¬¬ A → ¬ A
-  firstly = contrapositive dni
+  firstly = contrapositive (dni A)
   secondly : ¬ A → ¬¬¬ A
-  secondly = dni
+  secondly = dni (¬ A)
 
 _≢_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
 x ≢ y = ¬(x ≡ y)
