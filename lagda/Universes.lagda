@@ -26,7 +26,7 @@ open import Agda.Primitive public
   renaming (lzero to 𝓤₀       -- Our first universe is called 𝓤₀
           ; lsuc to _⁺        -- The universe after 𝓤 is 𝓤 ⁺
           ; Level to Universe -- We speak of universes rather than of levels.
-          ; Setω to 𝓤ω        -- There is a universe 𝓤ω strictly above 𝓤₀ 𝓤₁ ⋯ 𝓤ₙ ⋯
+          ; Setω to 𝓤ω        -- There is a universe 𝓤ω strictly above 𝓤₀, 𝓤₁, ⋯ , 𝓤ₙ, ⋯
           )
 \end{code}
 

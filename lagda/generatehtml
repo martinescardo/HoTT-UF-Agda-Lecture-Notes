@@ -8,7 +8,13 @@ mv html/Appendix.tex ../Appendix.md
 mv html/FunExt.tex ../FunExt.md
 mv html/Inhabitation.tex ../Inhabitation.md
 
-echo "---"                    > ../Agda.Primitive.md
-echo "layout: default"       >> ../Agda.Primitive.md
-echo "---"                   >> ../Agda.Primitive.md
-cat html/Agda.Primitive.html >> ../Agda.Primitive.md
+echo "---"                                           > ../Agda.Primitive.md
+echo "layout: default"                              >> ../Agda.Primitive.md
+echo "---"                                          >> ../Agda.Primitive.md
+echo "This module comes with Agda."                 >> ../Agda.Primitive.md
+echo ""                                             >> ../Agda.Primitive.md
+echo ""                                             >> ../Agda.Primitive.md
+echo "See [our universes](Universes.html) instead." >> ../Agda.Primitive.md
+echo ""                                             >> ../Agda.Primitive.md
+echo "<hr>"                                         >> ../Agda.Primitive.md
+cat html/Agda.Primitive.html                        >> ../Agda.Primitive.md
