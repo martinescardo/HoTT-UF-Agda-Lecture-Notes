@@ -9,7 +9,7 @@ date : 2019-03-04
 ## Universes
 
 We define our notation for type universes used in these notes, which
-is different from the standard Agda notation, but closer to the
+is different from the [standard Agda notation](https://agda.readthedocs.io/en/latest/language/universe-levels.html), but closer to the
 standard notation in HoTT/UF.
 
 Readers unfamiliar with Agda should probably try to understand this

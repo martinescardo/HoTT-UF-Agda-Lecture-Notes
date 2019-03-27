@@ -85,15 +85,15 @@ scratch, and here are our first two lines of code:
 module MLTT-Agda where
 \end{code}
 
- * The option `--without-K` disables [Streicher's `K` axiom](https://ncatlab.org/nlab/show/axiom+K+%28type+theory%29), which we don't
+ * The option [`--without-K`](https://agda.readthedocs.io/en/latest/language/without-k.html) disables [Streicher's `K` axiom](https://ncatlab.org/nlab/show/axiom+K+%28type+theory%29), which we don't
    want for univalent mathematics.
 
- * The option `--exact-split` makes Agda to only accept definitions
-   with the equality sign "`=`" that [behave like so-called
-   *judgmental* or *definitional* equalities](https://agda.readthedocs.io/en/latest/language/function-definitions.html#case-trees).
+ * The option [`--exact-split`](https://agda.readthedocs.io/en/latest/language/function-definitions.html#case-trees) makes Agda to only accept definitions
+   with the equality sign "`=`" that behave like so-called
+   *judgmental* or *definitional* equalities.
 
- * The option `--safe` disables features [that may make Agda
-   inconsistent](https://agda.readthedocs.io/en/latest/language/safe-agda.html#safe-agda),
+ * The option [`--safe`](https://agda.readthedocs.io/en/latest/language/safe-agda.html#safe-agda) disables features that may make Agda
+   inconsistent,
    such as `--type-in-type`, postulates and more.
 
  * Every Agda file is a

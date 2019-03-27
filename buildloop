@@ -1,0 +1,15 @@
+#!/bin/bash
+
+inotifywait -e close_write,moved_to,create -m lagda |
+while read -r directory events filename; do
+    if [ "$filename" = "HoTT-UF-Agda.lagda" ] ||
+       [ "$filename" = "MLTT-Agda.lagda" ] ||
+       [ "$filename" = "Universes.lagda" ] ||
+       [ "$filename" = "FunExt.lagda" ] ||
+       [ "$filename" = "Inhabitation.lagda" ] ||
+       [ "$filename" = "Appendix.lagda" ] ; then
+      date
+      ./build
+      echo "done"
+  fi
+done
