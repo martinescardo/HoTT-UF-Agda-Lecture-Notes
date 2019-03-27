@@ -33,7 +33,7 @@ There [will be](FunExt.html#hfunext) two stronger statements, namely
 the generalization to dependent functions, and the requirement that
 the canonical map `(f ≡ g) → (f ∼ g) ` is an equivalence.
 
-*Exercise.* Assuming `funext`, prove that, if `f : X → Y` is an equivalence
+*Exercise.* Assuming `funext`, prove that if `f : X → Y` is an equivalence
 then so is the function `(-) ∘ f : (Y → Z) → (X → Z)`.
 
 The crucial step in [Voevodsky's proof](http://www.math.uwo.ca/faculty/kapulkin/notes/ua_implies_fe.pdf) that univalence implies `funext`
@@ -186,7 +186,7 @@ instead.
 Dependent function extensionality:
 
 \begin{code}
-dfunext : ∀ 𝓤 𝓥 → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
+dfunext : ∀ 𝓤 𝓥 → (𝓤 ⊔ 𝓥)⁺ ̇
 dfunext 𝓤 𝓥 = {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ∼ g → f ≡ g
 \end{code}
 
@@ -210,7 +210,7 @@ logically equivalent to saying that products of singletons are
 singletons:
 
 \begin{code}
-vvfunext : ∀ 𝓤 𝓥 → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
+vvfunext : ∀ 𝓤 𝓥 → (𝓤 ⊔ 𝓥)⁺ ̇
 vvfunext 𝓤 𝓥 = {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ((x : X) → is-singleton (A x)) → is-singleton (Π A)
 
 dfunext-gives-vvfunext : dfunext 𝓤 𝓥 → vvfunext 𝓤 𝓥
