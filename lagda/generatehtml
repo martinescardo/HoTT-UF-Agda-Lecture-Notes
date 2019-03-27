@@ -3,7 +3,7 @@
 agda --html --html-highlight=code Appendix.lagda
 
 cd html
-sed -i "s|Agda.Primitive.html|https://agda.github.io/agda-stdlib/Agda.Primitive.html|" *tex
+sed -i "s|Agda.Primitive.html|Universes.html|" *tex
 cd ..
 
 mv html/HoTT-UF-Agda.tex ../HoTT-UF-Agda.md

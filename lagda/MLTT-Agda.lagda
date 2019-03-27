@@ -89,8 +89,8 @@ module MLTT-Agda where
    want for univalent mathematics.
 
  * The option `--exact-split` makes Agda to only accept definitions
-   with the equality sign "`=`" that [behave like so-called judgmental
-   equalities](https://agda.readthedocs.io/en/latest/language/function-definitions.html#case-trees).
+   with the equality sign "`=`" that [behave like so-called
+   *judgmental* or *definitional* equalities](https://agda.readthedocs.io/en/latest/language/function-definitions.html#case-trees).
 
  * The option `--safe` disables features [that may make Agda
    inconsistent](https://agda.readthedocs.io/en/latest/language/safe-agda.html#safe-agda),
