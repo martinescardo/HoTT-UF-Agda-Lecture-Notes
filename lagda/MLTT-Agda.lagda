@@ -1149,7 +1149,7 @@ or, with our `Π` notation,
    > `Π \x → f x ≡ g x`
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
-### <a name="negation"></a> Proofs involving negation
+### <a name="negation"></a> Reasoning with negation
 
 We first introduce notation for double and triple negation to avoid
 the use of brackets.

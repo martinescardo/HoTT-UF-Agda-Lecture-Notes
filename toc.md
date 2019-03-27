@@ -26,7 +26,7 @@ date : 2019-03-04
      1. [`Π` types](MLTT-Agda.html#pitypes)
      1. [The identity type former `Id`, also written `_≡_`](MLTT-Agda.html#identitytype)
      1. [Basic constructions with the identity type](MLTT-Agda.html#basicidentity)
-     1. [Proofs involving negation](MLTT-Agda.html#negation)
+     1. [Reasoning with negation](MLTT-Agda.html#negation)
      1. [Example: formulation of the twin-prime conjecture](MLTT-Agda.html#twinprime)
      1. [Operator fixities and precedences](MLTT-Agda.html#infix)
   1. [Univalent Mathematics in Agda](HoTT-UF-Agda.html)
