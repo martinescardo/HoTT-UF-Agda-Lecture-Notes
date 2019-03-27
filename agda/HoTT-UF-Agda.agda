@@ -796,9 +796,10 @@ invertibles-are-joyal-equivs f (g , gf , fg) = ((g , fg) , (g , gf))
 
 equivs-are-joyal-equivs f e = invertibles-are-joyal-equivs f (equivs-are-invertible f e)
 
-equivs-closed-under-∼ f g e h = joyal-equivs-are-equivs g
-                                 (retractions-closed-under-∼ f g (equivs-have-sections f e) h ,
-                                  sections-closed-under-∼ f g (equivs-have-retractions f e) h)
+equivs-closed-under-∼ f g e h =
+ joyal-equivs-are-equivs g
+  (retractions-closed-under-∼ f g (equivs-have-sections    f e) h ,
+   sections-closed-under-∼    f g (equivs-have-retractions f e) h)
 
 equivs-closed-under-∼' f g e h = equivs-closed-under-∼ f g e (λ x → (h x)⁻¹)
 
@@ -844,7 +845,8 @@ pr₁-equivalence {𝓤} {𝓥} X A s = invertibles-are-equivs pr₁ (g , η , �
   ε : φ ∘ γ ∼ id
   ε = refl
 
-Σ-cong {𝓤} {𝓥} {𝓦} {X} {A} {B} φ = (NatΣ f , invertibles-are-equivs (NatΣ f) (NatΣ g , NatΣ-η , NatΣ-ε))
+Σ-cong {𝓤} {𝓥} {𝓦} {X} {A} {B} φ =
+  (NatΣ f , invertibles-are-equivs (NatΣ f) (NatΣ g , NatΣ-η , NatΣ-ε))
  where
   f : (x : X) → A x → B x
   f x = Eq-to-fun (φ x)
