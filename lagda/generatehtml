@@ -1,6 +1,11 @@
 #!/bin/bash
 
 agda --html --html-highlight=code Appendix.lagda
+
+cd html
+sed -i "s|Agda.Primitive.html|https://agda.github.io/agda-stdlib/Agda.Primitive.html|" *tex
+cd ..
+
 mv html/HoTT-UF-Agda.tex ../HoTT-UF-Agda.md
 mv html/MLTT-Agda.tex ../MLTT-Agda.md
 mv html/Universes.tex ../Universes.md
@@ -8,13 +13,14 @@ mv html/Appendix.tex ../Appendix.md
 mv html/FunExt.tex ../FunExt.md
 mv html/Inhabitation.tex ../Inhabitation.md
 
-echo "---"                                           > ../Agda.Primitive.md
-echo "layout: default"                              >> ../Agda.Primitive.md
-echo "---"                                          >> ../Agda.Primitive.md
-echo "This module comes with Agda."                 >> ../Agda.Primitive.md
-echo ""                                             >> ../Agda.Primitive.md
-echo ""                                             >> ../Agda.Primitive.md
-echo "See [our universes](Universes.html) instead." >> ../Agda.Primitive.md
-echo ""                                             >> ../Agda.Primitive.md
-echo "<hr>"                                         >> ../Agda.Primitive.md
-cat html/Agda.Primitive.html                        >> ../Agda.Primitive.md
+# # This doesn't give a decent formatting:
+# echo "---"                                           > ../Agda.Primitive.md
+# echo "layout: default"                              >> ../Agda.Primitive.md
+# echo "---"                                          >> ../Agda.Primitive.md
+# echo "This module comes with Agda."                 >> ../Agda.Primitive.md
+# echo ""                                             >> ../Agda.Primitive.md
+# echo ""                                             >> ../Agda.Primitive.md
+# echo "See [our universes](Universes.html) instead." >> ../Agda.Primitive.md
+# echo ""                                             >> ../Agda.Primitive.md
+# echo "<hr>"                                         >> ../Agda.Primitive.md
+# cat html/Agda.Primitive.html                        >> ../Agda.Primitive.md
