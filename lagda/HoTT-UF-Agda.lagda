@@ -46,7 +46,10 @@ is-subsingleton X = (x y : X) → x ≡ y
 𝟘-is-subsingleton x y = !𝟘 (x ≡ y) x
 
 𝟙-is-subsingleton : is-subsingleton 𝟙
-𝟙-is-subsingleton ⋆ ⋆ = refl ⋆
+𝟙-is-subsingleton = 𝟙-induction (λ x → ∀ y → x ≡ y) (𝟙-induction (λ y → ⋆ ≡ y) (refl ⋆))
+
+𝟙-is-subsingleton' : is-subsingleton 𝟙
+𝟙-is-subsingleton' ⋆ ⋆  = refl ⋆
 \end{code}
 
 The following are more logic-oriented terminologies for the notion.
