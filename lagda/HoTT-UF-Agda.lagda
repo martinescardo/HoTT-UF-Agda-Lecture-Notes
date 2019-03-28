@@ -739,10 +739,10 @@ The point is that a type is a set if and only if its identity types
 all have `wconstant` endomaps:
 
 \begin{code}
-hedberg : {X : 𝓤 ̇ } (x : X)
+Hedberg : {X : 𝓤 ̇ } (x : X)
         → ((y : X) → collapsible (x ≡ y))
         → (y : X) → is-subsingleton (x ≡ y)
-hedberg {𝓤} {X} x c y p q =
+Hedberg {𝓤} {X} x c y p q =
  p                       ≡⟨ a y p ⟩
  f x (refl x)⁻¹ ∙ f y p  ≡⟨ ap (λ - → (f x (refl x))⁻¹ ∙ -) (κ y p q) ⟩
  f x (refl x)⁻¹ ∙ f y q  ≡⟨ (a y q)⁻¹ ⟩
@@ -778,7 +778,7 @@ And the converse is the content of Hedberg's Theorem.
 
 \begin{code}
 ≡-collapsibles-are-sets : (X : 𝓤 ̇ ) → ≡-collapsible X → is-set X
-≡-collapsibles-are-sets X c x = hedberg x (λ y → collapser (x ≡ y) (c x y) ,
+≡-collapsibles-are-sets X c x = Hedberg x (λ y → collapser (x ≡ y) (c x y) ,
                                                  collapser-wconstancy (x ≡ y) (c x y))
 \end{code}
 
@@ -861,7 +861,7 @@ Again we can conclude this almost immediately from the above development:
 hlevel-upper : (X : 𝓤 ̇ ) (n : ℕ) → X is-of-hlevel n → X is-of-hlevel (succ n)
 hlevel-upper X zero = γ
  where
-  γ : (h : is-singleton X) (x y : X) → is-singleton (x ≡ y)
+  γ : is-singleton X → (x y : X) → is-singleton (x ≡ y)
   γ h x y = p , subsingletons-are-sets X k x y p
    where
     k : is-subsingleton X

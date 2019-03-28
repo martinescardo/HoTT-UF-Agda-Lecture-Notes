@@ -223,10 +223,10 @@ collapser X (f , w) = f
 collapser-wconstancy : (X : 𝓤 ̇ ) (c : collapsible X) → wconstant (collapser X c)
 collapser-wconstancy X (f , w) = w
 
-hedberg : {X : 𝓤 ̇ } (x : X)
+Hedberg : {X : 𝓤 ̇ } (x : X)
         → ((y : X) → collapsible (x ≡ y))
         → (y : X) → is-subsingleton (x ≡ y)
-hedberg {𝓤} {X} x c y p q =
+Hedberg {𝓤} {X} x c y p q =
  p                       ≡⟨ a y p ⟩
  f x (refl x)⁻¹ ∙ f y p  ≡⟨ ap (λ - → (f x (refl x))⁻¹ ∙ -) (κ y p q) ⟩
  f x (refl x)⁻¹ ∙ f y q  ≡⟨ (a y q)⁻¹ ⟩
@@ -251,7 +251,7 @@ sets-are-≡-collapsible X s x y = (f , κ)
   κ p q = s x y p q
 
 ≡-collapsibles-are-sets : (X : 𝓤 ̇ ) → ≡-collapsible X → is-set X
-≡-collapsibles-are-sets X c x = hedberg x (λ y → collapser (x ≡ y) (c x y) ,
+≡-collapsibles-are-sets X c x = Hedberg x (λ y → collapser (x ≡ y) (c x y) ,
                                                  collapser-wconstancy (x ≡ y) (c x y))
 
 subsingletons-are-≡-collapsible : (X : 𝓤 ̇ ) → is-subsingleton X → ≡-collapsible X
@@ -292,7 +292,7 @@ types-of-hlevel-2-are-sets X = f
 hlevel-upper : (X : 𝓤 ̇ ) (n : ℕ) → X is-of-hlevel n → X is-of-hlevel (succ n)
 hlevel-upper X zero = γ
  where
-  γ : (h : is-singleton X) (x y : X) → is-singleton (x ≡ y)
+  γ : is-singleton X → (x y : X) → is-singleton (x ≡ y)
   γ h x y = p , subsingletons-are-sets X k x y p
    where
     k : is-subsingleton X
