@@ -1131,7 +1131,7 @@ expression we are replacing with `transport`.
 Notice that we have so far used the recursion principle `transport`
 only. To reason about `transport`, `_∙_`, `_⁻¹` and `ap`, we [will
 need](HoTT-UF-Agda.html#identitytypeuf) to use the full induction
-principle `J`.
+principle `J` (or equivalently pattern matching on `refl`).
 
 *Pointwise equality of functions*. We will work with pointwise
 equality of functions, defined as follows, which, using univalence,
@@ -1183,8 +1183,8 @@ this as an axiom if we wish, because it is [equivalent to the
 principle excluded middle](Appendix.html). For arbitrary types `A`,
 this would be a form of [global
 choice](https://en.wikipedia.org/wiki/Axiom_of_global_choice) for type
-theory.  However, global choice is inconsistent with univalence ([HoTT
-book](https://homotopytypetheory.org/book/), Theorem 3.2.2), because
+theory.  However, global choice is inconsistent with univalence [[HoTT
+book](https://homotopytypetheory.org/book/), Theorem 3.2.2], because
 there is no way to choose an element of every non-empty type in a way
 that is invariant under automorphisms. However, the [axiom of
 choice](Inhabitedness.html#choice) *is* consistent with univalent type
