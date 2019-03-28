@@ -91,7 +91,8 @@ module basic-truncation-development
   AC : ∀ 𝓣 (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
      → is-set X → ((x : X) → is-set (A x)) → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥  ̇
   AC 𝓣 X A i j = (R : (x : X) → A x → 𝓣 ̇ )
-               → ((x : X) (a : A x) → is-prop (R x a))
+               → ((x : X) (a : A x) → is-subsingleton (R x a))
+
                → ((x : X) → ∃ \(a : A x) → R x a)
                → ∃ \(f : (x : X) → A x) → (x : X) → R x (f x)
 

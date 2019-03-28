@@ -205,28 +205,47 @@ way, we can use `is-inhabited` instead of `∥_∥` if we wish.
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="choice"></a> The univalent axiom of choice
 
+The axiom of choice says that if for every `x : X` there exists `a : A
+x` with `R x a`, where `R` is some given relation, then there exists a
+choice function `f : (x : X) → A x` with `R x (f x)` for all `x :
+X`. This doesn't hold in general in univalent mathematics, but it does
+hold in [Voevodsky's simplicial
+model](https://arxiv.org/abs/1211.2851) of our univalent type theory,
+and hence is consistent, provided:
+
+ * `X` is a set,
+ * `A` is a family of sets,
+ * the relation `R` is subsingleton valued.
+
 \begin{code}
   AC : ∀ 𝓣 (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
      → is-set X → ((x : X) → is-set (A x)) → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥  ̇
   AC 𝓣 X A i j = (R : (x : X) → A x → 𝓣 ̇ )
-               → ((x : X) (a : A x) → is-prop (R x a))
+               → ((x : X) (a : A x) → is-subsingleton (R x a))
+
                → ((x : X) → ∃ \(a : A x) → R x a)
                → ∃ \(f : (x : X) → A x) → (x : X) → R x (f x)
+\end{code}
 
+We define the axiom of choice in the universe `𝓤` to be the above with
+`𝓣 = 𝓤`, for all possible `X` and `A` (and `R`).
+
+\begin{code}
   Choice : ∀ 𝓤 → 𝓤 ⁺ ̇
   Choice 𝓤 = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ )
              (i : is-set X) (j : (x : X) → is-set (A x))
            → AC 𝓤 X A i j
 \end{code}
 
-This axiom is relatively consistent, because Voevodsky's
-[simplicial-set model](https://arxiv.org/abs/1211.2851) validates
-it. But it is important that we have the condition that `A` is a
-set-indexed family of sets. For general higher groupoids, it is not in
-general possible to perform the choice functorially. This is
-equivalent to another familiar formulation of choice, namely that a
-set-indexed product of non-empty sets is non-empty, where in a
-constructive setting we generalize `non-empty` to `inhabited`.
+It is important that we have the condition that `A` is a set-indexed
+family of sets. For general higher groupoids, it is not in general
+possible to perform the choice functorially. This is equivalent to
+another familiar formulation of choice, namely that a set-indexed
+product of non-empty sets is non-empty, where in a constructive
+setting we generalize `non-empty` to `inhabited` (but this
+generalization is immaterial, because choice implies excluded middle,
+and excluded middle implies that non-emptiness and inhabitation are
+the same notion).
 
 \begin{code}
   IAC : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
