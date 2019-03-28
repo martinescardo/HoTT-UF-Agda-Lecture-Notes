@@ -116,7 +116,7 @@ cantors-diagonal (e , γ) = c
                               pr₁ (g ₀) ₁     ≡⟨ refl ₁ ⟩
                               ₁               ≡⟨ q ⁻¹ ⟩
                               h ₁             ∎)),
-                       being-an-equiv-is-a-subsingleton fe fe _ _ e)
+                       being-equiv-is-a-subsingleton fe fe _ _ e)
     γ ₁ ₀ p q = to-Σ-≡ (fe (𝟚-induction (λ n → pr₁ (g (h ₀)) n ≡ h n)
                              (pr₁ (g (h ₀)) ₀ ≡⟨ ap (λ - → pr₁ (g -) ₀) p ⟩
                               pr₁ (g ₁) ₀     ≡⟨ refl ₁ ⟩
@@ -126,7 +126,7 @@ cantors-diagonal (e , γ) = c
                               pr₁ (g ₁) ₁     ≡⟨ refl ₀ ⟩
                               ₀               ≡⟨ q ⁻¹ ⟩
                               h ₁             ∎)),
-                       being-an-equiv-is-a-subsingleton fe fe _ _ e)
+                       being-equiv-is-a-subsingleton fe fe _ _ e)
     γ ₁ ₁ p q = !𝟘 (g (h ₀) ≡ (h , e))
                    (₁-is-not-₀ (equivs-are-lc h e (h ₁ ≡⟨ q ⟩
                                                    ₁   ≡⟨ p ⁻¹ ⟩

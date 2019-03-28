@@ -251,8 +251,8 @@ Given a type `B` and a point `b : B`, we construct the function `𝟙 → B`
 that maps any given `x : 𝟙` to `b`.
 
 \begin{code}
-𝟙-induction' : (B : 𝓤 ̇ ) → B → (𝟙 → B)
-𝟙-induction' B b x = 𝟙-induction (λ _ → B) b x
+𝟙-recursion : (B : 𝓤 ̇ ) → B → (𝟙 → B)
+𝟙-recursion B b x = 𝟙-induction (λ _ → B) b x
 \end{code}
 
 Not all types have to be seen as mathematical statements (for example
@@ -313,7 +313,7 @@ When we write the pattern `()`, Agda checks if there is any case we
 missed. If there is none, our definition is accepted.  The expression
 `()` corresponds to the mathematical phrase [vacuously
 true](https://en.wikipedia.org/wiki/Vacuous_truth). The unique
-function from `𝟘` to any type is a particular case of `𝟘`-induction.
+function from `𝟘` to any type is a particular case of `𝟘-induction`.
 
 \begin{code}
 !𝟘 : (A : 𝓤 ̇ ) → 𝟘 → A

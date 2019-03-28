@@ -102,6 +102,9 @@ set `X` and by `magma-operation M` its multiplication `_·_`:
 ⟨_⟩ : Magma 𝓤 → 𝓤 ̇
 ⟨ X , i , _·_ ⟩ = X
 
+magma-is-set : (M : Magma 𝓤) → is-set ⟨ M ⟩
+magma-is-set (X , i , _·_) = i
+
 magma-operation : (M : Magma 𝓤) → ⟨ M ⟩ → ⟨ M ⟩ → ⟨ M ⟩
 magma-operation (X , i , _·_) = _·_
 \end{code}
@@ -1409,6 +1412,11 @@ is-univalent : (𝓤 : Universe) → 𝓤 ⁺ ̇
 is-univalent 𝓤 = (X Y : 𝓤 ̇ ) → is-equiv (Id-to-Eq X Y)
 \end{code}
 
+Thus, the univalence of the universe `𝓤` says that identifications `X
+≡ Y` are in canonical bijection with equivalences `X ≃ Y`, if by
+bijection we mean equivalence, where the canonical bijection is
+`Id-to-Eq`.
+
 We emphasize that this doesn't posit that univalence holds. It says
 what univalence is (like the type that says what the [twin-prime
 conjecture](MLTT-Agda.html#twinprime) is).
@@ -1444,6 +1452,67 @@ important. This is Exercise 4.6 of the [HoTT
 book](https://homotopytypetheory.org/book/). There is a [solution in
 Coq](https://github.com/HoTT/HoTT/blob/master/contrib/HoTTBookExercises.v)
 by [Mike Shulman](https://home.sandiego.edu/~shulman/).
+
+[<sub>Table of contents ⇑</sub>](toc.html#contents)
+### <a name="equivalence-induction"></a> Equivalence induction
+
+Under univalence, in order to prove that a property of functions holds
+for all equivalences, it is enough to show that it holds for all
+identity functions. We have `2 × 2` versions of this.
+
+The first set of two versions correspond to the induction principles
+[`H`](MLTT-Agda.html#H) and [`J`](MLTT-Agda.html#J) for
+identifications:
+
+\begin{code}
+H-≃ : is-univalent 𝓤
+    → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
+    → A X (≃-refl X) → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A Y e
+H-≃ {𝓤} {𝓥} ua X A b Y e = a
+ where
+  A' : (Y : 𝓤 ̇ ) → X ≡ Y → 𝓥 ̇
+  A' Y p = A Y (Id-to-Eq X Y p)
+  b' : A' X (refl X)
+  b' = b
+  f' : (Y : 𝓤 ̇ ) (p : X ≡ Y) → A' Y p
+  f' = H X A' b'
+  g : A Y (Id-to-Eq X Y (Eq-to-Id ua X Y e))
+  g = f' Y (Eq-to-Id ua X Y e)
+  p :  Id-to-Eq X Y (Eq-to-Id ua X Y e) ≡ e
+  p = inverse-is-section (Id-to-Eq X Y) (ua X Y) e
+  a : A Y e
+  a = transport (A Y) p g
+
+J-≃ : is-univalent 𝓤
+    → (A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
+    → ((X : 𝓤 ̇) → A X X (≃-refl X))
+    → (X Y : 𝓤 ̇ ) (e : X ≃ Y) → A X Y e
+J-≃ ua A φ X = H-≃ ua X (A X) (φ X)
+
+\end{code}
+
+The second set of two versions refer to `is-equiv` rather than `≃` and
+are proved by reduction to the first version `H-≃`:
+
+\begin{code}
+H-equiv : is-univalent 𝓤
+        → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → (X → Y) → 𝓥 ̇ )
+        → A X id → (Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → A Y f
+H-equiv {𝓤} {𝓥} ua X A a Y f i = γ (f , i) i
+ where
+  A' : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓤 ⊔ 𝓥 ̇
+  A' Y (f , i) = is-equiv f → A Y f
+  a' : A' X (≃-refl X)
+  a' = λ (_ : is-equiv id) → a
+  γ : (e : X ≃ Y) → A' Y e
+  γ = H-≃ ua X A' a'  Y
+
+J-equiv : is-univalent 𝓤
+        → (A : (X Y : 𝓤 ̇ ) → (X → Y) → 𝓥 ̇ )
+        → ((X : 𝓤 ̇ ) → A X X id)
+        → (X Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → A X Y f
+J-equiv ua A φ X = H-equiv ua X (A X) (φ X)
+\end{code}
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="notsets"></a> Example of a type that is not a set under univalence
@@ -1651,11 +1720,43 @@ singletons-equivalent : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
 maps-of-singletons-are-equivs : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (f : X → Y)
                               → is-singleton X → is-singleton Y → is-equiv f
 
+logically-equivalent-subsingletons-are-equivalent : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+                                                  → is-subsingleton X
+                                                  → is-subsingleton Y
+                                                  → X ⇔ Y
+                                                  → X ≃ Y
+
 NatΣ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (φ : Nat A B)
                  → (x : X) (b : B x) → fiber (φ x) b ≃ fiber (NatΣ φ) (x , b)
 
 NatΣ-equiv-gives-fiberwise-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (φ : Nat A B)
                                  → is-equiv (NatΣ φ) → ((x : X) → is-equiv (φ x))
+
+Σ-is-subsingleton : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                  → is-subsingleton X
+                  → ((x : X) → is-subsingleton (A x))
+                  → is-subsingleton (Σ A)
+
+×-is-subsingleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                  → is-subsingleton X
+                  → is-subsingleton Y
+                  → is-subsingleton (X × Y)
+
+to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
+       → pr₁ z ≡ pr₁ t
+       → pr₂ z ≡ pr₂ t
+       → z ≡ t
+
+×-is-subsingleton' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                   → ((Y → is-subsingleton X) × (X → is-subsingleton Y))
+                   → is-subsingleton (X × Y)
+
+×-is-subsingleton'-back : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                        → is-subsingleton (X × Y)
+                        → (Y → is-subsingleton X) × (X → is-subsingleton Y)
+
+ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x x' : X} {y y' : Y}
+    → x ≡ x' → y ≡ y' → f x y ≡ f x' y'
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents) [<sub> HoTT/UF continued ⇓ </sub>](FunExt)
@@ -1822,6 +1923,9 @@ maps-of-singletons-are-equivs X Y f i j = invertibles-are-equivs f (g , η , ε)
   ε : (y : Y) → f (g y) ≡ y
   ε y = singletons-are-subsingletons Y j (f (g y)) y
 
+logically-equivalent-subsingletons-are-equivalent X Y i j (f , g) =
+  f , invertibles-are-equivs f (g , (λ x → i (g (f x)) x) , (λ y → j (f (g y)) y))
+
 NatΣ-fiber-equiv A B φ x b = (f , invertibles-are-equivs f (g , ε , η))
  where
   f : fiber (φ x) b → fiber (NatΣ φ) (x , b)
@@ -1841,6 +1945,26 @@ NatΣ-equiv-gives-fiberwise-equiv A B φ e x b = γ
          (fiber (NatΣ φ) (x , b))
          (NatΣ-fiber-equiv A B φ x b)
          (e (x , b))
+
+Σ-is-subsingleton i j (x , a) (y , b) = to-Σ-≡ (i x y , j y _ _)
+
+×-is-subsingleton i j = Σ-is-subsingleton i (λ _ → j)
+
+to-×-≡ (refl x) (refl y) = refl (x , y)
+
+×-is-subsingleton' {𝓤} {𝓥} {X} {Y} (i , j) = k
+ where
+  k : is-subsingleton (X × Y)
+  k (x , y) (x' , y') = to-×-≡ (i y x x') (j x y y')
+
+×-is-subsingleton'-back {𝓤} {𝓥} {X} {Y} k = i , j
+ where
+  i : Y → is-subsingleton X
+  i y x x' = ap pr₁ (k (x , y) (x' , y))
+  j : X → is-subsingleton Y
+  j x y y' = ap pr₂ (k (x , y) (x , y'))
+
+ap₂ f (refl x) (refl y) = refl (f x y)
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents) [<sub> HoTT/UF continued ⇓ </sub>](FunExt.html)

@@ -48,6 +48,7 @@ date : 2019-03-04
      1. [Retracts](HoTT-UF-Agda.html#retracts)
      1. [Voevodsky' notion of type equivalence](HoTT-UF-Agda.html#fibersandequivalences)
      1. [Voevodsky's univalence axiom](HoTT-UF-Agda.html#univalence)
+     1. [Equivalence induction](HoTT-UF-Agda.html#equivalence-induction)
      1. [Example of a type that is not a set under univalence](HoTT-UF-Agda.html#notsets)
      1. [Exercises](HoTT-UF-Agda.html#lefttothereader)
      1. [Solutions](HoTT-UF-Agda.html#solutions)

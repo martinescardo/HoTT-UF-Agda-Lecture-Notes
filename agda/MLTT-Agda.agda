@@ -14,8 +14,8 @@ data 𝟙 : 𝓤₀ ̇  where
             → A ⋆ → (x : 𝟙) → A x
 𝟙-induction A a ⋆ = a
 
-𝟙-induction' : (B : 𝓤 ̇ ) → B → (𝟙 → B)
-𝟙-induction' B b x = 𝟙-induction (λ _ → B) b x
+𝟙-recursion : (B : 𝓤 ̇ ) → B → (𝟙 → B)
+𝟙-recursion B b x = 𝟙-induction (λ _ → B) b x
 
 !𝟙' : (X : 𝓤 ̇ ) → X → 𝟙
 !𝟙' X x = ⋆

@@ -9,62 +9,12 @@ open import HoTT-UF-Agda
 funext : ∀ 𝓤 𝓥 → (𝓤 ⊔ 𝓥)⁺ ̇
 funext 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y} → f ∼ g → f ≡ g
 
-transport-is-pre-comp : (ua : is-univalent 𝓤) {X Y Z : 𝓤 ̇ } (e : X ≃ Y) (g : Y → Z)
-                      → transport (λ - → - → Z) ((Eq-to-Id ua X Y e)⁻¹) g ≡ g ∘ Eq-to-fun e
-
-transport-is-pre-comp ua {X} {Y} {Z} e g = α e (Eq-to-Id ua X Y e) (refl (Eq-to-Id ua X Y e))
- where
-  α : (e : X ≃ Y) (p : X ≡ Y)
-    → p ≡ Eq-to-Id ua X Y e
-    → transport (λ - → - → Z) (p ⁻¹) g ≡ g ∘ Eq-to-fun e
-  α e (refl X) = γ
-   where
-    γ : refl X ≡ Eq-to-Id ua X X e → g ≡ g ∘ Eq-to-fun e
-    γ q = ap (g ∘_) b
-     where
-      a : ≃-refl X ≡ e
-      a = ≃-refl X                         ≡⟨ ap (Id-to-Eq X X) q ⟩
-          Id-to-Eq X X (Eq-to-Id ua X X e) ≡⟨ inverse-is-section (Id-to-Eq X X) (ua X X) e ⟩
-          e                                ∎
-      b : id ≡ Eq-to-fun e
-      b = ap Eq-to-fun a
-
-pre-comp-is-equiv : (ua : is-univalent 𝓤) {X Y Z : 𝓤 ̇ } (f : X → Y)
+pre-comp-is-equiv : (ua : is-univalent 𝓤) (X Y : 𝓤 ̇ ) (f : X → Y)
                   → is-equiv f
-                  → is-equiv (λ (g : Y → Z) → g ∘ f)
-pre-comp-is-equiv ua {X} {Y} {Z} f i = j
- where
-  e : X ≃ Y
-  e = (f , i)
-
-  of-course : Eq-to-fun e ≡ f
-  of-course = refl f
-
-  φ γ : (Y → Z) → (X → Z)
-  φ g = g ∘ f
-  γ g = transport (λ - → - → Z) ((Eq-to-Id ua X Y e)⁻¹) g
-
-  γ-is-equiv : is-equiv γ
-  γ-is-equiv = transport-is-equiv (λ - → - → Z) ((Eq-to-Id ua X Y e)⁻¹)
-
-  h' : (g : Y → Z) → transport (λ - → - → _) ((Eq-to-Id ua X Y e)⁻¹) g ≡ g ∘ Eq-to-fun e
-  h' = transport-is-pre-comp ua e
-
-  h : γ ∼ φ
-  h = h'
-
-  j : is-equiv φ
-  j = equivs-closed-under-∼' γ φ γ-is-equiv h
-
-pre-comp-is-equiv' : (ua : is-univalent 𝓤) {X Y Z : 𝓤 ̇ } (f : X → Y)
-                   → is-equiv f
-                   → is-equiv (λ (g : Y → Z) → g ∘ f)
-pre-comp-is-equiv' ua {X} {Y} {Z} f i =
- equivs-closed-under-∼'
-  (transport (λ - → - → Z) ((Eq-to-Id ua X Y (f , i))⁻¹))
-  (_∘ f)
-  (transport-is-equiv (λ - → - → Z) ((Eq-to-Id ua X Y (f , i))⁻¹))
-  (transport-is-pre-comp ua (f , i))
+                  → (Z : 𝓤 ̇ ) → is-equiv (λ (g : Y → Z) → g ∘ f)
+pre-comp-is-equiv {𝓤} ua = J-equiv ua
+                             (λ X Y f → (Z : 𝓤 ̇) → is-equiv (λ g → g ∘ f))
+                             (λ X Z → id-is-equiv (X → Z))
 
 univalence-gives-funext : is-univalent 𝓤 → funext 𝓥 𝓤
 univalence-gives-funext ua {X} {Y} {f₀} {f₁} h = γ
@@ -93,7 +43,7 @@ univalence-gives-funext ua {X} {Y} {f₀} {f₁} h = γ
   φ π = π ∘ δ
 
   φ-is-equiv : is-equiv φ
-  φ-is-equiv = pre-comp-is-equiv ua δ δ-is-equiv
+  φ-is-equiv = pre-comp-is-equiv ua Y Δ δ δ-is-equiv Y
 
   π₀-equals-π₁ : π₀ ≡ π₁
   π₀-equals-π₁ = equivs-are-lc φ φ-is-equiv πδ
@@ -200,6 +150,11 @@ funext-gives-hfunext fe fe' = vvfunext-gives-hfunext (funext-gives-vvfunext fe f
 funext-gives-dfunext : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → dfunext 𝓤 𝓥
 funext-gives-dfunext fe fe' = hfunext-gives-dfunext (funext-gives-hfunext fe fe')
 
+univalence-gives-dfunext' : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
+univalence-gives-dfunext' ua ua' = funext-gives-dfunext
+                                    (univalence-gives-funext ua')
+                                    (univalence-gives-funext ua)
+
 univalence-gives-hfunext' : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → hfunext 𝓤 𝓥
 univalence-gives-hfunext' ua ua' = funext-gives-hfunext
                                      (univalence-gives-funext ua')
@@ -214,7 +169,7 @@ univalence-gives-hfunext : is-univalent 𝓤 → hfunext 𝓤 𝓤
 univalence-gives-hfunext ua = univalence-gives-hfunext' ua ua
 
 univalence-gives-dfunext : is-univalent 𝓤 → dfunext 𝓤 𝓤
-univalence-gives-dfunext ua = hfunext-gives-dfunext (univalence-gives-hfunext ua)
+univalence-gives-dfunext ua = univalence-gives-dfunext' ua ua
 
 univalence-gives-vvfunext : is-univalent 𝓤 → vvfunext 𝓤 𝓤
 univalence-gives-vvfunext ua = univalence-gives-vvfunext' ua ua
@@ -224,9 +179,9 @@ univalence-gives-vvfunext ua = univalence-gives-vvfunext' ua ua
                   → is-subsingleton (Π A)
 Π-is-subsingleton fe i f g = fe (λ x → i x (f x) (g x))
 
-being-a-singleton-is-a-subsingleton : dfunext 𝓤 𝓤 → {X : 𝓤 ̇ }
+being-singleton-is-a-subsingleton : dfunext 𝓤 𝓤 → {X : 𝓤 ̇ }
                                     → is-subsingleton (is-singleton X)
-being-a-singleton-is-a-subsingleton fe {X} (x , φ) (y , γ) = p
+being-singleton-is-a-subsingleton fe {X} (x , φ) (y , γ) = p
  where
   i : is-subsingleton X
   i = singletons-are-subsingletons X (y , γ)
@@ -235,11 +190,11 @@ being-a-singleton-is-a-subsingleton fe {X} (x , φ) (y , γ) = p
   p : (x , φ) ≡ (y , γ)
   p = to-Σ-≡ (φ y , fe (λ (z : X) → s y z _ _))
 
-being-an-equiv-is-a-subsingleton : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+being-equiv-is-a-subsingleton : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                                  → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                  → is-subsingleton (is-equiv f)
-being-an-equiv-is-a-subsingleton fe fe' f =
- Π-is-subsingleton fe (λ x → being-a-singleton-is-a-subsingleton fe')
+being-equiv-is-a-subsingleton fe fe' f =
+ Π-is-subsingleton fe (λ x → being-singleton-is-a-subsingleton fe')
 
 univalence-is-a-subsingleton : is-univalent (𝓤 ⁺) → is-subsingleton (is-univalent 𝓤)
 univalence-is-a-subsingleton {𝓤} ua⁺ ua ua' = p
@@ -259,7 +214,7 @@ univalence-is-a-subsingleton {𝓤} ua⁺ ua ua' = p
   i : is-subsingleton (is-univalent 𝓤)
   i = Π-is-subsingleton dfe₂
        (λ X → Π-is-subsingleton dfe₂
-               (λ Y → being-an-equiv-is-a-subsingleton dfe₁ dfe₂ (Id-to-Eq X Y)))
+               (λ Y → being-equiv-is-a-subsingleton dfe₁ dfe₂ (Id-to-Eq X Y)))
 
   p : ua ≡ ua'
   p = i ua ua'
@@ -276,9 +231,9 @@ univalence-is-a-singleton {𝓤} γ = pointed-subsingletons-are-singletons
                                    (γ 𝓤)
                                    (univalence-is-a-subsingletonω γ)
 
-being-a-subsingleton-is-a-subsingleton : {X : 𝓤 ̇ } → dfunext 𝓤 𝓤
+being-subsingleton-is-a-subsingleton : {X : 𝓤 ̇ } → dfunext 𝓤 𝓤
                                        → is-subsingleton (is-subsingleton X)
-being-a-subsingleton-is-a-subsingleton {𝓤} {X} fe i j = c
+being-subsingleton-is-a-subsingleton {𝓤} {X} fe i j = c
  where
   l : is-set X
   l = subsingletons-are-sets X i
@@ -302,11 +257,11 @@ being-set-is-a-subsingleton : dfunext 𝓤 𝓤 → {X : 𝓤 ̇ } → is-subsin
 being-set-is-a-subsingleton {𝓤} fe {X} =
  Π-is-subsingleton fe
    (λ x → Π-is-subsingleton fe
-           (λ y → being-a-subsingleton-is-a-subsingleton fe))
+           (λ y → being-subsingleton-is-a-subsingleton fe))
 
 hlevel-relation-is-subsingleton : dfunext 𝓤 𝓤
                                 → (n : ℕ) (X : 𝓤 ̇ ) → is-subsingleton (X is-of-hlevel n)
-hlevel-relation-is-subsingleton {𝓤} fe zero     X = being-a-singleton-is-a-subsingleton fe
+hlevel-relation-is-subsingleton {𝓤} fe zero     X = being-singleton-is-a-subsingleton fe
 hlevel-relation-is-subsingleton {𝓤} fe (succ n) X =
   Π-is-subsingleton fe
     (λ x → Π-is-subsingleton fe
@@ -323,7 +278,7 @@ hlevel-relation-is-subsingleton {𝓤} fe (succ n) X =
   e = ∘-is-equiv c (∘-is-equiv b a)
 
   q : d ≡ e
-  q = being-an-equiv-is-a-subsingleton fe fe' (h ∘ g ∘ f) _ _
+  q = being-equiv-is-a-subsingleton fe fe' (h ∘ g ∘ f) _ _
 
 inversion-involutive : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                      → inverse (inverse f e) (inverse-is-equiv f e) ≡ f
@@ -333,5 +288,5 @@ inversion-involutive f e = refl f
                    {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
                  → ≃-sym (≃-sym α) ≡ α
 ≃-sym-involutive fe fe' (f , a) = to-Σ-≡ (inversion-involutive f a ,
-                                          being-an-equiv-is-a-subsingleton fe fe' f _ _)
+                                          being-equiv-is-a-subsingleton fe fe' f _ _)
 
