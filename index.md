@@ -15,7 +15,7 @@ date : 2019-03-04
 [univalent mathematics](https://github.com/UniMath/UniMath/blob/master/README.md), and explain how to develop them with the
 computer system [Agda](https://wiki.portal.chalmers.se/agda/pmwiki.php), which based on [Martin-Löf type theory](https://github.com/michaelt/martin-lof).
 
-Agda allows one to write mathematical definitions, constructions,
+Agda allows us to write mathematical definitions, constructions,
 theorems and proofs, for example in number theory, analysis, group
 theory, topology, category theory or programming language theory, checking
 them for logical and mathematical correctness.
