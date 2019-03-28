@@ -1513,12 +1513,12 @@ H-equiv : is-univalent 𝓤
         → A X (𝑖𝑑 X) → (Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → A Y f
 H-equiv {𝓤} {𝓥} ua X A a Y f i = γ (f , i) i
  where
-  A' : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓤 ⊔ 𝓥 ̇
-  A' Y (f , i) = is-equiv f → A Y f
-  a' : A' X (≃-refl X)
-  a' = λ (_ : is-equiv (𝑖𝑑 X)) → a
-  γ : (e : X ≃ Y) → A' Y e
-  γ = H-≃ ua X A' a'  Y
+  B : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓤 ⊔ 𝓥 ̇
+  B Y (f , i) = is-equiv f → A Y f
+  b : B X (≃-refl X)
+  b = λ (_ : is-equiv (𝑖𝑑 X)) → a
+  γ : (e : X ≃ Y) → B Y e
+  γ = H-≃ ua X B b Y
 
 J-equiv : is-univalent 𝓤
         → (A : (X Y : 𝓤 ̇ ) → (X → Y) → 𝓥 ̇ )
@@ -1554,8 +1554,9 @@ Here is an example:
                        → (X : 𝓤 ̇ ) (P : X → 𝓥 ̇) (Y : 𝓤 ̇) (g : Y → X)
                        → (i : is-equiv g)
                        → (Σ \(x : X) → P x) ≡ (Σ \(y : Y) → P (g y))
-Σ-change-of-variables' {𝓤} {𝓥} ua X P Y g j =
-  Σ-change-of-variables ua X P Y (inverse g j) (inverse-is-equiv g j)
+Σ-change-of-variables' {𝓤} {𝓥} ua X P Y g j = Σ-change-of-variables ua X P Y
+                                                 (inverse g j)
+                                                 (inverse-is-equiv g j)
 \end{code}
 
 The following can be proved without univalence, but a proof using
