@@ -1096,10 +1096,14 @@ And we can reindex retracts of `Σ` types as follows:
   γφ : (σ : Σ A) → γ (φ σ) ≡ σ
   γφ (x , a) = to-Σ-≡ (η x , p)
    where
-    p = transport A (η x) (transport A ((η x)⁻¹) a) ≡⟨ (ap (λ - → - a) (transport∙ A ((η x)⁻¹) (η x)))⁻¹ ⟩
-        transport A ((η x)⁻¹ ∙ η x ) a              ≡⟨ ap (λ - → transport A - a) (⁻¹-left∙ (η x)) ⟩
-        transport A (refl x) a                      ≡⟨ refl a ⟩
+    p = transport A (η x) (transport A ((η x)⁻¹) a) ≡⟨ i ⟩
+        transport A ((η x)⁻¹ ∙ η x ) a              ≡⟨ ii ⟩
+        transport A (refl x) a                      ≡⟨ iii ⟩
         a                                           ∎
+      where
+       i   = (ap (λ - → - a) (transport∙ A ((η x)⁻¹) (η x)))⁻¹
+       ii  = ap (λ - → transport A - a) (⁻¹-left∙ (η x))
+       iii = refl a
 \end{code}
 
 We have defined [the property of a type being a
