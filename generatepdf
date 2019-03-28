@@ -7,5 +7,5 @@ google-chrome --headless --disable-gpu --print-to-pdf="pdf/FunExt.pdf" _site/Fun
 google-chrome --headless --disable-gpu --print-to-pdf="pdf/Inhabitation.pdf" _site/Inhabitation.html
 google-chrome --headless --disable-gpu --print-to-pdf="pdf/Appendix.pdf" _site/Appendix.html
 google-chrome --headless --disable-gpu --print-to-pdf="pdf/Universes.pdf" _site/Universes.html
-pdftk pdf/index.pdf pdf/toc.pdf pdf/MLTT-Agda.pdf pdf/HoTT-UF-Agda.pdf pdf/FunExt.pdf pdf/Inhabitation.pdf pdf/Appendix.pdf pdf/Universes.pdf output "pdf/all/HoTT-UF-Agda.pdf
-cp "pdf/all/HoTT-UF-Agda.pdf ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
+pdftk pdf/index.pdf pdf/toc.pdf pdf/MLTT-Agda.pdf pdf/HoTT-UF-Agda.pdf pdf/FunExt.pdf pdf/Inhabitation.pdf pdf/Appendix.pdf pdf/Universes.pdf output pdf/all/HoTT-UF-Agda.pdf
+cp pdf/all/HoTT-UF-Agda.pdf ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
