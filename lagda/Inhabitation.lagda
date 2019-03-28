@@ -118,7 +118,7 @@ There are two problems with this definition of inhabitation:
 
   * Inhabitation has values in the next universe.
 
-  * We can eliminate into propositions of the same universe only.
+  * We can eliminate into subsingletons of the same universe only.
 
 In particular, it is not possible to show that the map `X →
 is-inhabited X` is a surjection, or that `X → Y` gives `is-inhabited X
@@ -136,40 +136,40 @@ There are two proposed ways to solve this:
     consistent.  This is the same approach adopted by cubical type
     theory and cubical Agda.
 
-A third possibility is to work with propositional truncations
+A third possibility is to work with subsingleton truncations
 [axiomatically](https://lmcs.episciences.org/3217), which is compatible
 with the above two proposals. We write this axiom as a record type
 rather than as an iterated `Σ type` for simplicity, where we use the
 HoTT-book notation `∥ X ∥` for the inhabitation of `X`,
-called the propositional truncation of `X`:
+called the propositional, or subsingleton, truncation of `X`:
 
 \begin{code}
-record propositional-truncations-exist : 𝓤ω where
+record subsingleton-truncations-exist : 𝓤ω where
  field
-  ∥_∥          : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
-  ∥∥-is-a-prop : {𝓤 : Universe} {X : 𝓤 ̇ } → is-prop ∥ X ∥
-  ∣_∣         : {𝓤 : Universe} {X : 𝓤 ̇ } → X → ∥ X ∥
-  ∥∥-rec       : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {P : 𝓥 ̇ }
-              → is-prop P → (X → P) → ∥ X ∥ → P
+  ∥_∥                  : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
+  ∥∥-is-a-subsingleton : {𝓤 : Universe} {X : 𝓤 ̇ } → is-subsingleton ∥ X ∥
+  ∣_∣                 : {𝓤 : Universe} {X : 𝓤 ̇ } → X → ∥ X ∥
+  ∥∥-rec               : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {P : 𝓥 ̇ }
+                       → is-subsingleton P → (X → P) → ∥ X ∥ → P
 \end{code}
 
 This is the approach we adopt in our [personal Agda
 development](http://www.cs.bham.ac.uk/~mhe/agda-new/).
 
-We now assume that propositional truncations exist for the remainder
+We now assume that subsingleton truncations exist for the remainder
 of this file, and we `open` the assumption to make the above fields
 visible.
 
 \begin{code}
 module basic-truncation-development
-         (pt : propositional-truncations-exist)
+         (pt : subsingleton-truncations-exist)
          (fe : global-dfunext)
        where
 
-  open propositional-truncations-exist pt public
+  open subsingleton-truncations-exist pt public
 
   ∥∥-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → ∥ X ∥ → ∥ Y ∥
-  ∥∥-functor f = ∥∥-rec ∥∥-is-a-prop (λ x → ∣ f x ∣)
+  ∥∥-functor f = ∥∥-rec ∥∥-is-a-subsingleton (λ x → ∣ f x ∣)
 
   ∃ : {X : 𝓤 ̇ } → (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
   ∃ A = ∥ Σ A ∥
@@ -181,7 +181,7 @@ module basic-truncation-development
   A ∨ B = ∥ A + B ∥
 \end{code}
 
-The propositional truncation of a type and its inhabitation are
+The subsingleton truncation of a type and its inhabitation are
 logically equivalent propositions:
 
 \begin{code}
@@ -191,7 +191,7 @@ logically equivalent propositions:
     a : ∥ X ∥ → is-inhabited X
     a = ∥∥-rec (inhabitation-is-a-subsingleton fe X) pointed-is-inhabited
     b : is-inhabited X → ∥ X ∥
-    b = inhabited-recursion X ∥ X ∥ ∥∥-is-a-prop ∣_∣
+    b = inhabited-recursion X ∥ X ∥ ∥∥-is-a-subsingleton ∣_∣
 \end{code}
 
 Hence they differ only in size, and when size matters don't get on the
@@ -219,7 +219,7 @@ and hence is consistent, provided:
 
 \begin{code}
   AC : ∀ 𝓣 (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
-     → is-set X → ((x : X) → is-set (A x)) → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥  ̇
+     → is-set X → ((x : X) → is-set (A x)) → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥 ̇
   AC 𝓣 X A i j = (R : (x : X) → A x → 𝓣 ̇ )
                → ((x : X) (a : A x) → is-subsingleton (R x a))
 
@@ -270,7 +270,7 @@ extensionality):
    where
     R : (x : X) → Y x → 𝓤 ̇
     R x y = x ≡ x -- Any singleton type in 𝓤 will do.
-    k : (x : X) (y : Y x) → is-prop (R x y)
+    k : (x : X) (y : Y x) → is-subsingleton (R x y)
     k x y = i x x
     h : (x : X) → Y x → Σ \(y : Y x) → R x y
     h x y = (y , refl x)

@@ -53,23 +53,23 @@ corestriction f x = f x , pointed-is-inhabited (x , refl (f x))
 is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)⁺ ̇
 is-surjection f = (y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
 
-record propositional-truncations-exist : 𝓤ω where
+record subsingleton-truncations-exist : 𝓤ω where
  field
-  ∥_∥          : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
-  ∥∥-is-a-prop : {𝓤 : Universe} {X : 𝓤 ̇ } → is-prop ∥ X ∥
-  ∣_∣         : {𝓤 : Universe} {X : 𝓤 ̇ } → X → ∥ X ∥
-  ∥∥-rec       : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {P : 𝓥 ̇ }
-              → is-prop P → (X → P) → ∥ X ∥ → P
+  ∥_∥                  : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
+  ∥∥-is-a-subsingleton : {𝓤 : Universe} {X : 𝓤 ̇ } → is-subsingleton ∥ X ∥
+  ∣_∣                 : {𝓤 : Universe} {X : 𝓤 ̇ } → X → ∥ X ∥
+  ∥∥-rec               : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {P : 𝓥 ̇ }
+                       → is-subsingleton P → (X → P) → ∥ X ∥ → P
 
 module basic-truncation-development
-         (pt : propositional-truncations-exist)
+         (pt : subsingleton-truncations-exist)
          (fe : global-dfunext)
        where
 
-  open propositional-truncations-exist pt public
+  open subsingleton-truncations-exist pt public
 
   ∥∥-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → ∥ X ∥ → ∥ Y ∥
-  ∥∥-functor f = ∥∥-rec ∥∥-is-a-prop (λ x → ∣ f x ∣)
+  ∥∥-functor f = ∥∥-rec ∥∥-is-a-subsingleton (λ x → ∣ f x ∣)
 
   ∃ : {X : 𝓤 ̇ } → (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
   ∃ A = ∥ Σ A ∥
@@ -86,10 +86,10 @@ module basic-truncation-development
     a : ∥ X ∥ → is-inhabited X
     a = ∥∥-rec (inhabitation-is-a-subsingleton fe X) pointed-is-inhabited
     b : is-inhabited X → ∥ X ∥
-    b = inhabited-recursion X ∥ X ∥ ∥∥-is-a-prop ∣_∣
+    b = inhabited-recursion X ∥ X ∥ ∥∥-is-a-subsingleton ∣_∣
 
   AC : ∀ 𝓣 (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
-     → is-set X → ((x : X) → is-set (A x)) → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥  ̇
+     → is-set X → ((x : X) → is-set (A x)) → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥 ̇
   AC 𝓣 X A i j = (R : (x : X) → A x → 𝓣 ̇ )
                → ((x : X) (a : A x) → is-subsingleton (R x a))
 
@@ -115,7 +115,7 @@ module basic-truncation-development
    where
     R : (x : X) → Y x → 𝓤 ̇
     R x y = x ≡ x -- Any singleton type in 𝓤 will do.
-    k : (x : X) (y : Y x) → is-prop (R x y)
+    k : (x : X) (y : Y x) → is-subsingleton (R x y)
     k x y = i x x
     h : (x : X) → Y x → Σ \(y : Y x) → R x y
     h x y = (y , refl x)
