@@ -906,10 +906,10 @@ Streicher](https://ieeexplore.ieee.org/document/316071), by giving a
 model of type theory in which types are interpreted as
 [`1`-groupoids](https://en.wikipedia.org/wiki/Groupoid).
 
-However, for the elements of *some* types, such as `ℕ`, it is possible
-to prove that any identity type `x ≡ y` has at most one element. Such
-types are called [sets in univalent
-mathematics](HoTT-UF-Agda.html#subsingletonsandsets).
+However, for the elements of *some* types, such as `ℕ`, it is
+[possible to prove](HoTT-UF-Agda.html#naturalsset) that any identity
+type `x ≡ y` has at most one element. Such types are called [sets in
+univalent mathematics](HoTT-UF-Agda.html#subsingletonsandsets).
 
 If instead of `K` we adopt Voevodsky's
 [univalence](HoTT-UF-Agda.html#univalence) axiom, we get [specific
