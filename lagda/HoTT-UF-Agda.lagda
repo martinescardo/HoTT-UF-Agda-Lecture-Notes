@@ -1525,7 +1525,11 @@ J-equiv : is-univalent 𝓤
         → ((X : 𝓤 ̇ ) → A X X (𝑖𝑑 X))
         → (X Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → A X Y f
 J-equiv ua A φ X = H-equiv ua X (A X) (φ X)
+\end{code}
 
+And a fifth version follows:
+
+\begin{code}
 J-invertible : is-univalent 𝓤
         → (A : (X Y : 𝓤 ̇ ) → (X → Y) → 𝓥 ̇ )
         → ((X : 𝓤 ̇ ) → A X X (𝑖𝑑 X))
