@@ -5,16 +5,19 @@ cd lagda
 ./illiterate
 cd ..
 jekyll build
-./generatepdf
 mkdir -p previous-version
 rm -rf previous-version/*
 mv ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/* previous-version/
 cp -a  _site/* ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
 rm -f   ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/*~
 rm -f   ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/*.md
+rm -f   ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/*.psd
 rm -rf  ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/lagda
 rm -rf  ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/agda
 rm -f   ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/deploy*
 rm -f   ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/build*
+rm -f   ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/generate*
 rm -f   ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/work
+rm -f   ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/all
 rm -rf  ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/previous-version
+./generatepdf
