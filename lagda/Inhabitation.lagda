@@ -42,7 +42,11 @@ For simplicity in the formulation of the theorems, we assume global
 \begin{code}
 global-dfunext : 𝓤ω
 global-dfunext = ∀ 𝓤 𝓥 → dfunext 𝓤 𝓥
+\end{code}
 
+A type can be pointed in many ways, but inhabited in at most one way:
+
+\begin{code}
 inhabitation-is-a-subsingleton : global-dfunext → (X : 𝓤 ̇ )
                                → is-subsingleton (is-inhabited X)
 inhabitation-is-a-subsingleton {𝓤} fe X =
