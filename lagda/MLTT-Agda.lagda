@@ -1096,7 +1096,7 @@ introduce notation to be able to write e.g.
    > `z ∎`
 
 as a synonym of the expression `p ∙ q` with some of the implicit arguments of `_∙_` made
-explicit. We have one ternary *mixfix* operator `_≡⟨_⟩_` and one unary
+explicit. We have one ternary [mixfix](https://agda.readthedocs.io/en/latest/language/mixfix-operators.html) operator `_≡⟨_⟩_` and one unary
 `postfix` operator `_∎`.
 
 \begin{code}
