@@ -335,8 +335,9 @@ the empty type. Assuming [univalence](HoTT-UF-Agda.html#univalence),
 once we have defined the equality type former
 [`_≡_`](MLTT-Agda.html#identitytype), we will be able to prove that
 `(is-empty X) ≡ (X ≃ 𝟘)`, where `X ≃ 𝟘` is the type of bijections, or
-[equivalences](HoTT-UF-Agda.html#fibersandequivalences). We will also
-be able to prove things like `(2 + 2 ≡ 5) ≡ 𝟘` and `(2 + 2 ≡ 4) ≡ 𝟙`.
+[equivalences](HoTT-UF-Agda.html#fibersandequivalences), from `X` to
+`𝟘`. We will also be able to prove things like `(2 + 2 ≡ 5) ≡ 𝟘` and
+`(2 + 2 ≡ 4) ≡ 𝟙`.
 
 This is for *numbers*. If we define *types* `𝟚 = 𝟙 + 𝟙` and `𝟜 = 𝟚 +
 𝟚` with two and four elements respectively, where we are anticipating
