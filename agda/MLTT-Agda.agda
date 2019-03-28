@@ -283,7 +283,7 @@ x ≢ y = ¬(x ≡ y)
 ≢-sym {𝓤} {X} {x} {y} u = λ (p : y ≡ x) → u (p ⁻¹)
 
 Id-to-Fun : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
-Id-to-Fun {𝓤} = transport (𝑖𝑑 (𝓤 ̇))
+Id-to-Fun {𝓤} = transport (𝑖𝑑 (𝓤 ̇ ))
 
 Id-to-Fun' : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
 Id-to-Fun' (refl X) = 𝑖𝑑 X

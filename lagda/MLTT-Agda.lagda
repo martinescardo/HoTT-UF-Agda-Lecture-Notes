@@ -110,7 +110,7 @@ A universe `𝓤` is a type of types.
  * One use of universes is to define families of types indexed by a
    type `X` as functions `X → 𝓤`.
 
- * Such a function is sometimes seen as a property of elements of `X`.
+ * Such a function is [sometimes](MLTT-Agda.html#twinprime) seen as a property of elements of `X`.
 
  * Another use of universes, as we shall see, is to define types of
    mathematical structures, such as
@@ -125,7 +125,7 @@ We will work with a tower of type universes
 
    > `𝓤₀, 𝓤₁, 𝓤₂, 𝓤₃, ...`
 
-These are actually universe names (also called levels). We reference
+These are actually universe names (also called levels, not to be confused with [hlevels](HoTT-UF-Agda.html#hlevel)). We reference
 the universes themselves by a deliberately almost-invisible
 superscript dot. For example, we will have
 
@@ -162,7 +162,7 @@ its successor universe. For example, if `𝓤` is `𝓤₀` then `𝓤 ⁺` is
 For example, if `𝓤` is `𝓤₀` and `𝓥` is `𝓤₁`, then `𝓤 ⊔ 𝓥` is `𝓤₁`.
 
 We now bring our notation for universes by importing our Agda file
-`Universes`. The Agda keyword
+[`Universes`](Universes.html). The Agda keyword
 [`open`](https://agda.readthedocs.io/en/latest/language/module-system.html)
 asks to make all definitions in the file `Universe` visible in our
 file here. The Agda code in these notes has syntax highlighting and
@@ -263,7 +263,7 @@ the truth value *true*.
 
 The unique function to `𝟙` will be named `!𝟙`. We define two versions
 to illustrate [implicit
-arguments](https://agda.readthedocs.io/en/language/implicit-arguments.html),
+arguments](https://agda.readthedocs.io/en/latest/language/implicit-arguments.html),
 which correspond in mathematics to "subscripts that are omitted when
 the reader can safely infer them", as for example for the identity
 function of a set or the identity arrow of an object of a category.
@@ -1280,7 +1280,7 @@ into functions:
 
 \begin{code}
 Id-to-Fun : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
-Id-to-Fun {𝓤} = transport (𝑖𝑑 (𝓤 ̇))
+Id-to-Fun {𝓤} = transport (𝑖𝑑 (𝓤 ̇ ))
 \end{code}
 
 Here the identity function is that of the universe `𝓤` where the types
@@ -1322,7 +1322,8 @@ identification `p : ₁ ≡ ₀`.
 
 *Remark.* Agda allows us to use a pattern `()` to get the following
 quick proof.  However, this method of proof doesn't belong to the
-realm of MLTT.
+realm of MLTT. Hence we will use the pattern `()` only in the above
+definition of [`𝟘-induction`](MLTT-Agda.html#𝟘-induction).
 
 \begin{code}
 ₁-is-not-₀[not-an-MLTT-proof] : ¬(₁ ≡ ₀)
