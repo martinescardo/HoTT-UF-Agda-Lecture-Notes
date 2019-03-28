@@ -656,7 +656,7 @@ J-invertible ua A φ X Y f i = J-equiv ua A φ X Y f (invertibles-are-equivs f i
                       → (Σ \(x : X) → P x) ≡ (Σ \(y : Y) → P (inverse f i y))
 Σ-change-of-variables {𝓤} {𝓥} ua X P Y f i = H-≃ ua X A a Y (f , i)
  where
-   A : (Y : 𝓤 ̇) → X ≃ Y →  (𝓤 ⊔ 𝓥) ⁺ ̇
+   A : (Y : 𝓤 ̇ ) → X ≃ Y →  (𝓤 ⊔ 𝓥)⁺ ̇
    A Y (f , i) = (Σ P) ≡ (Σ (P ∘ inverse f i))
    a : A X (≃-refl X)
    a = refl (Σ P)
