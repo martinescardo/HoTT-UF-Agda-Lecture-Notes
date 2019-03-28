@@ -1759,12 +1759,11 @@ ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x x' :
     → x ≡ x' → y ≡ y' → f x y ≡ f x' y'
 \end{code}
 
-[<sub>Table of contents ⇑</sub>](toc.html#contents) [<sub> HoTT/UF continued ⇓ </sub>](FunExt)
+[<sub>Table of contents ⇑</sub>](toc.html#contents) [<sub> HoTT/UF continued ⇓ </sub>](FunExt.html)
 ### <a name="infix"></a> Operator fixities and precedences
 
-Without the following list of operator precedence and
-associativity (left or right), this agda file doesn't parse and is
-rejected by Agda.
+Without the following list of operator precedences and associativity
+(left or right), this agda file doesn't parse and is rejected by Agda.
 
 \begin{code}
 infix  0 _◁_

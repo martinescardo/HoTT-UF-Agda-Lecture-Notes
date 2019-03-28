@@ -23,7 +23,7 @@ open import FunExt
 
 The following is Voevosky's approach to saying that a type is
 inhabited in such a way that the statement of inhabitation is a
-subsingleton, using funext.
+subsingleton, using `funext`.
 
 \begin{code}
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
