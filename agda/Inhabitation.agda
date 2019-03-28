@@ -107,7 +107,7 @@ module basic-truncation-development
 
   IChoice : ∀ 𝓤 → 𝓤 ⁺ ̇
   IChoice 𝓤 = (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ )
-             (i : is-set X) (j : (x : X) → is-set (Y x))
+              (i : is-set X) (j : (x : X) → is-set (Y x))
             → IAC X Y i j
 
   Choice-gives-IChoice : Choice 𝓤 → IChoice 𝓤

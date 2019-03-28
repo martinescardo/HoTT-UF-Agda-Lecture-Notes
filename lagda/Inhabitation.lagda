@@ -240,12 +240,14 @@ We define the axiom of choice in the universe `𝓤` to be the above with
 It is important that we have the condition that `A` is a set-indexed
 family of sets and that the relation `R` is subsingleton valued. For
 arbitrary higher groupoids, it is not in general possible to perform
-the choice functorially. This is equivalent to another familiar
-formulation of choice, namely that a set-indexed product of non-empty
-sets is non-empty, where in a constructive setting we generalize
-`non-empty` to `inhabited` (but this generalization is immaterial,
-because choice implies excluded middle, and excluded middle implies
-that non-emptiness and inhabitation are the same notion).
+the choice functorially.
+
+The above is equivalent to another familiar formulation of choice,
+namely that a set-indexed product of non-empty sets is non-empty,
+where in a constructive setting we generalize `non-empty` to
+`inhabited` (but this generalization is immaterial, because choice
+implies excluded middle, and excluded middle implies that
+non-emptiness and inhabitation are the same notion).
 
 \begin{code}
   IAC : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
@@ -254,7 +256,7 @@ that non-emptiness and inhabitation are the same notion).
 
   IChoice : ∀ 𝓤 → 𝓤 ⁺ ̇
   IChoice 𝓤 = (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ )
-             (i : is-set X) (j : (x : X) → is-set (Y x))
+              (i : is-set X) (j : (x : X) → is-set (Y x))
             → IAC X Y i j
 \end{code}
 
