@@ -34,7 +34,7 @@ This says that if we have a function from `X` to a subsingleton `P`, then
 `P` must have a point. So this fails when `X=𝟘`. Considering `P=𝟘`, we conclude
 that `¬¬ X` if `X` is inhabited, which says that `X` is non-empty. However,
 in the absence of excluded middle, [inhabitation is stronger than
-double negation](https://lmcs.episciences.org/3217).
+non-emptiness](https://lmcs.episciences.org/3217).
 
 For simplicity in the formulation of the theorems, we assume global
 `dfunext`.
