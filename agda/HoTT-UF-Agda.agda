@@ -607,18 +607,18 @@ H-≃ : is-univalent 𝓤
     → A X (≃-refl X) → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A Y e
 H-≃ {𝓤} {𝓥} ua X A a Y e = γ
  where
-  A' : (Y : 𝓤 ̇ ) → X ≡ Y → 𝓥 ̇
-  A' Y p = A Y (Id-to-Eq X Y p)
-  a' : A' X (refl X)
-  a' = a
-  f' : (Y : 𝓤 ̇ ) (p : X ≡ Y) → A' Y p
-  f' = H X A' a'
-  g : A Y (Id-to-Eq X Y (Eq-to-Id ua X Y e))
-  g = f' Y (Eq-to-Id ua X Y e)
+  B : (Y : 𝓤 ̇ ) → X ≡ Y → 𝓥 ̇
+  B Y p = A Y (Id-to-Eq X Y p)
+  b : B X (refl X)
+  b = a
+  f : (Y : 𝓤 ̇ ) (p : X ≡ Y) → B Y p
+  f = H X B b
+  c : A Y (Id-to-Eq X Y (Eq-to-Id ua X Y e))
+  c = f Y (Eq-to-Id ua X Y e)
   p : Id-to-Eq X Y (Eq-to-Id ua X Y e) ≡ e
   p = inverse-is-section (Id-to-Eq X Y) (ua X Y) e
   γ : A Y e
-  γ = transport (A Y) p g
+  γ = transport (A Y) p c
 
 J-≃ : is-univalent 𝓤
     → (A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
