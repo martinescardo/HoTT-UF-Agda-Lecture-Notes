@@ -551,7 +551,7 @@ efficiency but only with understanding how to codify mathematics in
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="binarysum"></a> The binary sum type constructor `_+_`
 
-We now define the disjoint sum of two types `X` and `Y`. The elements of
+We now define the [disjoint](MLTT-Agda.html#inl-inr-disjoint-images) sum of two types `X` and `Y`. The elements of
 the type
 
    > `X + Y`
@@ -645,7 +645,7 @@ is a type whose elements are of the form
 with `x : X` and `y : Y x`. This sum type will live in the [least
 upper bound](MLTT-Agda.html#universes)
 
-   > `𝓤 ⊔ 𝓥`.
+   > `𝓤 ⊔ 𝓥`
 
 of the universes `𝓤` and `𝓥`. We will write this sum
 
@@ -857,7 +857,7 @@ out to be incorrect.
 
 Notice a crucial difference with the previous definitions using `data`
 or induction: In the previous cases, we defined *types*, namely `𝟘`,
-`𝟙`, `ℕ`, or a *type depending on parameters*, namely `_+_`, with `𝓤`
+`𝟙`, `ℕ`, or a *type depending on type parameters*, namely `_+_`, with `𝓤`
 and `𝓥` fixed,
 
    > `_+_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇`
@@ -872,7 +872,7 @@ by some mysterious sort of induction. It is this that prevents us from
 being able to prove that `refl x` would be the only element of the type `Id
 X x x`, or that for `Id X x y` would have at most one element no
 matter what `y : X` is. There is however, one interesting, and crucial, thing we
-[can prove](HoTT-UF-Agda.html#retracts), namely that for any fixed `x : X`, the
+[can prove](HoTT-UF-Agda.html#singleton-type), namely that for any fixed `x : X`, the
 type
 
 
