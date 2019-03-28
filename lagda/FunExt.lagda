@@ -141,7 +141,7 @@ hfunext-gives-dfunext : hfunext 𝓤 𝓥 → dfunext 𝓤 𝓥
 hfunext-gives-dfunext hfe {X} {A} {f} {g} = inverse (happly f g) (hfe f g)
 \end{code}
 
-Voevodsky showed that all notions of function extensionaliry are
+Voevodsky showed that all notions of function extensionality are
 logically equivalent to saying that products of singletons are
 singletons:
 
