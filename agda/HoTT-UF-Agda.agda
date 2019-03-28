@@ -651,7 +651,7 @@ J-invertible : is-univalent 𝓤
 J-invertible ua A φ X Y f i = J-equiv ua A φ X Y f (invertibles-are-equivs f i)
 
 Σ-change-of-variables : is-univalent 𝓤
-                      → (X : 𝓤 ̇ ) (P : X → 𝓥 ̇) (Y : 𝓤 ̇) (f : X → Y)
+                      → (X : 𝓤 ̇ ) (P : X → 𝓥 ̇ ) (Y : 𝓤 ̇ ) (f : X → Y)
                       → (i : is-equiv f)
                       → (Σ \(x : X) → P x) ≡ (Σ \(y : Y) → P (inverse f i y))
 Σ-change-of-variables {𝓤} {𝓥} ua X P Y f i = H-≃ ua X A a Y (f , i)
@@ -662,7 +662,7 @@ J-invertible ua A φ X Y f i = J-equiv ua A φ X Y f (invertibles-are-equivs f i
    a = refl (Σ P)
 
 Σ-change-of-variables' : is-univalent 𝓤
-                       → (X : 𝓤 ̇ ) (P : X → 𝓥 ̇) (Y : 𝓤 ̇) (g : Y → X)
+                       → (X : 𝓤 ̇ ) (P : X → 𝓥 ̇ ) (Y : 𝓤 ̇ ) (g : Y → X)
                        → (i : is-equiv g)
                        → (Σ \(x : X) → P x) ≡ (Σ \(y : Y) → P (g y))
 Σ-change-of-variables' {𝓤} {𝓥} ua X P Y g j = Σ-change-of-variables ua X P Y
