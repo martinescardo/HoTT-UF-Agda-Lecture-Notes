@@ -792,12 +792,15 @@ above, but we can introduce the notation `Π` for them, similar to that for `Σ`
 Notice that the function type `X → Y` is the particular case of the `Π`
 type when the family `A` is constant with value `Y`.
 
-We take the opportunity to define the identity function and function
-composition:
+We take the opportunity to define the identity function (in two
+versions with different implicit arguments) and function composition:
 
 \begin{code}
 id : {X : 𝓤 ̇ } → X → X
 id x = x
+
+𝑖𝑑 : (X : 𝓤 ̇ ) → X → X
+𝑖𝑑 X = id
 \end{code}
 
 Usually the type of function composition `_∘_` is given as simply
@@ -1014,7 +1017,7 @@ basic examples of mathematics in Martin-Löf type theory.
 \begin{code}
 transport : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
           → x ≡ y → A x → A y
-transport A (refl x) = id
+transport A (refl x) = 𝑖𝑑 (A x)
 \end{code}
 
 We can equivalently define transport using `J` as follows:
@@ -1022,7 +1025,7 @@ We can equivalently define transport using `J` as follows:
 \begin{code}
 transportJ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
            → x ≡ y → A x → A y
-transportJ {𝓤} {𝓥} {X} A {x} {y} = J X (λ x y _ → A x → A y) (λ x → id) x y
+transportJ {𝓤} {𝓥} {X} A {x} {y} = J X (λ x y _ → A x → A y) (λ x → 𝑖𝑑 (A x)) x y
 \end{code}
 
 In the same way `ℕ`-recursion can be seen as the non-dependent special
@@ -1277,7 +1280,7 @@ into functions:
 
 \begin{code}
 Id-to-Fun : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
-Id-to-Fun = transport id
+Id-to-Fun {𝓤} = transport (𝑖𝑑 (𝓤 ̇))
 \end{code}
 
 Here the identity function is that of the universe `𝓤` where the types
@@ -1286,11 +1289,11 @@ this time the identity function is that of the type `X`:
 
 \begin{code}
 Id-to-Fun' : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
-Id-to-Fun' (refl X) = id
+Id-to-Fun' (refl X) = 𝑖𝑑 X
 
 Id-to-Funs-agree : {X Y : 𝓤 ̇ } (p : X ≡ Y)
                  → Id-to-Fun p ≡ Id-to-Fun' p
-Id-to-Funs-agree (refl X) = refl id
+Id-to-Funs-agree (refl X) = refl (𝑖𝑑 X)
 \end{code}
 
 So if we have a hypothetical identification `p : 𝟙 ≡ 𝟘`, then we get a

@@ -27,7 +27,7 @@ inhabited-recursion : (X P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → i
 inhabited-recursion X P s f φ = φ P s f
 
 inhabited-gives-pointed-for-subsingletons : (P : 𝓤 ̇ ) → is-subsingleton P → is-inhabited P → P
-inhabited-gives-pointed-for-subsingletons P s = inhabited-recursion P P s id
+inhabited-gives-pointed-for-subsingletons P s = inhabited-recursion P P s (𝑖𝑑 P)
 
 inhabited-functorial : global-dfunext → (X : 𝓤 ⁺ ̇ ) (Y : 𝓤 ̇ )
                      → (X → Y) → is-inhabited X → is-inhabited Y

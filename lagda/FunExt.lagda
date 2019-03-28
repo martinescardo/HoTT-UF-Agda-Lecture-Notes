@@ -79,7 +79,7 @@ univalence-gives-funext ua {X} {Y} {f₀} {f₁} h = γ
     ε (y , y , refl y) = refl (y , y , refl y)
 
   πδ : π₀ ∘ δ ≡ π₁ ∘ δ
-  πδ = refl id
+  πδ = refl (𝑖𝑑 Y)
 
   φ : (Δ → Y) → (Y → Y)
   φ π = π ∘ δ
@@ -218,12 +218,12 @@ funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
    g h = f ∘ h
    g-is-equiv : is-equiv g
    g-is-equiv = post-comp-is-equiv fe fe' f f-is-equiv
-   i : is-singleton (Σ \(h : X → Σ A) → f ∘ h ≡ id)
-   i = g-is-equiv id
-   r : (Σ \(h : X → Σ A) → f ∘ h ≡ id) → Π A
-   r (h , p) x = transport A (happly (f ∘ h) id p x) (pr₂ (h x))
-   s : Π A → (Σ \(h : X → Σ A) → f ∘ h ≡ id)
-   s φ = (λ x → x , φ x) , refl id
+   i : is-singleton (Σ \(h : X → Σ A) → f ∘ h ≡ 𝑖𝑑 X)
+   i = g-is-equiv (𝑖𝑑 X)
+   r : (Σ \(h : X → Σ A) → f ∘ h ≡ 𝑖𝑑 X) → Π A
+   r (h , p) x = transport A (happly (f ∘ h) (𝑖𝑑 X) p x) (pr₂ (h x))
+   s : Π A → (Σ \(h : X → Σ A) → f ∘ h ≡ 𝑖𝑑 X)
+   s φ = (λ x → x , φ x) , refl (𝑖𝑑 X)
    rs : ∀ φ → r (s φ) ≡ φ
    rs φ = refl (r (s φ))
    γ : is-singleton (Π A)

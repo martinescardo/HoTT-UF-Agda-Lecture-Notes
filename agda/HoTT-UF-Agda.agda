@@ -41,18 +41,18 @@ syntax magma-operation M x y = x ·⟨ M ⟩ y
 is-magma-hom : (M N : Magma 𝓤) → (⟨ M ⟩ → ⟨ N ⟩) → 𝓤 ̇
 is-magma-hom M N f = (x y : ⟨ M ⟩) → f (x ·⟨ M ⟩ y) ≡ f x ·⟨ N ⟩ f y
 
-id-is-magma-hom : (M : Magma 𝓤) → is-magma-hom M M id
+id-is-magma-hom : (M : Magma 𝓤) → is-magma-hom M M (𝑖𝑑 ⟨ M ⟩)
 id-is-magma-hom M = λ (x y : ⟨ M ⟩) → refl (x ·⟨ M ⟩ y)
 
 is-magma-iso : (M N : Magma 𝓤) → (⟨ M ⟩ → ⟨ N ⟩) → 𝓤 ̇
 is-magma-iso M N f = is-magma-hom M N f
                    × Σ \(g : ⟨ N ⟩ → ⟨ M ⟩) → is-magma-hom N M g
-                                            × (g ∘ f ∼ id)
-                                            × (f ∘ g ∼ id)
+                                            × (g ∘ f ∼ 𝑖𝑑 ⟨ M ⟩)
+                                            × (f ∘ g ∼ 𝑖𝑑 ⟨ N ⟩)
 
-id-is-magma-iso : (M : Magma 𝓤) → is-magma-iso M M id
+id-is-magma-iso : (M : Magma 𝓤) → is-magma-iso M M (𝑖𝑑 ⟨ M ⟩)
 id-is-magma-iso M = id-is-magma-hom M ,
-                    id ,
+                    𝑖𝑑 ⟨ M ⟩ ,
                     id-is-magma-hom M ,
                     refl ,
                     refl
@@ -118,6 +118,15 @@ ap-refl f x = refl (refl (f x))
 ap-∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x y z : X} (p : x ≡ y) (q : y ≡ z)
      → ap f (p ∙ q) ≡ ap f p ∙ ap f q
 ap-∙ f p (refl y) = refl (ap f p)
+
+ap-id : {X : 𝓤 ̇ } {x y : X} (p : x ≡ y)
+      → ap id p ≡ p
+ap-id (refl x) = refl (refl x)
+
+ap-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+       (f : X → Y) (g : Y → Z) {x y : X} (p : x ≡ y)
+     → ap (g ∘ f) p ≡ (ap g ∘ ap f) p
+ap-∘ f g (refl x) = refl (refl (g (f x)))
 
 transport∙ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y z : X} (p : x ≡ y) (q : y ≡ z)
            → transport A (p ∙ q) ≡ transport A q ∘ transport A p
@@ -344,11 +353,11 @@ retraction (r , s , η) = r
 section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ◁ Y → X → Y
 section (r , s , η) = s
 
-retract-equation : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (ρ : X ◁ Y) → retraction ρ ∘ section ρ ∼ id
+retract-equation : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (ρ : X ◁ Y) → retraction ρ ∘ section ρ ∼ 𝑖𝑑 X
 retract-equation (r , s , η) = η
 
 ◁-refl : (X : 𝓤 ̇ ) → X ◁ X
-◁-refl X = id , id , refl
+◁-refl X = 𝑖𝑑 X , 𝑖𝑑 X , refl
 
 _◁∘_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ◁ Y → Y ◁ Z → X ◁ Z
 
@@ -429,9 +438,9 @@ fiber-point : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y}
             → fiber f y → X
 fiber-point (x , p) = x
 
-fiber-identification : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y}
+fiberidentification : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y}
                      → (w : fiber f y) → f (fiber-point w) ≡ y
-fiber-identification (x , p) = p
+fiberidentification (x , p) = p
 
 is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-equiv f = (y : codomain f) → is-singleton (fiber f y)
@@ -441,7 +450,7 @@ inverse f e y = fiber-point (center (fiber f y) (e y))
 
 inverse-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                    → (y : Y) → f (inverse f e y) ≡ y
-inverse-is-section f e y = fiber-identification (center (fiber f y) (e y))
+inverse-is-section f e y = fiberidentification (center (fiber f y) (e y))
 
 inverse-centrality : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f) (y : Y)
                    → (t : fiber f y) → (inverse f e y , inverse-is-section f e y) ≡ t
@@ -489,8 +498,8 @@ inverse-is-equiv f e = invertibles-are-equivs
                          (inverse f e)
                          (f , inverse-is-section f e , inverse-is-retraction f e)
 
-id-invertible : (X : 𝓤 ̇ ) → invertible (id {𝓤} {X})
-id-invertible X = id , refl , refl
+id-invertible : (X : 𝓤 ̇ ) → invertible (𝑖𝑑 X)
+id-invertible X = 𝑖𝑑 X , refl , refl
 
 ∘-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {f' : Y → Z}
              → invertible f' → invertible f → invertible (f' ∘ f)
@@ -505,7 +514,7 @@ id-invertible X = id , refl , refl
         f' (g' z)         ≡⟨ fg' z ⟩
         z                 ∎
 
-id-is-equiv : (X : 𝓤 ̇ ) → is-equiv (id {𝓤} {X})
+id-is-equiv : (X : 𝓤 ̇ ) → is-equiv (𝑖𝑑 X)
 id-is-equiv = singleton-types-are-singletons
 
 ∘-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {g : Y → Z}
@@ -528,7 +537,7 @@ Eq-to-fun-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X ≃ Y) → is-equiv (E
 Eq-to-fun-is-equiv (f , i) = i
 
 ≃-refl : (X : 𝓤 ̇ ) → X ≃ X
-≃-refl X = id , id-is-equiv X
+≃-refl X = 𝑖𝑑 X , id-is-equiv X
 
 _●_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ≃ Y → Y ≃ Z → X ≃ Z
 _●_ {𝓤} {𝓥} {𝓦} {X} {Y} {Z} (f , d) (f' , e) = f' ∘ f , ∘-is-equiv e d
@@ -591,7 +600,7 @@ Id-to-fun {𝓤} {X} {Y} p = Eq-to-fun (Id-to-Eq X Y p)
 
 Id-to-funs-agree : {X Y : 𝓤 ̇ } (p : X ≡ Y)
                  → Id-to-fun p ≡ Id-to-Fun p
-Id-to-funs-agree (refl X) = refl id
+Id-to-funs-agree (refl X) = refl (𝑖𝑑 X)
 
 H-≃ : is-univalent 𝓤
     → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
@@ -619,21 +628,63 @@ J-≃ ua A φ X = H-≃ ua X (A X) (φ X)
 
 H-equiv : is-univalent 𝓤
         → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → (X → Y) → 𝓥 ̇ )
-        → A X (id {𝓤} {X}) → (Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → A Y f
+        → A X (𝑖𝑑 X) → (Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → A Y f
 H-equiv {𝓤} {𝓥} ua X A a Y f i = γ (f , i) i
  where
   A' : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓤 ⊔ 𝓥 ̇
   A' Y (f , i) = is-equiv f → A Y f
   a' : A' X (≃-refl X)
-  a' = λ (_ : is-equiv id) → a
+  a' = λ (_ : is-equiv (𝑖𝑑 X)) → a
   γ : (e : X ≃ Y) → A' Y e
   γ = H-≃ ua X A' a'  Y
 
 J-equiv : is-univalent 𝓤
         → (A : (X Y : 𝓤 ̇ ) → (X → Y) → 𝓥 ̇ )
-        → ((X : 𝓤 ̇ ) → A X X (id {𝓤} {X}))
+        → ((X : 𝓤 ̇ ) → A X X (𝑖𝑑 X))
         → (X Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → A X Y f
 J-equiv ua A φ X = H-equiv ua X (A X) (φ X)
+
+J-invertible : is-univalent 𝓤
+        → (A : (X Y : 𝓤 ̇ ) → (X → Y) → 𝓥 ̇ )
+        → ((X : 𝓤 ̇ ) → A X X (𝑖𝑑 X))
+        → (X Y : 𝓤 ̇ ) (f : X → Y) → invertible f → A X Y f
+J-invertible ua A φ X Y f i = J-equiv ua A φ X Y f (invertibles-are-equivs f i)
+
+Σ-change-of-variables : is-univalent 𝓤
+                      → (X : 𝓤 ̇ ) (P : X → 𝓥 ̇) (Y : 𝓤 ̇) (f : X → Y)
+                      → (i : is-equiv f)
+                      → (Σ \(x : X) → P x) ≡ (Σ \(y : Y) → P (inverse f i y))
+Σ-change-of-variables {𝓤} {𝓥} ua X P Y f i = H-≃ ua X A a Y (f , i)
+ where
+   A : (Y : 𝓤 ̇) → X ≃ Y →  (𝓤 ⊔ 𝓥) ⁺ ̇
+   A Y (f , i) = (Σ P) ≡ (Σ (P ∘ inverse f i))
+   a : A X (≃-refl X)
+   a = refl (Σ P)
+
+Σ-change-of-variables' : is-univalent 𝓤
+                      → (X : 𝓤 ̇ ) (P : X → 𝓥 ̇) (Y : 𝓤 ̇) (g : Y → X)
+                      → (i : is-equiv g)
+                      → (Σ \(x : X) → P x) ≡ (Σ \(y : Y) → P (g y))
+Σ-change-of-variables' {𝓤} {𝓥} ua X P Y g j =
+  Σ-change-of-variables ua X P Y (inverse g j) (inverse-is-equiv g j)
+
+is-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+is-hae f = Σ \(g : codomain f → domain f)
+         → Σ \(η : g ∘ f ∼ id)
+         → Σ \(ε : f ∘ g ∼ id)
+         → (x : domain f) → ap f (η x) ≡ ε (f x)
+
+haes-are-invertible : {X Y : 𝓤 ̇ } (f : X → Y)
+                    → is-hae f → invertible f
+haes-are-invertible f (g , η , ε , _) = g , η , ε
+
+id-is-hae : (X : 𝓤 ̇ ) → is-hae (𝑖𝑑 X)
+id-is-hae X = 𝑖𝑑 X , refl , refl , (λ x → refl (refl x))
+
+invertibles-are-haes : is-univalent 𝓤
+                     → (X Y : 𝓤 ̇ ) (f : X → Y)
+                     → invertible f → is-hae f
+invertibles-are-haes ua = J-invertible ua (λ X Y f → is-hae f) id-is-hae
 
 swap₂ : 𝟚 → 𝟚
 swap₂ ₀ = ₁

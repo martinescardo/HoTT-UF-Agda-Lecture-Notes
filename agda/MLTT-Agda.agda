@@ -162,6 +162,9 @@ X × Y = Σ \(x : X) → Y
 id : {X : 𝓤 ̇ } → X → X
 id x = x
 
+𝑖𝑑 : (X : 𝓤 ̇ ) → X → X
+𝑖𝑑 X = id
+
 _∘_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : Y → 𝓦 ̇ }
     → ((y : Y) → Z y)
     → (f : X → Y)
@@ -205,11 +208,11 @@ Js-agreement X A f x x (refl x) = refl (f x)
 
 transport : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
           → x ≡ y → A x → A y
-transport A (refl x) = id
+transport A (refl x) = 𝑖𝑑 (A x)
 
 transportJ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
            → x ≡ y → A x → A y
-transportJ {𝓤} {𝓥} {X} A {x} {y} = J X (λ x y _ → A x → A y) (λ x → id) x y
+transportJ {𝓤} {𝓥} {X} A {x} {y} = J X (λ x y _ → A x → A y) (λ x → 𝑖𝑑 (A x)) x y
 
 nondep-H : {X : 𝓤 ̇ } (x : X) (A : X → 𝓥 ̇ )
          → A x → (y : X) → x ≡ y → A y
@@ -280,14 +283,14 @@ x ≢ y = ¬(x ≡ y)
 ≢-sym {𝓤} {X} {x} {y} u = λ (p : y ≡ x) → u (p ⁻¹)
 
 Id-to-Fun : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
-Id-to-Fun = transport id
+Id-to-Fun {𝓤} = transport (𝑖𝑑 (𝓤 ̇))
 
 Id-to-Fun' : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
-Id-to-Fun' (refl X) = id
+Id-to-Fun' (refl X) = 𝑖𝑑 X
 
 Id-to-Funs-agree : {X Y : 𝓤 ̇ } (p : X ≡ Y)
                  → Id-to-Fun p ≡ Id-to-Fun' p
-Id-to-Funs-agree (refl X) = refl id
+Id-to-Funs-agree (refl X) = refl (𝑖𝑑 X)
 
 𝟙-is-not-𝟘 : 𝟙 ≢ 𝟘
 𝟙-is-not-𝟘 p = Id-to-Fun p ⋆
