@@ -1086,7 +1086,7 @@ y` to `x ≡ z`.
 transport. Can you prove that the two versions give equal results?
 
 When writing `p ∙ q`, we lose information on the lhs and the rhs of the
-identification, which makes some definitions hard to read. We now
+identifications `p` and `q`, which makes some definitions hard to read. We now
 introduce notation to be able to write e.g.
 
    > `x ≡⟨ p ⟩`
