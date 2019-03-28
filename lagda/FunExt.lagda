@@ -285,7 +285,7 @@ prove some generally useful lemmas first.
 Π-is-subsingleton fe i f g = fe (λ x → i x (f x) (g x))
 
 being-singleton-is-a-subsingleton : dfunext 𝓤 𝓤 → {X : 𝓤 ̇ }
-                                    → is-subsingleton (is-singleton X)
+                                  → is-subsingleton (is-singleton X)
 being-singleton-is-a-subsingleton fe {X} (x , φ) (y , γ) = p
  where
   i : is-subsingleton X
@@ -296,8 +296,8 @@ being-singleton-is-a-subsingleton fe {X} (x , φ) (y , γ) = p
   p = to-Σ-≡ (φ y , fe (λ (z : X) → s y z _ _))
 
 being-equiv-is-a-subsingleton : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
-                                 → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                 → is-subsingleton (is-equiv f)
+                              → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                              → is-subsingleton (is-equiv f)
 being-equiv-is-a-subsingleton fe fe' f =
  Π-is-subsingleton fe (λ x → being-singleton-is-a-subsingleton fe')
 
@@ -329,7 +329,7 @@ So if all universes are univalent then "being univalent" is a
 subsingleton, and hence a singleton. This hypothesis of global
 univalence cannot be expressed in our MLTT that only has `ω`
 many universes, because global univalence would have to live in the
-first universe after them. Agda does have such a universe `𝓤ω,` and so
+first universe after them. Agda [does have](https://agda.readthedocs.io/en/latest/language/universe-levels.html#expressions-of-kind-set) such a universe `𝓤ω,` and so
 we can formulate it here. There would be no problem in extending our
 MLTT to have such a universe if we so wished, in which case we would
 be able to formulate and prove:
@@ -349,7 +349,7 @@ univalence-is-a-singleton {𝓤} γ = pointed-subsingletons-are-singletons
 \end{code}
 
 That the type `global-univalence` would be a subsingleton can't even be formulated in
-the absence of a universe of level `ω + 1`.
+the absence of a universe of level `ω+1`, which this time Agda doesn't have.
 
 In the absence of a universe `𝓤ω` in our MLTT, we can simply have an
 axiom scheme, consisting of `ω`-many axioms, stating that each

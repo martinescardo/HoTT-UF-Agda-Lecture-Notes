@@ -184,7 +184,7 @@ univalence-gives-vvfunext ua = univalence-gives-vvfunext' ua ua
 Π-is-subsingleton fe i f g = fe (λ x → i x (f x) (g x))
 
 being-singleton-is-a-subsingleton : dfunext 𝓤 𝓤 → {X : 𝓤 ̇ }
-                                    → is-subsingleton (is-singleton X)
+                                  → is-subsingleton (is-singleton X)
 being-singleton-is-a-subsingleton fe {X} (x , φ) (y , γ) = p
  where
   i : is-subsingleton X
@@ -195,8 +195,8 @@ being-singleton-is-a-subsingleton fe {X} (x , φ) (y , γ) = p
   p = to-Σ-≡ (φ y , fe (λ (z : X) → s y z _ _))
 
 being-equiv-is-a-subsingleton : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
-                                 → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                 → is-subsingleton (is-equiv f)
+                              → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                              → is-subsingleton (is-equiv f)
 being-equiv-is-a-subsingleton fe fe' f =
  Π-is-subsingleton fe (λ x → being-singleton-is-a-subsingleton fe')
 
