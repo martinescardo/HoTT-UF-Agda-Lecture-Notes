@@ -1,0 +1,11 @@
+mkdir -p pdf/all
+google-chrome --headless --disable-gpu --print-to-pdf="pdf/index.pdf" _site/index.html
+google-chrome --headless --disable-gpu --print-to-pdf="pdf/toc.pdf" _site/toc.html
+google-chrome --headless --disable-gpu --print-to-pdf="pdf/MLTT-Agda.pdf" _site/MLTT-Agda.html
+google-chrome --headless --disable-gpu --print-to-pdf="pdf/HoTT-UF-Agda.pdf" _site/HoTT-UF-Agda.html
+google-chrome --headless --disable-gpu --print-to-pdf="pdf/FunExt.pdf" _site/FunExt.html
+google-chrome --headless --disable-gpu --print-to-pdf="pdf/Inhabitation.pdf" _site/Inhabitation.html
+google-chrome --headless --disable-gpu --print-to-pdf="pdf/Appendix.pdf" _site/Appendix.html
+google-chrome --headless --disable-gpu --print-to-pdf="pdf/Universes.pdf" _site/Universes.html
+pdftk pdf/index.pdf pdf/toc.pdf pdf/MLTT-Agda.pdf pdf/HoTT-UF-Agda.pdf pdf/FunExt.pdf pdf/Inhabitation.pdf pdf/Appendix.pdf pdf/Universes.pdf output "pdf/all/HoTT-UF-Agda.pdf
+cp "pdf/all/HoTT-UF-Agda.pdf ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
