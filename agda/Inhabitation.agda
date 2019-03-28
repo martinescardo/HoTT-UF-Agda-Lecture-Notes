@@ -13,7 +13,8 @@ is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
 global-dfunext : 𝓤ω
 global-dfunext = ∀ 𝓤 𝓥 → dfunext 𝓤 𝓥
 
-inhabitation-is-a-subsingleton : global-dfunext → (X : 𝓤 ̇ ) → is-subsingleton (is-inhabited X)
+inhabitation-is-a-subsingleton : global-dfunext → (X : 𝓤 ̇ )
+                               → is-subsingleton (is-inhabited X)
 inhabitation-is-a-subsingleton {𝓤} fe X =
   Π-is-subsingleton (fe (𝓤 ⁺) 𝓤)
     λ P → Π-is-subsingleton (fe 𝓤 𝓤)
@@ -26,7 +27,8 @@ pointed-is-inhabited x = λ P s f → f x
 inhabited-recursion : (X P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → is-inhabited X → P
 inhabited-recursion X P s f φ = φ P s f
 
-inhabited-gives-pointed-for-subsingletons : (P : 𝓤 ̇ ) → is-subsingleton P → is-inhabited P → P
+inhabited-gives-pointed-for-subsingletons : (P : 𝓤 ̇ )
+                                          → is-subsingleton P → is-inhabited P → P
 inhabited-gives-pointed-for-subsingletons P s = inhabited-recursion P P s (𝑖𝑑 P)
 
 inhabited-functorial : global-dfunext → (X : 𝓤 ⁺ ̇ ) (Y : 𝓤 ̇ )
@@ -55,7 +57,7 @@ record propositional-truncations-exist : 𝓤ω where
  field
   ∥_∥          : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
   ∥∥-is-a-prop : {𝓤 : Universe} {X : 𝓤 ̇ } → is-prop ∥ X ∥
-  ∣_∣          : {𝓤 : Universe} {X : 𝓤 ̇ } → X → ∥ X ∥
+  ∣_∣         : {𝓤 : Universe} {X : 𝓤 ̇ } → X → ∥ X ∥
   ∥∥-rec       : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {P : 𝓥 ̇ }
               → is-prop P → (X → P) → ∥ X ∥ → P
 
