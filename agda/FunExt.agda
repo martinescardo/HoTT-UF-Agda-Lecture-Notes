@@ -18,7 +18,7 @@ pre-comp-is-equiv {𝓤} ua =
      (λ X Z → id-is-equiv (X → Z))
 
 univalence-gives-funext : is-univalent 𝓤 → funext 𝓥 𝓤
-univalence-gives-funext ua {X} {Y} {f₀} {f₁} h = γ
+univalence-gives-funext ua {X} {Y} {f₀} {f₁} = γ
  where
   Δ = Σ \(y₀ : Y) → Σ \(y₁ : Y) → y₀ ≡ y₁
 
@@ -49,15 +49,16 @@ univalence-gives-funext ua {X} {Y} {f₀} {f₁} h = γ
   π₀-equals-π₁ : π₀ ≡ π₁
   π₀-equals-π₁ = equivs-are-lc φ φ-is-equiv πδ
 
-  γ : f₀ ≡ f₁
-  γ = ap (λ π x → π (f₀ x , f₁ x , h x)) π₀-equals-π₁
+  γ : f₀ ∼ f₁ → f₀ ≡ f₁
+  γ h = ap (λ π x → π (f₀ x , f₁ x , h x)) π₀-equals-π₁
 
-  γ' = f₀                              ≡⟨ refl _ ⟩
-       (λ x → f₀ x)                    ≡⟨ refl _ ⟩
-       (λ x → π₀ (f₀ x , f₁ x , h x))  ≡⟨ ap (λ π x → π (f₀ x , f₁ x , h x)) π₀-equals-π₁ ⟩
-       (λ x → π₁ (f₀ x , f₁ x , h x))  ≡⟨ refl _ ⟩
-       (λ x → f₁ x)                    ≡⟨ refl _ ⟩
-       f₁                              ∎
+  γ' : f₀ ∼ f₁ → f₀ ≡ f₁
+  γ' h = f₀                              ≡⟨ refl _ ⟩
+         (λ x → f₀ x)                    ≡⟨ refl _ ⟩
+         (λ x → π₀ (f₀ x , f₁ x , h x))  ≡⟨ ap (λ π x → π (f₀ x , f₁ x , h x)) π₀-equals-π₁ ⟩
+         (λ x → π₁ (f₀ x , f₁ x , h x))  ≡⟨ refl _ ⟩
+         (λ x → f₁ x)                    ≡⟨ refl _ ⟩
+         f₁                              ∎
 
 dfunext : ∀ 𝓤 𝓥 → (𝓤 ⊔ 𝓥)⁺ ̇
 dfunext 𝓤 𝓥 = {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ∼ g → f ≡ g

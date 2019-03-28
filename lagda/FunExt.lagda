@@ -59,7 +59,7 @@ With this we can prove the desired result as follows.
 
 \begin{code}
 univalence-gives-funext : is-univalent 𝓤 → funext 𝓥 𝓤
-univalence-gives-funext ua {X} {Y} {f₀} {f₁} h = γ
+univalence-gives-funext ua {X} {Y} {f₀} {f₁} = γ
  where
   Δ = Σ \(y₀ : Y) → Σ \(y₁ : Y) → y₀ ≡ y₁
 
@@ -90,8 +90,8 @@ univalence-gives-funext ua {X} {Y} {f₀} {f₁} h = γ
   π₀-equals-π₁ : π₀ ≡ π₁
   π₀-equals-π₁ = equivs-are-lc φ φ-is-equiv πδ
 
-  γ : f₀ ≡ f₁
-  γ = ap (λ π x → π (f₀ x , f₁ x , h x)) π₀-equals-π₁
+  γ : f₀ ∼ f₁ → f₀ ≡ f₁
+  γ h = ap (λ π x → π (f₀ x , f₁ x , h x)) π₀-equals-π₁
 \end{code}
 
 This definition of `γ` is probably too quick. Here are all the steps
@@ -99,12 +99,13 @@ performed silently by Agda, by expanding judgmental equalities,
 indicated with `refl` here:
 
 \begin{code}
-  γ' = f₀                              ≡⟨ refl _ ⟩
-       (λ x → f₀ x)                    ≡⟨ refl _ ⟩
-       (λ x → π₀ (f₀ x , f₁ x , h x))  ≡⟨ ap (λ π x → π (f₀ x , f₁ x , h x)) π₀-equals-π₁ ⟩
-       (λ x → π₁ (f₀ x , f₁ x , h x))  ≡⟨ refl _ ⟩
-       (λ x → f₁ x)                    ≡⟨ refl _ ⟩
-       f₁                              ∎
+  γ' : f₀ ∼ f₁ → f₀ ≡ f₁
+  γ' h = f₀                              ≡⟨ refl _ ⟩
+         (λ x → f₀ x)                    ≡⟨ refl _ ⟩
+         (λ x → π₀ (f₀ x , f₁ x , h x))  ≡⟨ ap (λ π x → π (f₀ x , f₁ x , h x)) π₀-equals-π₁ ⟩
+         (λ x → π₁ (f₀ x , f₁ x , h x))  ≡⟨ refl _ ⟩
+         (λ x → f₁ x)                    ≡⟨ refl _ ⟩
+         f₁                              ∎
 \end{code}
 
 So notice that this relies on the so-called η-rule for judgmental

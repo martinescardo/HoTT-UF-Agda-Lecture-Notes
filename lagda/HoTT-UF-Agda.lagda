@@ -1569,10 +1569,9 @@ is-hae f = Σ \(g : codomain f → domain f)
          → Σ \(η : g ∘ f ∼ id)
          → Σ \(ε : f ∘ g ∼ id)
          → (x : domain f) → ap f (η x) ≡ ε (f x)
-
 \end{code}
 
-The following is trivial:
+The following just forgets data:
 
 \begin{code}
 haes-are-invertible : {X Y : 𝓤 ̇ } (f : X → Y)
@@ -1580,8 +1579,8 @@ haes-are-invertible : {X Y : 𝓤 ̇ } (f : X → Y)
 haes-are-invertible f (g , η , ε , _) = g , η , ε
 \end{code}
 
-To prove that the converse holds, under univalence, it is enough to
-show that the identity maps are half-adjoint equivalences:
+To recover the data for all invertibles maps, under univalence, it is enough to give the
+data for identity maps:
 
 \begin{code}
 id-is-hae : (X : 𝓤 ̇ ) → is-hae (𝑖𝑑 X)
