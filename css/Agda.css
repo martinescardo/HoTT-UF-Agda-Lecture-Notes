@@ -1,8 +1,7 @@
 /* For generating pdf and printing. */
 
 @media print {
-  @page { margin: 0; }
-  body { margin: 1.6cm; }
+  body { margin: 2cm}
 }
 
 /* Aspects. */
