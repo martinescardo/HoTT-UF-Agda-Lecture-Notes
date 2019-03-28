@@ -57,7 +57,7 @@ ambiguities are welcome.
 There is also a [pdf
 version](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.pdf)
 automatically generated from the [html version](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/index.html) (drawback: the internal links of the pdf
-version necessarily point to the html version).
+version point to the html version).
 
 These notes were originally developed for the
 [Midlands Graduate School 2019](http://events.cs.bham.ac.uk/mgs2019/). They will evolve for a while.
