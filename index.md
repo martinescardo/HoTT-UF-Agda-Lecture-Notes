@@ -207,7 +207,7 @@ encouraged to learn Coq, too.
 
 Univalent type theory is often called *homotopy type theory*.  Here we
 are following Voevodsky, who coined the phrases *univalent
-foundations* and *univalement mathematics*.
+foundations* and *univalent mathematics*.
 We regard the terminology *homotopy type theory* as probably more
 appropriate for referring to the *synthetic* development of homotopy
 theory within univalent mathematics, for which we refer the reader to
