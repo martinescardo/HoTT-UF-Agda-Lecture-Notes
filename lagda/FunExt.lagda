@@ -78,20 +78,19 @@ univalence-gives-funext ua {X} {Y} {f₀} {f₁} = γ
     ε : (d : Δ) → δ (π₀ d) ≡ d
     ε (y , y , refl y) = refl (y , y , refl y)
 
-  πδ : π₀ ∘ δ ≡ π₁ ∘ δ
-  πδ = refl (𝑖𝑑 Y)
-
   φ : (Δ → Y) → (Y → Y)
   φ π = π ∘ δ
 
   φ-is-equiv : is-equiv φ
   φ-is-equiv = pre-comp-is-equiv ua Y Δ δ δ-is-equiv Y
 
-  π₀-equals-π₁ : π₀ ≡ π₁
-  π₀-equals-π₁ = equivs-are-lc φ φ-is-equiv πδ
+  p : φ π₀ ≡ φ π₁
+  p = refl (𝑖𝑑 Y)
+  q : π₀ ≡ π₁
+  q = equivs-are-lc φ φ-is-equiv p
 
   γ : f₀ ∼ f₁ → f₀ ≡ f₁
-  γ h = ap (λ π x → π (f₀ x , f₁ x , h x)) π₀-equals-π₁
+  γ h = ap (λ π x → π (f₀ x , f₁ x , h x)) q
 \end{code}
 
 This definition of `γ` is probably too quick. Here are all the steps
@@ -102,7 +101,7 @@ indicated with `refl` here:
   γ' : f₀ ∼ f₁ → f₀ ≡ f₁
   γ' h = f₀                              ≡⟨ refl _ ⟩
          (λ x → f₀ x)                    ≡⟨ refl _ ⟩
-         (λ x → π₀ (f₀ x , f₁ x , h x))  ≡⟨ ap (λ π x → π (f₀ x , f₁ x , h x)) π₀-equals-π₁ ⟩
+         (λ x → π₀ (f₀ x , f₁ x , h x))  ≡⟨ ap (λ π x → π (f₀ x , f₁ x , h x)) q ⟩
          (λ x → π₁ (f₀ x , f₁ x , h x))  ≡⟨ refl _ ⟩
          (λ x → f₁ x)                    ≡⟨ refl _ ⟩
          f₁                              ∎

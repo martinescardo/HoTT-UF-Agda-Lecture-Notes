@@ -1097,7 +1097,7 @@ And we can reindex retracts of `Σ` types as follows:
   γφ (x , a) = to-Σ-≡ (η x , p)
    where
     p = transport A (η x) (transport A ((η x)⁻¹) a) ≡⟨ i ⟩
-        transport A ((η x)⁻¹ ∙ η x ) a              ≡⟨ ii ⟩
+        transport A ((η x)⁻¹ ∙ η x) a               ≡⟨ ii ⟩
         transport A (refl x) a                      ≡⟨ iii ⟩
         a                                           ∎
       where
@@ -1119,10 +1119,12 @@ singleton-type x = Σ \y → y ≡ x
 singleton-type-center : {X : 𝓤 ̇ } (x : X) → singleton-type x
 singleton-type-center x = (x , refl x)
 
-singleton-type-centered : {X : 𝓤 ̇ } (x y : X) (p : y ≡ x) → singleton-type-center x ≡ (y , p)
+singleton-type-centered : {X : 𝓤 ̇ } (x y : X) (p : y ≡ x)
+                        → singleton-type-center x ≡ (y , p)
 singleton-type-centered x x (refl x) = refl (singleton-type-center x)
 
-singleton-types-are-singletons : (X : 𝓤 ̇ ) (x : X) → is-singleton (singleton-type x)
+singleton-types-are-singletons : (X : 𝓤 ̇ ) (x : X)
+                               → is-singleton (singleton-type x)
 singleton-types-are-singletons X x = singleton-type-center x , φ
  where
   φ : (σ : singleton-type x) → singleton-type-center x ≡ σ
@@ -1218,8 +1220,9 @@ inverse-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f
                    → (y : Y) → f (inverse f e y) ≡ y
 inverse-is-section f e y = fiberidentification (center (fiber f y) (e y))
 
-inverse-centrality : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f) (y : Y)
-                   → (t : fiber f y) → (inverse f e y , inverse-is-section f e y) ≡ t
+inverse-centrality : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                     (f : X → Y) (e : is-equiv f) (y : Y) (t : fiber f y)
+                   → (inverse f e y , inverse-is-section f e y) ≡ t
 inverse-centrality f e y = centrality (fiber f y) (e y)
 
 inverse-is-retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
@@ -1229,15 +1232,19 @@ inverse-is-retraction f e x = ap fiber-point p
   p : inverse f e (f x) , inverse-is-section f e (f x) ≡ x , refl (f x)
   p = inverse-centrality f e (f x) (x , (refl (f x)))
 
-equivs-are-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f → invertible f
-equivs-are-invertible f e = (inverse f e , inverse-is-retraction f e , inverse-is-section f e)
+equivs-are-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                      → is-equiv f → invertible f
+equivs-are-invertible f e = inverse f e ,
+                            inverse-is-retraction f e ,
+                            inverse-is-section f e
 \end{code}
 
 The non-trivial direction is the following, for which we use the
 retraction techniques explained [above](HoTT-UF-Agda.html#retracts):
 
 \begin{code}
-invertibles-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → invertible f → is-equiv f
+invertibles-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                       → invertible f → is-equiv f
 invertibles-are-equivs {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = γ
  where
   a : (y : Y) → (f (g y) ≡ y₀) ◁ (y ≡ y₀)
@@ -1288,7 +1295,8 @@ We can compose invertible maps:
 \begin{code}
 ∘-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {f' : Y → Z}
              → invertible f' → invertible f → invertible (f' ∘ f)
-∘-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {f'} (g' , gf' , fg') (g , gf , fg)  = g ∘ g' , η , ε
+∘-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {f'} (g' , gf' , fg') (g , gf , fg) =
+  g ∘ g' , η , ε
  where
   η : (x : X) → g (g' (f' (f x))) ≡ x
   η x = g (g' (f' (f x))) ≡⟨ ap g (gf' (f x)) ⟩
@@ -1388,15 +1396,15 @@ conceptual illustration:
 transport-is-equiv' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
                     → is-equiv (transport A p)
 transport-is-equiv' A p =
-  invertibles-are-equivs
-   (transport A p)
-   (transport A (p ⁻¹) ,
-    (λ a → transport A (p ⁻¹) (transport A p a) ≡⟨ (ap (λ - → - a) (transport∙ A p (p ⁻¹)))⁻¹ ⟩
-           transport A (p ∙ p ⁻¹) a             ≡⟨ ap (λ - → transport A - a) (⁻¹-right∙ p) ⟩
-           a                                    ∎) ,
-     λ a → transport A p (transport A (p ⁻¹) a) ≡⟨ (ap (λ - → - a) (transport∙ A (p ⁻¹) p))⁻¹ ⟩
-           transport A (p ⁻¹ ∙ p) a             ≡⟨ ap (λ - → transport A - a) (⁻¹-left∙ p) ⟩
-           a                                    ∎)
+ invertibles-are-equivs
+  (transport A p)
+  (transport A (p ⁻¹) ,
+   (λ a → transport A (p ⁻¹) (transport A p a) ≡⟨ (ap (λ - → - a) (transport∙ A p (p ⁻¹)))⁻¹ ⟩
+          transport A (p ∙ p ⁻¹) a             ≡⟨ ap (λ - → transport A - a) (⁻¹-right∙ p) ⟩
+          a                                    ∎) ,
+   (λ a → transport A p (transport A (p ⁻¹) a) ≡⟨ (ap (λ - → - a) (transport∙ A (p ⁻¹) p))⁻¹ ⟩
+          transport A (p ⁻¹ ∙ p) a             ≡⟨ ap (λ - → transport A - a) (⁻¹-left∙ p) ⟩
+          a                                    ∎))
 \end{code}
 
 Characterization of equality in `Σ` types:
