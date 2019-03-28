@@ -43,15 +43,16 @@ above exercise assuming univalence instead. We prove this by
 equivalence [induction](HoTT-UF-Agda.html#equivalence-induction) on
 `f`, which means that we only need to consider the case when `f` is an
 identity function, for which pre-composition with `f` is itself an
-identity function, and hence an equivalence:
+identity function (of a function type), and hence an equivalence:
 
 \begin{code}
 pre-comp-is-equiv : (ua : is-univalent 𝓤) (X Y : 𝓤 ̇ ) (f : X → Y)
                   → is-equiv f
                   → (Z : 𝓤 ̇ ) → is-equiv (λ (g : Y → Z) → g ∘ f)
-pre-comp-is-equiv {𝓤} ua = J-equiv ua
-                             (λ X Y f → (Z : 𝓤 ̇) → is-equiv (λ g → g ∘ f))
-                             (λ X Z → id-is-equiv (X → Z))
+pre-comp-is-equiv {𝓤} ua =
+   J-equiv ua
+     (λ X Y (f : X → Y) → (Z : 𝓤 ̇) → is-equiv (λ g → g ∘ f))
+     (λ X Z → id-is-equiv (X → Z))
 \end{code}
 
 With this we can prove the desired result as follows.

@@ -12,9 +12,10 @@ funext 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y} → f ∼ g →
 pre-comp-is-equiv : (ua : is-univalent 𝓤) (X Y : 𝓤 ̇ ) (f : X → Y)
                   → is-equiv f
                   → (Z : 𝓤 ̇ ) → is-equiv (λ (g : Y → Z) → g ∘ f)
-pre-comp-is-equiv {𝓤} ua = J-equiv ua
-                             (λ X Y f → (Z : 𝓤 ̇) → is-equiv (λ g → g ∘ f))
-                             (λ X Z → id-is-equiv (X → Z))
+pre-comp-is-equiv {𝓤} ua =
+   J-equiv ua
+     (λ X Y (f : X → Y) → (Z : 𝓤 ̇) → is-equiv (λ g → g ∘ f))
+     (λ X Z → id-is-equiv (X → Z))
 
 univalence-gives-funext : is-univalent 𝓤 → funext 𝓥 𝓤
 univalence-gives-funext ua {X} {Y} {f₀} {f₁} h = γ
