@@ -619,7 +619,7 @@ J-≃ ua A φ X = H-≃ ua X (A X) (φ X)
 
 H-equiv : is-univalent 𝓤
         → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → (X → Y) → 𝓥 ̇ )
-        → A X id → (Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → A Y f
+        → A X (id {𝓤} {X}) → (Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → A Y f
 H-equiv {𝓤} {𝓥} ua X A a Y f i = γ (f , i) i
  where
   A' : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓤 ⊔ 𝓥 ̇
@@ -631,7 +631,7 @@ H-equiv {𝓤} {𝓥} ua X A a Y f i = γ (f , i) i
 
 J-equiv : is-univalent 𝓤
         → (A : (X Y : 𝓤 ̇ ) → (X → Y) → 𝓥 ̇ )
-        → ((X : 𝓤 ̇ ) → A X X id)
+        → ((X : 𝓤 ̇ ) → A X X (id {𝓤} {X}))
         → (X Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → A X Y f
 J-equiv ua A φ X = H-equiv ua X (A X) (φ X)
 
