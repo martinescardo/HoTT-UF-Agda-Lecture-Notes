@@ -99,9 +99,10 @@ post-comp-is-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {A} nfe nfe' f (g , η , ε
 
 post-comp-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } → funext 𝓦 𝓤 → funext 𝓦 𝓥
                    → (f : X → Y) → is-equiv f → is-equiv (λ (h : A → X) → f ∘ h)
-post-comp-is-equiv fe fe' f e = invertibles-are-equivs
-                                 (λ h → f ∘ h)
-                                 (post-comp-is-invertible fe fe' f (equivs-are-invertible f e))
+post-comp-is-equiv fe fe' f e =
+ invertibles-are-equivs
+  (λ h → f ∘ h)
+  (post-comp-is-invertible fe fe' f (equivs-are-invertible f e))
 
 vvfunext-gives-hfunext : vvfunext 𝓤 𝓥 → hfunext 𝓤 𝓥
 vvfunext-gives-hfunext {𝓤} {𝓥} vfe {X} {Y} f = γ
