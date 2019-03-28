@@ -236,7 +236,7 @@ univalence-is-a-singleton {𝓤} γ = pointed-subsingletons-are-singletons
                                    (univalence-is-a-subsingletonω γ)
 
 being-subsingleton-is-a-subsingleton : {X : 𝓤 ̇ } → dfunext 𝓤 𝓤
-                                       → is-subsingleton (is-subsingleton X)
+                                     → is-subsingleton (is-subsingleton X)
 being-subsingleton-is-a-subsingleton {𝓤} {X} fe i j = c
  where
   l : is-set X
