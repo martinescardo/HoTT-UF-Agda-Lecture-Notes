@@ -86,6 +86,7 @@ univalence-gives-funext ua {X} {Y} {f₀} {f₁} = γ
 
   p : φ π₀ ≡ φ π₁
   p = refl (𝑖𝑑 Y)
+
   q : π₀ ≡ π₁
   q = equivs-are-lc φ φ-is-equiv p
 
@@ -245,7 +246,7 @@ univalence-gives-dfunext   : is-univalent 𝓤 → dfunext 𝓤 𝓤
 univalence-gives-vvfunext  : is-univalent 𝓤 → vvfunext 𝓤 𝓤
 \end{code}
 
-And then we give definitions to them (Agda makes sure there are no circularities):
+And then we give their definitions (Agda makes sure there are no circularities):
 
 \begin{code}
 funext-gives-hfunext fe fe' = vvfunext-gives-hfunext (funext-gives-vvfunext fe fe')

@@ -45,6 +45,7 @@ univalence-gives-funext ua {X} {Y} {f₀} {f₁} = γ
 
   p : φ π₀ ≡ φ π₁
   p = refl (𝑖𝑑 Y)
+
   q : π₀ ≡ π₁
   q = equivs-are-lc φ φ-is-equiv p
 
