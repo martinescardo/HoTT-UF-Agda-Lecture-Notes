@@ -280,7 +280,7 @@ This means that when we write `!𝟙 x` we have to recover the (uniquely
 determined) missing type `X` with `x : X` "from the context". When
 Agda can't figure it out, we need to supply it and write `!𝟙 {𝓤} {X}
 x`. This is because `𝓤` is also an implicit argument (all things
-declared with the Agda keyword *variable* as above are implicit
+declared with the Agda keyword *variable* [as above](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/MLTT-Agda.html#universes) are implicit
 arguments). There are
 [other](https://agda.readthedocs.io/en/latest/language/implicit-arguments.html),
 non-positional, ways to indicate `X` without having to indicate `𝓤`
@@ -334,8 +334,9 @@ This says that a type is empty precisely when we have a function to
 the empty type. Assuming [univalence](HoTT-UF-Agda.html#univalence),
 once we have defined the equality type former
 [`_≡_`](MLTT-Agda.html#identitytype), we will be able to prove that
-`(is-empty X) ≡ (X ≡ 𝟘)`. We will also be able to prove things like
-`(2 + 2 ≡ 5) ≡ 𝟘` and `(2 + 2 ≡ 4) ≡ 𝟙`.
+`(is-empty X) ≡ (X ≃ 𝟘)`, where `X ≃ 𝟘` is the type of bijections, or
+[equivalences](HoTT-UF-Agda.html#fibersandequivalences). We will also
+be able to prove things like `(2 + 2 ≡ 5) ≡ 𝟘` and `(2 + 2 ≡ 4) ≡ 𝟙`.
 
 This is for *numbers*. If we define *types* `𝟚 = 𝟙 + 𝟙` and `𝟜 = 𝟚 +
 𝟚` with two and four elements respectively, where we are anticipating
@@ -344,7 +345,7 @@ will instead have that `𝟚 + 𝟚 ≡ 𝟜` is a type with `4!` elements, whic
 is [number of permutations](https://en.wikipedia.org/wiki/Factorial)
 of a set with four elements, rather than a truth value `𝟘` or `𝟙`, as
 a consequence of the univalence axiom. That is, we will have `(𝟚 + 𝟚 ≡
-𝟜) ≡ (𝟜 + 𝟜 + 𝟜 + 𝟜 + 𝟜 + 𝟜)`, so that the type equality `𝟚 + 𝟚 ≡ 𝟜`
+𝟜) ≃ (𝟜 + 𝟜 + 𝟜 + 𝟜 + 𝟜 + 𝟜)`, so that the type equality `𝟚 + 𝟚 ≡ 𝟜`
 holds in [many more ways](https://arxiv.org/abs/math/9802029) than the
 numerical equation `2 + 2 ≡ 4`.
 
@@ -352,7 +353,6 @@ The above is possible only because universes are genuine types and
 hence their elements (that is, types) have identity types themselves,
 so that writing `X ≡ Y` for types `X` and `Y` (inhabiting the same
 universe) is allowed.
-
 
 When we view `𝟘` as *false*, we can read the definition of
 the *negation* `¬ X` as saying that "`X` implies *false*". With univalence
