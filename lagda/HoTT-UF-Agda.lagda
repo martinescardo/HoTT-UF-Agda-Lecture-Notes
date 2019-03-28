@@ -1559,7 +1559,8 @@ Here is an example:
 \end{code}
 
 The following can be proved without univalence, but a proof using
-univalence is much shorter and direct.
+univalence is much shorter and direct. We first define the notion of
+half-adjoint equivalence:
 
 \begin{code}
 is-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
@@ -1568,10 +1569,20 @@ is-hae f = Σ \(g : codomain f → domain f)
          → Σ \(ε : f ∘ g ∼ id)
          → (x : domain f) → ap f (η x) ≡ ε (f x)
 
+\end{code}
+
+The following is trivial:
+
+\begin{code}
 haes-are-invertible : {X Y : 𝓤 ̇ } (f : X → Y)
                     → is-hae f → invertible f
 haes-are-invertible f (g , η , ε , _) = g , η , ε
+\end{code}
 
+To prove that the converse holds, under univalence, it is enough to
+show that the identity maps are half-adjoint equivalences:
+
+\begin{code}
 id-is-hae : (X : 𝓤 ̇ ) → is-hae (𝑖𝑑 X)
 id-is-hae X = 𝑖𝑑 X , refl , refl , (λ x → refl (refl x))
 
