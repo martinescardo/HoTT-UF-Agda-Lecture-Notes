@@ -40,7 +40,7 @@ The crucial step in [Voevodsky's
 proof](http://www.math.uwo.ca/faculty/kapulkin/notes/ua_implies_fe.pdf)
 that univalence implies `funext` is to establish the conclusion of the
 above exercise assuming univalence instead. We prove this by
-equivalence [induction](HoTT-UF-Agda.html#equivalence-induction) on
+[equivalence induction](HoTT-UF-Agda.html#equivalence-induction) on
 `f`, which means that we only need to consider the case when `f` is an
 identity function, for which pre-composition with `f` is itself an
 identity function (of a function type), and hence an equivalence:
