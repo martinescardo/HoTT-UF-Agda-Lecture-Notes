@@ -211,58 +211,64 @@ logical equivalences.
 \begin{code}
 funext-gives-vvfunext : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → vvfunext 𝓤 𝓥
 funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
-  where
-   f : Σ A → X
-   f = pr₁
-   f-is-equiv : is-equiv f
-   f-is-equiv = pr₁-equivalence X A φ
-   g : (X → Σ A) → (X → X)
-   g h = f ∘ h
-   g-is-equiv : is-equiv g
-   g-is-equiv = post-comp-is-equiv fe fe' f f-is-equiv
-   i : is-singleton (Σ \(h : X → Σ A) → f ∘ h ≡ 𝑖𝑑 X)
-   i = g-is-equiv (𝑖𝑑 X)
-   r : (Σ \(h : X → Σ A) → f ∘ h ≡ 𝑖𝑑 X) → Π A
-   r (h , p) x = transport A (happly (f ∘ h) (𝑖𝑑 X) p x) (pr₂ (h x))
-   s : Π A → (Σ \(h : X → Σ A) → f ∘ h ≡ 𝑖𝑑 X)
-   s φ = (λ x → x , φ x) , refl (𝑖𝑑 X)
-   rs : ∀ φ → r (s φ) ≡ φ
-   rs φ = refl (r (s φ))
-   γ : is-singleton (Π A)
-   γ = retract-of-singleton (r , s , rs) i
+ where
+  f : Σ A → X
+  f = pr₁
+  f-is-equiv : is-equiv f
+  f-is-equiv = pr₁-equivalence X A φ
+  g : (X → Σ A) → (X → X)
+  g h = f ∘ h
+  g-is-equiv : is-equiv g
+  g-is-equiv = post-comp-is-equiv fe fe' f f-is-equiv
+  i : is-singleton (Σ \(h : X → Σ A) → f ∘ h ≡ 𝑖𝑑 X)
+  i = g-is-equiv (𝑖𝑑 X)
+  r : (Σ \(h : X → Σ A) → f ∘ h ≡ 𝑖𝑑 X) → Π A
+  r (h , p) x = transport A (happly (f ∘ h) (𝑖𝑑 X) p x) (pr₂ (h x))
+  s : Π A → (Σ \(h : X → Σ A) → f ∘ h ≡ 𝑖𝑑 X)
+  s φ = (λ x → x , φ x) , refl (𝑖𝑑 X)
+  rs : ∀ φ → r (s φ) ≡ φ
+  rs φ = refl (r (s φ))
+  γ : is-singleton (Π A)
+  γ = retract-of-singleton (r , s , rs) i
 \end{code}
 
-Corollaries:
+We have the following corollaries. We first formulate the types of
+some functions:
 
 \begin{code}
-funext-gives-hfunext : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → hfunext 𝓤 𝓥
+funext-gives-hfunext       : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → hfunext 𝓤 𝓥
+funext-gives-dfunext       : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → dfunext 𝓤 𝓥
+univalence-gives-dfunext'  : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
+univalence-gives-hfunext'  : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → hfunext 𝓤 𝓥
+univalence-gives-vvfunext' : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → vvfunext 𝓤 𝓥
+univalence-gives-hfunext   : is-univalent 𝓤 → hfunext 𝓤 𝓤
+univalence-gives-dfunext   : is-univalent 𝓤 → dfunext 𝓤 𝓤
+univalence-gives-vvfunext  : is-univalent 𝓤 → vvfunext 𝓤 𝓤
+\end{code}
+
+And then we give definitions to them (Agda makes sure there are no circularities):
+
+\begin{code}
 funext-gives-hfunext fe fe' = vvfunext-gives-hfunext (funext-gives-vvfunext fe fe')
 
-funext-gives-dfunext : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → dfunext 𝓤 𝓥
 funext-gives-dfunext fe fe' = hfunext-gives-dfunext (funext-gives-hfunext fe fe')
 
-univalence-gives-dfunext' : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
 univalence-gives-dfunext' ua ua' = funext-gives-dfunext
                                     (univalence-gives-funext ua')
                                     (univalence-gives-funext ua)
 
-univalence-gives-hfunext' : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → hfunext 𝓤 𝓥
 univalence-gives-hfunext' ua ua' = funext-gives-hfunext
                                      (univalence-gives-funext ua')
                                      (univalence-gives-funext ua)
 
-univalence-gives-vvfunext' : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → vvfunext 𝓤 𝓥
 univalence-gives-vvfunext' ua ua' = funext-gives-vvfunext
                                      (univalence-gives-funext ua')
                                      (univalence-gives-funext ua)
 
-univalence-gives-hfunext : is-univalent 𝓤 → hfunext 𝓤 𝓤
 univalence-gives-hfunext ua = univalence-gives-hfunext' ua ua
 
-univalence-gives-dfunext : is-univalent 𝓤 → dfunext 𝓤 𝓤
 univalence-gives-dfunext ua = univalence-gives-dfunext' ua ua
 
-univalence-gives-vvfunext : is-univalent 𝓤 → vvfunext 𝓤 𝓤
 univalence-gives-vvfunext ua = univalence-gives-vvfunext' ua ua
 \end{code}
 
