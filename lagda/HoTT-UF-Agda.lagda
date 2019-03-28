@@ -400,7 +400,7 @@ NatΣ τ (x , a) = (x , τ x a)
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
-### <a name="dependentequality"></a> Identifications that depend on identifications, and equality in Σ types
+### <a name="dependentequality"></a> Identifications that depend on identifications
 
 If we have an identification `p : A ≡ B` of two types `A` and `B`, and
 elements `a : A` and `b : B`, we cannot ask directly whether `a ≡ b`,
@@ -1172,7 +1172,7 @@ invertible". This retraction property is not easy to show, and there
 are many approaches. We discuss an approach we came up with while
 developing these lecture notes, which is intended to be relatively
 simple and direct, but the reader should consult other approaches,
-such as that of the HoTT Book, which has a well-established
+such as that of the HoTT book, which has a well-established
 categorical pedigree.
 
 The problem with the notion of invertibility of `f` is that, while we

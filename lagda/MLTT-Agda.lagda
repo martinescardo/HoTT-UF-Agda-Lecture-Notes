@@ -998,7 +998,7 @@ on `refl`). This is
 [harder](http://www.cse.chalmers.se/~coquand/singl.pdf).
 
 **Notational remark.** The symbols "`=`" and "`≡`" are swapped with
-  respect to the [HoTT Book](https://homotopytypetheory.org/book/)
+  respect to the [HoTT book](https://homotopytypetheory.org/book/)
   convention for definitional/judgemental equality and typed-valued equality,
   and there is nothing we can do about that because "`=`" is a
   reserved Agda symbol for definitional equality. Irrespectively of
