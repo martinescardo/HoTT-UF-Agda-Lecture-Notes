@@ -5,9 +5,12 @@ date : 2019-03-04
 ---
 ## <a name="lecturenotes">Introduction to Univalent Foundations of Mathematics with Agda</a>
 
-4th March 2019, draft version of {{ "now" | date: "%d %B %Y, %H:%M" }}.
+4th March 2019, version of {{ "now" | date: "%d %B %Y, %H:%M" }}.
 
-[Martín Hötzel Escardó](http://www.cs.bham.ac.uk/~mhe/), University of Birmingham, UK.
+[Martín Hötzel Escardó](http://www.cs.bham.ac.uk/~mhe/),
+[School of Computer Science](https://www.cs.bham.ac.uk/),
+[University of Birmingham](http://www.bham.ac.uk/),
+UK.
 
 [<sub>Table of contents ⇓</sub>](toc.html#contents)
 
@@ -51,7 +54,7 @@ requests by students to fix typos or mistakes and clarify ambiguities
 are welcome. There is also a [pdf version](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.pdf) automatically generated from the html version (drawback: the links point to the html version).
 
 These notes were originally developed for the
-[Midlands Graduate School 2019](http://events.cs.bham.ac.uk/mgs2019/).
+[Midlands Graduate School 2019](http://events.cs.bham.ac.uk/mgs2019/). They will evolve for a while.
 
 [<sub>Table of contents ⇓</sub>](toc.html#contents)
 ### <a name="introduction"></a> Introduction
