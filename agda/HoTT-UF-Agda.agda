@@ -1053,7 +1053,7 @@ J-invertible ua A φ X Y f i = J-equiv ua A φ X Y f (invertibles-are-equivs f i
 
 Σ-change-of-variables : is-univalent 𝓤
                       → {X : 𝓤 ̇} {Y : 𝓤 ̇ } (A : Y → 𝓥 ̇ ) (f : X → Y)
-                      → (i : is-equiv f)
+                      → is-equiv f
                       → (Σ \(y : Y) → A y) ≡ (Σ \(x : X) → A (f x))
 Σ-change-of-variables ua A f i = Σ-change-of-variables' ua A
                                     (inverse f i)
@@ -1079,8 +1079,7 @@ invertibles-are-haes ua = J-invertible ua (λ X Y f → is-hae f) id-is-hae
 
 Σ-change-of-variables-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
                           → is-hae f → Σ A ≃ Σ (A ∘ f)
-Σ-change-of-variables-hae {𝓤} {𝓥} {𝓦} {X} {Y} A f (g , η , ε , τ) =
-  φ , invertibles-are-equivs φ (γ , γφ , φγ)
+Σ-change-of-variables-hae {𝓤} {𝓥} {𝓦} {X} {Y} A f (g , η , ε , τ) = φ , invertibles-are-equivs φ (γ , γφ , φγ)
  where
   φ : Σ A → Σ (A ∘ f)
   φ (y , a) = (g y , transport A ((ε y)⁻¹) a)

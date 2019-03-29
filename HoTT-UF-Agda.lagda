@@ -3158,7 +3158,7 @@ transport-is-equiv A (refl x) = id-is-equiv (A x)
 Alternatively, we could have used the fact that `transport A (p ⁻¹)`
 is an inverse of `transport A p`.
 
-Characterization of equality in `Σ` types:
+Here is the promised characterization of equality in `Σ` types:
 
 \begin{code}
 Σ-≡-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ τ : Σ A)
@@ -3306,11 +3306,10 @@ For more examples, see [Kraus and Sattler](https://arxiv.org/abs/1311.4002).
 ### <a name="equivalenceinduction"></a> Equivalence induction
 
 Under univalence, we get an induction principle for type equivalences,
-corresponding to the induction principles [`H`](HoTT-UF-Agda.html#H) and
-[`J`](HoTT-UF-Agda.html#J) for identifications.
-
-To prove a property of equivalences, it is enough to prove it for the
-identity equivalence `≃-refl X` for all `X`:
+corresponding to the induction principles [`H`](HoTT-UF-Agda.html#H)
+and [`J`](HoTT-UF-Agda.html#J) for identifications.  To prove a
+property of equivalences, it is enough to prove it for the identity
+equivalence `≃-refl X` for all `X`:
 
 \begin{code}
 H-≃ : is-univalent 𝓤
@@ -3343,7 +3342,7 @@ transport-≃ ua A {X} {Y} e a = H-≃ ua X (λ Y _ → A Y) a Y e
 \end{code}
 
 The induction principle `H-≃` keeps `X` fixed and lets `Y` vary, while
-the induction principle `J-≃` let both vary:
+the induction principle `J-≃` lets both vary:
 
 \begin{code}
 J-≃ : is-univalent 𝓤
@@ -3383,7 +3382,7 @@ J-equiv : is-univalent 𝓤
 J-equiv ua A φ X = H-equiv ua X (A X) (φ X)
 \end{code}
 
-And the follows is an immediate consequence of the fact that
+And the following is an immediate consequence of the fact that
 invertible maps are equivalences:
 
 \begin{code}
@@ -3415,22 +3414,28 @@ induction, but the following version is perhaps more natural
 \begin{code}
 Σ-change-of-variables : is-univalent 𝓤
                       → {X : 𝓤 ̇} {Y : 𝓤 ̇ } (A : Y → 𝓥 ̇ ) (f : X → Y)
-                      → (i : is-equiv f)
+                      → is-equiv f
                       → (Σ \(y : Y) → A y) ≡ (Σ \(x : X) → A (f x))
 Σ-change-of-variables ua A f i = Σ-change-of-variables' ua A
                                     (inverse f i)
                                     (inverse-is-equiv f i)
 \end{code}
 
-This particular proof works only because inversion is involutive on
-the nose.
+This particular proof works only because inversion [is involutive on
+the nose](HoTT-UF-Agda.html#inversion-involutive).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a name="haes"></a> Half-adjoint equivalences
 
 An often useful alternative formulation of the notion of equivalence
-is the following, which adds data `τ x : ap f (η x) ≡ ε (f x)`, where identified elements live in the type `f (g (f x)) ≡ f x`, to turn
-the notion of invertibility into a subsingleton:
+is that of half-adjoint equivalence. If we have a function `f : X → Y`
+with inversion data `g : Y → X` and `η : g ∘ f ∼ id` and `ε : f ∘ g ∼
+id`, then for any `x : X` we have that `ap f (η x)` and `ε (f x)` are
+two identifications of `f (g (f x))` with `f x`. The half-adjointness
+condition says that these two identifications are themselves
+identified. The addition of the constraint `τ x : ap f (η x) ≡ ε (f
+x)` turns invertibility, which is data in general, into property of
+`f`, as discussed in the HoTT book.
 
 \begin{code}
 is-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
@@ -3440,7 +3445,7 @@ is-hae f = Σ \(g : codomain f → domain f)
          → (x : domain f) → ap f (η x) ≡ ε (f x)
 \end{code}
 
-The following just forgets the additional data `τ`:
+The following just forgets the constraint `τ`:
 
 \begin{code}
 haes-are-invertible : {X Y : 𝓤 ̇ } (f : X → Y)
@@ -3448,8 +3453,8 @@ haes-are-invertible : {X Y : 𝓤 ̇ } (f : X → Y)
 haes-are-invertible f (g , η , ε , τ) = g , η , ε
 \end{code}
 
-To recover the data for all invertibles maps, under univalence, it is
-enough to give the data for identity maps:
+To recover the constraint for all invertible maps, under univalence, it is
+enough to give the constraint for identity maps:
 
 \begin{code}
 id-is-hae : (X : 𝓤 ̇ ) → is-hae (𝑖𝑑 X)
@@ -3464,17 +3469,17 @@ invertibles-are-haes ua = J-invertible ua (λ X Y f → is-hae f) id-is-hae
 The above can be proved without univalence, as is done in the HoTT
 book, with a more complicated argument.
 
-Here is a use of the half-adjoint condition, where we remove
-univalence from the hypothesis, generalize the universe of the type
-`Y`, and weaken equality to equivalence in the conclusion. Notice that
-the proof starts as that of
+Here is a use of the half-adjoint condition, where, compared to
+[`Σ-change-of-variables`](HoTT-UF-Agda.html#Σ-change-of-variables), we
+remove univalence from the hypothesis, generalize the universe of the
+type `Y`, and weaken equality to equivalence in the conclusion. Notice
+that the proof starts as that of
 [`Σ-reindex-retraction`](HoTT-UF-Agda#Σ-reindex-retraction).
 
 \begin{code}
 Σ-change-of-variables-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
                           → is-hae f → Σ A ≃ Σ (A ∘ f)
-Σ-change-of-variables-hae {𝓤} {𝓥} {𝓦} {X} {Y} A f (g , η , ε , τ) =
-  φ , invertibles-are-equivs φ (γ , γφ , φγ)
+Σ-change-of-variables-hae {𝓤} {𝓥} {𝓦} {X} {Y} A f (g , η , ε , τ) = φ , invertibles-are-equivs φ (γ , γφ , φγ)
  where
   φ : Σ A → Σ (A ∘ f)
   φ (y , a) = (g y , transport A ((ε y)⁻¹) a)
