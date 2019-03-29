@@ -1,7 +1,8 @@
 /* For generating pdf and printing. */
 
 @media print {
-  body { margin: 2cm}
+    @page { margin: 0; } /* The only working way to remove headers and footers, it seems. */
+    body { margin: 2cm}
 }
 
 /* Aspects. */
