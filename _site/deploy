@@ -1,5 +1,0 @@
-#!/bin/bash
-
-./build
-cd ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-statcounter
