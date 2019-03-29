@@ -1191,9 +1191,9 @@ fiber-point : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y}
             → fiber f y → X
 fiber-point (x , p) = x
 
-fiberidentification : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y}
+fiber-identification : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y}
                      → (w : fiber f y) → f (fiber-point w) ≡ y
-fiberidentification (x , p) = p
+fiber-identification (x , p) = p
 \end{code}
 
 So the type `fiber f y` collects the points `x : X` which are mapped
@@ -1218,7 +1218,7 @@ inverse f e y = fiber-point (center (fiber f y) (e y))
 
 inverse-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                    → (y : Y) → f (inverse f e y) ≡ y
-inverse-is-section f e y = fiberidentification (center (fiber f y) (e y))
+inverse-is-section f e y = fiber-identification (center (fiber f y) (e y))
 
 inverse-centrality : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                      (f : X → Y) (e : is-equiv f) (y : Y) (t : fiber f y)
