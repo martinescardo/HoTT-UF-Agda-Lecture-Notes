@@ -142,6 +142,11 @@ Nats-are-natural A B τ (refl x) = refl (τ x)
 NatΣ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → Σ A → Σ B
 NatΣ τ (x , a) = (x , τ x a)
 
+transport-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ )
+               (f : X → Y) {x x' : X} (p : x ≡ x') (a : A (f x))
+             → transport (A ∘ f) p a ≡ transport A (ap f p) a
+transport-ap A f (refl x) a = refl a
+
 data Color : 𝓤₀ ̇  where
  Black White : Color
 
@@ -387,26 +392,25 @@ X ◀ = ◁-refl X
   η' (x , a) = x , r x (s x a) ≡⟨ ap (λ - → x , -) (η x a) ⟩
                x , a           ∎
 
-Σ-retract-reindexing : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → 𝓦 ̇ } (r : Y → X)
+transport-is-retraction : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
+                        → transport A p ∘ transport A (p ⁻¹) ∼ 𝑖𝑑 (A y)
+transport-is-retraction A (refl x) = refl
+
+transport-is-section    : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
+                        → transport A (p ⁻¹) ∘ transport A p ∼ 𝑖𝑑 (A x)
+transport-is-section A (refl x) = refl
+
+Σ-reindex-retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → 𝓦 ̇ } (r : Y → X)
                      → has-section r
                      → (Σ \(x : X) → A x) ◁ (Σ \(y : Y) → A (r y))
-Σ-retract-reindexing {𝓤} {𝓥} {𝓦} {X} {Y} {A} r (s , η) = γ , φ , γφ
+Σ-reindex-retraction {𝓤} {𝓥} {𝓦} {X} {Y} {A} r (s , η) = γ , φ , γφ
  where
   γ : Σ (A ∘ r) → Σ A
   γ (y , a) = (r y , a)
   φ : Σ A → Σ (A ∘ r)
   φ (x , a) = (s x , transport A ((η x)⁻¹) a)
   γφ : (σ : Σ A) → γ (φ σ) ≡ σ
-  γφ (x , a) = to-Σ-≡ (η x , p)
-   where
-    p = transport A (η x) (transport A ((η x)⁻¹) a) ≡⟨ i ⟩
-        transport A ((η x)⁻¹ ∙ η x) a               ≡⟨ ii ⟩
-        transport A (refl x) a                      ≡⟨ iii ⟩
-        a                                           ∎
-      where
-       i   = (ap (λ - → - a) (transport∙ A ((η x)⁻¹) (η x)))⁻¹
-       ii  = ap (λ - → transport A - a) (⁻¹-left∙ (η x))
-       iii = refl a
+  γφ (x , a) = to-Σ-≡ (η x , transport-is-retraction A (η x) a)
 
 singleton-type : {X : 𝓤 ̇ } → X → 𝓤 ̇
 singleton-type x = Σ \y → y ≡ x
@@ -497,7 +501,7 @@ invertibles-are-equivs {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = γ
            refl (f (g y)) ∙ q  ≡⟨ refl-left ⟩
            q                   ∎
   b : fiber f y₀ ◁ singleton-type y₀
-  b = (Σ \(x : X) → f x ≡ y₀)     ◁⟨ Σ-retract-reindexing g (f , η) ⟩
+  b = (Σ \(x : X) → f x ≡ y₀)     ◁⟨ Σ-reindex-retraction g (f , η) ⟩
       (Σ \(y : Y) → f (g y) ≡ y₀) ◁⟨ Σ-retract Y (λ y → f (g y) ≡ y₀) (λ y → y ≡ y₀) a ⟩
       (Σ \(y : Y) → y ≡ y₀)       ◀
   γ : is-singleton (fiber f y₀)
@@ -508,6 +512,10 @@ inverse-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
 inverse-is-equiv f e = invertibles-are-equivs
                          (inverse f e)
                          (f , inverse-is-section f e , inverse-is-retraction f e)
+
+inversion-involutive : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
+                     → inverse (inverse f e) (inverse-is-equiv f e) ≡ f
+inversion-involutive f e = refl f
 
 id-invertible : (X : 𝓤 ̇ ) → invertible (𝑖𝑑 X)
 id-invertible X = 𝑖𝑑 X , refl , refl
@@ -567,27 +575,6 @@ transport-is-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
                    → is-equiv (transport A p)
 transport-is-equiv A (refl x) = id-is-equiv (A x)
 
-transport-≃ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
-            → x ≡ y → A x ≃ A y
-transport-≃ A p = transport A p , transport-is-equiv A p
-
-ap' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
-    → x ≡ y → A x ≡ A y
-ap' = ap
-
-transport-is-equiv' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
-                    → is-equiv (transport A p)
-transport-is-equiv' A p =
- invertibles-are-equivs
-  (transport A p)
-  (transport A (p ⁻¹) ,
-   (λ a → transport A (p ⁻¹) (transport A p a) ≡⟨ (ap (λ - → - a) (transport∙ A p (p ⁻¹)))⁻¹ ⟩
-          transport A (p ∙ p ⁻¹) a             ≡⟨ ap (λ - → transport A - a) (⁻¹-right∙ p) ⟩
-          a                                    ∎) ,
-   (λ a → transport A p (transport A (p ⁻¹) a) ≡⟨ (ap (λ - → - a) (transport∙ A (p ⁻¹) p))⁻¹ ⟩
-          transport A (p ⁻¹ ∙ p) a             ≡⟨ ap (λ - → transport A - a) (⁻¹-left∙ p) ⟩
-          a                                    ∎))
-
 Σ-≡-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ τ : Σ A)
           → (σ ≡ τ) ≃ (Σ \(p : pr₁ σ ≡ pr₁ τ) → pr₂ σ ≡[ p / A ] pr₂ τ)
 Σ-≡-equiv  {𝓤} {𝓥} {X} {A}  σ τ = from-Σ-≡ ,
@@ -632,6 +619,11 @@ H-≃ {𝓤} {𝓥} ua X A a Y e = γ
   γ : A Y e
   γ = transport (A Y) p c
 
+transport-≃ : is-univalent 𝓤
+            → (A : 𝓤 ̇ → 𝓥 ̇ ) {X Y : 𝓤 ̇ }
+            → X ≃ Y → A X → A Y
+transport-≃ ua A {X} {Y} e a = H-≃ ua X (λ Y _ → A Y) a Y e
+
 J-≃ : is-univalent 𝓤
     → (A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
     → ((X : 𝓤 ̇) → A X X (≃-refl X))
@@ -662,24 +654,24 @@ J-invertible : is-univalent 𝓤
              → (X Y : 𝓤 ̇ ) (f : X → Y) → invertible f → A X Y f
 J-invertible ua A φ X Y f i = J-equiv ua A φ X Y f (invertibles-are-equivs f i)
 
-Σ-change-of-variables : is-univalent 𝓤
-                      → (X : 𝓤 ̇ ) (P : X → 𝓥 ̇ ) (Y : 𝓤 ̇ ) (f : X → Y)
-                      → (i : is-equiv f)
-                      → (Σ \(x : X) → P x) ≡ (Σ \(y : Y) → P (inverse f i y))
-Σ-change-of-variables {𝓤} {𝓥} ua X P Y f i = H-≃ ua X A a Y (f , i)
- where
-   A : (Y : 𝓤 ̇ ) → X ≃ Y →  (𝓤 ⊔ 𝓥)⁺ ̇
-   A Y (f , i) = (Σ P) ≡ (Σ (P ∘ inverse f i))
-   a : A X (≃-refl X)
-   a = refl (Σ P)
-
 Σ-change-of-variables' : is-univalent 𝓤
-                       → (X : 𝓤 ̇ ) (P : X → 𝓥 ̇ ) (Y : 𝓤 ̇ ) (g : Y → X)
-                       → (i : is-equiv g)
-                       → (Σ \(x : X) → P x) ≡ (Σ \(y : Y) → P (g y))
-Σ-change-of-variables' {𝓤} {𝓥} ua X P Y g j = Σ-change-of-variables ua X P Y
-                                                 (inverse g j)
-                                                 (inverse-is-equiv g j)
+                       → {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (f : X → Y)
+                       → (i : is-equiv f)
+                       → (Σ \(x : X) → A x) ≡ (Σ \(y : Y) → A (inverse f i y))
+Σ-change-of-variables' {𝓤} {𝓥} ua {X} {Y} A f i = H-≃ ua X B b Y (f , i)
+ where
+   B : (Y : 𝓤 ̇ ) → X ≃ Y →  (𝓤 ⊔ 𝓥)⁺ ̇
+   B Y (f , i) = (Σ A) ≡ (Σ (A ∘ inverse f i))
+   b : B X (≃-refl X)
+   b = refl (Σ A)
+
+Σ-change-of-variables : is-univalent 𝓤
+                      → {X : 𝓤 ̇} {Y : 𝓤 ̇ } (A : Y → 𝓥 ̇ ) (f : X → Y)
+                      → (i : is-equiv f)
+                      → (Σ \(y : Y) → A y) ≡ (Σ \(x : X) → A (f x))
+Σ-change-of-variables ua A f i = Σ-change-of-variables' ua A
+                                    (inverse f i)
+                                    (inverse-is-equiv f i)
 
 is-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-hae f = Σ \(g : codomain f → domain f)
@@ -689,7 +681,7 @@ is-hae f = Σ \(g : codomain f → domain f)
 
 haes-are-invertible : {X Y : 𝓤 ̇ } (f : X → Y)
                     → is-hae f → invertible f
-haes-are-invertible f (g , η , ε , _) = g , η , ε
+haes-are-invertible f (g , η , ε , τ) = g , η , ε
 
 id-is-hae : (X : 𝓤 ̇ ) → is-hae (𝑖𝑑 X)
 id-is-hae X = 𝑖𝑑 X , refl , refl , (λ x → refl (refl x))
@@ -698,6 +690,28 @@ invertibles-are-haes : is-univalent 𝓤
                      → (X Y : 𝓤 ̇ ) (f : X → Y)
                      → invertible f → is-hae f
 invertibles-are-haes ua = J-invertible ua (λ X Y f → is-hae f) id-is-hae
+
+Σ-change-of-variables-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+                          → is-hae f → Σ A ≃ Σ (A ∘ f)
+Σ-change-of-variables-hae {𝓤} {𝓥} {𝓦} {X} {Y} A f (g , η , ε , τ) =
+  φ , invertibles-are-equivs φ (γ , γφ , φγ)
+ where
+  φ : Σ A → Σ (A ∘ f)
+  φ (y , a) = (g y , transport A ((ε y)⁻¹) a)
+  γ : Σ (A ∘ f) → Σ A
+  γ (x , a) = (f x , a)
+  γφ : (z : Σ A) → γ (φ z) ≡ z
+  γφ (y , a) = to-Σ-≡ (ε y , transport-is-retraction A (ε y) a)
+  φγ : (t : Σ (A ∘ f)) → φ (γ t) ≡ t
+  φγ (x , a) = to-Σ-≡ (η x , q)
+   where
+    b : A (f (g (f x)))
+    b = transport A ((ε (f x))⁻¹) a
+
+    q = transport (A ∘ f) (η x)  b ≡⟨ transport-ap A f (η x) b ⟩
+        transport A (ap f (η x)) b ≡⟨ ap (λ - → transport A - b) (τ x) ⟩
+        transport A (ε (f x))    b ≡⟨ transport-is-retraction A (ε (f x)) a ⟩
+        a                          ∎
 
 swap₂ : 𝟚 → 𝟚
 swap₂ ₀ = ₁
@@ -836,6 +850,9 @@ pr₁-equivalence : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
 
 Σ-cong : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
        → ((x : X) → A x ≃ B x) → Σ A ≃ Σ B
+
+Σ-assoc : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : Σ Y → 𝓦 ̇ }
+        → Σ Z ≃ (Σ \(x : X) → Σ \(y : Y x) → Z (x , y))
 
 ⁻¹-≃ : {X : 𝓤 ̇ } (x y : X) → (x ≡ y) ≃ (y ≡ x)
 
@@ -1008,6 +1025,13 @@ pr₁-equivalence {𝓤} {𝓥} X A s = invertibles-are-equivs pr₁ (g , η , �
   NatΣ-ε : (t : Σ B) → NatΣ f (NatΣ g t) ≡ t
   NatΣ-ε (x , b) = x , f x (g x b) ≡⟨ ap (λ - → x , -) (ε x b) ⟩
                    x , b           ∎
+
+Σ-assoc {𝓤} {𝓥} {𝓦} {X} {Y} {Z} = f , invertibles-are-equivs f (g , refl , refl)
+ where
+  f : Σ Z → Σ \x → Σ \y → Z (x , y)
+  f ((x , y) , z) = (x , (y , z))
+  g : (Σ \x → Σ \y → Z (x , y)) → Σ Z
+  g (x , (y , z)) = ((x , y) , z)
 
 ⁻¹-≃ x y = (_⁻¹ , invertibles-are-equivs _⁻¹ (_⁻¹ , ⁻¹-involutive , ⁻¹-involutive))
 

@@ -436,10 +436,6 @@ Composition of equivalences is associative:
   q : d ≡ e
   q = being-equiv-is-a-subsingleton fe fe' (h ∘ g ∘ f) _ _
 
-inversion-involutive : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
-                     → inverse (inverse f e) (inverse-is-equiv f e) ≡ f
-inversion-involutive f e = refl f
-
 ≃-sym-involutive : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓥 ⊔ 𝓤) (𝓥 ⊔ 𝓤) →
                    {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
                  → ≃-sym (≃-sym α) ≡ α

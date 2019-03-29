@@ -399,6 +399,13 @@ NatΣ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B →
 NatΣ τ (x , a) = (x , τ x a)
 \end{code}
 
+\begin{code}
+transport-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ )
+               (f : X → Y) {x x' : X} (p : x ≡ x') (a : A (f x))
+             → transport (A ∘ f) p a ≡ transport A (ap f p) a
+transport-ap A f (refl x) a = refl a
+\end{code}
+
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="dependentequality"></a> Identifications that depend on identifications
 
@@ -1081,29 +1088,34 @@ A pointwise retraction gives  a retraction of the total spaces:
                x , a           ∎
 \end{code}
 
-And we can reindex retracts of `Σ` types as follows:
+We have that `transport A (p ⁻¹)` is a two-sided inverse of `transport
+A p` using the functoriality of `transport A`, or directly by
+induction on `p`:
 
 \begin{code}
-Σ-retract-reindexing : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → 𝓦 ̇ } (r : Y → X)
+transport-is-retraction : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
+                        → transport A p ∘ transport A (p ⁻¹) ∼ 𝑖𝑑 (A y)
+transport-is-retraction A (refl x) = refl
+
+transport-is-section    : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
+                        → transport A (p ⁻¹) ∘ transport A p ∼ 𝑖𝑑 (A x)
+transport-is-section A (refl x) = refl
+\end{code}
+
+Using this, we can reindex retracts of `Σ` types as follows:
+
+\begin{code}
+Σ-reindex-retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → 𝓦 ̇ } (r : Y → X)
                      → has-section r
                      → (Σ \(x : X) → A x) ◁ (Σ \(y : Y) → A (r y))
-Σ-retract-reindexing {𝓤} {𝓥} {𝓦} {X} {Y} {A} r (s , η) = γ , φ , γφ
+Σ-reindex-retraction {𝓤} {𝓥} {𝓦} {X} {Y} {A} r (s , η) = γ , φ , γφ
  where
   γ : Σ (A ∘ r) → Σ A
   γ (y , a) = (r y , a)
   φ : Σ A → Σ (A ∘ r)
   φ (x , a) = (s x , transport A ((η x)⁻¹) a)
   γφ : (σ : Σ A) → γ (φ σ) ≡ σ
-  γφ (x , a) = to-Σ-≡ (η x , p)
-   where
-    p = transport A (η x) (transport A ((η x)⁻¹) a) ≡⟨ i ⟩
-        transport A ((η x)⁻¹ ∙ η x) a               ≡⟨ ii ⟩
-        transport A (refl x) a                      ≡⟨ iii ⟩
-        a                                           ∎
-      where
-       i   = (ap (λ - → - a) (transport∙ A ((η x)⁻¹) (η x)))⁻¹
-       ii  = ap (λ - → transport A - a) (⁻¹-left∙ (η x))
-       iii = refl a
+  γφ (x , a) = to-Σ-≡ (η x , transport-is-retraction A (η x) a)
 \end{code}
 
 We have defined [the property of a type being a
@@ -1264,7 +1276,7 @@ invertibles-are-equivs {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = γ
            refl (f (g y)) ∙ q  ≡⟨ refl-left ⟩
            q                   ∎
   b : fiber f y₀ ◁ singleton-type y₀
-  b = (Σ \(x : X) → f x ≡ y₀)     ◁⟨ Σ-retract-reindexing g (f , η) ⟩
+  b = (Σ \(x : X) → f x ≡ y₀)     ◁⟨ Σ-reindex-retraction g (f , η) ⟩
       (Σ \(y : Y) → f (g y) ≡ y₀) ◁⟨ Σ-retract Y (λ y → f (g y) ≡ y₀) (λ y → y ≡ y₀) a ⟩
       (Σ \(y : Y) → y ≡ y₀)       ◀
   γ : is-singleton (fiber f y₀)
@@ -1279,6 +1291,13 @@ inverse-is-equiv f e = invertibles-are-equivs
                          (f , inverse-is-section f e , inverse-is-retraction f e)
 \end{code}
 
+Notice that inversion is involutive on the nose:
+
+\begin{code}
+inversion-involutive : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
+                     → inverse (inverse f e) (inverse-is-equiv f e) ≡ f
+inversion-involutive f e = refl f
+\end{code}
 
 To see that the above procedures do exhibit the type "`f` is an
 equivalence" as a retract of the type "`f` is invertible", it suffices
@@ -1375,37 +1394,10 @@ The function `transport A p` is an equivalence.
 transport-is-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
                    → is-equiv (transport A p)
 transport-is-equiv A (refl x) = id-is-equiv (A x)
-
-transport-≃ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
-            → x ≡ y → A x ≃ A y
-transport-≃ A p = transport A p , transport-is-equiv A p
 \end{code}
 
-Of course we also have
-
-\begin{code}
-ap' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
-    → x ≡ y → A x ≡ A y
-ap' = ap
-\end{code}
-
-Here is a longer proof of `transport-is-equiv` for the sake of
-conceptual illustration:
-
-\begin{code}
-transport-is-equiv' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
-                    → is-equiv (transport A p)
-transport-is-equiv' A p =
- invertibles-are-equivs
-  (transport A p)
-  (transport A (p ⁻¹) ,
-   (λ a → transport A (p ⁻¹) (transport A p a) ≡⟨ (ap (λ - → - a) (transport∙ A p (p ⁻¹)))⁻¹ ⟩
-          transport A (p ∙ p ⁻¹) a             ≡⟨ ap (λ - → transport A - a) (⁻¹-right∙ p) ⟩
-          a                                    ∎) ,
-   (λ a → transport A p (transport A (p ⁻¹) a) ≡⟨ (ap (λ - → - a) (transport∙ A (p ⁻¹) p))⁻¹ ⟩
-          transport A (p ⁻¹ ∙ p) a             ≡⟨ ap (λ - → transport A - a) (⁻¹-left∙ p) ⟩
-          a                                    ∎))
-\end{code}
+Alternatively, we could have used the fact that `transport A (p ⁻¹)`
+is an inverse of `transport A p`.
 
 Characterization of equality in `Σ` types:
 
@@ -1480,15 +1472,14 @@ Coq](https://github.com/HoTT/HoTT/blob/master/contrib/HoTTBookExercises.v)
 by [Mike Shulman](https://home.sandiego.edu/~shulman/).
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
-### <a name="equivalence-induction"></a> Equivalence induction
+### <a name="equivalenceinduction"></a> Equivalence induction
 
-Under univalence, in order to prove that a property of functions holds
-for all equivalences, it is enough to show that it holds for all
-identity functions. We have `2 × 2` versions of this.
+Under univalence, we get an induction principle for type equivalences,
+corresponding to the induction principles [`H`](MLTT-Agda.html#H) and
+[`J`](MLTT-Agda.html#J) for identifications.
 
-The first set of two versions correspond to the induction principles
-[`H`](MLTT-Agda.html#H) and [`J`](MLTT-Agda.html#J) for
-identifications:
+To prove a property of equivalences, it is enough to prove it for the
+identity equivalence `≃-refl X` for all `X`:
 
 \begin{code}
 H-≃ : is-univalent 𝓤
@@ -1508,7 +1499,22 @@ H-≃ {𝓤} {𝓥} ua X A a Y e = γ
   p = inverse-is-section (Id-to-Eq X Y) (ua X Y) e
   γ : A Y e
   γ = transport (A Y) p c
+\end{code}
 
+With this we have that if a type satisfies a property then so does any
+equivalent type:
+
+\begin{code}
+transport-≃ : is-univalent 𝓤
+            → (A : 𝓤 ̇ → 𝓥 ̇ ) {X Y : 𝓤 ̇ }
+            → X ≃ Y → A X → A Y
+transport-≃ ua A {X} {Y} e a = H-≃ ua X (λ Y _ → A Y) a Y e
+\end{code}
+
+The induction principle `H-≃` keeps `X` fixed and lets `Y` vary, while
+the induction principle `J-≃` let both vary:
+
+\begin{code}
 J-≃ : is-univalent 𝓤
     → (A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
     → ((X : 𝓤 ̇) → A X X (≃-refl X))
@@ -1516,8 +1522,9 @@ J-≃ : is-univalent 𝓤
 J-≃ ua A φ X = H-≃ ua X (A X) (φ X)
 \end{code}
 
-The second set of two versions refer to `is-equiv` rather than `≃` and
-are proved by reduction to the first version `H-≃`:
+A second set of equivalence induction principles refer to `is-equiv`
+rather than `≃` and are proved by reduction to the first version
+`H-≃`:
 
 \begin{code}
 H-equiv : is-univalent 𝓤
@@ -1531,7 +1538,13 @@ H-equiv {𝓤} {𝓥} ua X A a Y f i = γ (f , i) i
   b = λ (_ : is-equiv (𝑖𝑑 X)) → a
   γ : (e : X ≃ Y) → B Y e
   γ = H-≃ ua X B b Y
+\end{code}
 
+The above and the following say that to prove that a property of
+functions holds for all equivalences, it is enough to prove it for all
+identity functions:
+
+\begin{code}
 J-equiv : is-univalent 𝓤
         → (A : (X Y : 𝓤 ̇ ) → (X → Y) → 𝓥 ̇ )
         → ((X : 𝓤 ̇ ) → A X X (𝑖𝑑 X))
@@ -1539,7 +1552,8 @@ J-equiv : is-univalent 𝓤
 J-equiv ua A φ X = H-equiv ua X (A X) (φ X)
 \end{code}
 
-And a fifth version follows:
+And the follows is an immediate consequence of the fact that
+invertible maps are equivalences:
 
 \begin{code}
 J-invertible : is-univalent 𝓤
@@ -1550,30 +1564,42 @@ J-invertible ua A φ X Y f i = J-equiv ua A φ X Y f (invertibles-are-equivs f i
 \end{code}
 
 Here is an example:
-\begin{code}
-Σ-change-of-variables : is-univalent 𝓤
-                      → (X : 𝓤 ̇ ) (P : X → 𝓥 ̇ ) (Y : 𝓤 ̇ ) (f : X → Y)
-                      → (i : is-equiv f)
-                      → (Σ \(x : X) → P x) ≡ (Σ \(y : Y) → P (inverse f i y))
-Σ-change-of-variables {𝓤} {𝓥} ua X P Y f i = H-≃ ua X A a Y (f , i)
- where
-   A : (Y : 𝓤 ̇ ) → X ≃ Y →  (𝓤 ⊔ 𝓥)⁺ ̇
-   A Y (f , i) = (Σ P) ≡ (Σ (P ∘ inverse f i))
-   a : A X (≃-refl X)
-   a = refl (Σ P)
 
+\begin{code}
 Σ-change-of-variables' : is-univalent 𝓤
-                       → (X : 𝓤 ̇ ) (P : X → 𝓥 ̇ ) (Y : 𝓤 ̇ ) (g : Y → X)
-                       → (i : is-equiv g)
-                       → (Σ \(x : X) → P x) ≡ (Σ \(y : Y) → P (g y))
-Σ-change-of-variables' {𝓤} {𝓥} ua X P Y g j = Σ-change-of-variables ua X P Y
-                                                 (inverse g j)
-                                                 (inverse-is-equiv g j)
+                       → {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (f : X → Y)
+                       → (i : is-equiv f)
+                       → (Σ \(x : X) → A x) ≡ (Σ \(y : Y) → A (inverse f i y))
+Σ-change-of-variables' {𝓤} {𝓥} ua {X} {Y} A f i = H-≃ ua X B b Y (f , i)
+ where
+   B : (Y : 𝓤 ̇ ) → X ≃ Y →  (𝓤 ⊔ 𝓥)⁺ ̇
+   B Y (f , i) = (Σ A) ≡ (Σ (A ∘ inverse f i))
+   b : B X (≃-refl X)
+   b = refl (Σ A)
 \end{code}
 
-The following can be proved without univalence, but a proof using
-univalence is much shorter and direct. We first define the notion of
-half-adjoint equivalence:
+The above version using the inverse of `f` can be proved directly by
+induction, but the following version is perhaps more natural
+
+\begin{code}
+Σ-change-of-variables : is-univalent 𝓤
+                      → {X : 𝓤 ̇} {Y : 𝓤 ̇ } (A : Y → 𝓥 ̇ ) (f : X → Y)
+                      → (i : is-equiv f)
+                      → (Σ \(y : Y) → A y) ≡ (Σ \(x : X) → A (f x))
+Σ-change-of-variables ua A f i = Σ-change-of-variables' ua A
+                                    (inverse f i)
+                                    (inverse-is-equiv f i)
+\end{code}
+
+This particular proof works only because inversion is involutive on
+the nose.
+
+[<sub>Table of contents ⇑</sub>](toc.html#contents)
+### <a name="haes"></a> Half-adjoint equivalences
+
+An often useful alternative formulation of the notion of equivalence
+is the following, which adds data `τ x : ap f (η x) ≡ ε (f x)`, where identified elements live in the type `f (g (f x)) ≡ f x`, to turn
+the notion of invertibility into a subsingleton:
 
 \begin{code}
 is-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
@@ -1583,16 +1609,16 @@ is-hae f = Σ \(g : codomain f → domain f)
          → (x : domain f) → ap f (η x) ≡ ε (f x)
 \end{code}
 
-The following just forgets data:
+The following just forgets the additional data `τ`:
 
 \begin{code}
 haes-are-invertible : {X Y : 𝓤 ̇ } (f : X → Y)
                     → is-hae f → invertible f
-haes-are-invertible f (g , η , ε , _) = g , η , ε
+haes-are-invertible f (g , η , ε , τ) = g , η , ε
 \end{code}
 
-To recover the data for all invertibles maps, under univalence, it is enough to give the
-data for identity maps:
+To recover the data for all invertibles maps, under univalence, it is
+enough to give the data for identity maps:
 
 \begin{code}
 id-is-hae : (X : 𝓤 ̇ ) → is-hae (𝑖𝑑 X)
@@ -1602,6 +1628,39 @@ invertibles-are-haes : is-univalent 𝓤
                      → (X Y : 𝓤 ̇ ) (f : X → Y)
                      → invertible f → is-hae f
 invertibles-are-haes ua = J-invertible ua (λ X Y f → is-hae f) id-is-hae
+\end{code}
+
+The above can be proved without univalence, as is done in the HoTT
+book, with a more complicated argument.
+
+Here is a use of the half-adjoint condition, where we remove
+univalence from the hypothesis, generalize the universe of the type
+`Y`, and weaken equality to equivalence in the conclusion. Notice that
+the proof starts as that of
+[`Σ-reindex-retraction`](HoTT-UF-Agda#Σ-reindex-retraction).
+
+\begin{code}
+Σ-change-of-variables-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+                          → is-hae f → Σ A ≃ Σ (A ∘ f)
+Σ-change-of-variables-hae {𝓤} {𝓥} {𝓦} {X} {Y} A f (g , η , ε , τ) =
+  φ , invertibles-are-equivs φ (γ , γφ , φγ)
+ where
+  φ : Σ A → Σ (A ∘ f)
+  φ (y , a) = (g y , transport A ((ε y)⁻¹) a)
+  γ : Σ (A ∘ f) → Σ A
+  γ (x , a) = (f x , a)
+  γφ : (z : Σ A) → γ (φ z) ≡ z
+  γφ (y , a) = to-Σ-≡ (ε y , transport-is-retraction A (ε y) a)
+  φγ : (t : Σ (A ∘ f)) → φ (γ t) ≡ t
+  φγ (x , a) = to-Σ-≡ (η x , q)
+   where
+    b : A (f (g (f x)))
+    b = transport A ((ε (f x))⁻¹) a
+
+    q = transport (A ∘ f) (η x)  b ≡⟨ transport-ap A f (η x) b ⟩
+        transport A (ap f (η x)) b ≡⟨ ap (λ - → transport A - b) (τ x) ⟩
+        transport A (ε (f x))    b ≡⟨ transport-is-retraction A (ε (f x)) a ⟩
+        a                          ∎
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
@@ -1795,6 +1854,9 @@ pr₁-equivalence : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
 Σ-cong : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
        → ((x : X) → A x ≃ B x) → Σ A ≃ Σ B
 
+Σ-assoc : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : Σ Y → 𝓦 ̇ }
+        → Σ Z ≃ (Σ \(x : X) → Σ \(y : Y x) → Z (x , y))
+
 ⁻¹-≃ : {X : 𝓤 ̇ } (x y : X) → (x ≡ y) ≃ (y ≡ x)
 
 singleton-type' : {X : 𝓤 ̇ } → X → 𝓤 ̇
@@ -1981,6 +2043,13 @@ pr₁-equivalence {𝓤} {𝓥} X A s = invertibles-are-equivs pr₁ (g , η , �
   NatΣ-ε : (t : Σ B) → NatΣ f (NatΣ g t) ≡ t
   NatΣ-ε (x , b) = x , f x (g x b) ≡⟨ ap (λ - → x , -) (ε x b) ⟩
                    x , b           ∎
+
+Σ-assoc {𝓤} {𝓥} {𝓦} {X} {Y} {Z} = f , invertibles-are-equivs f (g , refl , refl)
+ where
+  f : Σ Z → Σ \x → Σ \y → Z (x , y)
+  f ((x , y) , z) = (x , (y , z))
+  g : (Σ \x → Σ \y → Z (x , y)) → Σ Z
+  g (x , (y , z)) = ((x , y) , z)
 
 ⁻¹-≃ x y = (_⁻¹ , invertibles-are-equivs _⁻¹ (_⁻¹ , ⁻¹-involutive , ⁻¹-involutive))
 
