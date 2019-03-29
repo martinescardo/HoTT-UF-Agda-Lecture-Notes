@@ -2,9 +2,6 @@ previous-version
 deploy
 agdatomd
 illiterator
-clean
-source/compileall
-source/working/*
 *.agdai
 *~
 *.hi
@@ -20,5 +17,9 @@ m
 c
 b
 e
-updateurl
-source/html/*
+HoTT-UF-Agda.md
+Universes.md
+_site/
+deployloop
+html/
+index.md
