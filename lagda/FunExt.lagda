@@ -352,9 +352,11 @@ That the type `global-univalence` would be a subsingleton can't even be formulat
 the absence of a universe of level `ω+1`, which this time Agda doesn't have.
 
 In the absence of a universe `𝓤ω` in our MLTT, we can simply have an
-[axiom schema](https://en.wikipedia.org/wiki/Axiom_schema), consisting of `ω`-many axioms, stating that each
-universe is univalent. Then we can prove in our MLTT that the univalence property
-for each inverse is a (sub)singleton, with `ω`-many proofs (or just one schematic proof with free variable for a universe `𝓤ₙ`.).
+[axiom schema](https://en.wikipedia.org/wiki/Axiom_schema), consisting
+of `ω`-many axioms, stating that each universe is univalent. Then we
+can prove in our MLTT that the univalence property for each inverse is
+a (sub)singleton, with `ω`-many proofs (or just one schematic proof
+with a free variable for a universe `𝓤ₙ`.).
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="hfunextsubsingleton"></a> `hfunext` and `vvfunext` are subsingletons
