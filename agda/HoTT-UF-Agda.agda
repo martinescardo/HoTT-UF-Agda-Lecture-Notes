@@ -944,6 +944,49 @@ Id-to-funs-agree : {X Y : 𝓤 ̇ } (p : X ≡ Y)
                  → Id-to-fun p ≡ Id-to-Fun p
 Id-to-funs-agree (refl X) = refl (𝑖𝑑 X)
 
+swap₂ : 𝟚 → 𝟚
+swap₂ ₀ = ₁
+swap₂ ₁ = ₀
+
+swap₂-involutive : (n : 𝟚) → swap₂ (swap₂ n) ≡ n
+swap₂-involutive ₀ = refl ₀
+swap₂-involutive ₁ = refl ₁
+
+swap₂-is-equiv : is-equiv swap₂
+swap₂-is-equiv = invertibles-are-equivs swap₂ (swap₂ , swap₂-involutive , swap₂-involutive)
+
+e₀ e₁ : 𝟚 ≃ 𝟚
+e₀ = ≃-refl 𝟚
+e₁ = swap₂ , swap₂-is-equiv
+
+e₀-is-not-e₁ : e₀ ≢ e₁
+e₀-is-not-e₁ p = ₁-is-not-₀ r
+ where
+  q : id ≡ swap₂
+  q = ap Eq-to-fun p
+  r : ₁ ≡ ₀
+  r = ap (λ - → - ₁) q
+
+module _ (ua : is-univalent 𝓤₀) where
+
+  p₀ p₁ : 𝟚 ≡ 𝟚
+  p₀ = Eq-to-Id ua 𝟚 𝟚 e₀
+  p₁ = Eq-to-Id ua 𝟚 𝟚 e₁
+
+  p₀-is-not-p₁ : p₀ ≢ p₁
+  p₀-is-not-p₁ q = e₀-is-not-e₁ r
+   where
+    r = e₀              ≡⟨ (inverse-is-section (Id-to-Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₀)⁻¹ ⟩
+        Id-to-Eq 𝟚 𝟚 p₀ ≡⟨ ap (Id-to-Eq 𝟚 𝟚) q ⟩
+        Id-to-Eq 𝟚 𝟚 p₁ ≡⟨ inverse-is-section (Id-to-Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₁ ⟩
+        e₁              ∎
+
+  𝓤₀-is-not-a-set :  ¬(is-set (𝓤₀ ̇ ))
+  𝓤₀-is-not-a-set s = p₀-is-not-p₁ q
+   where
+    q : p₀ ≡ p₁
+    q = s 𝟚 𝟚 p₀ p₁
+
 H-≃ : is-univalent 𝓤
     → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
     → A X (≃-refl X) → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A Y e
@@ -1055,49 +1098,6 @@ invertibles-are-haes ua = J-invertible ua (λ X Y f → is-hae f) id-is-hae
         transport A (ap f (η x)) b ≡⟨ ap (λ - → transport A - b) (τ x) ⟩
         transport A (ε (f x))    b ≡⟨ transport-is-retraction A (ε (f x)) a ⟩
         a                          ∎
-
-swap₂ : 𝟚 → 𝟚
-swap₂ ₀ = ₁
-swap₂ ₁ = ₀
-
-swap₂-involutive : (n : 𝟚) → swap₂ (swap₂ n) ≡ n
-swap₂-involutive ₀ = refl ₀
-swap₂-involutive ₁ = refl ₁
-
-swap₂-is-equiv : is-equiv swap₂
-swap₂-is-equiv = invertibles-are-equivs swap₂ (swap₂ , swap₂-involutive , swap₂-involutive)
-
-e₀ e₁ : 𝟚 ≃ 𝟚
-e₀ = ≃-refl 𝟚
-e₁ = swap₂ , swap₂-is-equiv
-
-e₀-is-not-e₁ : e₀ ≢ e₁
-e₀-is-not-e₁ p = ₁-is-not-₀ r
- where
-  q : id ≡ swap₂
-  q = ap Eq-to-fun p
-  r : ₁ ≡ ₀
-  r = ap (λ - → - ₁) q
-
-module _ (ua : is-univalent 𝓤₀) where
-
-  p₀ p₁ : 𝟚 ≡ 𝟚
-  p₀ = Eq-to-Id ua 𝟚 𝟚 e₀
-  p₁ = Eq-to-Id ua 𝟚 𝟚 e₁
-
-  p₀-is-not-p₁ : p₀ ≢ p₁
-  p₀-is-not-p₁ q = e₀-is-not-e₁ r
-   where
-    r = e₀              ≡⟨ (inverse-is-section (Id-to-Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₀)⁻¹ ⟩
-        Id-to-Eq 𝟚 𝟚 p₀ ≡⟨ ap (Id-to-Eq 𝟚 𝟚) q ⟩
-        Id-to-Eq 𝟚 𝟚 p₁ ≡⟨ inverse-is-section (Id-to-Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₁ ⟩
-        e₁              ∎
-
-  𝓤₀-is-not-a-set :  ¬(is-set (𝓤₀ ̇ ))
-  𝓤₀-is-not-a-set s = p₀-is-not-p₁ q
-   where
-    q : p₀ ≡ p₁
-    q = s 𝟚 𝟚 p₀ p₁
 
 left-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 left-cancellable f = {x x' : domain f} → f x ≡ f x' → x ≡ x'

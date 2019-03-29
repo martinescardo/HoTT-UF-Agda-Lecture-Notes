@@ -334,9 +334,9 @@ to practice univalent mathematics should consult the above references.
      1. [Retracts](HoTT-UF-Agda.html#retracts)
      1. [Voevodsky' notion of type equivalence](HoTT-UF-Agda.html#fibersandequivalences)
      1. [Voevodsky's univalence axiom](HoTT-UF-Agda.html#univalence)
+     1. [Example of a type that is not a set under univalence](HoTT-UF-Agda.html#notsets)
      1. [Equivalence induction](HoTT-UF-Agda.html#equivalence-induction)
      1. [Half-adjoint equivalences](HoTT-UF-Agda.html#haes)
-     1. [Example of a type that is not a set under univalence](HoTT-UF-Agda.html#notsets)
      1. [Exercises](HoTT-UF-Agda.html#lefttothereader)
      1. [Solutions](HoTT-UF-Agda.html#solutions)
      1. [Function extensionality from univalence](HoTT-UF-Agda.html#funextfromua)
@@ -3231,6 +3231,78 @@ Coq](https://github.com/HoTT/HoTT/blob/master/contrib/HoTTBookExercises.v)
 by [Mike Shulman](https://home.sandiego.edu/~shulman/).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a name="notsets"></a> Example of a type that is not a set under univalence
+
+We have two automorphisms of `𝟚`, namely the identity function and the
+function that swaps ₀ and ₁:
+
+\begin{code}
+swap₂ : 𝟚 → 𝟚
+swap₂ ₀ = ₁
+swap₂ ₁ = ₀
+
+swap₂-involutive : (n : 𝟚) → swap₂ (swap₂ n) ≡ n
+swap₂-involutive ₀ = refl ₀
+swap₂-involutive ₁ = refl ₁
+
+swap₂-is-equiv : is-equiv swap₂
+swap₂-is-equiv = invertibles-are-equivs swap₂ (swap₂ , swap₂-involutive , swap₂-involutive)
+\end{code}
+
+Hence we have two distinct equivalences:
+
+\begin{code}
+e₀ e₁ : 𝟚 ≃ 𝟚
+e₀ = ≃-refl 𝟚
+e₁ = swap₂ , swap₂-is-equiv
+
+e₀-is-not-e₁ : e₀ ≢ e₁
+e₀-is-not-e₁ p = ₁-is-not-₀ r
+ where
+  q : id ≡ swap₂
+  q = ap Eq-to-fun p
+  r : ₁ ≡ ₀
+  r = ap (λ - → - ₁) q
+\end{code}
+
+We now use an [anonymous
+module](https://agda.readthedocs.io/en/latest/language/module-system.html#anonymous-modules)
+to assume univalence in the next few constructions:
+
+\begin{code}
+module _ (ua : is-univalent 𝓤₀) where
+\end{code}
+
+With this assumption, we get two different identifications of the type `𝟚` with itself:
+
+\begin{code}
+  p₀ p₁ : 𝟚 ≡ 𝟚
+  p₀ = Eq-to-Id ua 𝟚 𝟚 e₀
+  p₁ = Eq-to-Id ua 𝟚 𝟚 e₁
+
+  p₀-is-not-p₁ : p₀ ≢ p₁
+  p₀-is-not-p₁ q = e₀-is-not-e₁ r
+   where
+    r = e₀              ≡⟨ (inverse-is-section (Id-to-Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₀)⁻¹ ⟩
+        Id-to-Eq 𝟚 𝟚 p₀ ≡⟨ ap (Id-to-Eq 𝟚 𝟚) q ⟩
+        Id-to-Eq 𝟚 𝟚 p₁ ≡⟨ inverse-is-section (Id-to-Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₁ ⟩
+        e₁              ∎
+\end{code}
+
+If the universe `𝓤₀` were a set, then the identifications `p₀` and
+`p₁` defined above would be equal, and therefore it is not a set.
+
+\begin{code}
+  𝓤₀-is-not-a-set :  ¬(is-set (𝓤₀ ̇ ))
+  𝓤₀-is-not-a-set s = p₀-is-not-p₁ q
+   where
+    q : p₀ ≡ p₁
+    q = s 𝟚 𝟚 p₀ p₁
+\end{code}
+
+For more examples, see [Kraus and Sattler](https://arxiv.org/abs/1311.4002).
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a name="equivalenceinduction"></a> Equivalence induction
 
 Under univalence, we get an induction principle for type equivalences,
@@ -3421,78 +3493,6 @@ the proof starts as that of
         transport A (ε (f x))    b ≡⟨ transport-is-retraction A (ε (f x)) a ⟩
         a                          ∎
 \end{code}
-
-[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="notsets"></a> Example of a type that is not a set under univalence
-
-We have two automorphisms of `𝟚`, namely the identity function and the
-function that swaps ₀ and ₁:
-
-\begin{code}
-swap₂ : 𝟚 → 𝟚
-swap₂ ₀ = ₁
-swap₂ ₁ = ₀
-
-swap₂-involutive : (n : 𝟚) → swap₂ (swap₂ n) ≡ n
-swap₂-involutive ₀ = refl ₀
-swap₂-involutive ₁ = refl ₁
-
-swap₂-is-equiv : is-equiv swap₂
-swap₂-is-equiv = invertibles-are-equivs swap₂ (swap₂ , swap₂-involutive , swap₂-involutive)
-\end{code}
-
-Hence we have two distinct equivalences:
-
-\begin{code}
-e₀ e₁ : 𝟚 ≃ 𝟚
-e₀ = ≃-refl 𝟚
-e₁ = swap₂ , swap₂-is-equiv
-
-e₀-is-not-e₁ : e₀ ≢ e₁
-e₀-is-not-e₁ p = ₁-is-not-₀ r
- where
-  q : id ≡ swap₂
-  q = ap Eq-to-fun p
-  r : ₁ ≡ ₀
-  r = ap (λ - → - ₁) q
-\end{code}
-
-We now use an [anonymous
-module](https://agda.readthedocs.io/en/latest/language/module-system.html#anonymous-modules)
-to assume univalence in the next few constructions:
-
-\begin{code}
-module _ (ua : is-univalent 𝓤₀) where
-\end{code}
-
-With this assumption, we get two different identifications of the type `𝟚` with itself:
-
-\begin{code}
-  p₀ p₁ : 𝟚 ≡ 𝟚
-  p₀ = Eq-to-Id ua 𝟚 𝟚 e₀
-  p₁ = Eq-to-Id ua 𝟚 𝟚 e₁
-
-  p₀-is-not-p₁ : p₀ ≢ p₁
-  p₀-is-not-p₁ q = e₀-is-not-e₁ r
-   where
-    r = e₀              ≡⟨ (inverse-is-section (Id-to-Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₀)⁻¹ ⟩
-        Id-to-Eq 𝟚 𝟚 p₀ ≡⟨ ap (Id-to-Eq 𝟚 𝟚) q ⟩
-        Id-to-Eq 𝟚 𝟚 p₁ ≡⟨ inverse-is-section (Id-to-Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₁ ⟩
-        e₁              ∎
-\end{code}
-
-If the universe `𝓤₀` were a set, then the identifications `p₀` and
-`p₁` defined above would be equal, and therefore it is not a set.
-
-\begin{code}
-  𝓤₀-is-not-a-set :  ¬(is-set (𝓤₀ ̇ ))
-  𝓤₀-is-not-a-set s = p₀-is-not-p₁ q
-   where
-    q : p₀ ≡ p₁
-    q = s 𝟚 𝟚 p₀ p₁
-\end{code}
-
-For more examples, see [Kraus and Sattler](https://arxiv.org/abs/1311.4002).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a name="lefttothereader"></a> Exercises
