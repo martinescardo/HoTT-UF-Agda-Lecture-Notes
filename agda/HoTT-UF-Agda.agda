@@ -747,16 +747,14 @@ singleton-type x = Σ \y → y ≡ x
 singleton-type-center : {X : 𝓤 ̇ } (x : X) → singleton-type x
 singleton-type-center x = (x , refl x)
 
-singleton-type-centered : {X : 𝓤 ̇ } (x y : X) (p : y ≡ x)
-                        → singleton-type-center x ≡ (y , p)
-singleton-type-centered x x (refl x) = refl (singleton-type-center x)
+singleton-type-centered : {X : 𝓤 ̇ } (x : X) (σ : singleton-type x)
+                        → singleton-type-center x ≡ σ
+singleton-type-centered x (x , refl x) = refl (x , refl x)
 
 singleton-types-are-singletons : (X : 𝓤 ̇ ) (x : X)
                                → is-singleton (singleton-type x)
-singleton-types-are-singletons X x = singleton-type-center x , φ
- where
-  φ : (σ : singleton-type x) → singleton-type-center x ≡ σ
-  φ (y , p) = singleton-type-centered x y p
+singleton-types-are-singletons X x = singleton-type-center x ,
+                                     singleton-type-centered x
 
 retract-of-singleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                      → Y ◁ X → is-singleton X → is-singleton Y

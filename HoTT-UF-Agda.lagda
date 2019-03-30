@@ -347,7 +347,7 @@ to practice univalent mathematics should consult the above references.
      1. [Subsingleton truncation](HoTT-UF-Agda.html#truncation)
      1. [The univalent axiom of choice](HoTT-UF-Agda.html#choice)
      1. [Structure identity principle](HoTT-UF-Agda.html#sip)
-     1. [Operator fixities and precedences](HoTT-UF-Agda.html#infix)
+     1. [Operator fixities and precedences](HoTT-UF-Agda.html#infix2)
   1. [Appendix](HoTT-UF-Agda.html#appendix)
      1. [Additional exercises](HoTT-UF-Agda.html#moreexercises)
      1. [Solutions to additional exercises](HoTT-UF-Agda.html#mlttexercisessol)
@@ -2822,16 +2822,14 @@ singleton-type x = Σ \y → y ≡ x
 singleton-type-center : {X : 𝓤 ̇ } (x : X) → singleton-type x
 singleton-type-center x = (x , refl x)
 
-singleton-type-centered : {X : 𝓤 ̇ } (x y : X) (p : y ≡ x)
-                        → singleton-type-center x ≡ (y , p)
-singleton-type-centered x x (refl x) = refl (singleton-type-center x)
+singleton-type-centered : {X : 𝓤 ̇ } (x : X) (σ : singleton-type x)
+                        → singleton-type-center x ≡ σ
+singleton-type-centered x (x , refl x) = refl (x , refl x)
 
 singleton-types-are-singletons : (X : 𝓤 ̇ ) (x : X)
                                → is-singleton (singleton-type x)
-singleton-types-are-singletons X x = singleton-type-center x , φ
- where
-  φ : (σ : singleton-type x) → singleton-type-center x ≡ σ
-  φ (y , p) = singleton-type-centered x y p
+singleton-types-are-singletons X x = singleton-type-center x ,
+                                     singleton-type-centered x
 \end{code}
 
 The following gives a technique for showing that some types are singletons:
@@ -3609,7 +3607,7 @@ ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x x' :
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="infix"></a> Operator fixities and precedences
+### <a id="infix2"></a> Operator fixities and precedences
 
 Without the following list of operator precedences and associativity
 (left or right), this agda file doesn't parse and is rejected by Agda.
