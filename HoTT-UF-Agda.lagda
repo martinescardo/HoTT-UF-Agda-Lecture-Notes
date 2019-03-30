@@ -877,12 +877,12 @@ module ℕ-order where
   x ≥ y = y ≤ x
 \end{code}
 
-*Exercise.* After you have learned [`Σ`](HoTT-UF-Agda.html#sigmatypes)
+*Exercise.* After learning [`Σ`](HoTT-UF-Agda.html#sigmatypes)
  and [`_≡_`](HoTT-UF-Agda.html#identitytype) explained below, prove that
 
    > `x ≤ y` if and only if `Σ \(z : ℕ) → x + z ≡ y`.
 
-Later, when you have learned
+Later, learning
 [univalence](HoTT-UF-Agda.html#univalence) prove that in this case
 this implies
 
@@ -1298,7 +1298,7 @@ J X A f x x (refl x) = f x
 
 This is [related](http://www.cs.bham.ac.uk/~mhe/yoneda/yoneda.html) to the [Yoneda
 Lemma](https://en.wikipedia.org/wiki/Yoneda_lemma) in category theory,
-if you are familiar with this subject, which says that certain natural
+for readers familiar with the subject, which says that certain natural
 transformations are *uniquely determined* by their *action on the
 identity arrows*, even if they are *defined for all arrows*. Similarly
 here, `J` is uniquely determined by its action on reflexive
@@ -1433,7 +1433,7 @@ identification `q : y ≡ z` to transport `A y` to `A z`, that is `x ≡
 y` to `x ≡ z`.
 
 *Exercise.* define an alternative version that uses `p` to
-transport. Can you prove that the two versions give equal results?
+transport. Do the two versions give equal results?
 
 When writing `p ∙ q`, we lose information on the lhs and the rhs of the
 identifications `p : x ≡ y` and `q : y ≡ z`, which makes some definitions hard to read. We now
@@ -2645,8 +2645,8 @@ such types then have minimal hlevel `∞`.
 
 *Exercise.* Formulate and prove the following. The type `𝟙` has
 minimal hlevel `0`. The type `𝟘` has minimal hlevel `1`, the type `ℕ`
-has minimal hlevel `2`. More ambitiously, when you have
-[univalence](HoTT-UF-Agda.html#univalence) at your disposal, show that
+has minimal hlevel `2`. More ambitiously, after
+[univalence](HoTT-UF-Agda.html#univalence) is available, show that
 the type of monoids has minimal hlevel `3`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -2725,8 +2725,7 @@ equality. Generalize the above to account for this.
 
 *Exercise.* Prove that the types of magmas, monoids and groups have
 hlevel `3` (they are `1`-groupoids) but not hlevel `2` (they are not
-sets).  Prove that this is their minimal hlevel. Can you do this with
-what we have learned so far?
+sets).  Prove that this is their minimal hlevel. It is possible to do this what what we have learned so far?
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a name="retracts"></a> Retracts
@@ -2791,8 +2790,8 @@ We have an identity retraction:
 *Exercise.* The identity retraction is by no means the only retraction
 of a type onto itself in general, of course. Prove that we have (that
 is, produce an element of the type) `ℕ ◁ ℕ` with the function
-`pred : ℕ → ℕ` defined above as the retraction, to exercise your Agda
-skills. Can you produce more inhabitants of this type?
+`pred : ℕ → ℕ` defined above as the retraction.
+Try to produce more inhabitants of this type.
 
 We can define the composition of two retractions as follows:
 
@@ -2909,10 +2908,9 @@ retract-of-singleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                      → Y ◁ X → is-singleton X → is-singleton Y
 retract-of-singleton (r , s , η) (c , φ) = r c , γ
  where
-  γ : (y : codomain r) → r c ≡ y
-  γ y = r c     ≡⟨ ap r (φ (s y)) ⟩
-        r (s y) ≡⟨ η y ⟩
-        y       ∎
+  γ = λ y → r c     ≡⟨ ap r (φ (s y)) ⟩
+            r (s y) ≡⟨ η y ⟩
+            y       ∎
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -3076,14 +3074,13 @@ We can compose invertible maps:
 ∘-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {f'} (g' , gf' , fg') (g , gf , fg) =
   g ∘ g' , η , ε
  where
-  η : (x : X) → g (g' (f' (f x))) ≡ x
-  η x = g (g' (f' (f x))) ≡⟨ ap g (gf' (f x)) ⟩
-        g (f x)           ≡⟨ gf x ⟩
-        x                 ∎
-  ε : (z : Z) → f' (f (g (g' z))) ≡ z
-  ε z = f' (f (g (g' z))) ≡⟨ ap f' (fg (g' z)) ⟩
-        f' (g' z)         ≡⟨ fg' z ⟩
-        z                 ∎
+  η = λ x → g (g' (f' (f x))) ≡⟨ ap g (gf' (f x)) ⟩
+            g (f x)           ≡⟨ gf x ⟩
+            x                 ∎
+
+  ε = λ z → f' (f (g (g' z))) ≡⟨ ap f' (fg (g' z)) ⟩
+            f' (g' z)         ≡⟨ fg' z ⟩
+            z                 ∎
 \end{code}
 
 There is an identity equivalence, and we get composition of
@@ -3347,7 +3344,7 @@ the induction principle `J-≃` lets both vary:
 \begin{code}
 J-≃ : is-univalent 𝓤
     → (A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
-    → ((X : 𝓤 ̇) → A X X (≃-refl X))
+    → ((X : 𝓤 ̇ ) → A X X (≃-refl X))
     → (X Y : 𝓤 ̇ ) (e : X ≃ Y) → A X Y e
 J-≃ ua A φ X = H-≃ ua X (A X) (φ X)
 \end{code}
@@ -3413,7 +3410,7 @@ induction, but the following version is perhaps more natural
 
 \begin{code}
 Σ-change-of-variables : is-univalent 𝓤
-                      → {X : 𝓤 ̇} {Y : 𝓤 ̇ } (A : Y → 𝓥 ̇ ) (f : X → Y)
+                      → {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (A : Y → 𝓥 ̇ ) (f : X → Y)
                       → is-equiv f
                       → (Σ \(y : Y) → A y) ≡ (Σ \(x : X) → A (f x))
 Σ-change-of-variables ua A f i = Σ-change-of-variables' ua A
@@ -4316,9 +4313,9 @@ Composition of equivalences is associative:
 \end{code}
 
 *Exercise.* The hlevels are closed under `Σ` and, using `hfunext`, also
-under `Π`. Univalence is not needed, but makes the proof easier.  (If
-you don't use univalence, you will need to show that hlevels are
-closed under equivalence.)
+under `Π`. Univalence is not needed, but makes the proof easier.  (Without
+univalence, we need to show that hlevels are
+closed under equivalence first.)
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a name="truncation"></a> Subsingleton truncation
@@ -4631,7 +4628,7 @@ positive-cantors-diagonal : (e : ℕ → (ℕ → ℕ)) → Σ \(α : ℕ → �
 cantors-diagonal : ¬(Σ \(e : ℕ → (ℕ → ℕ)) → (α : ℕ → ℕ) → Σ \(n : ℕ) → α ≡ e n)
 \end{code}
 
-*Hint.* You may wish to prove that the function `succ` has no fixed points, first.
+*Hint.* It may be helpful to prove that the function `succ` has no fixed points, first.
 
 \begin{code}
 𝟚-has-𝟚-automorphisms : dfunext 𝓤₀ 𝓤₀ → (𝟚 ≃ 𝟚) ≃ 𝟚
@@ -4699,9 +4696,8 @@ DNE-gives-EM : dfunext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
 EM-gives-DNE : EM 𝓤 → DNE 𝓤
 \end{code}
 
-The following says that, under univalence, excluded middle holds if
-and only if every subsingleton is the negation of some type (maybe you
-want to formulate and prove this - no solution given).
+The following says that excluded middle holds if and only if every
+subsingleton is the negation of some type.
 
 \begin{code}
 SN : ∀ 𝓤 → 𝓤 ⁺ ̇

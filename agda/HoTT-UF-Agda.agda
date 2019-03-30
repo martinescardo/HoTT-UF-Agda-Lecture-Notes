@@ -1012,7 +1012,7 @@ transport-≃ ua A {X} {Y} e a = H-≃ ua X (λ Y _ → A Y) a Y e
 
 J-≃ : is-univalent 𝓤
     → (A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
-    → ((X : 𝓤 ̇) → A X X (≃-refl X))
+    → ((X : 𝓤 ̇ ) → A X X (≃-refl X))
     → (X Y : 𝓤 ̇ ) (e : X ≃ Y) → A X Y e
 J-≃ ua A φ X = H-≃ ua X (A X) (φ X)
 
@@ -1052,7 +1052,7 @@ J-invertible ua A φ X Y f i = J-equiv ua A φ X Y f (invertibles-are-equivs f i
    b = refl (Σ A)
 
 Σ-change-of-variables : is-univalent 𝓤
-                      → {X : 𝓤 ̇} {Y : 𝓤 ̇ } (A : Y → 𝓥 ̇ ) (f : X → Y)
+                      → {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (A : Y → 𝓥 ̇ ) (f : X → Y)
                       → is-equiv f
                       → (Σ \(y : Y) → A y) ≡ (Σ \(x : X) → A (f x))
 Σ-change-of-variables ua A f i = Σ-change-of-variables' ua A
