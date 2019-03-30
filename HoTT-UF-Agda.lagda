@@ -4152,7 +4152,7 @@ univalence-is-a-singleton {𝓤} γ = pointed-subsingletons-are-singletons
 \end{code}
 
 That the type `global-univalence` would be a subsingleton can't even
-be formulated in the absence of a successor `𝓤ω ⁺` of `𝓤ω`, and Agda
+be formulated in the absence of a successor `𝓤ω⁺` of `𝓤ω`, and Agda
 doesn't have such a successor universe (but there isn't any fundamental reason why it couldn't have it).
 
 In the absence of a universe `𝓤ω` in our MLTT, we can simply have an
