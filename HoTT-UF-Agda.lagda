@@ -1748,7 +1748,7 @@ module twin-primes where
  twin-prime-conjecture = (n : ℕ) → Σ \(p : ℕ) → (p ≥ n) × is-prime p × is-prime (p ∔ 2)
 \end{code}
 
-Thus, can we write down not only definitions, constructions, theorems
+Thus, not only can we write down not only definitions, constructions, theorems
 and proofs, but also conjectures. They are just definitions of
 types. Likewise, the univalence axiom, [to be formulated in due course](HoTT-UF-Agda.html#univalence),
 is a type.
@@ -1999,9 +1999,9 @@ to be the case, it is absolutely necessary that the carrier of a
 monoid is a set rather than an arbitrary type, for otherwise the
 monoid equations can hold in many possible ways, and we would need to
 consider a notion of monoid isomorphism that in addition to preserving
-the neutral element and the multiplication, preserves the equations, and
-the preservations of the equations, and the preservation of the
-preservations of the equations, *ad infinitum*.
+the neutral element and the multiplication, preserves the identifications, and
+the preservations of the identifications, and the preservation of the
+preservations of the identifications, *ad infinitum*.
 
 *Exercise.* Define the type of [groups](https://en.wikipedia.org/wiki/Group_(mathematics)) (with sets as carriers).
 
@@ -2016,14 +2016,7 @@ defined in the HoTT book in Agda.
 ### <a id="identitytypeuf"></a> The identity type in univalent mathematics
 
 We can view a type `X` as a sort of category with hom-types rather than
-hom-sets, with composition defined as follows (and written in
-so-called diagramatic order rather than the usual backwards order like
-we wrote function composition).
-
-If we wanted to prove the following without pattern matching, this
-time we would need the dependent version `J` of induction on `_≡_`.
-
-*Exercise.* Try to do this with `J` and with `H`.
+hom-sets, with the identifications between points as the arrows.
 
 We have that `refl` provides a neutral element for composition of
 identifications:
@@ -2043,6 +2036,11 @@ And composition is associative:
        → (p ∙ q) ∙ r ≡ p ∙ (q ∙ r)
 ∙assoc p q (refl z) = refl (p ∙ q)
 \end{code}
+
+If we wanted to prove the above without pattern matching, this time we
+would need the dependent version `J` of induction on `_≡_`.
+
+*Exercise.* Try to do this with `J` and with `H`.
 
 But all arrows, the identifications, are invertible:
 
@@ -2254,72 +2252,9 @@ just `ap A p`, and so any identification between elements of `A x` and
 `A y` has to be with respect to a specific identification, as in the
 above particular case.
 
-So we define a notion of dependent equality between elements `a : A x`
-and `b : A y`, where the dependency is on an given identification
-`p : x ≡ y`. We write
+This time, the meaningful comparison, given `p : x ≡ y`, is
 
-   > `dId A p a b`
-
-for the type of "identifications of `a` and `b` dependent on the
-identification `p : x ≡ y` over the family `A`".
-
-We can define this by
-
-   > `dId A (refl x) a b = (a ≡ b)`.
-
-But, because
-
-   > `transport A (refl x) a = a`,
-
-by definition, we may as well define `dId` as follows in Agda:
-
-\begin{code}
-dId : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y) → A x → A y → 𝓥 ̇
-dId A p a b = transport A p a ≡ b
-\end{code}
-
-We now define special syntax in Agda to be able to write this in the
-more symmetrical way
-
-   > `a ≡[ p / A ] b`.
-
-This stands for equality of `a` and `b` dependent on `p` over
-`A`. Because we have chosen to say *over*, we may as well use the
-symbol `/` to express this. We define this quaternary mix-fix operator
-`_≡[_/_]_` with a [syntax
-declaration](https://agda.readthedocs.io/en/latest/language/syntax-declarations.html)
-as follows in Agda.
-
-\begin{code}
-syntax dId A p a b = a ≡[ p / A ] b
-\end{code}
-
-We have designed things so that, by construction, we get the
-following:
-
-\begin{code}
-≡[]-on-refl-is-≡ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x : X} (a b : A x)
-                 → (a ≡[ refl x / A ] b) ≡ (a ≡ b)
-≡[]-on-refl-is-≡ A {x} a b = refl (a ≡ b)
-\end{code}
-
-Notice the perhaps unfamiliar nested use of equality: the identity
-type `transport A (refl x) a ≡ b` is equal to the identity type `a ≡
-b`.  The proof is the reflexivity identification of the type `a ≡ b`.
-We rewrite the above making the implicit arguments of `refl` explicit
-so that it becomes apparent that we are using the identity type former
-of a type that happens to be a universe.
-
-\begin{code}
-≡[]-on-refl-is-≡' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x : X} (a b : A x)
-                  → (a ≡[ refl x / A ] b) ≡ (a ≡ b)
-
-≡[]-on-refl-is-≡' {𝓤} {𝓥} {X} A {x} a b = refl {𝓥 ⁺} {𝓥 ̇ } (a ≡ b)
-\end{code}
-
-This says that we are taking the reflexivity proof of the equality type
-of the universe `𝓥`, which lives in the next universe `𝓥 ⁺`, for the
-element `a ≡ b` (which is a type) of `𝓥`.
+   > `transport A p a = b`,
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="sigmaequality"></a> Equality in Σ types
@@ -2329,13 +2264,13 @@ equality in `Σ` types as follows.
 
 \begin{code}
 to-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
-       → (Σ \(p : pr₁ σ ≡ pr₁ τ) → pr₂ σ ≡[ p / A ] pr₂ τ)
+       → (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
        → σ ≡ τ
 to-Σ-≡ (refl x , refl a) = refl (x , a)
 
 from-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
          → σ ≡ τ
-         → Σ \(p : pr₁ σ ≡ pr₁ τ) → pr₂ σ ≡[ p / A ] pr₂ τ
+         → Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ
 from-Σ-≡ (refl (x , a)) = (refl x , refl a)
 \end{code}
 
@@ -3160,7 +3095,7 @@ Here is the promised characterization of equality in `Σ` types:
 
 \begin{code}
 Σ-≡-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ τ : Σ A)
-          → (σ ≡ τ) ≃ (Σ \(p : pr₁ σ ≡ pr₁ τ) → pr₂ σ ≡[ p / A ] pr₂ τ)
+          → (σ ≡ τ) ≃ (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
 Σ-≡-equiv  {𝓤} {𝓥} {X} {A}  σ τ = from-Σ-≡ ,
                                   invertibles-are-equivs from-Σ-≡ (to-Σ-≡ , ε , η)
  where

@@ -493,28 +493,14 @@ transport-ap A f (refl x) a = refl a
 data Color : 𝓤₀ ̇  where
  Black White : Color
 
-dId : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y) → A x → A y → 𝓥 ̇
-dId A p a b = transport A p a ≡ b
-
-syntax dId A p a b = a ≡[ p / A ] b
-
-≡[]-on-refl-is-≡ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x : X} (a b : A x)
-                 → (a ≡[ refl x / A ] b) ≡ (a ≡ b)
-≡[]-on-refl-is-≡ A {x} a b = refl (a ≡ b)
-
-≡[]-on-refl-is-≡' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x : X} (a b : A x)
-                  → (a ≡[ refl x / A ] b) ≡ (a ≡ b)
-
-≡[]-on-refl-is-≡' {𝓤} {𝓥} {X} A {x} a b = refl {𝓥 ⁺} {𝓥 ̇ } (a ≡ b)
-
 to-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
-       → (Σ \(p : pr₁ σ ≡ pr₁ τ) → pr₂ σ ≡[ p / A ] pr₂ τ)
+       → (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
        → σ ≡ τ
 to-Σ-≡ (refl x , refl a) = refl (x , a)
 
 from-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
          → σ ≡ τ
-         → Σ \(p : pr₁ σ ≡ pr₁ τ) → pr₂ σ ≡[ p / A ] pr₂ τ
+         → Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ
 from-Σ-≡ (refl (x , a)) = (refl x , refl a)
 
 is-singleton : 𝓤 ̇ → 𝓤 ̇
@@ -917,7 +903,7 @@ transport-is-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
 transport-is-equiv A (refl x) = id-is-equiv (A x)
 
 Σ-≡-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ τ : Σ A)
-          → (σ ≡ τ) ≃ (Σ \(p : pr₁ σ ≡ pr₁ τ) → pr₂ σ ≡[ p / A ] pr₂ τ)
+          → (σ ≡ τ) ≃ (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
 Σ-≡-equiv  {𝓤} {𝓥} {X} {A}  σ τ = from-Σ-≡ ,
                                   invertibles-are-equivs from-Σ-≡ (to-Σ-≡ , ε , η)
  where
