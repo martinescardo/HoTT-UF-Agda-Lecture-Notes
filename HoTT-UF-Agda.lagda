@@ -2977,7 +2977,10 @@ is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-equiv f = (y : codomain f) → is-singleton (fiber f y)
 \end{code}
 
-It is easy to see that equivalences are invertible:
+We can read this as saying that for every `y : Y` there is a unique `x
+: X` with `f x ≡ y`, where the uniqueness refers not only to `x : X` but
+also to the identification datum `p : f x ≡ y`.  It is easy to see
+that equivalences are invertible:
 
 \begin{code}
 inverse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f → (Y → X)
