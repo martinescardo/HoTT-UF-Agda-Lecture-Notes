@@ -116,7 +116,7 @@ theory (MLTT), including identity types and type universes, and
 postulate a single axiom, named *univalence*. This axiom stipulates a
 [canonical](http://mathworld.wolfram.com/Canonical.html) bijection
 between *type equivalences* (in a suitable sense defined by Voevodsky
-in type theory) and type identifications (in the original sense of
+in type theory) and *type identifications* (in the original sense of
 Martin-Löf's identity type). Voevodsky's notion of type equivalence,
 formulated in MLTT, is a refinement of the notion of isomorphism,
 which works uniformly for all higher groupoids, i.e. types.
