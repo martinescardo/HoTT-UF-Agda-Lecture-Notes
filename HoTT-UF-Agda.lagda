@@ -3,7 +3,7 @@ layout: default
 title : Introduction to Univalent Foundations of Mathematics with Agda
 date : 2019-03-04
 ---
-## <a name="lecturenotes">Introduction to Univalent Foundations of Mathematics with Agda</a>
+## <a id="lecturenotes">Introduction to Univalent Foundations of Mathematics with Agda</a>
 
 4th March 2019, version of {{ "now" | date: "%d %B %Y, %H:%M" }}.
 
@@ -59,7 +59,7 @@ These notes were originally developed for the
 [Midlands Graduate School 2019](http://events.cs.bham.ac.uk/mgs2019/). They will evolve for a while.
 
 [<sub>Table of contents ⇓</sub>](HoTT-UF-Agda.html#contents)
-### <a name="introduction"></a> Introduction
+### <a id="introduction"></a> Introduction
 
 A univalent type theory is the underlying formal system for a
 foundation of univalent mathematics as conceived by [Voevodsky](http://www.math.ias.edu/Voevodsky/).
@@ -208,7 +208,7 @@ than Coq, is a personal matter of taste only, and the students are
 encouraged to learn Coq, too.
 
 [<sub>Table of contents ⇓</sub>](HoTT-UF-Agda.html#contents)
-#### <a name="homotopytypetheory"></a> Homotopy type theory
+#### <a id="homotopytypetheory"></a> Homotopy type theory
 
 Univalent type theory is often called *homotopy type theory*.  Here we
 are following Voevodsky, who coined the phrases *univalent
@@ -229,7 +229,7 @@ to the HoTT book as a starting point.
 A common compromise is to refer to the subject as [HoTT/UF](https://cas.oslo.no/hott-uf/).
 
 [<sub>Table of contents ⇓</sub>](HoTT-UF-Agda.html#contents)
-#### <a name="generalreferences"></a> General references
+#### <a id="generalreferences"></a> General references
 
    - [Papers](https://github.com/michaelt/martin-lof) by [Martin-Löf](https://en.wikipedia.org/wiki/Per_Martin-L%C3%B6f).
    - Homotopy type theory website [references](https://homotopytypetheory.org/references/).
@@ -283,7 +283,7 @@ ordinals](http://www.cs.bham.ac.uk/~mhe/agda-new/Ordinals.html) and
 [more](http://www.cs.bham.ac.uk/~mhe/agda-new/SafeModulesIndex.html).
 
 [<sub>Table of contents ⇓</sub>](HoTT-UF-Agda.html#contents)
-### <a name="plan"></a> Choice of material
+### <a id="plan"></a> Choice of material
 
 This is intended as an introductory graduate course. We include what
 we regard as the essence of univalent foundations and univalent
@@ -291,7 +291,7 @@ mathematics, but we are certainly omiting important material that is
 needed to do univalent mathematics in practice, and the readers who wish
 to practice univalent mathematics should consult the above references.
 
-### <a name="contents"></a> Table of contents
+### <a id="contents"></a> Table of contents
 
   1. [Front matter](HoTT-UF-Agda.html#lecturenotes)
      1. [First page](HoTT-UF-Agda.html#lecturenotes)
@@ -356,9 +356,9 @@ to practice univalent mathematics should consult the above references.
      1. [License](LICENSE)
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-## <a name="mlttinagda"></a> MLTT in Agda
+## <a id="mlttinagda"></a> MLTT in Agda
 
-### <a name="whatisagda"></a> What is Agda?
+### <a id="whatisagda"></a> What is Agda?
 
 There are [two views](https://agda.readthedocs.io/en/latest/getting-started/what-is-agda.html):
 
@@ -388,7 +388,7 @@ checks for correctness. We do get some form of interactive help to
 input our proofs and render them as formal objects.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="spartanmltt"></a> A spartan Martin-Löf type theory (MLTT)
+### <a id="spartanmltt"></a> A spartan Martin-Löf type theory (MLTT)
 
 Before embarking into a full definition of our Martin-Löf type
 theory in Agda, we summarize the particular Martin-Löf type
@@ -424,7 +424,7 @@ using more advanced features. Here we introduce a minimal
 subset of Agda where everything in our spartan MLTT can be expressed.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="gettingstartedagda"></a> Getting started with Agda
+### <a id="gettingstartedagda"></a> Getting started with Agda
 
 We don't use any Agda library. For pedagogical purposes, we start from
 scratch, and here are our first two lines of code:
@@ -453,7 +453,7 @@ module HoTT-UF-Agda where
   development for correctness.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="universes"></a> Universes
+### <a id="universes"></a> Universes
 
 A universe `𝓤` is a type of types.
 
@@ -529,7 +529,7 @@ variable
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="onepointtype"></a> The one-element type `𝟙`
+### <a id="onepointtype"></a> The one-element type `𝟙`
 
 We place it in the first universe, and we name its unique element
 "`⋆`". We use the `data` declaration in Agda to introduce it:
@@ -636,7 +636,7 @@ too. Occasionally, people define variants of a function with different
 choices of "implicitness", as above.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="emptytype"></a> The empty type `𝟘`
+### <a id="emptytype"></a> The empty type `𝟘`
 
 It is defined like `𝟙`, except that no elements are listed for it:
 
@@ -710,7 +710,7 @@ to `(𝟘 → 𝟘) ≡ 𝟙`, which in turn says that there is precisely one fu
 `𝟘 → 𝟘`, namely the (vacuous) identity function.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="naturalnumbers"></a> The type `ℕ` of natural numbers
+### <a id="naturalnumbers"></a> The type `ℕ` of natural numbers
 
 The definition is similar but not quite the same as the one via
 [Peano Axioms](https://en.wikipedia.org/wiki/Peano_axioms).
@@ -897,7 +897,7 @@ efficiency but only with understanding how to codify mathematics in
 (univalent) type theory and in Agda.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="binarysum"></a> The binary sum type constructor `_+_`
+### <a id="binarysum"></a> The binary sum type constructor `_+_`
 
 We now define the [disjoint](HoTT-UF-Agda.html#inl-inr-disjoint-images) sum of two types `X` and `Y`. The elements of
 the type
@@ -975,7 +975,7 @@ Or we can prove it by induction on `_+_` and `𝟙`:
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="sigmatypes"></a> `Σ` types
+### <a id="sigmatypes"></a> `Σ` types
 
 Given universes `𝓤` and `𝓥`, a type
 
@@ -1128,7 +1128,7 @@ We have the following uses of `Σ`.
     `∥ A x ∥` and write `Σ \(x : X), ∥ A x ∥`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="pitypes"></a> `Π` types
+### <a id="pitypes"></a> `Π` types
 
 `Π` types are builtin with a different notation in Agda, as discussed
 above, but we can introduce the notation `Π` for them, similar to that for `Σ`:
@@ -1187,7 +1187,7 @@ type-of {𝓤} {X} x = X
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="identitytype"></a> The identity type former `Id`, also written `_≡_`
+### <a id="identitytype"></a> The identity type former `Id`, also written `_≡_`
 
 We now introduce the central type constructor of MLTT from the point
 of view of univalent mathematics. In Agda we can define Martin-Löf's
@@ -1360,7 +1360,7 @@ mathematics within our spartan MLTT, we pause to discuss some
 basic examples of mathematics in Martin-Löf type theory.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="basicidentity"></a> Basic constructions with the identity type
+### <a id="basicidentity"></a> Basic constructions with the identity type
 
 *Transport along an identification.*
 \begin{code}
@@ -1501,7 +1501,7 @@ or, with our `Π` notation,
    > `Π \x → f x ≡ g x`
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="negation"></a> Reasoning with negation
+### <a id="negation"></a> Reasoning with negation
 
 We first introduce notation for double and triple negation to avoid
 the use of brackets.
@@ -1730,7 +1730,7 @@ inl-inr-disjoint-images {𝓤} {𝓥} {X} {Y} p = 𝟙-is-not-𝟘 q
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="twinprime"></a> Example: formulation of the twin-prime conjecture
+### <a id="twinprime"></a> Example: formulation of the twin-prime conjecture
 
 We illustrate the above constructs of MLTT to formulate this
 conjecture.
@@ -1754,7 +1754,7 @@ types. Likewise, the univalence axiom, [to be formulated in due course](HoTT-UF-
 is a type.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="infix"></a> Operator fixities and precedences
+### <a id="infix"></a> Operator fixities and precedences
 
 Without the following list of operator precedences and
 associativities (left or right), this agda file doesn't parse and is
@@ -1774,9 +1774,9 @@ infix  3  _⁻¹
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-## <a name="uminagda"></a> Univalent Mathematics in Agda
+## <a id="uminagda"></a> Univalent Mathematics in Agda
 
-### <a name="axiomaticutt"></a> Our univalent type theory
+### <a id="axiomaticutt"></a> Our univalent type theory
 
   * Spartan MLTT [as above](HoTT-UF-Agda.html#spartanmltt).
   * Univalence axiom as [below](HoTT-UF-Agda.html#univalence).
@@ -1790,7 +1790,7 @@ version available in Agda, called [cubical
 Agda](https://homotopytypetheory.org/2018/12/06/cubical-agda/).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="subsingletonsandsets"></a> Subsingletons (or propositions or truth values) and sets
+### <a id="subsingletonsandsets"></a> Subsingletons (or propositions or truth values) and sets
 
 A type is a subsingleton (or a proposition or a truth value) if it has
 at most one element, that is, any two of its elements are equal, or identified.
@@ -1836,7 +1836,7 @@ the realm of univalent mathematics, but not yet needing the univalence
 axiom.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="magmasandmonoids"></a> Example: the types of magmas and monoids
+### <a id="magmasandmonoids"></a> Example: the types of magmas and monoids
 
 A [magma](https://en.wikipedia.org/wiki/Magma_(algebra)) is a *set* equipped with a binary operation subject to no laws
 ([Bourbaki](https://books.google.co.uk/books?id=STS9aZ6F204C&pg=PA1&redir_esc=y#v=onepage&q&f=false)).  We can define the type of magmas in a universe `𝓤` as follows:
@@ -2013,7 +2013,7 @@ defined in the HoTT book in Agda.
  spaces](https://en.wikipedia.org/wiki/Topological_space).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="identitytypeuf"></a> The identity type in univalent mathematics
+### <a id="identitytypeuf"></a> The identity type in univalent mathematics
 
 We can view a type `X` as a sort of category with hom-types rather than
 hom-sets, with composition defined as follows (and written in
@@ -2164,7 +2164,7 @@ transport-ap A f (refl x) a = refl a
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="dependentequality"></a> Identifications that depend on identifications
+### <a id="dependentequality"></a> Identifications that depend on identifications
 
 If we have an identification `p : A ≡ B` of two types `A` and `B`, and
 elements `a : A` and `b : B`, we cannot ask directly whether `a ≡ b`,
@@ -2322,7 +2322,7 @@ of the universe `𝓥`, which lives in the next universe `𝓥 ⁺`, for the
 element `a ≡ b` (which is a type) of `𝓥`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="sigmaequality"></a> Equality in Σ types
+### <a id="sigmaequality"></a> Equality in Σ types
 
 With the above notion of dependent equality, we can characterize
 equality in `Σ` types as follows.
@@ -2372,7 +2372,7 @@ which is always a subsingleton: a given function `f` can be an
 equivalence in at most one way. But we first discuss *hlevels*.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="hlevel"></a> Voevodsky's notion of hlevel
+### <a id="hlevel"></a> Voevodsky's notion of hlevel
 
 Voevodsky's hlevels `0,1,2,3,...` are shifted by `2` with respect to
 the `n`-groupoid numbering convention, and correspond to `-2`-groupoids
@@ -2425,7 +2425,7 @@ pointed-subsingletons-are-singletons X x s = (x , s x)
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="em"></a> The univalent principle of excluded middle
+### <a id="em"></a> The univalent principle of excluded middle
 
 Under excluded middle, the only two subsingletons, up to equivalence,
 are `𝟘` and `𝟙`. In fact, excluded middle in univalent mathematics
@@ -2461,7 +2461,7 @@ We will not assume or deny excluded middle, which is an independent
 statement (it can't be proved or disproved).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="hedberg"></a> Hedberg's Theorem
+### <a id="hedberg"></a> Hedberg's Theorem
 
 To characterize sets as the types of hlevel 2, we first need to show
 that subsingletons are sets, and this is not easy. We use an argument
@@ -2521,7 +2521,7 @@ Hedberg {𝓤} {X} x c y p q =
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="setscharacterization"></a> A characterization of sets
+### <a id="setscharacterization"></a> A characterization of sets
 
 The following is immediate from the definitions:
 
@@ -2547,7 +2547,7 @@ And the converse is the content of Hedberg's Theorem.
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="subsingletonsaresets"></a> Subsingletons are sets
+### <a id="subsingletonsaresets"></a> Subsingletons are sets
 
 In the following definition of the auxiliary function `f`, we ignore
 the argument `p`, using the fact that `X` is a subsingleton instead,
@@ -2570,7 +2570,7 @@ subsingletons-are-sets X s = ≡-collapsibles-are-sets X (subsingletons-are-≡-
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="hlevel1subsingleton"></a> The types of hlevel 1 are the subsingletons
+### <a id="hlevel1subsingleton"></a> The types of hlevel 1 are the subsingletons
 
 Then with the above we get our desired characterization of the types of
 hlevel `1` as an immediate consequence:
@@ -2595,7 +2595,7 @@ because the types under consideration are
 [subsingletons](HoTT-UF-Agda.html#subsingletonsandsets).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="hlevel2set"></a> The types of hlevel 2 are the sets
+### <a id="hlevel2set"></a> The types of hlevel 2 are the sets
 
 The same comments as for the previous section apply.
 
@@ -2614,7 +2614,7 @@ types-of-hlevel-2-are-sets X = f
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="hlevelsupper"></a> The hlevels are upper closed
+### <a id="hlevelsupper"></a> The hlevels are upper closed
 
 A singleton is a subsingleton, a subsingleton is a set, ... , a type
 of hlevel `n` is of hlevel `n+1` too, ...
@@ -2648,7 +2648,7 @@ has minimal hlevel `2`. More ambitiously, after
 the type of monoids has minimal hlevel `3`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="naturalsset"></a> Example: `ℕ` is a set
+### <a id="naturalsset"></a> Example: `ℕ` is a set
 
 We first prove the remaining Peano axioms.
 
@@ -2726,7 +2726,7 @@ hlevel `3` (they are `1`-groupoids) but not hlevel `2` (they are not
 sets).  Prove that this is their minimal hlevel. It is possible to do this what what we have learned so far?
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="retracts"></a> Retracts
+### <a id="retracts"></a> Retracts
 
 We use retracts as a mathematical technique to transfer properties
 between types. For instance, retracts of singletons are
@@ -2912,7 +2912,7 @@ retract-of-singleton (r , s , η) (c , φ) = r c , γ
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="fibersandequivalences"></a> Voevodsky's notion of type equivalence
+### <a id="fibersandequivalences"></a> Voevodsky's notion of type equivalence
 
 The main notions of univalent mathematics conceived by Voevodsky, with
 formulations in MLTT, are those of [singleton
@@ -3171,7 +3171,7 @@ Here is the promised characterization of equality in `Σ` types:
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="univalence"></a> Voevodsky's univalence axiom
+### <a id="univalence"></a> Voevodsky's univalence axiom
 
 There is a canonical transformation `(X Y : 𝓤 ̇ ) → X ≡ Y → X ≃ Y` that
 sends the identity identification `refl X : X ≡ X` to the identity
@@ -3229,7 +3229,7 @@ Coq](https://github.com/HoTT/HoTT/blob/master/contrib/HoTTBookExercises.v)
 by [Mike Shulman](https://home.sandiego.edu/~shulman/).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="notsets"></a> Example of a type that is not a set under univalence
+### <a id="notsets"></a> Example of a type that is not a set under univalence
 
 We have two automorphisms of `𝟚`, namely the identity function and the
 function that swaps ₀ and ₁:
@@ -3301,7 +3301,7 @@ If the universe `𝓤₀` were a set, then the identifications `p₀` and
 For more examples, see [Kraus and Sattler](https://arxiv.org/abs/1311.4002).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="equivalenceinduction"></a> Equivalence induction
+### <a id="equivalenceinduction"></a> Equivalence induction
 
 Under univalence, we get an induction principle for type equivalences,
 corresponding to the induction principles [`H`](HoTT-UF-Agda.html#H)
@@ -3423,7 +3423,7 @@ This particular proof works only because inversion [is involutive on
 the nose](HoTT-UF-Agda.html#inversion-involutive).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="haes"></a> Half-adjoint equivalences
+### <a id="haes"></a> Half-adjoint equivalences
 
 An often useful alternative formulation of the notion of equivalence
 is that of half-adjoint equivalence. If we have a function `f : X → Y`
@@ -3498,7 +3498,7 @@ that the proof starts as that of
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="lefttothereader"></a> Exercises
+### <a id="lefttothereader"></a> Exercises
 
 Here are some facts whose proofs are left to the reader but that we
 will need from the next section onwards. Sample solutions are given
@@ -3674,7 +3674,7 @@ ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x x' :
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="infix"></a> Operator fixities and precedences
+### <a id="infix"></a> Operator fixities and precedences
 
 Without the following list of operator precedences and associativity
 (left or right), this agda file doesn't parse and is rejected by Agda.
@@ -3690,7 +3690,7 @@ infix  1 _■
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="solutions"></a> Solutions
+### <a id="solutions"></a> Solutions
 
 Spoiler alert.
 
@@ -3888,7 +3888,7 @@ ap₂ f (refl x) (refl y) = refl (f x y)
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="funextfromua"></a> Function extensionality from univalence
+### <a id="funextfromua"></a> Function extensionality from univalence
 
 Function extensionality says that any two pointwise equal functions
 are equal. This is known to be not provable or disprovable in
@@ -3987,7 +3987,7 @@ only get that
 instead.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="hfunext"></a> Variations of function extensionality and their logical equivalence
+### <a id="hfunext"></a> Variations of function extensionality and their logical equivalence
 
 Dependent function extensionality:
 
@@ -4143,7 +4143,7 @@ univalence-gives-vvfunext ua = univalence-gives-vvfunext' ua ua
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="univalencesubsingleton"></a> The univalence axiom is a (sub)singleton
+### <a id="univalencesubsingleton"></a> The univalence axiom is a (sub)singleton
 
 If we use a type as an axiom, it should better have at most one element. We
 prove some generally useful lemmas first.
@@ -4229,7 +4229,7 @@ a (sub)singleton, with `ω`-many proofs (or just one schematic proof
 with a free variable for a universe `𝓤ₙ`.).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="hfunextsubsingleton"></a> `hfunext` and `vvfunext` are subsingletons
+### <a id="hfunextsubsingleton"></a> `hfunext` and `vvfunext` are subsingletons
 
 This is left as an exercise. Like univalence, the proof that these two
 forms of function extensional extensionality require assumptions of
@@ -4242,7 +4242,7 @@ versions with the arguments explicit, and establish an equivalence
 between the new version and the original version.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="morefunextuses"></a> More applications of function extensionality
+### <a id="morefunextuses"></a> More applications of function extensionality
 
 \begin{code}
 being-subsingleton-is-a-subsingleton : {X : 𝓤 ̇ } → dfunext 𝓤 𝓤
@@ -4319,7 +4319,7 @@ univalence, we need to show that hlevels are
 closed under equivalence first.)
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="truncation"></a> Subsingleton truncation
+### <a id="truncation"></a> Subsingleton truncation
 
 The following is Voevosky's approach to saying that a type is
 inhabited in such a way that the statement of inhabitation is a
@@ -4362,7 +4362,7 @@ inhabited-recursion : (X P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → i
 inhabited-recursion X P s f φ = φ P s f
 \end{code}
 
-Although we [don't necessarily have](HoTT-UF-Agda.html#moreexercices) that
+Although we [don't necessarily have](HoTT-UF-Agda.html#moreexercises) that
 `¬¬ P → P`, we do have that `is-inhabited P → P` if `P` is a subsingleton:
 
 \begin{code}
@@ -4507,7 +4507,7 @@ way, we can use `is-inhabited` instead of `∥_∥` if we wish.
   `X ≡ X` has `x!` elements.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="choice"></a> The univalent axiom of choice
+### <a id="choice"></a> The univalent axiom of choice
 
 The axiom of choice says that if for every `x : X` there exists `a : A
 x` with `R x a`, where `R` is some given relation, then there exists a
@@ -4606,13 +4606,14 @@ in particular has a proof that univalent choice implies univalent
 excluded middle.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a name="sip"></a> Structure identity principle
+### <a id="sip"></a> Structure identity principle
 
 For the moment, see [this](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-StructureIdentityPrinciple.html).
 
-## <a name="appendix"></a> Appendix
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+## <a id="appendix"></a> Appendix
 
-### <a name="moreexercises"></a> Additional exercises
+### <a id="moreexercises"></a> Additional exercises
 
 Solutions are available [at the end](#mlttexercisessol).
 
@@ -4711,7 +4712,7 @@ DNE-gives-SN : DNE 𝓤 → SN 𝓤
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 
-### <a name="mlttexercisessol"></a> Solutions to additional exercises
+### <a id="mlttexercisessol"></a> Solutions to additional exercises
 
 Spoiler alert.
 
