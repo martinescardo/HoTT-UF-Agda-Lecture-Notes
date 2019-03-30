@@ -2335,7 +2335,7 @@ X is-of-hlevel (succ n) = (x x' : X) → ((x ≡ x') is-of-hlevel n)
 \end{code}
 
 It is often convenient in practice to have equivalent formulations of
-the levels `1` (as subsingletons) and `2` (as sets), which we will
+the hlevels `1` (as subsingletons) and `2` (as sets), which we will
 develop [soon](HoTT-UF-Agda.html#setscharacterization).
 
 When working with singleton types, it will be convenient to have
@@ -4151,8 +4151,9 @@ univalence-is-a-singleton {𝓤} γ = pointed-subsingletons-are-singletons
                                    (univalence-is-a-subsingletonω γ)
 \end{code}
 
-That the type `global-univalence` would be a subsingleton can't even be formulated in
-the absence of a universe of level `ω+1`, which this time Agda doesn't have.
+That the type `global-univalence` would be a subsingleton can't even
+be formulated in the absence of a successor `𝓤ω ⁺` of `𝓤ω`, and Agda
+doesn't have such a successor universe (but there isn't any fundamental reason why it couldn't have it).
 
 In the absence of a universe `𝓤ω` in our MLTT, we can simply have an
 [axiom schema](https://en.wikipedia.org/wiki/Axiom_schema), consisting
