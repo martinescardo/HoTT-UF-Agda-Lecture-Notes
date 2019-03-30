@@ -516,9 +516,7 @@ We now bring our notation for universes by importing our Agda file
 [`open`](https://agda.readthedocs.io/en/latest/language/module-system.html)
 asks to make all definitions in the file `Universe` visible in our
 file here. The Agda code in these notes has syntax highlighting and
-html links, so that we can navigate to other modules, such as
-`Universe` or to definitions in this file.
-
+links, so that we can navigate to the definition of a name or symbol by clicking at it.
 \begin{code}
 open import Universes
 \end{code}
