@@ -776,10 +776,9 @@ retract-of-singleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                      → Y ◁ X → is-singleton X → is-singleton Y
 retract-of-singleton (r , s , η) (c , φ) = r c , γ
  where
-  γ : (y : codomain r) → r c ≡ y
-  γ y = r c     ≡⟨ ap r (φ (s y)) ⟩
-        r (s y) ≡⟨ η y ⟩
-        y       ∎
+  γ = λ y → r c     ≡⟨ ap r (φ (s y)) ⟩
+            r (s y) ≡⟨ η y ⟩
+            y       ∎
 
 invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 invertible f = Σ \g → (g ∘ f ∼ id) × (f ∘ g ∼ id)
@@ -868,14 +867,13 @@ id-invertible X = 𝑖𝑑 X , refl , refl
 ∘-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {f'} (g' , gf' , fg') (g , gf , fg) =
   g ∘ g' , η , ε
  where
-  η : (x : X) → g (g' (f' (f x))) ≡ x
-  η x = g (g' (f' (f x))) ≡⟨ ap g (gf' (f x)) ⟩
-        g (f x)           ≡⟨ gf x ⟩
-        x                 ∎
-  ε : (z : Z) → f' (f (g (g' z))) ≡ z
-  ε z = f' (f (g (g' z))) ≡⟨ ap f' (fg (g' z)) ⟩
-        f' (g' z)         ≡⟨ fg' z ⟩
-        z                 ∎
+  η = λ x → g (g' (f' (f x))) ≡⟨ ap g (gf' (f x)) ⟩
+            g (f x)           ≡⟨ gf x ⟩
+            x                 ∎
+
+  ε = λ z → f' (f (g (g' z))) ≡⟨ ap f' (fg (g' z)) ⟩
+            f' (g' z)         ≡⟨ fg' z ⟩
+            z                 ∎
 
 id-is-equiv : (X : 𝓤 ̇ ) → is-equiv (𝑖𝑑 X)
 id-is-equiv = singleton-types-are-singletons
