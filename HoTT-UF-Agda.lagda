@@ -2256,6 +2256,14 @@ This time, the meaningful comparison, given `p : x ≡ y`, is
 
    > `transport A p a = b`,
 
+For example, this idea applies when comparing the values of a dependent function:
+
+\begin{code}
+apd : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : (x : X) → A x) {x y : X}
+      (p : x ≡ y) → transport A p (f x) ≡ f y
+apd f (refl x) = refl (f x)
+\end{code}
+
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="sigmaequality"></a> Equality in Σ types
 
@@ -2272,11 +2280,12 @@ from-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
          → σ ≡ τ
          → Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ
 from-Σ-≡ (refl (x , a)) = (refl x , refl a)
+
 \end{code}
 
 The above gives
 
-   > `(σ ≡ τ) ⇔ Σ \(p : pr₁ σ ≡ pr₁ τ) → pr₂ σ ≡[ p / A ] pr₂ τ`.
+   > `(σ ≡ τ) ⇔ Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ`.
 
 But this is a very weak statement when the left- and right-hand
 identity types may have multiple elements, which is precisely the
@@ -2312,7 +2321,7 @@ equivalence in at most one way. But we first discuss *hlevels*.
 Voevodsky's hlevels `0,1,2,3,...` are shifted by `2` with respect to
 the `n`-groupoid numbering convention, and correspond to `-2`-groupoids
 (singletons), `-1`-groupoids (subsingletons), `0`-groupoids (sets),...
-
+z
 First Voevodsky defined a notion of *contractible type*, which we
 refer to here as *singleton type*.
 

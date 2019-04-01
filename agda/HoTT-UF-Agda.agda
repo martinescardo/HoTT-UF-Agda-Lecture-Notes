@@ -493,6 +493,10 @@ transport-ap A f (refl x) a = refl a
 data Color : 𝓤₀ ̇  where
  Black White : Color
 
+apd : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : (x : X) → A x) {x y : X}
+      (p : x ≡ y) → transport A p (f x) ≡ f y
+apd f (refl x) = refl (f x)
+
 to-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
        → (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
        → σ ≡ τ
