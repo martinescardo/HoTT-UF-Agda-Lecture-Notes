@@ -1433,7 +1433,7 @@ Here we are considering the family `A t = (x ≡ t)`, and using the
 identification `q : y ≡ z` to transport `A y` to `A z`, that is `x ≡
 y` to `x ≡ z`.
 
-*Exercise.* define an alternative version that uses `p` to
+*Exercise*. Define an alternative version that uses `p` to
 transport. Do the two versions give equal results?
 
 When writing `p ∙ q`, we lose information on the lhs and the rhs of the
