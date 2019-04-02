@@ -1752,7 +1752,7 @@ module twin-primes where
  twin-prime-conjecture = (n : ℕ) → Σ \(p : ℕ) → (p ≥ n) × is-prime p × is-prime (p ∔ 2)
 \end{code}
 
-Thus, not only can we write down not only definitions, constructions, theorems
+Thus, not only can we write down definitions, constructions, theorems
 and proofs, but also conjectures. They are just definitions of
 types. Likewise, the univalence axiom, [to be formulated in due course](HoTT-UF-Agda.html#univalence),
 is a type.
