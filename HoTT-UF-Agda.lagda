@@ -1262,7 +1262,7 @@ However, for the elements of *some* types, such as `ℕ`, it is
 type `x ≡ y` has at most one element. Such types are called [sets in
 univalent mathematics](HoTT-UF-Agda.html#subsingletonsandsets).
 
-If instead of `K` we adopt Voevodsky's
+If instead of the axiom `K` we adopt Voevodsky's
 [univalence](HoTT-UF-Agda.html#univalence) axiom, we get [specific
 examples](HoTT-UF-Agda.html#notsets) of objects `x` and `y` such that
 the type `x ≡ y` has multiple elements, *within* the type theory.  It
