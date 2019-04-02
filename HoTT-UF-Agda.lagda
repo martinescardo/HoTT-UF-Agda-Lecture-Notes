@@ -792,7 +792,7 @@ The following special case occurs often (and is related to the fact that `ℕ` i
 \end{code}
 
 Agda checks that any recursive definition as above is well founded,
-with recursive invokations with structurally smaller arguments
+with recursive invocations with structurally smaller arguments
 only. If it isn't, the definition is not accepted.
 
 In official Martin-Löf type theories, we have to use the `ℕ-induction`
