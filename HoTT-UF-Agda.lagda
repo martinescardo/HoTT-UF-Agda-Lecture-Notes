@@ -729,7 +729,7 @@ In general, declarations with `data` are inductive definitions. To write the num
    > `succ (succ (succ (succ (succ zero))))`
 
 We can use the following Agda
-[*pragma*](https://agda.readthedocs.io/en/latest/language/pragmas.html)
+[*built-in*](https://agda.readthedocs.io/en/latest/language/built-ins.html)
 to be able to just write `5` as a shorthand:
 
 \begin{code}
