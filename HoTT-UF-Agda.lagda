@@ -1495,7 +1495,7 @@ f ∼ g = ∀ x → f x ≡ g x
 \end{code}
 
 The symbol `∀` is a built-in notation for `Π` . We could equivalently
-write the definiens as
+write the *definiens* as
 
    > `(x : _) → f x ≡ g x`,
 
