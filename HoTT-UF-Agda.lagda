@@ -1001,7 +1001,7 @@ of the universes `𝓤` and `𝓥`. We will write this sum
 with `X`, as well as the universes, implicit. Often Agda, and people,
 can figure out what the unwritten type `X` is, from the definition of `Y`. But
 sometimes there may be either lack of enough information, or of
-enough concentration power by people, or sufficiently powerful inference
+enough concentration power by people, or of sufficiently powerful inference
 algorithms in the implementation of Agda. In such cases we can write
 
    > `Σ λ(x : X) → Y x`,
