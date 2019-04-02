@@ -1246,12 +1246,16 @@ Whereas we can make the intuition that `x ≡ x` has precisely one
 element good by postulating a certain [`K`
 axiom](https://ncatlab.org/nlab/show/axiom+K+%28type+theory%29) due to
 Thomas Streicher, which comes with Agda by default but we have
-[disabled above](HoTT-UF-Agda.html#gettingstartedagda), we cannot *prove* that `refl x`
-is the only element of `x ≡ x` for an arbitrary type `X`. This
-non-provability result was established by [Hofmann and
+[disabled above](HoTT-UF-Agda.html#gettingstartedagda), we cannot
+*prove* that `refl x` is the only element of `x ≡ x` for an arbitrary
+type `X`. This non-provability result was established by [Hofmann and
 Streicher](https://ieeexplore.ieee.org/document/316071), by giving a
 model of type theory in which types are interpreted as
-[`1`-groupoids](https://en.wikipedia.org/wiki/Groupoid).
+[`1`-groupoids](https://en.wikipedia.org/wiki/Groupoid). This is in
+spirit similar to the non-provability of the [parallel
+postulate](https://en.wikipedia.org/wiki/Parallel_postulate) in
+Euclidean geometry, which also considers models, which in turn are
+interesting on their own right.
 
 However, for the elements of *some* types, such as `ℕ`, it is
 [possible to prove](HoTT-UF-Agda.html#naturalsset) that any identity
