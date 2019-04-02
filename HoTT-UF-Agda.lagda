@@ -3005,7 +3005,7 @@ inversion-involutive f e = refl f
 
 To see that the above procedures do exhibit the type "`f` is an
 equivalence" as a retract of the type "`f` is invertible", it suffices
-to show that [it is a subsingleton](HoTT-UF-Agda.html#univalencesubsingleton).
+to show that [it is a subsingleton](HoTT-UF-Agda.html#being-equiv-is-a-subsingleton).
 
 The identity function is invertible:
 \begin{code}
