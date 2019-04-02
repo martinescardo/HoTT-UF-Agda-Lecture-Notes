@@ -17,7 +17,6 @@ UK.
 **Abstract.** We introduce [Voevodsky](http://www.math.ias.edu/Voevodsky/)'s [univalent foundations](http://www.ams.org/journals/bull/2018-55-04/S0273-0979-2018-01616-9/) and
 [univalent mathematics](https://github.com/UniMath/UniMath/blob/master/README.md), and explain how to develop them with the
 computer system [Agda](https://wiki.portal.chalmers.se/agda/pmwiki.php), which based on [Martin-Löf type theory](https://github.com/michaelt/martin-lof).
-
 Agda allows us to write mathematical definitions, constructions,
 theorems and proofs, for example in number theory, analysis, group
 theory, topology, category theory or programming language theory, checking
@@ -3349,7 +3348,7 @@ Here is an example:
 \end{code}
 
 The above version using the inverse of `f` can be proved directly by
-induction, but the following version is perhaps more natural
+induction, but the following version is perhaps more natural.
 
 \begin{code}
 Σ-change-of-variables : is-univalent 𝓤
@@ -4285,6 +4284,9 @@ For simplicity in the formulation of the theorems, we assume global
 \begin{code}
 global-dfunext : 𝓤ω
 global-dfunext = ∀ 𝓤 𝓥 → dfunext 𝓤 𝓥
+
+global-univalence-gives-global-dfunext : global-univalence → global-dfunext
+global-univalence-gives-global-dfunext ua 𝓤 𝓥 = univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
 \end{code}
 
 A type can be pointed in many ways, but inhabited in at most one way:

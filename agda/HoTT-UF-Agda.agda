@@ -1724,6 +1724,9 @@ is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
 global-dfunext : 𝓤ω
 global-dfunext = ∀ 𝓤 𝓥 → dfunext 𝓤 𝓥
 
+global-univalence-gives-global-dfunext : global-univalence → global-dfunext
+global-univalence-gives-global-dfunext ua 𝓤 𝓥 = univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
+
 inhabitation-is-a-subsingleton : global-dfunext → (X : 𝓤 ̇ )
                                → is-subsingleton (is-inhabited X)
 inhabitation-is-a-subsingleton {𝓤} fe X =
