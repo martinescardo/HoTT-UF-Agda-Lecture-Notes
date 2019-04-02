@@ -2325,7 +2325,7 @@ equivalence in at most one way. But we first discuss *hlevels*.
 Voevodsky's hlevels `0,1,2,3,...` are shifted by `2` with respect to
 the `n`-groupoid numbering convention, and correspond to `-2`-groupoids
 (singletons), `-1`-groupoids (subsingletons), `0`-groupoids (sets),...
-z
+
 First Voevodsky defined a notion of *contractible type*, which we
 refer to here as *singleton type*.
 
