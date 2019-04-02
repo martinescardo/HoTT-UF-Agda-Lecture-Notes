@@ -1675,7 +1675,8 @@ identification `p : ₁ ≡ ₀`.
 *Remark.* Agda allows us to use a pattern `()` to get the following
 quick proof.  However, this method of proof doesn't belong to the
 realm of MLTT. Hence we will use the pattern `()` only in the above
-definition of [`𝟘-induction`](HoTT-UF-Agda.html#𝟘-induction).
+definition of [`𝟘-induction`](HoTT-UF-Agda.html#𝟘-induction) and
+nowhere else in these notes.
 
 \begin{code}
 ₁-is-not-₀[not-an-MLTT-proof] : ¬(₁ ≡ ₀)
