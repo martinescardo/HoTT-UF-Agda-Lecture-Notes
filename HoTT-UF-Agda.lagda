@@ -824,7 +824,7 @@ module Arithmetic where
   infixl 1 _×_
 \end{code}
 
-The above `infix` operations allow us to indicate the precedences
+The above "fixity" declarations allow us to indicate the precedences
 (multiplication has higher precedence than addition) and their
 associativity (here we take left-associativity as the convention, so that
 e.g. `x+y+z` parses as `(x+y)+z`).
