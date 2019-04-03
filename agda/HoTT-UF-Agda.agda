@@ -577,23 +577,23 @@ Hedberg {𝓤} {X} x c y p q =
   a : (y : X) (p : x ≡ y) → p ≡ (f x (refl x))⁻¹ ∙ f y p
   a x (refl x) = (⁻¹-left∙ (f x (refl x)))⁻¹
 
-≡-collapsible : 𝓤 ̇ → 𝓤 ̇
-≡-collapsible X = (x y : X) → collapsible(x ≡ y)
+Id-collapsible : 𝓤 ̇ → 𝓤 ̇
+Id-collapsible X = (x y : X) → collapsible(x ≡ y)
 
-sets-are-≡-collapsible : (X : 𝓤 ̇ ) → is-set X → ≡-collapsible X
-sets-are-≡-collapsible X s x y = (f , κ)
+sets-are-Id-collapsible : (X : 𝓤 ̇ ) → is-set X → Id-collapsible X
+sets-are-Id-collapsible X s x y = (f , κ)
  where
   f : x ≡ y → x ≡ y
   f p = p
   κ : (p q : x ≡ y) → f p ≡ f q
   κ p q = s x y p q
 
-≡-collapsibles-are-sets : (X : 𝓤 ̇ ) → ≡-collapsible X → is-set X
-≡-collapsibles-are-sets X c x = Hedberg x (λ y → collapser (x ≡ y) (c x y) ,
-                                                 collapser-wconstancy (x ≡ y) (c x y))
+Id-collapsibles-are-sets : (X : 𝓤 ̇ ) → Id-collapsible X → is-set X
+Id-collapsibles-are-sets X c x = Hedberg x (λ y → collapser (x ≡ y) (c x y) ,
+                                                  collapser-wconstancy (x ≡ y) (c x y))
 
-subsingletons-are-≡-collapsible : (X : 𝓤 ̇ ) → is-subsingleton X → ≡-collapsible X
-subsingletons-are-≡-collapsible X s x y = (f , κ)
+subsingletons-are-Id-collapsible : (X : 𝓤 ̇ ) → is-subsingleton X → Id-collapsible X
+subsingletons-are-Id-collapsible X s x y = (f , κ)
  where
   f : x ≡ y → x ≡ y
   f p = s x y
@@ -601,7 +601,8 @@ subsingletons-are-≡-collapsible X s x y = (f , κ)
   κ p q = refl (s x y)
 
 subsingletons-are-sets : (X : 𝓤 ̇ ) → is-subsingleton X → is-set X
-subsingletons-are-sets X s = ≡-collapsibles-are-sets X (subsingletons-are-≡-collapsible X s)
+subsingletons-are-sets X s = Id-collapsibles-are-sets X
+                               (subsingletons-are-Id-collapsible X s)
 
 subsingletons-are-of-hlevel-1 : (X : 𝓤 ̇ ) → is-subsingleton X → X is-of-hlevel 1
 subsingletons-are-of-hlevel-1 X = g
@@ -666,11 +667,11 @@ succ-lc = ap pred
   f (inr k) = inr (λ (s : succ x ≡ succ y) → k (succ-lc s))
 
 ℕ-is-set : is-set ℕ
-ℕ-is-set = ≡-collapsibles-are-sets ℕ ℕ-≡-collapsible
+ℕ-is-set = Id-collapsibles-are-sets ℕ ℕ-Id-collapsible
  where
-  ℕ-≡-collapsible : ≡-collapsible ℕ
-  ℕ-≡-collapsible x y = f (ℕ-has-decidable-equality x y) ,
-                        κ (ℕ-has-decidable-equality x y)
+  ℕ-Id-collapsible : Id-collapsible ℕ
+  ℕ-Id-collapsible x y = f (ℕ-has-decidable-equality x y) ,
+                         κ (ℕ-has-decidable-equality x y)
    where
     f : (x ≡ y) + ¬(x ≡ y) → x ≡ y → x ≡ y
     f (inl p) q = p
@@ -1283,7 +1284,8 @@ joyal-equivs-are-equivs f j = invertibles-are-equivs f (joyal-equivs-are-inverti
 
 invertibles-are-joyal-equivs f (g , gf , fg) = ((g , fg) , (g , gf))
 
-equivs-are-joyal-equivs f e = invertibles-are-joyal-equivs f (equivs-are-invertible f e)
+equivs-are-joyal-equivs f e = invertibles-are-joyal-equivs f
+                                (equivs-are-invertible f e)
 
 equivs-closed-under-∼ f g e h =
  joyal-equivs-are-equivs g
@@ -1300,13 +1302,13 @@ equiv-to-singleton X Y e = retract-of-singleton (≃-gives-◁ X Y e)
 
 equiv-to-singleton' X Y e = retract-of-singleton (≃-gives-▷ X Y e)
 
-subtypes-of-sets-are-sets {𝓤} {𝓥} {X} m i h = ≡-collapsibles-are-sets X c
+subtypes-of-sets-are-sets {𝓤} {𝓥} {X} m i h = Id-collapsibles-are-sets X c
  where
   f : (x x' : X) → x ≡ x' → x ≡ x'
   f x x' r = i (ap m r)
   κ : (x x' : X) (r s : x ≡ x') → f x x' r ≡ f x x' s
   κ x x' r s = ap i (h (m x) (m x') (ap m r) (ap m s))
-  c : ≡-collapsible X
+  c : Id-collapsible X
   c x x' = f x x' , κ x x'
 
 pr₁-lc i p = to-Σ-≡ (p , i _ _ _)
