@@ -1479,10 +1479,8 @@ univalence-gives-funext ua {X} {Y} {f₀} {f₁} = γ
   q : π₀ ≡ π₁
   q = equivs-are-lc φ φ-is-equiv p
 
-  g : {!(h : (x : X) → f₀ x ≡ f₁ x) (π : Δ → Y) (x : X) → Y!}
-  g = (λ h π x → π (f₀ x , f₁ x , h x))
   γ : f₀ ∼ f₁ → f₀ ≡ f₁
-  γ h = ap (g h) q
+  γ h = ap (λ π x → π (f₀ x , f₁ x , h x)) q
 
   γ' : f₀ ∼ f₁ → f₀ ≡ f₁
   γ' h = f₀                              ≡⟨ refl _ ⟩
@@ -2049,3 +2047,4 @@ SN-gives-DNE {𝓤} sn P i = h
   h' φ = g (λ (x : X) → φ (λ (p : P) → f p x))
 
 DNE-gives-SN dne P i = (¬ P) , dni P , dne P i
+
