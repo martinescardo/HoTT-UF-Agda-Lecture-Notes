@@ -59,8 +59,6 @@ $ curl https://nixos.org/nix/install | sh
 Follow the instructions output by the script. The installation script requires
 that you have sudo access.
 
-Close the terminal and open a new one. 
-
 Install `alex`, `happy` and `emacs` using `nix-env`.
 ```bash
 $ nix-env -iA nixpkgs.haskellPackages.alex nixpkgs.haskellPackages.happy emacs
