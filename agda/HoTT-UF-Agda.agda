@@ -1737,8 +1737,8 @@ inhabitation-is-a-subsingleton {𝓤} fe X =
            (λ (s : is-subsingleton P)
                  → Π-is-subsingleton (fe 𝓤 𝓤) (λ (f : X → P) → s))
 
-pointed-is-inhabited : {X : 𝓤 ̇ } → X → is-inhabited X
-pointed-is-inhabited x = λ P s f → f x
+pointed-is-inhabited : (X : 𝓤 ̇ ) → X → is-inhabited X
+pointed-is-inhabited X x = λ P s f → f x
 
 inhabited-recursion : (X P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → is-inhabited X → P
 inhabited-recursion X P s f φ = φ P s f
@@ -1753,21 +1753,22 @@ inhabited-functorial fe X Y f = inhabited-recursion
                                   X
                                   (is-inhabited Y)
                                   (inhabitation-is-a-subsingleton fe Y)
-                                  (pointed-is-inhabited ∘ f)
+                                  (pointed-is-inhabited Y ∘ f)
 
-image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)⁺ ̇
-image f = Σ \(y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
+image' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)⁺ ̇
+image' f = Σ \(y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
 
-restriction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-            → image f → Y
-restriction f (y , _) = y
+restriction' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+             → image' f → Y
+restriction' f (y , _) = y
 
-corestriction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-              → X → image f
-corestriction f x = f x , pointed-is-inhabited (x , refl (f x))
+corestriction' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+               → X → image' f
+corestriction' f x = f x ,
+                     pointed-is-inhabited (Σ \x' → f x' ≡ f x) (x , refl (f x))
 
-is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)⁺ ̇
-is-surjection f = (y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
+is-surjection' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)⁺ ̇
+is-surjection' f = (y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
 
 record subsingleton-truncations-exist : 𝓤ω where
  field
@@ -1800,9 +1801,31 @@ module basic-truncation-development
   ∥∥-agrees-with-inhabitation X = a , b
    where
     a : ∥ X ∥ → is-inhabited X
-    a = ∥∥-rec (inhabitation-is-a-subsingleton fe X) pointed-is-inhabited
+    a = ∥∥-rec (inhabitation-is-a-subsingleton fe X) (pointed-is-inhabited X)
     b : is-inhabited X → ∥ X ∥
     b = inhabited-recursion X ∥ X ∥ ∥∥-is-a-subsingleton ∣_∣
+
+  image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+  image f = Σ \(y : codomain f) → ∃ \(x : domain f) → f x ≡ y
+
+  restriction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+              → image f → Y
+  restriction f (y , _) = y
+
+  corestriction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                → X → image f
+  corestriction f x = f x , ∣ (x , refl (f x)) ∣
+
+  is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+  is-surjection f = (y : codomain f) → ∃ \(x : domain f) → f x ≡ y
+
+  ∣∣-is-surjection : (X : 𝓤 ̇ ) → is-surjection (λ (x : X) → ∣ x ∣)
+  ∣∣-is-surjection X s = γ
+   where
+    f : X → ∃ \(x : X) → ∣ x ∣ ≡ s
+    f x = ∣ (x , ∥∥-is-a-subsingleton ∣ x ∣ s) ∣
+    γ : ∃ \(x : X) → ∣ x ∣ ≡ s
+    γ = ∥∥-rec ∥∥-is-a-subsingleton f s
 
   AC : ∀ 𝓣 (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
      → is-set X → ((x : X) → is-set (A x)) → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥 ̇

@@ -3627,6 +3627,7 @@ Without the following list of operator precedences and associativity
 (left or right), this agda file doesn't parse and is rejected by Agda.
 
 \begin{code}
+
 infix  0 _◁_
 infix  1 _◀
 infixr 0 _◁⟨_⟩_
@@ -3634,6 +3635,7 @@ infix  0 _≃_
 infixl 2 _●_
 infixr 0 _≃⟨_⟩_
 infix  1 _■
+
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -4307,8 +4309,8 @@ inhabitation-is-a-subsingleton {𝓤} fe X =
            (λ (s : is-subsingleton P)
                  → Π-is-subsingleton (fe 𝓤 𝓤) (λ (f : X → P) → s))
 
-pointed-is-inhabited : {X : 𝓤 ̇ } → X → is-inhabited X
-pointed-is-inhabited x = λ P s f → f x
+pointed-is-inhabited : (X : 𝓤 ̇ ) → X → is-inhabited X
+pointed-is-inhabited X x = λ P s f → f x
 
 inhabited-recursion : (X P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → is-inhabited X → P
 inhabited-recursion X P s f φ = φ P s f
@@ -4328,7 +4330,7 @@ inhabited-functorial fe X Y f = inhabited-recursion
                                   X
                                   (is-inhabited Y)
                                   (inhabitation-is-a-subsingleton fe Y)
-                                  (pointed-is-inhabited ∘ f)
+                                  (pointed-is-inhabited Y ∘ f)
 \end{code}
 
 This universe assignment for functoriality is fairly restrictive, but is the only possible one.
@@ -4336,8 +4338,8 @@ This universe assignment for functoriality is fairly restrictive, but is the onl
 With this notion, we can define the image of a function as follows:
 
 \begin{code}
-image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)⁺ ̇
-image f = Σ \(y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
+image' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)⁺ ̇
+image' f = Σ \(y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
 \end{code}
 
 *Exercise.* An attempt to define the image of `f` without the
@@ -4351,19 +4353,20 @@ We can define the restriction and corestriction of a function to its
 image as follows:
 
 \begin{code}
-restriction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-            → image f → Y
-restriction f (y , _) = y
+restriction' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+             → image' f → Y
+restriction' f (y , _) = y
 
-corestriction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-              → X → image f
-corestriction f x = f x , pointed-is-inhabited (x , refl (f x))
+corestriction' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+               → X → image' f
+corestriction' f x = f x ,
+                     pointed-is-inhabited (Σ \x' → f x' ≡ f x) (x , refl (f x))
 \end{code}
 
 And we can define the notion of surjection as follows:
 \begin{code}
-is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)⁺ ̇
-is-surjection f = (y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
+is-surjection' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)⁺ ̇
+is-surjection' f = (y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
 \end{code}
 
 *Exercise.* The type `(y : codomain f) → Σ \(x : domain f) → f x ≡ y`
@@ -4445,13 +4448,47 @@ logically equivalent propositions:
   ∥∥-agrees-with-inhabitation X = a , b
    where
     a : ∥ X ∥ → is-inhabited X
-    a = ∥∥-rec (inhabitation-is-a-subsingleton fe X) pointed-is-inhabited
+    a = ∥∥-rec (inhabitation-is-a-subsingleton fe X) (pointed-is-inhabited X)
     b : is-inhabited X → ∥ X ∥
     b = inhabited-recursion X ∥ X ∥ ∥∥-is-a-subsingleton ∣_∣
 \end{code}
 
 Hence they differ only in size, and when size matters don't get on the
 way, we can use `is-inhabited` instead of `∥_∥` if we wish.
+
+\begin{code}
+  image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+  image f = Σ \(y : codomain f) → ∃ \(x : domain f) → f x ≡ y
+
+  restriction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+              → image f → Y
+  restriction f (y , _) = y
+
+  corestriction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                → X → image f
+  corestriction f x = f x , ∣ (x , refl (f x)) ∣
+
+  is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+  is-surjection f = (y : codomain f) → ∃ \(x : domain f) → f x ≡ y
+\end{code}
+
+This time we can prove that the map `x ↦ ∣ x ∣` is a surjection:
+
+\begin{code}
+  ∣∣-is-surjection : (X : 𝓤 ̇ ) → is-surjection (λ (x : X) → ∣ x ∣)
+  ∣∣-is-surjection X s = γ
+   where
+    f : X → ∃ \(x : X) → ∣ x ∣ ≡ s
+    f x = ∣ (x , ∥∥-is-a-subsingleton ∣ x ∣ s) ∣
+    γ : ∃ \(x : X) → ∣ x ∣ ≡ s
+    γ = ∥∥-rec ∥∥-is-a-subsingleton f s
+\end{code}
+
+Saying that this surjection `X → ∥ X ∥` has a section for all `X` (we
+can pick a point of every inhabited type) amounts to [global
+choice](https://en.wikipedia.org/wiki/Axiom_of_global_choice), which
+[contradicts univalence](https://homotopytypetheory.org/book/), and
+also [gives classical logic](https://lmcs.episciences.org/3217).
 
 *Exercise*. If `X` and `Y` are types obtained by summing `x-` and
   `y`-many copies of the type `𝟙`, respectively, as in `𝟙 + 𝟙 + ... + 𝟙` , where `x`
@@ -4464,8 +4501,8 @@ way, we can use `is-inhabited` instead of `∥_∥` if we wish.
 The axiom of choice says that if for every `x : X` there exists `a : A
 x` with `R x a`, where `R` is some given relation, then there exists a
 choice function `f : (x : X) → A x` with `R x (f x)` for all `x :
-X`. This doesn't hold in general in univalent mathematics, but it does
-hold in [Voevodsky's simplicial
+X`. This is not provable or disprovable in univalent mathematics, but
+it does hold in [Voevodsky's simplicial
 model](https://arxiv.org/abs/1211.2851) of our univalent type theory,
 and hence is consistent, provided:
 
