@@ -88,8 +88,8 @@ $ LIBRARY_PATH=${ZLIB}/lib cabal install
 ```
 
 Close the terminal, open a new one and continue by following the [GNU/Linux
-instructions](#GNU/Linux) from [Setting up Emacs to work with Agda](#Setting up
-Emacs to work with Agda).
+instructions](#GNU/Linux) from [Setting up Emacs to work with
+Agda](#Setting-up-Emacs-to-work-with-Agda).
 
 ## Windows
 Coming soon...
