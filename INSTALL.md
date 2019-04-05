@@ -15,7 +15,7 @@ Simply install Agda 2.6.0 and Emacs by
 ```bash
 $ sudo pacman -Sy agda emacs
 ```
-and to set Emacs up with Agda mode, run
+and to set up Emacs with Agda mode, run
 ```bash
 $ agda-mode setup
 $ sudo agda-mode compile
