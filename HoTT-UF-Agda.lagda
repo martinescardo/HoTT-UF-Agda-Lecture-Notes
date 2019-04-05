@@ -3135,7 +3135,7 @@ is-univalent 𝓤 = (X Y : 𝓤 ̇ ) → is-equiv (Id-to-Eq X Y)
 \end{code}
 
 Thus, the univalence of the universe `𝓤` says that identifications `X
-≡ Y` are in canonical bijection with equivalences `X ≃ Y`, if by
+≡ Y` of types in `𝓤` are in canonical bijection with equivalences `X ≃ Y`, if by
 bijection we mean equivalence, where the canonical bijection is
 `Id-to-Eq`.
 
