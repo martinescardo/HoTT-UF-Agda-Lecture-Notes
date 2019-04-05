@@ -3041,7 +3041,7 @@ id-is-equiv = singleton-types-are-singletons
 
 An `abstract` definition is not expanded during type checking. One
 possible use of this is efficiency. In our case, it saves 30s in the
-checking of the module [`FunExt`](HoTT-UF-Agda.html#funextfromua).
+checking of this module in the uses of `∘-is-equiv`:
 
 \begin{code}
 ∘-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {g : Y → Z}
