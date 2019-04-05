@@ -88,7 +88,8 @@ instructions from [Setting up Emacs to work with
 Agda](#Setting-up-Emacs-to-work-with-Agda) on.
 
 ## Windows
-Coming soon...
+
+The easiest way is probably to install linux in a virtual machine (for example ubuntu 18.04 in VirtualBox). A web search gives tutorials and videos explaining how to do that. If we find a more direct way, we will include it here.
 
 ## Troubleshooting
 
@@ -98,7 +99,7 @@ In this section we describe some problems that have been encountered during comp
 
 This is not a problem and perfectly fine, albeit confusing.
 
-#### The command `cabal install` fails with `invalid byte sequence` 
+#### The command `cabal install` fails with `invalid byte sequence`
 
 The full error looks like:
 ```
