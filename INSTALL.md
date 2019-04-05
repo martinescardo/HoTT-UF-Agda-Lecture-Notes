@@ -8,19 +8,33 @@ If you experience any issues, please take a look at the [Troubleshooting
 section](#Troubleshooting).
 
 ## GNU/Linux
+
+### Arch Linux and derivatives such as Manjaro Linux
+
+Simply install Agda 2.6.0 and Emacs by
+```bash
+$ sudo pacman -Sy agda emacs
+```
+and to set up Emacs with Agda mode, run
+```bash
+$ agda-mode setup
+$ sudo agda-mode compile
+```
+
+### Debian and Ubuntu
 Start by installing `emacs`, `git`, `ghc`, `cabal-install`, `zlib`, `alex` and
-`happy` using the package manager of your distribution. Under Ubuntu or Debian,
-this would be:
+`happy` using the package manager:
 ```bash
 $ sudo apt install emacs git ghc cabal-install zlib alex happy
 ```
 
-### Installing Agda 2.6.0
 Next, create a directory `mgs-2019` for the Midlands Graduate School 2019 in
 your home directory:
 ```bash
 $ mkdir ~/mgs-2019
 ```
+
+#### Installing Agda 2.6.0 
 Inside that directory, we download and install Agda 2.6.0:
 ```bash
 $ cd ~/mgs-2019
@@ -31,8 +45,7 @@ $ cabal sandbox init
 $ cabal update
 $ cabal install
 ```
-
-### Setting up Emacs to work with Agda
+#### Setting up Emacs to work with Agda
 Finally, we set up Emacs to work with Agda:
 ```bash
 $ cd ~/mgs-2019/agda/.cabal-sandbox/bin/
