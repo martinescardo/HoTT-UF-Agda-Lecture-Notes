@@ -60,7 +60,7 @@ Follow the instructions output by the script. The installation script requires
 that you have sudo access.
 
 Close the terminal and open a new one. The remainder of this section closely
-follows the [GNU/Linux instructions](#GNU/Linux), but all within nix-shell and
+follows the [GNU/Linux instructions](#GNU/Linux), but all using nix-shell and
 with some modifications.
 
 We start by installing `alex`, `happy` and `emacs`.
