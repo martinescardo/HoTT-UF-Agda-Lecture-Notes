@@ -3,7 +3,8 @@
 Sources and scripts to generate the lecture notes available at
 https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html
 
-Agda 2.6.0 is required.
+Agda 2.6.0 is required. Please consult the [installation
+instructions](#./INSTALL.md) to get Agda 2.6.0 on your computer.
 
 * The (literate) `*.lagda` files are used to generate the `html` pages with the script `../build`.
 
