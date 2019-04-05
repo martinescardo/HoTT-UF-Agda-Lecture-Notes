@@ -33,6 +33,8 @@ your home directory:
 ```bash
 $ mkdir ~/mgs-2019
 ```
+
+#### Installing Agda 2.6.0 
 Inside that directory, we download and install Agda 2.6.0:
 ```bash
 $ cd ~/mgs-2019
@@ -43,7 +45,7 @@ $ cabal sandbox init
 $ cabal update
 $ cabal install
 ```
-## Setting up Emacs to work with Agda
+#### Setting up Emacs to work with Agda
 Finally, we set up Emacs to work with Agda:
 ```bash
 $ cd ~/mgs-2019/agda/.cabal-sandbox/bin/
