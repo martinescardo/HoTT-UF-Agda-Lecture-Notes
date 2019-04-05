@@ -113,3 +113,11 @@ Try prefixing `cabal install` with `LANG=C.UTF-8`, i.e.
 ```bash
 $ LANG=C.UTF-8 cabal install
 ```
+
+#### The command `cabal install` fails on Arch Linux or its derivatives such as Manjaro Linux 
+
+Try replacing `cabal install` by
+```bash
+$ cabal install --disable-library-vanilla --enable-shared --enable-executable-dynamic --ghc-options=-dynamic
+```
+Also see https://wiki.archlinux.org/index.php/haskell#Problems_with_linking
