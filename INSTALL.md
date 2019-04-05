@@ -15,6 +15,7 @@ this would be:
 $ sudo apt install emacs git ghc cabal-install zlib alex happy
 ```
 
+### Installing Agda 2.6.0
 Next, create a directory `mgs-2019` for the Midlands Graduate School 2019 in
 your home directory:
 ```bash
@@ -31,6 +32,7 @@ $ cabal update
 $ cabal install
 ```
 
+### Setting up Emacs to work with Agda
 Finally, we set up Emacs to work with Agda:
 ```bash
 $ cd ~/mgs-2019/agda/.cabal-sandbox/bin/
@@ -48,10 +50,49 @@ $ ./mgs-emacs
 ```
 
 ## MacOS
-NB: This file describes the default method for installing UniMath.  An
-alternative method using the [Nix Package Manager](https://nixos.org/nix/) is available in the file [INSTALL\_NIX.md](https://github.com/UniMath/UniMath/blob/master/INSTALL_NIX.md).
+We will use the [Nix Package Manager](https://nixos.org/nix/).
+
+Open a terminal and run
+```bash
+$ curl https://nixos.org/nix/install | sh
+```
+Follow the instructions output by the script. The installation script requires
+that you have sudo access.
+
+Close the terminal and open a new one. The remainder of this section closely
+follows the [GNU/Linux instructions](#GNU/Linux), but all within nix-shell and
+with some modifications.
+
+We start by installing `alex`, `happy` and `emacs`.
+```bash
+$ nix-env -iA nixpkgs.haskellPackages.alex nixpkgs.haskellPackages.happy emacs
+```
+
+### Installing Agda 2.6.0
+Next, create a directory `mgs-2019` for the Midlands Graduate School 2019 in
+your home directory:
+```bash
+$ mkdir ~/mgs-2019
+```
+Inside that directory, we download and install Agda 2.6.0 using `nix-shell`:
+```bash
+$ nix-shell -p zlib ghc cabal-install git
+$ cd ~/mgs-2019
+$ git clone https://github.com/agda/agda
+$ cd agda
+$ git checkout release-2.6.0
+$ cabal sandbox init
+$ cabal update
+$ ZLIB="$(nix-build --no-out-link "<nixpkgs>" -A zlib)"
+$ LIBRARY_PATH=${ZLIB}/lib cabal install
+```
+
+Close the terminal, open a new one and continue by following the [GNU/Linux
+instructions](#GNU/Linux) from [Setting up Emacs to work with Agda](#Setting up
+Emacs to work with Agda).
 
 ## Windows
+Coming soon...
 
 ## Troubleshooting
 
@@ -61,7 +102,7 @@ In this section we describe some problems that have been encountered during comp
 
 This is not a problem and perfectly fine, albeit confusing.
 
-#### The command `cabal install` fails with `invalid byte sequence` error
+#### The command `cabal install` fails with `invalid byte sequence` 
 
 The full error looks like:
 ```
