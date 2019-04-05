@@ -54,11 +54,11 @@ alternative method using the [Nix Package Manager](https://nixos.org/nix/) is av
 
 In this section we describe some problems that have been encountered during compilation, and how to fix them.
 
-### During `cabal install` Agda 2.5.4... appears, rather than Agda 2.6.0
+#### During `cabal install` Agda 2.5.4... appears, rather than Agda 2.6.0
 
 This is not a problem and perfectly fine, albeit confusing.
 
-### During `cabal install` I get `invalid byte sequence`
+#### During `cabal install` I get `invalid byte sequence`
 
 The full error looks like:
 ```
