@@ -7,7 +7,7 @@ Please follow the installation instructions for your operating system.
 ## GNU/Linux
 Start by installing `emacs`, `git`, `ghc`, `cabal-install`, `zlib`, `alex` and
 `happy` using the package manager of your distribution. Under Ubuntu or Debian,
-this would be
+this would be:
 ```bash
 $ sudo apt install emacs git ghc cabal-install zlib alex happy
 ```
@@ -28,7 +28,7 @@ $ cabal update
 $ cabal install
 ```
 
-Finally, we set up Emacs to work with Agda
+Finally, we set up Emacs to work with Agda:
 ```bash
 $ cd ~/mgs-2019/agda/.cabal-sandbox/bin/
 $ ./agda-mode setup
@@ -54,5 +54,18 @@ alternative method using the [Nix Package Manager](https://nixos.org/nix/) is av
 
 In this section we describe some problems that have been encountered during compilation, and how to fix them.
 
-### Issue 1
+### During `cabal install` Agda 2.5.4... appears, rather than Agda 2.6.0
 
+This is not a problem and perfectly fine, albeit confusing.
+
+### During `cabal install` I get `invalid byte sequence`
+
+The full error looks like:
+```
+happy: src/full/Agda/Syntax/Parser/Parser.y: hGetContents: invalid argument (invalid byte sequence)
+```
+
+Try prefixing `cabal install` with `LANG=C.UTF-8`, i.e.
+```bash
+$ LANG=C.UTF-8 cabal install
+```
