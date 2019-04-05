@@ -4,6 +4,9 @@ Installation of Agda and Emacs
 This file describes how to install Agda 2.6.0 and Emacs.
 Please follow the installation instructions for your operating system.
 
+If you experience any issues, please take a look at the [Troubleshooting
+section](#Troubleshooting).
+
 ## GNU/Linux
 Start by installing `emacs`, `git`, `ghc`, `cabal-install`, `zlib`, `alex` and
 `happy` using the package manager of your distribution. Under Ubuntu or Debian,
@@ -50,7 +53,7 @@ alternative method using the [Nix Package Manager](https://nixos.org/nix/) is av
 
 ## Windows
 
-## Troubleshouting
+## Troubleshooting
 
 In this section we describe some problems that have been encountered during compilation, and how to fix them.
 
@@ -58,7 +61,7 @@ In this section we describe some problems that have been encountered during comp
 
 This is not a problem and perfectly fine, albeit confusing.
 
-#### During `cabal install` I get `invalid byte sequence`
+#### The command `cabal install` fails with `invalid byte sequence` error
 
 The full error looks like:
 ```
