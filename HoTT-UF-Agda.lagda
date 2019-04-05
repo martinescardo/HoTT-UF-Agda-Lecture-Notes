@@ -3419,7 +3419,7 @@ Here is a use of the half-adjoint condition, where, compared to
 remove univalence from the hypothesis, generalize the universe of the
 type `Y`, and weaken equality to equivalence in the conclusion. Notice
 that the proof starts as that of
-[`Σ-reindex-retraction`](HoTT-UF-Agda#Σ-reindex-retraction).
+[`Σ-reindex-retraction`](HoTT-UF-Agda.html#Σ-reindex-retraction).
 
 \begin{code}
 Σ-change-of-variables-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
