@@ -4718,23 +4718,20 @@ to exercises that we didn't formuulate, such as associativity of
 addition, or that univalence gives propositional extensionality.
 
 We have been using the mathematical terminology "subsingleton", but
-tradition in the formulation of the next notion demands the
-terminology "proposition". Propositional extensionality says that two
-logically equivalent propositions are equal:
+tradition in the formulation of the next notion demands the logical
+terminology "proposition". Propositional extensionality says that any
+two logically equivalent propositions are equal:
 
 \begin{code}
-
 propext : ∀ 𝓤  → 𝓤 ⁺ ̇
-propext 𝓤 = (P Q : 𝓤 ̇) → is-prop P → is-prop Q
+propext 𝓤 = (P Q : 𝓤 ̇ ) → is-prop P → is-prop Q
                         → (P → Q) → (Q → P)
                         → P ≡ Q
-
 \end{code}
 
-It is implied by univalence:
+This is implied by univalence:
 
 \begin{code}
-
 univalence-gives-propext : is-univalent 𝓤 → propext 𝓤
 univalence-gives-propext ua P Q i j f g = Eq-to-Id ua P Q
                                            (f ,
@@ -4753,12 +4750,10 @@ In this exercise, we apply propositional extensionality to
 characterize `x ≤ y` as `Σ \(z : ℕ) → x ∔ z ≡ y`.
 
 \begin{code}
-
 module ℕ-more where
 
   open ℕ-order
   open Arithmetic renaming (_+_ to _∔_)
-
 \end{code}
 
 We name the alternative definition of `≤`:

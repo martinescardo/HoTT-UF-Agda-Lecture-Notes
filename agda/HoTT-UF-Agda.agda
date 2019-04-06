@@ -1938,7 +1938,7 @@ SN-gives-DNE : SN 𝓤 → DNE 𝓤
 DNE-gives-SN : DNE 𝓤 → SN 𝓤
 
 propext : ∀ 𝓤  → 𝓤 ⁺ ̇
-propext 𝓤 = (P Q : 𝓤 ̇) → is-prop P → is-prop Q
+propext 𝓤 = (P Q : 𝓤 ̇ ) → is-prop P → is-prop Q
                         → (P → Q) → (Q → P)
                         → P ≡ Q
 
