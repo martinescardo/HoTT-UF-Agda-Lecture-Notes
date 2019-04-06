@@ -716,7 +716,7 @@ to `(𝟘 → 𝟘) ≡ 𝟙`, which in turn says that there is precisely one fu
 The definition is similar but not quite the same as the one via
 [Peano Axioms](https://en.wikipedia.org/wiki/Peano_axioms).
 
-We stipulate an element `zero : ℕ` and a successor function `ℕ → ℕ`,
+We stipulate an element `zero : ℕ` and a successor function `succ : ℕ → ℕ`,
 and then define induction. Once we have defined equality `_≡_`, we
 will [*prove*](HoTT-UF-Agda.html#naturalsset) the other peano axioms.
 
