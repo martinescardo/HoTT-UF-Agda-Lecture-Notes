@@ -4848,7 +4848,7 @@ way, we can use `is-inhabited` instead of `∥_∥` if we wish.
   is-surjection f = (y : codomain f) → ∃ \(x : domain f) → f x ≡ y
 \end{code}
 
-This time we can prove that the map `x ↦ ∣ x ∣` is a surjection:
+This time we can prove that the map `x ↦ ∣ x ∣` of `X` into `∥ X ∥` is a surjection without the universe levels getting in our way:
 
 \begin{code}
   ∣∣-is-surjection : (X : 𝓤 ̇ ) → is-surjection (λ (x : X) → ∣ x ∣)
