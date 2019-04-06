@@ -1758,8 +1758,7 @@ propext 𝓤 = (P Q : 𝓤 ̇ ) → is-prop P → is-prop Q
 
 univalence-gives-propext : is-univalent 𝓤 → propext 𝓤
 univalence-gives-propext ua P Q i j f g =
- Eq-to-Id ua P Q
-   (logically-equivalent-subsingletons-are-equivalent P Q i j (f , g))
+ Eq-to-Id ua P Q (logically-equivalent-subsingletons-are-equivalent P Q i j (f , g))
 
 module _ (ua : global-univalence) where
 

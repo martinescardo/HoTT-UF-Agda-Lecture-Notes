@@ -4931,11 +4931,11 @@ DNE-gives-SN : DNE 𝓤 → SN 𝓤
 ### <a id="mlttexercisessol"></a> Solutions
 
 This includes solutions to exercises formulated in various places, and
-to exercises that we didn't formuulate, such as associativity and commutativity of
+to exercises that we didn't formulate, such as associativity and commutativity of
 addition.
 
 In our first solved exercise, we apply propositional extensionality to
-characterize `x ≤ y` as `Σ \(z : ℕ) → x ∔ z ≡ y`.
+characterize `x ≤ y` as `Σ \(z : ℕ) → x + z ≡ y`.
 
 \begin{code}
 module ℕ-more where
@@ -4977,7 +4977,7 @@ by induction on the second argument.
 \end{code}
 
 For example, this can be used to show that addition is cancellable in
-its left argument. We do this by induction on the first argument:
+its right argument. We do this by induction on the left argument:
 
 \begin{code}
   +-lc : (x z z' : ℕ) → x ∔ z ≡ x ∔ z' → z ≡ z'
@@ -5019,7 +5019,7 @@ the relation `≤` is defined by induction on both arguments).
              succ y       ∎)
 \end{code}
 
-We prove the second implication by induction on the witness `z` that `x ≼ y`:
+We prove the second implication by again by induction on `x` and `y`:
 
 \begin{code}
   ≼-gives-≤ : (x y : ℕ) → x ≼ y → x ≤ y
