@@ -23,12 +23,14 @@ theory, topology, category theory or programming language theory, checking
 them for logical and mathematical correctness.
 
 Agda is a constructive mathematical system by default, which amounts
-to saying that it can also be considered as a programming
-language. But we can assume the axiom of choice or the principle of
-excluded middle for pieces of mathematics that require them, at the
-cost of losing the implicit programming-language character of the system.
-For a fully constructive development of univalent mathematics in
-Agda, we would need to use its new [cubical flavour](https://homotopytypetheory.org/2018/12/06/cubical-agda/), and
+to saying that it can also be considered as a programming language for
+manipulating mathematical objects. But we can assume the axiom of
+choice or the principle of excluded middle for pieces of mathematics
+that require them, at the cost of losing the implicit
+programming-language character of the system.  For a fully
+constructive development of univalent mathematics in Agda, we would
+need to use its new [cubical
+flavour](https://homotopytypetheory.org/2018/12/06/cubical-agda/), and
 we hope these notes provide a base for researchers interested in
 learning Cubical Type Theory and Cubical Agda as the next step.
 
@@ -3383,9 +3385,9 @@ The following is often useful:
 
 \begin{code}
 abstract
- ≃-singleton : is-univalent 𝓤
-             → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
- ≃-singleton {𝓤} ua X = singletons-are-subsingletons (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) s
+ ≃-subsingleton : is-univalent 𝓤
+                → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+ ≃-subsingleton {𝓤} ua X = singletons-are-subsingletons (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) s
   where
    e : (Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
    e Y = Id-to-Eq X Y , ua X Y
@@ -3481,7 +3483,7 @@ corresponding to the induction principles [`H`](HoTT-UF-Agda.html#H)
 and [`J`](HoTT-UF-Agda.html#J) for identifications.  To prove a
 property of equivalences, it is enough to prove it for the identity
 equivalence `≃-refl X` for all `X`. In order to also easily derive an
-equation for this, we perform the construction using `≃-singleton`.
+equation for this, we perform the construction using the fact that univalence implies that `Σ \(Y : 𝓤 ̇ ) → X ≃ Y` is a singleton for any `X`.
 
 \begin{code}
 H-≃ : is-univalent 𝓤
@@ -3492,7 +3494,7 @@ H-≃ {𝓤} {𝓥} ua X A a Y e = τ a
   B : (Σ \(Y : 𝓤 ̇) → X ≃ Y) → 𝓥 ̇
   B (Y , e) = A Y e
   p : (X , ≃-refl X) ≡ (Y , e)
-  p = ≃-singleton ua X (X , ≃-refl X) (Y , e)
+  p = ≃-subsingleton ua X (X , ≃-refl X) (Y , e)
   τ : B (X , ≃-refl X) → B (Y , e)
   τ = transport B p
 
@@ -3511,10 +3513,10 @@ H-≃-equation {𝓤} {𝓥} ua X A a =
   t : Σ \(Y : 𝓤 ̇) → X ≃ Y
   t = (X , ≃-refl X)
   p : t ≡ t
-  p = ≃-singleton ua X t t
+  p = ≃-subsingleton ua X t t
   q : p ≡ refl t
   q = subsingletons-are-sets (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-       (≃-singleton ua X) t t p (refl t)
+       (≃-subsingleton ua X) t t p (refl t)
 \end{code}
 
 The induction principle `H-≃` keeps `X` fixed and lets `Y` vary, while
@@ -4791,8 +4793,8 @@ record subsingleton-truncations-exist : 𝓤ω where
 This is the approach we adopt in our [personal Agda
 development](http://www.cs.bham.ac.uk/~mhe/agda-new/).
 
-We now assume that subsingleton truncations exist for the remainder
-of this file, and we `open` the assumption to make the above fields
+We now assume that subsingleton truncations exist in the next few
+constructions, and we `open` the assumption to make the above fields
 visible.
 
 \begin{code}

@@ -1075,9 +1075,9 @@ Id-to-funs-agree : {X Y : 𝓤 ̇ } (p : X ≡ Y)
 Id-to-funs-agree (refl X) = refl (𝑖𝑑 X)
 
 abstract
- ≃-singleton : is-univalent 𝓤
-             → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
- ≃-singleton {𝓤} ua X = singletons-are-subsingletons (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) s
+ ≃-subsingleton : is-univalent 𝓤
+                → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+ ≃-subsingleton {𝓤} ua X = singletons-are-subsingletons (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) s
   where
    e : (Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
    e Y = Id-to-Eq X Y , ua X Y
@@ -1141,7 +1141,7 @@ H-≃ {𝓤} {𝓥} ua X A a Y e = τ a
   B : (Σ \(Y : 𝓤 ̇) → X ≃ Y) → 𝓥 ̇
   B (Y , e) = A Y e
   p : (X , ≃-refl X) ≡ (Y , e)
-  p = ≃-singleton ua X (X , ≃-refl X) (Y , e)
+  p = ≃-subsingleton ua X (X , ≃-refl X) (Y , e)
   τ : B (X , ≃-refl X) → B (Y , e)
   τ = transport B p
 
@@ -1160,10 +1160,10 @@ H-≃-equation {𝓤} {𝓥} ua X A a =
   t : Σ \(Y : 𝓤 ̇) → X ≃ Y
   t = (X , ≃-refl X)
   p : t ≡ t
-  p = ≃-singleton ua X t t
+  p = ≃-subsingleton ua X t t
   q : p ≡ refl t
   q = subsingletons-are-sets (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-       (≃-singleton ua X) t t p (refl t)
+       (≃-subsingleton ua X) t t p (refl t)
 
 J-≃ : is-univalent 𝓤
     → (A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
