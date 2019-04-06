@@ -318,7 +318,7 @@ to practice univalent mathematics should consult the above references.
   1. [Univalent Mathematics in Agda](HoTT-UF-Agda.html#uminagda)
      1. [Our univalent type theory](HoTT-UF-Agda.html#axiomaticutt)
      1. [Subsingletons (or propositions or truth values) and sets](HoTT-UF-Agda.html#subsingletonsandsets)
-     1. [Example: the types of magmas and monoids](HoTT-UF-Agda.html#magmasandmonoids)
+     1. [The types of magmas and monoids](HoTT-UF-Agda.html#magmasandmonoids)
      1. [The identity type in univalent mathematics](HoTT-UF-Agda.html#identitytypeuf)
      1. [Identifications that depend on identifications](HoTT-UF-Agda.html#dependentequality)
      1. [Equality in Σ types](HoTT-UF-Agda.html#sigmaequality)
@@ -330,7 +330,7 @@ to practice univalent mathematics should consult the above references.
      1. [The types of hlevel 1 are the subsingletons](HoTT-UF-Agda.html#hlevel1subsingleton)
      1. [The types of hlevel 2 are the sets](HoTT-UF-Agda.html#hlevel2set)
      1. [The hlevels are upper closed](HoTT-UF-Agda.html#hlevelsupper)
-     1. [Example: ℕ is a set](HoTT-UF-Agda.html#naturalsset)
+     1. [ℕ is a set](HoTT-UF-Agda.html#naturalsset)
      1. [Retracts](HoTT-UF-Agda.html#retracts)
      1. [Voevodsky' notion of type equivalence](HoTT-UF-Agda.html#fibersandequivalences)
      1. [Voevodsky's univalence axiom](HoTT-UF-Agda.html#univalence)
@@ -2034,7 +2034,7 @@ the realm of univalent mathematics, but not yet needing the univalence
 axiom.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="magmasandmonoids"></a> Example: the types of magmas and monoids
+### <a id="magmasandmonoids"></a> The types of magmas and monoids
 
 A [magma](https://en.wikipedia.org/wiki/Magma_(algebra)) is a *set* equipped with a binary operation subject to no laws
 ([Bourbaki](https://books.google.co.uk/books?id=STS9aZ6F204C&pg=PA1&redir_esc=y#v=onepage&q&f=false)).  We can define the type of magmas in a universe `𝓤` as follows:
@@ -2791,7 +2791,7 @@ has minimal hlevel `2`. More ambitiously, after
 the type of monoids has minimal hlevel `3`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="naturalsset"></a> Example: `ℕ` is a set
+### <a id="naturalsset"></a> `ℕ` is a set
 
 Using the decidability of equality we can define a `wconstant`
 function `x ≡ y → x ≡ y` and hence conclude that `ℕ` is a set. This
