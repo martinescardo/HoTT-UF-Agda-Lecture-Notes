@@ -3236,20 +3236,21 @@ by [Mike Shulman](https://home.sandiego.edu/~shulman/).
 The following is often useful:
 
 \begin{code}
-≃-singleton : is-univalent 𝓤
-            → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-≃-singleton {𝓤} ua X = singletons-are-subsingletons (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) s
- where
-  e : (Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
-  e Y = Id-to-Eq X Y , ua X Y
-  d : (Σ \(Y : 𝓤 ̇ ) → X ≡ Y) ≃ (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-  d = Σ-cong e
-  s : is-singleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-  s = equiv-to-singleton
-       (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-       (Σ \(Y : 𝓤 ̇ ) → X ≡ Y)
-       (≃-sym d)
-       (singleton-types'-are-singletons (𝓤 ̇ ) X)
+abstract
+ ≃-singleton : is-univalent 𝓤
+             → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+ ≃-singleton {𝓤} ua X = singletons-are-subsingletons (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) s
+  where
+   e : (Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
+   e Y = Id-to-Eq X Y , ua X Y
+   d : (Σ \(Y : 𝓤 ̇ ) → X ≡ Y) ≃ (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+   d = Σ-cong e
+   s : is-singleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+   s = equiv-to-singleton
+        (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+        (Σ \(Y : 𝓤 ̇ ) → X ≡ Y)
+        (≃-sym d)
+        (singleton-types'-are-singletons (𝓤 ̇ ) X)
 \end{code}
 
 The converse [also holds](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-Yoneda.html#univalence-via-singletons).
@@ -3333,48 +3334,41 @@ Under univalence, we get an induction principle for type equivalences,
 corresponding to the induction principles [`H`](HoTT-UF-Agda.html#H)
 and [`J`](HoTT-UF-Agda.html#J) for identifications.  To prove a
 property of equivalences, it is enough to prove it for the identity
-equivalence `≃-refl X` for all `X`:
+equivalence `≃-refl X` for all `X`. In order to also easily derive an
+equation for this, we perform the construction using `≃-singleton`.
 
 \begin{code}
 H-≃ : is-univalent 𝓤
     → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
     → A X (≃-refl X) → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A Y e
-H-≃ {𝓤} {𝓥} ua X A a Y e = γ
+H-≃ {𝓤} {𝓥} ua X A a Y e = τ a
  where
-  B : (Y : 𝓤 ̇ ) → X ≡ Y → 𝓥 ̇
-  B Y p = A Y (Id-to-Eq X Y p)
-  b : B X (refl X)
-  b = a
-  f : (Y : 𝓤 ̇ ) (p : X ≡ Y) → B Y p
-  f = H X B b
-  c : A Y (Id-to-Eq X Y (Eq-to-Id ua X Y e))
-  c = f Y (Eq-to-Id ua X Y e)
-  p : Id-to-Eq X Y (Eq-to-Id ua X Y e) ≡ e
-  p = inverse-is-section (Id-to-Eq X Y) (ua X Y) e
-  γ : A Y e
-  γ = transport (A Y) p c
-\end{code}
+  B : (Σ \(Y : 𝓤 ̇) → X ≃ Y) → 𝓥 ̇
+  B (Y , e) = A Y e
+  p : (X , ≃-refl X) ≡ (Y , e)
+  p = ≃-singleton ua X (X , ≃-refl X) (Y , e)
+  τ : B (X , ≃-refl X) → B (Y , e)
+  τ = transport B p
 
-In one go:
-
-\begin{code}
-  γ' : A Y e
-  γ' = transport (A Y)
-        (inverse-is-section (Id-to-Eq X Y) (ua X Y) e)
-        (H X (λ Y p → A Y (Id-to-Eq X Y p)) a Y (Eq-to-Id ua X Y e))
-
-  γ-agreement : γ ≡ γ'
-  γ-agreement = refl _
-\end{code}
-
-With this we have that if a type satisfies a property then so does any
-equivalent type:
-
-\begin{code}
-transport-≃ : is-univalent 𝓤
-            → (A : 𝓤 ̇ → 𝓥 ̇ ) {X Y : 𝓤 ̇ }
-            → X ≃ Y → A X → A Y
-transport-≃ ua A {X} {Y} e a = H-≃ ua X (λ Y _ → A Y) a Y e
+H-≃-equation : (ua : is-univalent 𝓤)
+             → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
+             → (a : A X  (≃-refl X))
+             → H-≃ ua X A a X (≃-refl X) ≡ a
+H-≃-equation {𝓤} {𝓥} ua X A a =
+  H-≃ ua X A a X (≃-refl X) ≡⟨ refl _ ⟩
+  transport B p a           ≡⟨ ap (λ - → transport B - a) q ⟩
+  transport B (refl t) a    ≡⟨ refl _ ⟩
+  a                         ∎
+ where
+  B : (Σ \(Y : 𝓤 ̇) → X ≃ Y) → 𝓥 ̇
+  B (Y , e) = A Y e
+  t : Σ \(Y : 𝓤 ̇) → X ≃ Y
+  t = (X , ≃-refl X)
+  p : t ≡ t
+  p = ≃-singleton ua X t t
+  q : p ≡ refl t
+  q = subsingletons-are-sets (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+       (≃-singleton ua X) t t p (refl t)
 \end{code}
 
 The induction principle `H-≃` keeps `X` fixed and lets `Y` vary, while
