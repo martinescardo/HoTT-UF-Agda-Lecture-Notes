@@ -3006,10 +3006,9 @@ retract-of-singleton (r , s , η) (c , φ) = r c , γ
             y       ∎
 \end{code}
 
-Sometimes need the following symmetrized versions of the above:
+Sometimes need the following symmetric versions of the above:
 
 \begin{code}
-
 singleton-type' : {X : 𝓤 ̇ } → X → 𝓤 ̇
 singleton-type' x = Σ \y → x ≡ y
 
@@ -4776,7 +4775,7 @@ There are two proposed ways to solve this:
 A third possibility is to work with subsingleton truncations
 [axiomatically](https://lmcs.episciences.org/3217), which is compatible
 with the above two proposals. We write this axiom as a record type
-rather than as an iterated `Σ type` for simplicity, where we use the
+rather than as an iterated `Σ` type for simplicity, where we use the
 HoTT-book notation `∥ X ∥` for the inhabitation of `X`,
 called the propositional, or subsingleton, truncation of `X`:
 
