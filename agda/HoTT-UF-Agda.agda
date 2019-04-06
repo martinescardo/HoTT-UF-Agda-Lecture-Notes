@@ -337,6 +337,128 @@ module twin-primes where
  twin-prime-conjecture : 𝓤₀ ̇
  twin-prime-conjecture = (n : ℕ) → Σ \(p : ℕ) → (p ≥ n) × is-prime p × is-prime (p ∔ 2)
 
+positive-not-zero : (x : ℕ) → succ x ≢ 0
+positive-not-zero x p = 𝟙-is-not-𝟘 (g p)
+ where
+  f : ℕ → 𝓤₀ ̇
+  f 0        = 𝟘
+  f (succ x) = 𝟙
+  g : succ x ≡ 0 → 𝟙 ≡ 𝟘
+  g = ap f
+
+pred : ℕ → ℕ
+pred 0 = 0
+pred (succ n) = n
+
+succ-lc : {x y : ℕ} → succ x ≡ succ y → x ≡ y
+succ-lc = ap pred
+
+ℕ-has-decidable-equality : (x y : ℕ) → (x ≡ y) + (x ≢ y)
+ℕ-has-decidable-equality 0 0               = inl (refl 0)
+ℕ-has-decidable-equality 0 (succ y)        = inr (≢-sym (positive-not-zero y))
+ℕ-has-decidable-equality (succ x) 0        = inr (positive-not-zero x)
+ℕ-has-decidable-equality (succ x) (succ y) = f (ℕ-has-decidable-equality x y)
+ where
+  f : (x ≡ y) + x ≢ y → (succ x ≡ succ y) + (succ x ≢ succ y)
+  f (inl p) = inl (ap succ p)
+  f (inr k) = inr (λ (s : succ x ≡ succ y) → k (succ-lc s))
+
+module BasicArithmetic where
+
+  open ℕ-order
+  open Arithmetic renaming (_+_ to _∔_)
+
+  +-assoc : (x y z : ℕ) → (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
+  +-assoc x y zero     = (x ∔ y) ∔ 0 ≡⟨ refl _ ⟩
+                         x ∔ (y ∔ 0) ∎
+  +-assoc x y (succ z) = (x ∔ y) ∔ succ z   ≡⟨ refl _ ⟩
+                         succ ((x ∔ y) ∔ z) ≡⟨ ap succ IH ⟩
+                         succ (x ∔ (y ∔ z)) ≡⟨ refl _ ⟩
+                         x ∔ (y ∔ succ z)   ∎
+   where
+    IH : (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
+    IH = +-assoc x y z
+
+  +-base-on-first : (x : ℕ) → 0 ∔ x ≡ x
+  +-base-on-first 0        = refl 0
+  +-base-on-first (succ x) = 0 ∔ succ x   ≡⟨ refl _ ⟩
+                             succ (0 ∔ x) ≡⟨ ap succ IH ⟩
+                             succ x       ∎
+   where
+    IH : 0 ∔ x ≡ x
+    IH = +-base-on-first x
+
+  +-step-on-first : (x y : ℕ) → succ x ∔ y ≡ succ (x ∔ y)
+  +-step-on-first x zero     = refl (succ x)
+  +-step-on-first x (succ y) = succ x ∔ succ y   ≡⟨ refl _ ⟩
+                               succ (succ x ∔ y) ≡⟨ ap succ IH ⟩
+                               succ (x ∔ succ y) ∎
+   where
+    IH : succ x ∔ y ≡ succ (x ∔ y)
+    IH = +-step-on-first x y
+
+  +-comm : (x y : ℕ) → x ∔ y ≡ y ∔ x
+  +-comm 0 y = 0 ∔ y ≡⟨ +-base-on-first y ⟩
+               y     ≡⟨ refl _ ⟩
+               y ∔ 0 ∎
+  +-comm (succ x) y = succ x ∔ y  ≡⟨ +-step-on-first x y ⟩
+                      succ(x ∔ y) ≡⟨ ap succ IH ⟩
+                      succ(y ∔ x) ≡⟨ refl _ ⟩
+                      y ∔ succ x  ∎
+    where
+     IH : x ∔ y ≡ y ∔ x
+     IH = +-comm x y
+
+  +-lc : (x z z' : ℕ) → x ∔ z ≡ x ∔ z' → z ≡ z'
+  +-lc 0        z z' p = z      ≡⟨ (+-base-on-first z)⁻¹ ⟩
+                         0 ∔ z  ≡⟨ p ⟩
+                         0 ∔ z' ≡⟨ +-base-on-first z' ⟩
+                         z'     ∎
+  +-lc (succ x) z z' p = IH
+   where
+    q = succ (x ∔ z)  ≡⟨ (+-step-on-first x z)⁻¹ ⟩
+        succ x ∔ z    ≡⟨ p ⟩
+        succ x ∔ z'   ≡⟨ +-step-on-first x z' ⟩
+        succ (x ∔ z') ∎
+    IH : z ≡ z'
+    IH = +-lc x z z' (succ-lc q)
+
+  _≼_ : ℕ → ℕ → 𝓤₀ ̇
+  x ≼ y = Σ \(z : ℕ) → x ∔ z ≡ y
+
+  ≤-gives-≼ : (x y : ℕ) → x ≤ y → x ≼ y
+  ≤-gives-≼ 0 0               l = 0 , refl 0
+  ≤-gives-≼ 0 (succ y)        l = succ y , +-base-on-first (succ y)
+  ≤-gives-≼ (succ x) 0        l = !𝟘 (succ x ≼ zero) l
+  ≤-gives-≼ (succ x) (succ y) l = γ
+   where
+    IH : x ≼ y
+    IH = ≤-gives-≼ x y l
+    z : ℕ
+    z = pr₁ IH
+    p : x ∔ z ≡ y
+    p = pr₂ IH
+    γ : succ x ≼ succ y
+    γ = z , (succ x ∔ z   ≡⟨ +-step-on-first x z ⟩
+             succ (x ∔ z) ≡⟨ ap succ p ⟩
+             succ y       ∎)
+
+  ≼-gives-≤ : (x y : ℕ) → x ≼ y → x ≤ y
+  ≼-gives-≤ 0 0               (z , p) = ⋆
+  ≼-gives-≤ 0 (succ y)        (z , p) = ⋆
+  ≼-gives-≤ (succ x) 0        (z , p) = positive-not-zero (x ∔ z) q
+   where
+    q = succ (x ∔ z) ≡⟨ (+-step-on-first x z)⁻¹ ⟩
+        succ x ∔ z   ≡⟨ p ⟩
+        zero ∎
+  ≼-gives-≤ (succ x) (succ y) (z , p) = IH
+   where
+    q = succ (x ∔ z) ≡⟨ (+-step-on-first x z)⁻¹ ⟩
+        succ x ∔ z   ≡⟨ p ⟩
+        succ y       ∎
+    IH : x ≤ y
+    IH = ≼-gives-≤ x y (z , succ-lc q)
+
 infix  4  _∼_
 infixr 4 _,_
 infixr 2 _×_
@@ -639,32 +761,6 @@ hlevel-upper X zero = γ
     p : x ≡ y
     p = k x y
 hlevel-upper X (succ n) = λ h x y → hlevel-upper (x ≡ y) n (h x y)
-
-positive-not-zero : (x : ℕ) → succ x ≢ 0
-positive-not-zero x p = 𝟙-is-not-𝟘 (g p)
- where
-  f : ℕ → 𝓤₀ ̇
-  f 0        = 𝟘
-  f (succ x) = 𝟙
-  g : succ x ≡ 0 → 𝟙 ≡ 𝟘
-  g = ap f
-
-pred : ℕ → ℕ
-pred 0 = 0
-pred (succ n) = n
-
-succ-lc : {x y : ℕ} → succ x ≡ succ y → x ≡ y
-succ-lc = ap pred
-
-ℕ-has-decidable-equality : (x y : ℕ) → (x ≡ y) + (x ≢ y)
-ℕ-has-decidable-equality 0 0               = inl (refl 0)
-ℕ-has-decidable-equality 0 (succ y)        = inr (≢-sym (positive-not-zero y))
-ℕ-has-decidable-equality (succ x) 0        = inr (positive-not-zero x)
-ℕ-has-decidable-equality (succ x) (succ y) = f (ℕ-has-decidable-equality x y)
- where
-  f : (x ≡ y) + x ≢ y → (succ x ≡ succ y) + (succ x ≢ succ y)
-  f (inl p) = inl (ap succ p)
-  f (inr k) = inr (λ (s : succ x ≡ succ y) → k (succ-lc s))
 
 ℕ-is-set : is-set ℕ
 ℕ-is-set = Id-collapsibles-are-sets ℕ ℕ-Id-collapsible
@@ -2074,74 +2170,7 @@ module ℕ-more where
 
   open ℕ-order
   open Arithmetic renaming (_+_ to _∔_)
-
-  _≼_ : ℕ → ℕ → 𝓤₀ ̇
-  x ≼ y = Σ \(z : ℕ) → x ∔ z ≡ y
-
-  +-base-on-first : (x : ℕ) → 0 ∔ x ≡ x
-  +-base-on-first 0        = refl 0
-  +-base-on-first (succ x) = 0 ∔ succ x   ≡⟨ refl _ ⟩
-                             succ (0 ∔ x) ≡⟨ ap succ IH ⟩
-                             succ x       ∎
-   where
-    IH : 0 ∔ x ≡ x
-    IH = +-base-on-first x
-
-  +-step-on-first : (x y : ℕ) → succ x ∔ y ≡ succ (x ∔ y)
-  +-step-on-first x zero     = refl (succ x)
-  +-step-on-first x (succ y) = succ x ∔ succ y   ≡⟨ refl _ ⟩
-                               succ (succ x ∔ y) ≡⟨ ap succ IH ⟩
-                               succ (x ∔ succ y) ∎
-   where
-    IH : succ x ∔ y ≡ succ (x ∔ y)
-    IH = +-step-on-first x y
-
-  +-lc : (x z z' : ℕ) → x ∔ z ≡ x ∔ z' → z ≡ z'
-  +-lc 0        z z' p = z      ≡⟨ (+-base-on-first z)⁻¹ ⟩
-                         0 ∔ z  ≡⟨ p ⟩
-                         0 ∔ z' ≡⟨ +-base-on-first z' ⟩
-                         z'     ∎
-  +-lc (succ x) z z' p = IH
-   where
-    q = succ (x ∔ z)  ≡⟨ (+-step-on-first x z)⁻¹ ⟩
-        succ x ∔ z    ≡⟨ p ⟩
-        succ x ∔ z'   ≡⟨ +-step-on-first x z' ⟩
-        succ (x ∔ z') ∎
-    IH : z ≡ z'
-    IH = +-lc x z z' (succ-lc q)
-
-  ≤-gives-≼ : (x y : ℕ) → x ≤ y → x ≼ y
-  ≤-gives-≼ 0 0               l = 0 , refl 0
-  ≤-gives-≼ 0 (succ y)        l = succ y , +-base-on-first (succ y)
-  ≤-gives-≼ (succ x) 0        l = !𝟘 (succ x ≼ zero) l
-  ≤-gives-≼ (succ x) (succ y) l = γ
-   where
-    IH : x ≼ y
-    IH = ≤-gives-≼ x y l
-    z : ℕ
-    z = pr₁ IH
-    p : x ∔ z ≡ y
-    p = pr₂ IH
-    γ : succ x ≼ succ y
-    γ = z , (succ x ∔ z   ≡⟨ +-step-on-first x z ⟩
-             succ (x ∔ z) ≡⟨ ap succ p ⟩
-             succ y       ∎)
-
-  ≼-gives-≤ : (x y : ℕ) → x ≼ y → x ≤ y
-  ≼-gives-≤ 0 0               (z , p) = ⋆
-  ≼-gives-≤ 0 (succ y)        (z , p) = ⋆
-  ≼-gives-≤ (succ x) 0        (z , p) = positive-not-zero (x ∔ z) q
-   where
-    q = succ (x ∔ z) ≡⟨ (+-step-on-first x z)⁻¹ ⟩
-        succ x ∔ z   ≡⟨ p ⟩
-        zero ∎
-  ≼-gives-≤ (succ x) (succ y) (z , p) = IH
-   where
-    q = succ (x ∔ z) ≡⟨ (+-step-on-first x z)⁻¹ ⟩
-        succ x ∔ z   ≡⟨ p ⟩
-        succ y       ∎
-    IH : x ≤ y
-    IH = ≼-gives-≤ x y (z , succ-lc q)
+  open BasicArithmetic
 
   ≤-prop-valued : (x y : ℕ) → is-prop (x ≤ y)
   ≤-prop-valued 0 y               = 𝟙-is-subsingleton
@@ -2162,29 +2191,6 @@ module ℕ-more where
   ≤-charac pe x y = pe (x ≤ y) (x ≼ y)
                        (≤-prop-valued x y) (≼-prop-valued x y)
                        (≤-gives-≼ x y) (≼-gives-≤ x y)
-
-  +-assoc : (x y z : ℕ) → (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
-  +-assoc x y zero     = (x ∔ y) ∔ 0 ≡⟨ refl _ ⟩
-                         x ∔ (y ∔ 0) ∎
-  +-assoc x y (succ z) = (x ∔ y) ∔ succ z   ≡⟨ refl _ ⟩
-                         succ ((x ∔ y) ∔ z) ≡⟨ ap succ IH ⟩
-                         succ (x ∔ (y ∔ z)) ≡⟨ refl _ ⟩
-                         x ∔ (y ∔ succ z)   ∎
-   where
-    IH : (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
-    IH = +-assoc x y z
-
-  +-comm : (x y : ℕ) → x ∔ y ≡ y ∔ x
-  +-comm 0 y = 0 ∔ y ≡⟨ +-base-on-first y ⟩
-               y     ≡⟨ refl _ ⟩
-               y ∔ 0 ∎
-  +-comm (succ x) y = succ x ∔ y  ≡⟨ +-step-on-first x y ⟩
-                      succ(x ∔ y) ≡⟨ ap succ IH ⟩
-                      succ(y ∔ x) ≡⟨ refl _ ⟩
-                      y ∔ succ x  ∎
-    where
-     IH : x ∔ y ≡ y ∔ x
-     IH = +-comm x y
 
 graph-is-domain {𝓤} {𝓥} {X} {Y} f = g , invertibles-are-equivs g (h , η , ε)
  where

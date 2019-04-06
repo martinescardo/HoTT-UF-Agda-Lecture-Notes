@@ -313,6 +313,7 @@ to practice univalent mathematics should consult the above references.
      1. [Basic constructions with the identity type](HoTT-UF-Agda.html#basicidentity)
      1. [Reasoning with negation](HoTT-UF-Agda.html#negation)
      1. [Example: formulation of the twin-prime conjecture](HoTT-UF-Agda.html#twinprime)
+     1. [Remaining Peano axioms and basic arithmetic](HoTT-UF-Agda.html#basicarithmetic)
      1. [Operator fixities and precedences](HoTT-UF-Agda.html#infix)
   1. [Univalent Mathematics in Agda](HoTT-UF-Agda.html#uminagda)
      1. [Our univalent type theory](HoTT-UF-Agda.html#axiomaticutt)
@@ -1738,8 +1739,8 @@ inl-inr-disjoint-images {𝓤} {𝓥} {X} {Y} p = 𝟙-is-not-𝟘 q
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="twinprime"></a> Example: formulation of the twin-prime conjecture
 
-We illustrate the above constructs of MLTT to formulate this
-conjecture.
+We illustrate the above constructs of MLTT to formulate [this
+conjecture](http://mathworld.wolfram.com/TwinPrimeConjecture.html).
 
 \begin{code}
 module twin-primes where
@@ -1758,6 +1759,197 @@ Thus, not only can we write down definitions, constructions, theorems
 and proofs, but also conjectures. They are just definitions of
 types. Likewise, the univalence axiom, [to be formulated in due course](HoTT-UF-Agda.html#univalence),
 is a type.
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="basicarithmetic"></a> Remaining Peano axioms and basic arithmetic
+
+We first prove the remaining Peano axioms.
+
+\begin{code}
+positive-not-zero : (x : ℕ) → succ x ≢ 0
+positive-not-zero x p = 𝟙-is-not-𝟘 (g p)
+ where
+  f : ℕ → 𝓤₀ ̇
+  f 0        = 𝟘
+  f (succ x) = 𝟙
+  g : succ x ≡ 0 → 𝟙 ≡ 𝟘
+  g = ap f
+\end{code}
+
+To show that the successor function is left cancellable, we can use
+the following predecessor function.
+
+\begin{code}
+pred : ℕ → ℕ
+pred 0 = 0
+pred (succ n) = n
+
+succ-lc : {x y : ℕ} → succ x ≡ succ y → x ≡ y
+succ-lc = ap pred
+\end{code}
+
+With this we have proved all the Peano axioms.
+
+Without assuming the principle of excluded middle, we can prove that
+`ℕ` has decidable equality in the following sense:
+
+\begin{code}
+ℕ-has-decidable-equality : (x y : ℕ) → (x ≡ y) + (x ≢ y)
+ℕ-has-decidable-equality 0 0               = inl (refl 0)
+ℕ-has-decidable-equality 0 (succ y)        = inr (≢-sym (positive-not-zero y))
+ℕ-has-decidable-equality (succ x) 0        = inr (positive-not-zero x)
+ℕ-has-decidable-equality (succ x) (succ y) = f (ℕ-has-decidable-equality x y)
+ where
+  f : (x ≡ y) + x ≢ y → (succ x ≡ succ y) + (succ x ≢ succ y)
+  f (inl p) = inl (ap succ p)
+  f (inr k) = inr (λ (s : succ x ≡ succ y) → k (succ-lc s))
+\end{code}
+
+*Exercise.* Students should do this kind of thing at least once in
+their academic life: rewrite the above proof of the decidability of
+equality of `ℕ` to use the `ℕ-induction` principle instead of pattern
+matching and recursion, to understand by themselves that this can be
+done.
+
+We now move to basic arithmetic, and we use a module for that.
+
+\begin{code}
+module BasicArithmetic where
+
+  open ℕ-order
+  open Arithmetic renaming (_+_ to _∔_)
+\end{code}
+
+We can show that addition is associative as follows, by induction on `z`:
+
+\begin{code}
+  +-assoc : (x y z : ℕ) → (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
+  +-assoc x y zero     = (x ∔ y) ∔ 0 ≡⟨ refl _ ⟩
+                         x ∔ (y ∔ 0) ∎
+  +-assoc x y (succ z) = (x ∔ y) ∔ succ z   ≡⟨ refl _ ⟩
+                         succ ((x ∔ y) ∔ z) ≡⟨ ap succ IH ⟩
+                         succ (x ∔ (y ∔ z)) ≡⟨ refl _ ⟩
+                         x ∔ (y ∔ succ z)   ∎
+   where
+    IH : (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
+    IH = +-assoc x y z
+\end{code}
+
+Notice that the proofs `refl _` should be read as "by definition" or
+"by construction". They are not necessary, because Agda knows the
+definitions and silently expands them when necessary, but we are
+writing them here for the sake of clarity. Elsewhere in these notes, we
+do occasionally rely on silent expansions of definitions.
+
+We defined addition by induction on the second argument. Next we show
+that the base case and induction step of a definition by induction on
+the first argument hold (but of course not definitionally). We do this
+by induction on the second argument.
+
+\begin{code}
+  +-base-on-first : (x : ℕ) → 0 ∔ x ≡ x
+  +-base-on-first 0        = refl 0
+  +-base-on-first (succ x) = 0 ∔ succ x   ≡⟨ refl _ ⟩
+                             succ (0 ∔ x) ≡⟨ ap succ IH ⟩
+                             succ x       ∎
+   where
+    IH : 0 ∔ x ≡ x
+    IH = +-base-on-first x
+
+  +-step-on-first : (x y : ℕ) → succ x ∔ y ≡ succ (x ∔ y)
+  +-step-on-first x zero     = refl (succ x)
+  +-step-on-first x (succ y) = succ x ∔ succ y   ≡⟨ refl _ ⟩
+                               succ (succ x ∔ y) ≡⟨ ap succ IH ⟩
+                               succ (x ∔ succ y) ∎
+   where
+    IH : succ x ∔ y ≡ succ (x ∔ y)
+    IH = +-step-on-first x y
+\end{code}
+
+Using this, commutativity of addition can be proved by induction on the first argument.
+
+\begin{code}
+  +-comm : (x y : ℕ) → x ∔ y ≡ y ∔ x
+  +-comm 0 y = 0 ∔ y ≡⟨ +-base-on-first y ⟩
+               y     ≡⟨ refl _ ⟩
+               y ∔ 0 ∎
+  +-comm (succ x) y = succ x ∔ y  ≡⟨ +-step-on-first x y ⟩
+                      succ(x ∔ y) ≡⟨ ap succ IH ⟩
+                      succ(y ∔ x) ≡⟨ refl _ ⟩
+                      y ∔ succ x  ∎
+    where
+     IH : x ∔ y ≡ y ∔ x
+     IH = +-comm x y
+\end{code}
+
+We now show that addition is cancellable in its right argument, by
+induction on the left argument:
+
+\begin{code}
+  +-lc : (x z z' : ℕ) → x ∔ z ≡ x ∔ z' → z ≡ z'
+  +-lc 0        z z' p = z      ≡⟨ (+-base-on-first z)⁻¹ ⟩
+                         0 ∔ z  ≡⟨ p ⟩
+                         0 ∔ z' ≡⟨ +-base-on-first z' ⟩
+                         z'     ∎
+  +-lc (succ x) z z' p = IH
+   where
+    q = succ (x ∔ z)  ≡⟨ (+-step-on-first x z)⁻¹ ⟩
+        succ x ∔ z    ≡⟨ p ⟩
+        succ x ∔ z'   ≡⟨ +-step-on-first x z' ⟩
+        succ (x ∔ z') ∎
+    IH : z ≡ z'
+    IH = +-lc x z z' (succ-lc q)
+\end{code}
+
+Now we solve part of an exercise given above, namely that `(x ≤ y) ⇔ Σ \(z : ℕ) → x + z ≡ y`.
+
+First we name the alternative definition of `≤`:
+
+\begin{code}
+  _≼_ : ℕ → ℕ → 𝓤₀ ̇
+  x ≼ y = Σ \(z : ℕ) → x ∔ z ≡ y
+\end{code}
+
+Next we show that the two relations `≤` and `≼` imply each other.
+
+In both cases, we proceed by induction on both arguments.
+
+\begin{code}
+  ≤-gives-≼ : (x y : ℕ) → x ≤ y → x ≼ y
+  ≤-gives-≼ 0 0               l = 0 , refl 0
+  ≤-gives-≼ 0 (succ y)        l = succ y , +-base-on-first (succ y)
+  ≤-gives-≼ (succ x) 0        l = !𝟘 (succ x ≼ zero) l
+  ≤-gives-≼ (succ x) (succ y) l = γ
+   where
+    IH : x ≼ y
+    IH = ≤-gives-≼ x y l
+    z : ℕ
+    z = pr₁ IH
+    p : x ∔ z ≡ y
+    p = pr₂ IH
+    γ : succ x ≼ succ y
+    γ = z , (succ x ∔ z   ≡⟨ +-step-on-first x z ⟩
+             succ (x ∔ z) ≡⟨ ap succ p ⟩
+             succ y       ∎)
+
+  ≼-gives-≤ : (x y : ℕ) → x ≼ y → x ≤ y
+  ≼-gives-≤ 0 0               (z , p) = ⋆
+  ≼-gives-≤ 0 (succ y)        (z , p) = ⋆
+  ≼-gives-≤ (succ x) 0        (z , p) = positive-not-zero (x ∔ z) q
+   where
+    q = succ (x ∔ z) ≡⟨ (+-step-on-first x z)⁻¹ ⟩
+        succ x ∔ z   ≡⟨ p ⟩
+        zero ∎
+  ≼-gives-≤ (succ x) (succ y) (z , p) = IH
+   where
+    q = succ (x ∔ z) ≡⟨ (+-step-on-first x z)⁻¹ ⟩
+        succ x ∔ z   ≡⟨ p ⟩
+        succ y       ∎
+    IH : x ≤ y
+    IH = ≼-gives-≤ x y (z , succ-lc q)
+\end{code}
+
+[Later](HoTT-UF-Agda.html#mlttexercisessol) we will show that `(x ≤ y) ≡ Σ \(z : ℕ) → x + z ≡ y`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="infix"></a> Operator fixities and precedences
@@ -2601,55 +2793,7 @@ the type of monoids has minimal hlevel `3`.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="naturalsset"></a> Example: `ℕ` is a set
 
-We first prove the remaining Peano axioms.
-
-\begin{code}
-positive-not-zero : (x : ℕ) → succ x ≢ 0
-positive-not-zero x p = 𝟙-is-not-𝟘 (g p)
- where
-  f : ℕ → 𝓤₀ ̇
-  f 0        = 𝟘
-  f (succ x) = 𝟙
-  g : succ x ≡ 0 → 𝟙 ≡ 𝟘
-  g = ap f
-\end{code}
-
-To show that the successor function is left cancellable, we can use
-the following predecessor function.
-
-\begin{code}
-pred : ℕ → ℕ
-pred 0 = 0
-pred (succ n) = n
-
-succ-lc : {x y : ℕ} → succ x ≡ succ y → x ≡ y
-succ-lc = ap pred
-\end{code}
-
-With this we have proved all the Peano axioms.
-
-*Without* assuming the principle of excluded middle, we can prove that
-`ℕ` has decidable equality in the following sense:
-
-\begin{code}
-ℕ-has-decidable-equality : (x y : ℕ) → (x ≡ y) + (x ≢ y)
-ℕ-has-decidable-equality 0 0               = inl (refl 0)
-ℕ-has-decidable-equality 0 (succ y)        = inr (≢-sym (positive-not-zero y))
-ℕ-has-decidable-equality (succ x) 0        = inr (positive-not-zero x)
-ℕ-has-decidable-equality (succ x) (succ y) = f (ℕ-has-decidable-equality x y)
- where
-  f : (x ≡ y) + x ≢ y → (succ x ≡ succ y) + (succ x ≢ succ y)
-  f (inl p) = inl (ap succ p)
-  f (inr k) = inr (λ (s : succ x ≡ succ y) → k (succ-lc s))
-\end{code}
-
-*Exercise.* Students should do this kind of thing at least once in
-their academic life: rewrite the above proof of the decidability of
-equality of `ℕ` to use the `ℕ-induction` principle `J` (or its
-alternative `H`) instead of pattern matching and recursion, to
-understand by themselves that this can be done.
-
-And using the decidability of equality we can define a `wconstant`
+Using the decidability of equality we can define a `wconstant`
 function `x ≡ y → x ≡ y` and hence conclude that `ℕ` is a set. This
 argument is due to Hedberg.
 
@@ -4930,116 +5074,20 @@ DNE-gives-SN : DNE 𝓤 → SN 𝓤
 
 ### <a id="mlttexercisessol"></a> Solutions
 
-This includes solutions to exercises formulated in various places, and
-to exercises that we didn't formulate, such as associativity and commutativity of
-addition.
-
-In our first solved exercise, we apply propositional extensionality to
-characterize `x ≤ y` as `Σ \(z : ℕ) → x + z ≡ y`.
+In our first solution, we apply propositional extensionality to
+show that `(x ≤ y) ≡ Σ \(z : ℕ) → x + z ≡ y`.
 
 \begin{code}
 module ℕ-more where
 
   open ℕ-order
   open Arithmetic renaming (_+_ to _∔_)
+  open BasicArithmetic
 \end{code}
 
-We name the alternative definition of `≤`:
-
-\begin{code}
-  _≼_ : ℕ → ℕ → 𝓤₀ ̇
-  x ≼ y = Σ \(z : ℕ) → x ∔ z ≡ y
-\end{code}
-
-We defined addition by induction on the second argument. Next we show
-that the base case and induction step of a definition by induction on
-the first argument hold (but of course not definitionally). We do this
-by induction on the second argument.
-
-\begin{code}
-  +-base-on-first : (x : ℕ) → 0 ∔ x ≡ x
-  +-base-on-first 0        = refl 0
-  +-base-on-first (succ x) = 0 ∔ succ x   ≡⟨ refl _ ⟩
-                             succ (0 ∔ x) ≡⟨ ap succ IH ⟩
-                             succ x       ∎
-   where
-    IH : 0 ∔ x ≡ x
-    IH = +-base-on-first x
-
-  +-step-on-first : (x y : ℕ) → succ x ∔ y ≡ succ (x ∔ y)
-  +-step-on-first x zero     = refl (succ x)
-  +-step-on-first x (succ y) = succ x ∔ succ y   ≡⟨ refl _ ⟩
-                               succ (succ x ∔ y) ≡⟨ ap succ IH ⟩
-                               succ (x ∔ succ y) ∎
-   where
-    IH : succ x ∔ y ≡ succ (x ∔ y)
-    IH = +-step-on-first x y
-\end{code}
-
-For example, this can be used to show that addition is cancellable in
-its right argument. We do this by induction on the left argument:
-
-\begin{code}
-  +-lc : (x z z' : ℕ) → x ∔ z ≡ x ∔ z' → z ≡ z'
-  +-lc 0        z z' p = z      ≡⟨ (+-base-on-first z)⁻¹ ⟩
-                         0 ∔ z  ≡⟨ p ⟩
-                         0 ∔ z' ≡⟨ +-base-on-first z' ⟩
-                         z'     ∎
-  +-lc (succ x) z z' p = IH
-   where
-    q = succ (x ∔ z)  ≡⟨ (+-step-on-first x z)⁻¹ ⟩
-        succ x ∔ z    ≡⟨ p ⟩
-        succ x ∔ z'   ≡⟨ +-step-on-first x z' ⟩
-        succ (x ∔ z') ∎
-    IH : z ≡ z'
-    IH = +-lc x z z' (succ-lc q)
-\end{code}
-
-Next we show that the two relations `≤` and `≼` imply each other.
-
-We prove the first implication by induction on both arguments (because
-the relation `≤` is defined by induction on both arguments).
-
-\begin{code}
-  ≤-gives-≼ : (x y : ℕ) → x ≤ y → x ≼ y
-  ≤-gives-≼ 0 0               l = 0 , refl 0
-  ≤-gives-≼ 0 (succ y)        l = succ y , +-base-on-first (succ y)
-  ≤-gives-≼ (succ x) 0        l = !𝟘 (succ x ≼ zero) l
-  ≤-gives-≼ (succ x) (succ y) l = γ
-   where
-    IH : x ≼ y
-    IH = ≤-gives-≼ x y l
-    z : ℕ
-    z = pr₁ IH
-    p : x ∔ z ≡ y
-    p = pr₂ IH
-    γ : succ x ≼ succ y
-    γ = z , (succ x ∔ z   ≡⟨ +-step-on-first x z ⟩
-             succ (x ∔ z) ≡⟨ ap succ p ⟩
-             succ y       ∎)
-\end{code}
-
-We prove the second implication by again by induction on `x` and `y`:
-
-\begin{code}
-  ≼-gives-≤ : (x y : ℕ) → x ≼ y → x ≤ y
-  ≼-gives-≤ 0 0               (z , p) = ⋆
-  ≼-gives-≤ 0 (succ y)        (z , p) = ⋆
-  ≼-gives-≤ (succ x) 0        (z , p) = positive-not-zero (x ∔ z) q
-   where
-    q = succ (x ∔ z) ≡⟨ (+-step-on-first x z)⁻¹ ⟩
-        succ x ∔ z   ≡⟨ p ⟩
-        zero ∎
-  ≼-gives-≤ (succ x) (succ y) (z , p) = IH
-   where
-    q = succ (x ∔ z) ≡⟨ (+-step-on-first x z)⁻¹ ⟩
-        succ x ∔ z   ≡⟨ p ⟩
-        succ y       ∎
-    IH : x ≤ y
-    IH = ≼-gives-≤ x y (z , succ-lc q)
-\end{code}
-
-Next we show that both relations are proposition valued:
+[Recall](HoTT-UF-Agda.html#basicarithmetic) that we defined `x ≼ y` to
+mean `Σ \(z : ℕ) → x + z ≡ y`.  First we show that both relations are
+proposition valued:
 
 \begin{code}
   ≤-prop-valued : (x y : ℕ) → is-prop (x ≤ y)
@@ -5063,40 +5111,7 @@ Next we show that both relations are proposition valued:
                        (≤-gives-≼ x y) (≼-gives-≤ x y)
 \end{code}
 
-Another exercise is to show that addition is associative. We can do
-this by induction on `z`:
-
-\begin{code}
-  +-assoc : (x y z : ℕ) → (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
-  +-assoc x y zero     = (x ∔ y) ∔ 0 ≡⟨ refl _ ⟩
-                         x ∔ (y ∔ 0) ∎
-  +-assoc x y (succ z) = (x ∔ y) ∔ succ z   ≡⟨ refl _ ⟩
-                         succ ((x ∔ y) ∔ z) ≡⟨ ap succ IH ⟩
-                         succ (x ∔ (y ∔ z)) ≡⟨ refl _ ⟩
-                         x ∔ (y ∔ succ z)   ∎
-   where
-    IH : (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
-    IH = +-assoc x y z
-\end{code}
-
-For the sake of completeness, we also prove commutativity. We do this
-by induction on the first argument.
-
-\begin{code}
-  +-comm : (x y : ℕ) → x ∔ y ≡ y ∔ x
-  +-comm 0 y = 0 ∔ y ≡⟨ +-base-on-first y ⟩
-               y     ≡⟨ refl _ ⟩
-               y ∔ 0 ∎
-  +-comm (succ x) y = succ x ∔ y  ≡⟨ +-step-on-first x y ⟩
-                      succ(x ∔ y) ≡⟨ ap succ IH ⟩
-                      succ(y ∔ x) ≡⟨ refl _ ⟩
-                      y ∔ succ x  ∎
-    where
-     IH : x ∔ y ≡ y ∔ x
-     IH = +-comm x y
-\end{code}
-
-This completes the exercises on natural numbers.
+This completes the exercise on the order relation on the natural numbers.
 
 For the moment we leave the following solutions unexplained.
 
