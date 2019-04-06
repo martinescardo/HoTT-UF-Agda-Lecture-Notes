@@ -1690,6 +1690,12 @@ univalence-is-a-singleton {𝓤} γ = pointed-subsingletons-are-singletons
                                    (γ 𝓤)
                                    (univalence-is-a-subsingletonω γ)
 
+global-dfunext : 𝓤ω
+global-dfunext = ∀ 𝓤 𝓥 → dfunext 𝓤 𝓥
+
+global-univalence-gives-global-dfunext : global-univalence → global-dfunext
+global-univalence-gives-global-dfunext ua 𝓤 𝓥 = univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
+
 being-subsingleton-is-a-subsingleton : {X : 𝓤 ̇ } → dfunext 𝓤 𝓤
                                      → is-subsingleton (is-subsingleton X)
 being-subsingleton-is-a-subsingleton {𝓤} {X} fe i j = c
@@ -1745,14 +1751,117 @@ hlevel-relation-is-subsingleton {𝓤} fe (succ n) X =
 ≃-sym-involutive fe fe' (f , a) = to-Σ-≡ (inversion-involutive f a ,
                                           being-equiv-is-a-subsingleton fe fe' f _ _)
 
+propext : ∀ 𝓤  → 𝓤 ⁺ ̇
+propext 𝓤 = (P Q : 𝓤 ̇ ) → is-prop P → is-prop Q
+                        → (P → Q) → (Q → P)
+                        → P ≡ Q
+
+univalence-gives-propext : is-univalent 𝓤 → propext 𝓤
+univalence-gives-propext ua P Q i j f g =
+ Eq-to-Id ua P Q
+   (logically-equivalent-subsingletons-are-equivalent P Q i j (f , g))
+
+module _ (ua : global-univalence) where
+
+ dfe : ∀ {𝓤 𝓥} → dfunext 𝓤 𝓥
+ dfe {𝓤} {𝓥} = global-univalence-gives-global-dfunext ua 𝓤 𝓥
+
+ being-magma-hom-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                                   → is-subsingleton (is-magma-hom M N f)
+ being-magma-hom-is-a-subsingleton M N f =
+  Π-is-subsingleton dfe
+    (λ x → Π-is-subsingleton dfe
+             (λ y → magma-is-set N (f (x ·⟨ M ⟩ y)) (f x ·⟨ N ⟩ f y)))
+
+ being-magma-iso-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                                   → is-subsingleton (is-magma-iso M N f)
+ being-magma-iso-is-a-subsingleton M N f (h , g , k , η , ε) (h' , g' , k' , η' , ε') = γ
+  where
+   p : h ≡ h'
+   p = being-magma-hom-is-a-subsingleton M N f h h'
+   q : g ≡ g'
+   q = dfe (λ y → g y          ≡⟨ (ap g (ε' y))⁻¹ ⟩
+                  g (f (g' y)) ≡⟨ η (g' y) ⟩
+                  g' y         ∎)
+
+   i : is-subsingleton (is-magma-hom N M g' × (g' ∘ f ∼ id) × (f ∘ g' ∼ id))
+   i = ×-is-subsingleton
+         (being-magma-hom-is-a-subsingleton N M g')
+         (×-is-subsingleton
+            (Π-is-subsingleton dfe (λ x → magma-is-set M (g' (f x)) x))
+            (Π-is-subsingleton dfe (λ y → magma-is-set N (f (g' y)) y)))
+
+   γ : (h , g , k , η , ε) ≡ (h' , g' , k' , η' , ε')
+   γ = to-×-≡ p (to-Σ-≡ (q , i _ _))
+
+ is-magma-equiv : (M N : Magma 𝓤) → (⟨ M ⟩ → ⟨ N ⟩) → 𝓤 ̇
+ is-magma-equiv M N f = is-equiv f × is-magma-hom M N f
+
+ being-magma-equiv-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                                     → is-subsingleton (is-magma-equiv M N f)
+ being-magma-equiv-is-a-subsingleton M N f = ×-is-subsingleton
+                                              (being-equiv-is-a-subsingleton dfe dfe f)
+                                              (being-magma-hom-is-a-subsingleton M N f)
+
+ magma-isos-are-magma-equivs : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                             → is-magma-iso M N f
+                             → is-magma-equiv M N f
+ magma-isos-are-magma-equivs M N f (h , g , k , η , ε) = i , h
+  where
+   i : is-equiv f
+   i = invertibles-are-equivs f (g , η , ε)
+
+ magma-equivs-are-magma-isos : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                             → is-magma-equiv M N f
+                             → is-magma-iso M N f
+ magma-equivs-are-magma-isos M N f (i , h) = h , g , k , η , ε
+  where
+   g : ⟨ N ⟩ → ⟨ M ⟩
+   g = inverse f i
+   η : g ∘ f ∼ id
+   η = inverse-is-retraction f i
+   ε : f ∘ g ∼ id
+   ε = inverse-is-section f i
+   k : (a b : ⟨ N ⟩) → g (a ·⟨ N ⟩ b) ≡ g a ·⟨ M ⟩ g b
+   k a b = g (a ·⟨ N ⟩ b)             ≡⟨ ap₂ (λ a b → g (a ·⟨ N ⟩ b)) ((ε a)⁻¹) ((ε b)⁻¹) ⟩
+           g (f (g a) ·⟨ N ⟩ f (g b)) ≡⟨ ap g ((h (g a) (g b))⁻¹) ⟩
+           g (f (g a ·⟨ M ⟩ g b))     ≡⟨ η (g a ·⟨ M ⟩ g b) ⟩
+           g a ·⟨ M ⟩ g b             ∎
+
+ magma-iso-charac : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                  → is-magma-iso M N f ≃ is-magma-equiv M N f
+ magma-iso-charac M N f = logically-equivalent-subsingletons-are-equivalent
+                           (is-magma-iso M N f)
+                           (is-magma-equiv M N f)
+                           (being-magma-iso-is-a-subsingleton M N f)
+                           (being-magma-equiv-is-a-subsingleton M N f)
+                           (magma-isos-are-magma-equivs M N f ,
+                            magma-equivs-are-magma-isos M N f)
+
+ magma-iso-charac' : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                   → is-magma-iso M N f ≡ is-magma-equiv M N f
+ magma-iso-charac' M N f = Eq-to-Id (ua (universe-of ⟨ M ⟩))
+                            (is-magma-iso M N f)
+                            (is-magma-equiv M N f)
+                            (magma-iso-charac M N f)
+
+ magma-iso-charac'' : (M N : Magma 𝓤)
+                    → is-magma-iso M N ≡ is-magma-equiv M N
+ magma-iso-charac'' M N = dfe (magma-iso-charac' M N)
+
+ _≃ₘ_ : Magma 𝓤 → Magma 𝓤 → 𝓤 ̇
+ M ≃ₘ N = Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-magma-equiv M N f
+
+ ≅ₘ-charac : (M N : Magma 𝓤)
+           → (M ≅ₘ N) ≃ (M ≃ₘ N)
+ ≅ₘ-charac M N = Σ-cong (magma-iso-charac M N)
+
+ ≅ₘ-charac' : (M N : Magma 𝓤)
+            → (M ≅ₘ N) ≡ (M ≃ₘ N)
+ ≅ₘ-charac' M N = ap Σ (magma-iso-charac'' M N)
+
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
-
-global-dfunext : 𝓤ω
-global-dfunext = ∀ 𝓤 𝓥 → dfunext 𝓤 𝓥
-
-global-univalence-gives-global-dfunext : global-univalence → global-dfunext
-global-univalence-gives-global-dfunext ua 𝓤 𝓥 = univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
 
 inhabitation-is-a-subsingleton : global-dfunext → (X : 𝓤 ̇ )
                                → is-subsingleton (is-inhabited X)
@@ -1961,16 +2070,6 @@ SN 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → Σ \(X : 𝓤 ̇ ) → P ⇔ 
 SN-gives-DNE : SN 𝓤 → DNE 𝓤
 
 DNE-gives-SN : DNE 𝓤 → SN 𝓤
-
-propext : ∀ 𝓤  → 𝓤 ⁺ ̇
-propext 𝓤 = (P Q : 𝓤 ̇ ) → is-prop P → is-prop Q
-                        → (P → Q) → (Q → P)
-                        → P ≡ Q
-
-univalence-gives-propext : is-univalent 𝓤 → propext 𝓤
-univalence-gives-propext ua P Q i j f g =
- Eq-to-Id ua P Q
-   (logically-equivalent-subsingletons-are-equivalent P Q i j (f , g))
 
 module ℕ-more where
 

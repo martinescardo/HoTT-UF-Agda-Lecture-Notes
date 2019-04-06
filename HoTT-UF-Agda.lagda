@@ -343,9 +343,11 @@ to practice univalent mathematics should consult the above references.
      1. [The univalence axiom is a (sub)singleton type](HoTT-UF-Agda.html#univalencesubsingleton)
      1. [`hfunext` and `vvfunext` are subsingletons](HoTT-UF-Agda.html#hfunextsubsingleton)
      1. [More applications of function extensionality](HoTT-UF-Agda.html#morefunextuses)
+     1. [Propositional extensionality](HoTT-UF-Agda.html#propositionalextensionality)
+     1. [Magma equivalences](HoTT-UF-Agda.html#magmaequivalences)
+     1. [Structure identity principle](HoTT-UF-Agda.html#sip)
      1. [Subsingleton truncation](HoTT-UF-Agda.html#truncation)
      1. [The univalent axiom of choice](HoTT-UF-Agda.html#choice)
-     1. [Structure identity principle](HoTT-UF-Agda.html#sip)
      1. [Operator fixities and precedences](HoTT-UF-Agda.html#infix2)
   1. [Appendix](HoTT-UF-Agda.html#appendix)
      1. [Additional exercises](HoTT-UF-Agda.html#moreexercises)
@@ -4214,7 +4216,18 @@ In the absence of a universe `𝓤ω` in our MLTT, we can simply have an
 of `ω`-many axioms, stating that each universe is univalent. Then we
 can prove in our MLTT that the univalence property for each inverse is
 a (sub)singleton, with `ω`-many proofs (or just one schematic proof
-with a free variable for a universe `𝓤ₙ`.).
+with a free variable for a universe `𝓤ₙ`).
+
+It follows immediately from the above that global univalence gives
+global function extensionality:
+
+\begin{code}
+global-dfunext : 𝓤ω
+global-dfunext = ∀ 𝓤 𝓥 → dfunext 𝓤 𝓥
+
+global-univalence-gives-global-dfunext : global-univalence → global-dfunext
+global-univalence-gives-global-dfunext ua 𝓤 𝓥 = univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
+\end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="hfunextsubsingleton"></a> `hfunext` and `vvfunext` are subsingletons
@@ -4307,6 +4320,185 @@ univalence, we need to show that hlevels are
 closed under equivalence first.)
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="propositionalextensionality"></a> Propositional extensionality
+
+We have been using the mathematical terminology "subsingleton", but
+tradition in the formulation of the next notion demands the logical
+terminology "proposition". Propositional extensionality says that any
+two logically equivalent propositions are equal:
+
+\begin{code}
+propext : ∀ 𝓤  → 𝓤 ⁺ ̇
+propext 𝓤 = (P Q : 𝓤 ̇ ) → is-prop P → is-prop Q
+                        → (P → Q) → (Q → P)
+                        → P ≡ Q
+\end{code}
+
+This is directly implied by univalence:
+
+\begin{code}
+univalence-gives-propext : is-univalent 𝓤 → propext 𝓤
+univalence-gives-propext ua P Q i j f g =
+ Eq-to-Id ua P Q (logically-equivalent-subsingletons-are-equivalent P Q i j (f , g))
+\end{code}
+
+For set-level mathematics, function extensionality and propositional
+extensionality are often the only consequences of univalence that are
+needed. An exception is the theorem that the type of ordinals in a
+universe is an ordinal in the next universe, which requires univalence
+for sets (see the HoTT Book).
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="magmaequivalences"></a> Magma equivalences
+
+We now define magma equivalences and show that the type of magma
+equivalences is equal to the type of magma isomorphisms, assuming
+univalence. For simplicity, we assume global univalence, from which we
+get global function extensionality.
+
+\begin{code}
+module _ (ua : global-univalence) where
+
+ dfe : ∀ {𝓤 𝓥} → dfunext 𝓤 𝓥
+ dfe {𝓤} {𝓥} = global-univalence-gives-global-dfunext ua 𝓤 𝓥
+\end{code}
+
+The magma homomorphism and isomorphism conditions are subsingleton
+types by virtue of the fact that the underlying type of a magma is a
+set by definition.
+
+\begin{code}
+ being-magma-hom-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                                   → is-subsingleton (is-magma-hom M N f)
+ being-magma-hom-is-a-subsingleton M N f =
+  Π-is-subsingleton dfe
+    (λ x → Π-is-subsingleton dfe
+             (λ y → magma-is-set N (f (x ·⟨ M ⟩ y)) (f x ·⟨ N ⟩ f y)))
+
+ being-magma-iso-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                                   → is-subsingleton (is-magma-iso M N f)
+ being-magma-iso-is-a-subsingleton M N f (h , g , k , η , ε) (h' , g' , k' , η' , ε') = γ
+  where
+   p : h ≡ h'
+   p = being-magma-hom-is-a-subsingleton M N f h h'
+   q : g ≡ g'
+   q = dfe (λ y → g y          ≡⟨ (ap g (ε' y))⁻¹ ⟩
+                  g (f (g' y)) ≡⟨ η (g' y) ⟩
+                  g' y         ∎)
+
+   i : is-subsingleton (is-magma-hom N M g' × (g' ∘ f ∼ id) × (f ∘ g' ∼ id))
+   i = ×-is-subsingleton
+         (being-magma-hom-is-a-subsingleton N M g')
+         (×-is-subsingleton
+            (Π-is-subsingleton dfe (λ x → magma-is-set M (g' (f x)) x))
+            (Π-is-subsingleton dfe (λ y → magma-is-set N (f (g' y)) y)))
+
+   γ : (h , g , k , η , ε) ≡ (h' , g' , k' , η' , ε')
+   γ = to-×-≡ p (to-Σ-≡ (q , i _ _))
+\end{code}
+
+By a magma equivalence we mean an equivalence which is a magma
+homomorphism. This notion is again a subsingleton type.
+
+\begin{code}
+ is-magma-equiv : (M N : Magma 𝓤) → (⟨ M ⟩ → ⟨ N ⟩) → 𝓤 ̇
+ is-magma-equiv M N f = is-equiv f × is-magma-hom M N f
+
+ being-magma-equiv-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                                     → is-subsingleton (is-magma-equiv M N f)
+ being-magma-equiv-is-a-subsingleton M N f = ×-is-subsingleton
+                                              (being-equiv-is-a-subsingleton dfe dfe f)
+                                              (being-magma-hom-is-a-subsingleton M N f)
+\end{code}
+
+A function is a magma isomorphism if and only if it is a magma equivalence.
+
+\begin{code}
+ magma-isos-are-magma-equivs : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                             → is-magma-iso M N f
+                             → is-magma-equiv M N f
+ magma-isos-are-magma-equivs M N f (h , g , k , η , ε) = i , h
+  where
+   i : is-equiv f
+   i = invertibles-are-equivs f (g , η , ε)
+
+ magma-equivs-are-magma-isos : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                             → is-magma-equiv M N f
+                             → is-magma-iso M N f
+ magma-equivs-are-magma-isos M N f (i , h) = h , g , k , η , ε
+  where
+   g : ⟨ N ⟩ → ⟨ M ⟩
+   g = inverse f i
+   η : g ∘ f ∼ id
+   η = inverse-is-retraction f i
+   ε : f ∘ g ∼ id
+   ε = inverse-is-section f i
+   k : (a b : ⟨ N ⟩) → g (a ·⟨ N ⟩ b) ≡ g a ·⟨ M ⟩ g b
+   k a b = g (a ·⟨ N ⟩ b)             ≡⟨ ap₂ (λ a b → g (a ·⟨ N ⟩ b)) ((ε a)⁻¹) ((ε b)⁻¹) ⟩
+           g (f (g a) ·⟨ N ⟩ f (g b)) ≡⟨ ap g ((h (g a) (g b))⁻¹) ⟩
+           g (f (g a ·⟨ M ⟩ g b))     ≡⟨ η (g a ·⟨ M ⟩ g b) ⟩
+           g a ·⟨ M ⟩ g b             ∎
+\end{code}
+
+Because these two notions are subsingleton types, we conclude that
+they are equivalent.
+
+\begin{code}
+ magma-iso-charac : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                  → is-magma-iso M N f ≃ is-magma-equiv M N f
+ magma-iso-charac M N f = logically-equivalent-subsingletons-are-equivalent
+                           (is-magma-iso M N f)
+                           (is-magma-equiv M N f)
+                           (being-magma-iso-is-a-subsingleton M N f)
+                           (being-magma-equiv-is-a-subsingleton M N f)
+                           (magma-isos-are-magma-equivs M N f ,
+                            magma-equivs-are-magma-isos M N f)
+\end{code}
+
+And hence they are equal by univalence.
+
+\begin{code}
+ magma-iso-charac' : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                   → is-magma-iso M N f ≡ is-magma-equiv M N f
+ magma-iso-charac' M N f = Eq-to-Id (ua (universe-of ⟨ M ⟩))
+                            (is-magma-iso M N f)
+                            (is-magma-equiv M N f)
+                            (magma-iso-charac M N f)
+\end{code}
+
+And by function extensionality the *properties* of being a magma
+isomorphism and a magma equivalence are the same:
+
+\begin{code}
+ magma-iso-charac'' : (M N : Magma 𝓤)
+                    → is-magma-iso M N ≡ is-magma-equiv M N
+ magma-iso-charac'' M N = dfe (magma-iso-charac' M N)
+\end{code}
+
+Hence the type of magma equivalences is equivalent, and therefore
+equal, to the type of magma isomorphisms.
+
+\begin{code}
+ _≃ₘ_ : Magma 𝓤 → Magma 𝓤 → 𝓤 ̇
+ M ≃ₘ N = Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-magma-equiv M N f
+
+ ≅ₘ-charac : (M N : Magma 𝓤)
+           → (M ≅ₘ N) ≃ (M ≃ₘ N)
+ ≅ₘ-charac M N = Σ-cong (magma-iso-charac M N)
+
+ ≅ₘ-charac' : (M N : Magma 𝓤)
+            → (M ≅ₘ N) ≡ (M ≃ₘ N)
+ ≅ₘ-charac' M N = ap Σ (magma-iso-charac'' M N)
+\end{code}
+
+To be continued.
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="sip"></a> Structure identity principle
+
+For the moment, see [this](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-StructureIdentityPrinciple.html).
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="truncation"></a> Subsingleton truncation
 
 The following is Voevosky's approach to saying that a type is
@@ -4325,16 +4517,7 @@ in the absence of excluded middle, [inhabitation is stronger than
 non-emptiness](https://lmcs.episciences.org/3217).
 
 For simplicity in the formulation of the theorems, we assume global
-`dfunext`.
-
-\begin{code}
-global-dfunext : 𝓤ω
-global-dfunext = ∀ 𝓤 𝓥 → dfunext 𝓤 𝓥
-
-global-univalence-gives-global-dfunext : global-univalence → global-dfunext
-global-univalence-gives-global-dfunext ua 𝓤 𝓥 = univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
-\end{code}
-
+function extensionality.
 A type can be pointed in many ways, but inhabited in at most one way:
 
 \begin{code}
@@ -4644,11 +4827,6 @@ in particular has a proof that univalent choice implies univalent
 excluded middle.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="sip"></a> Structure identity principle
-
-For the moment, see [this](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-StructureIdentityPrinciple.html).
-
-[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ## <a id="appendix"></a> Appendix
 
 ### <a id="moreexercises"></a> Additional exercises
@@ -4753,37 +4931,10 @@ DNE-gives-SN : DNE 𝓤 → SN 𝓤
 ### <a id="mlttexercisessol"></a> Solutions
 
 This includes solutions to exercises formulated in various places, and
-to exercises that we didn't formuulate, such as associativity of
-addition, or that univalence gives propositional extensionality.
+to exercises that we didn't formuulate, such as associativity and commutativity of
+addition.
 
-We have been using the mathematical terminology "subsingleton", but
-tradition in the formulation of the next notion demands the logical
-terminology "proposition". Propositional extensionality says that any
-two logically equivalent propositions are equal:
-
-\begin{code}
-propext : ∀ 𝓤  → 𝓤 ⁺ ̇
-propext 𝓤 = (P Q : 𝓤 ̇ ) → is-prop P → is-prop Q
-                        → (P → Q) → (Q → P)
-                        → P ≡ Q
-\end{code}
-
-This is implied by univalence:
-
-\begin{code}
-univalence-gives-propext : is-univalent 𝓤 → propext 𝓤
-univalence-gives-propext ua P Q i j f g =
- Eq-to-Id ua P Q
-   (logically-equivalent-subsingletons-are-equivalent P Q i j (f , g))
-\end{code}
-
-For set-level mathematics, function extensionality and propositional
-extensionality are often the only consequences of univalence that are
-needed. An exception is the theorem that the type of ordinals in a
-universe is an ordinal in the next universe, which requires univalence
-for sets (see the HoTT Book).
-
-In this exercise, we apply propositional extensionality to
+In our first solved exercise, we apply propositional extensionality to
 characterize `x ≤ y` as `Σ \(z : ℕ) → x ∔ z ≡ y`.
 
 \begin{code}
