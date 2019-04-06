@@ -219,7 +219,7 @@ appropriate for referring to the *synthetic* development of homotopy
 theory within univalent mathematics, for which we refer the reader to
 the [HoTT book](https://homotopytypetheory.org/book/).
 
-However, the terminlogy *homotopy type theory* is also used as a
+However, the terminology *homotopy type theory* is also used as a
 synonym for univalent type theory, not only because univalent type
 theory has a model in homotopy types (as defined in homotopy theory),
 but also because, without considering models, types do behave like
