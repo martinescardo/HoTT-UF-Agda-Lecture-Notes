@@ -744,7 +744,7 @@ role in the Agda development of these lectures notes.
 In the following, the type family `A` can be seen as playing the role
 of a property of elements of `ℕ`, except that it doesn't need to be
 necessarily
-[subsingleton](HoTT-UF-Agda.html#subsingletonsandsets)-valued. When it
+[subsingleton](HoTT-UF-Agda.html#subsingletonsandsets) valued. When it
 is, the *type* of the function gives the familiar [principle of
 mathematical
 induction](https://en.wikipedia.org/wiki/Mathematical_induction) for
@@ -1352,7 +1352,7 @@ on `refl`). This is
 
 **Notational remark.** The symbols "`=`" and "`≡`" are swapped with
   respect to the [HoTT book](https://homotopytypetheory.org/book/)
-  convention for definitional/judgemental equality and typed-valued equality,
+  convention for definitional/judgemental equality and type valued equality,
   and there is nothing we can do about that because "`=`" is a
   reserved Agda symbol for definitional equality. Irrespectively of
   this, it does make sense to use "`≡`" with a triple bar, if we
