@@ -349,7 +349,7 @@ to practice univalent mathematics should consult the above references.
      1. [Operator fixities and precedences](HoTT-UF-Agda.html#infix2)
   1. [Appendix](HoTT-UF-Agda.html#appendix)
      1. [Additional exercises](HoTT-UF-Agda.html#moreexercises)
-     1. [Solutions to additional exercises](HoTT-UF-Agda.html#mlttexercisessol)
+     1. [Solutions](HoTT-UF-Agda.html#mlttexercisessol)
      1. [Agda files automatically extracted from these notes](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes/tree/master/agda)
      1. [The sources for these notes](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes)
      1. [License](LICENSE)
@@ -820,8 +820,8 @@ module Arithmetic where
   x × 0      = 0
   x × succ y = x + x × y
 
-  infixl 0 _+_
-  infixl 1 _×_
+  infixl 10 _+_
+  infixl 11 _×_
 \end{code}
 
 The above "fixity" declarations allow us to indicate the precedences
@@ -881,13 +881,13 @@ module ℕ-order where
 
 Later, learning
 [univalence](HoTT-UF-Agda.html#univalence) prove that in this case
-this implies
+[this implies](HoTT-UF-Agda.html#mlttexercisessol)
 
    > `(x ≤ y) ≡ Σ \(z : ℕ) → x + z ≡ y`.
 
-That bi-implication can be turned into equality only holds for types
-that are [subsingletons](HoTT-UF-Agda.html#subsingletonsandsets).
-
+That [bi-implication can be turned into
+equality](HoTT-UF-Agda.html#univalence-gives-propext) only holds for
+types that are subsingletons.
 
 If we are doing applied mathematics and want to actually compute, we
 can define a type for binary notation for the sake of efficiency, and
@@ -3641,8 +3641,6 @@ infix  1 _■
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="solutions"></a> Solutions
 
-Spoiler alert.
-
 \begin{code}
 lc-maps-reflect-subsingletonness f l s x x' = l (s (f x) (f x'))
 
@@ -4345,7 +4343,14 @@ image' f = Σ \(y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡
 *Exercise.* An attempt to define the image of `f` without the
 inhabitation predicate would be to take it to be
 `Σ \(y : codomain f) → Σ \(x : domain f) → f x ≡ y`. Show that this
-type is equivalent to `X`. This is similar to what happens in set
+type is equivalent to `X`:
+
+\begin{code}
+graph-is-domain : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                → (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) ≃ X
+\end{code}
+
+This is similar to what happens in set
 theory: the graph of any function is isomorphic to its domain.
 
 
@@ -4372,6 +4377,11 @@ is-surjection' f = (y : codomain f) → is-inhabited (Σ \(x : domain f) → f x
 *Exercise.* The type `(y : codomain f) → Σ \(x : domain f) → f x ≡ y`
  is equivalent to the type `has-section f`, which is stronger than
  saying that `f` is a surjection.
+
+\begin{code}
+has-section-charac : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                   → ((y : Y) → Σ \(x : X) → f x ≡ y) ≃ has-section f
+\end{code}
 
 There are two problems with this definition of inhabitation:
 
@@ -4701,11 +4711,226 @@ DNE-gives-SN : DNE 𝓤 → SN 𝓤
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 
-### <a id="mlttexercisessol"></a> Solutions to additional exercises
+### <a id="mlttexercisessol"></a> Solutions
 
-Spoiler alert.
+This includes solutions to exercises formulated in various places, and
+to exercises that we didn't formuulate, such as associativity of
+addition, or that univalence gives propositional extensionality.
+
+We have been using the mathematical terminology "subsingleton", but
+tradition in the formulation of the next notion demands the
+terminology "proposition". Propositional extensionality says that two
+logically equivalent propositions are equal:
 
 \begin{code}
+
+propext : ∀ 𝓤  → 𝓤 ⁺ ̇
+propext 𝓤 = (P Q : 𝓤 ̇) → is-prop P → is-prop Q
+                        → (P → Q) → (Q → P)
+                        → P ≡ Q
+
+\end{code}
+
+It is implied by univalence:
+
+\begin{code}
+
+univalence-gives-propext : is-univalent 𝓤 → propext 𝓤
+univalence-gives-propext ua P Q i j f g = Eq-to-Id ua P Q
+                                           (f ,
+                                            invertibles-are-equivs f
+                                              (g , (λ x → i (g (f x)) x) ,
+                                                   (λ y → j (f (g y)) y)))
+\end{code}
+
+For set-level mathematics, function extensionality and propositional
+extensionality are often the only consequences of univalence that are
+needed. An exception is the theorem that the type of ordinals in a
+universe is an ordinal in the next universe, which requires univalence
+for sets (see the HoTT Book).
+
+In this exercise, we apply propositional extensionality to
+characterize `x ≤ y` as `Σ \(z : ℕ) → x ∔ z ≡ y`.
+
+\begin{code}
+
+module ℕ-more where
+
+  open ℕ-order
+  open Arithmetic renaming (_+_ to _∔_)
+
+\end{code}
+
+We name the alternative definition of `≤`:
+
+\begin{code}
+  _≼_ : ℕ → ℕ → 𝓤₀ ̇
+  x ≼ y = Σ \(z : ℕ) → x ∔ z ≡ y
+\end{code}
+
+We defined addition by induction on the second argument. Next we show
+that the base case and induction step of a definition by induction on
+the first argument hold (but of course not definitionally). We do this
+by induction on the second argument.
+
+\begin{code}
+  +-base-on-first : (x : ℕ) → 0 ∔ x ≡ x
+  +-base-on-first 0        = refl 0
+  +-base-on-first (succ x) = 0 ∔ succ x   ≡⟨ refl _ ⟩
+                             succ (0 ∔ x) ≡⟨ ap succ IH ⟩
+                             succ x       ∎
+   where
+    IH : 0 ∔ x ≡ x
+    IH = +-base-on-first x
+
+  +-step-on-first : (x y : ℕ) → succ x ∔ y ≡ succ (x ∔ y)
+  +-step-on-first x zero     = refl (succ x)
+  +-step-on-first x (succ y) = succ x ∔ succ y   ≡⟨ refl _ ⟩
+                               succ (succ x ∔ y) ≡⟨ ap succ IH ⟩
+                               succ (x ∔ succ y) ∎
+   where
+    IH : succ x ∔ y ≡ succ (x ∔ y)
+    IH = +-step-on-first x y
+\end{code}
+
+For example, this can be used to show that addition is cancellable in
+its left argument. We do this by induction on the first argument:
+
+\begin{code}
+  +-lc : (x z z' : ℕ) → x ∔ z ≡ x ∔ z' → z ≡ z'
+  +-lc 0        z z' p = z      ≡⟨ (+-base-on-first z)⁻¹ ⟩
+                         0 ∔ z  ≡⟨ p ⟩
+                         0 ∔ z' ≡⟨ +-base-on-first z' ⟩
+                         z'     ∎
+  +-lc (succ x) z z' p = IH
+   where
+    q = succ (x ∔ z)  ≡⟨ (+-step-on-first x z)⁻¹ ⟩
+        succ x ∔ z    ≡⟨ p ⟩
+        succ x ∔ z'   ≡⟨ +-step-on-first x z' ⟩
+        succ (x ∔ z') ∎
+    IH : z ≡ z'
+    IH = +-lc x z z' (succ-lc q)
+\end{code}
+
+Next we show that the two relations `≤` and `≼` imply each other.
+
+We prove the first implication by induction on both arguments (because
+the relation `≤` is defined by induction on both arguments).
+
+\begin{code}
+  ≤-gives-≼ : (x y : ℕ) → x ≤ y → x ≼ y
+  ≤-gives-≼ 0 0               l = 0 , refl 0
+  ≤-gives-≼ 0 (succ y)        l = succ y , +-base-on-first (succ y)
+  ≤-gives-≼ (succ x) 0        l = !𝟘 (succ x ≼ zero) l
+  ≤-gives-≼ (succ x) (succ y) l = γ
+   where
+    IH : x ≼ y
+    IH = ≤-gives-≼ x y l
+    z : ℕ
+    z = pr₁ IH
+    p : x ∔ z ≡ y
+    p = pr₂ IH
+    γ : succ x ≼ succ y
+    γ = z , (succ x ∔ z   ≡⟨ +-step-on-first x z ⟩
+             succ (x ∔ z) ≡⟨ ap succ p ⟩
+             succ y       ∎)
+\end{code}
+
+We prove the second implication by induction on the witness `z` that `x ≼ y`:
+
+\begin{code}
+  ≼-gives-≤ : (x y : ℕ) → x ≼ y → x ≤ y
+  ≼-gives-≤ 0 0               (z , p) = ⋆
+  ≼-gives-≤ 0 (succ y)        (z , p) = ⋆
+  ≼-gives-≤ (succ x) 0        (z , p) = positive-not-zero (x ∔ z) q
+   where
+    q = succ (x ∔ z) ≡⟨ (+-step-on-first x z)⁻¹ ⟩
+        succ x ∔ z   ≡⟨ p ⟩
+        zero ∎
+  ≼-gives-≤ (succ x) (succ y) (z , p) = IH
+   where
+    q = succ (x ∔ z) ≡⟨ (+-step-on-first x z)⁻¹ ⟩
+        succ x ∔ z   ≡⟨ p ⟩
+        succ y       ∎
+    IH : x ≤ y
+    IH = ≼-gives-≤ x y (z , succ-lc q)
+\end{code}
+
+Next we show that both relations are proposition valued:
+
+\begin{code}
+  ≤-prop-valued : (x y : ℕ) → is-prop (x ≤ y)
+  ≤-prop-valued 0 y               = 𝟙-is-subsingleton
+  ≤-prop-valued (succ x) zero     = 𝟘-is-subsingleton
+  ≤-prop-valued (succ x) (succ y) = ≤-prop-valued x y
+
+  ≼-prop-valued : (x y : ℕ) → is-prop (x ≼ y)
+  ≼-prop-valued x y (z , p) (z' , p') = to-Σ-≡ (q , r)
+   where
+    q : z ≡ z'
+    q = +-lc x z z' (x ∔ z  ≡⟨ p ⟩
+                     y      ≡⟨ p' ⁻¹ ⟩
+                     x ∔ z' ∎)
+    r : transport (λ - → x ∔ - ≡ y) q p ≡ p'
+    r = ℕ-is-set (x ∔ z') y (transport (λ - → x ∔ - ≡ y) q p) p'
+
+  ≤-charac : propext 𝓤₀ → (x y : ℕ) → (x ≤ y) ≡ (x ≼ y)
+  ≤-charac pe x y = pe (x ≤ y) (x ≼ y)
+                       (≤-prop-valued x y) (≼-prop-valued x y)
+                       (≤-gives-≼ x y) (≼-gives-≤ x y)
+\end{code}
+
+Another exercise is to show that addition is associative. We can do
+this by induction on `z`:
+
+\begin{code}
+  +-assoc : (x y z : ℕ) → (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
+  +-assoc x y zero     = (x ∔ y) ∔ 0 ≡⟨ refl _ ⟩
+                         x ∔ (y ∔ 0) ∎
+  +-assoc x y (succ z) = (x ∔ y) ∔ succ z   ≡⟨ refl _ ⟩
+                         succ ((x ∔ y) ∔ z) ≡⟨ ap succ IH ⟩
+                         succ (x ∔ (y ∔ z)) ≡⟨ refl _ ⟩
+                         x ∔ (y ∔ succ z)   ∎
+   where
+    IH : (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
+    IH = +-assoc x y z
+\end{code}
+
+For the sake of completeness, we also prove commutativity. We do this
+by induction on the first argument.
+
+\begin{code}
+  +-comm : (x y : ℕ) → x ∔ y ≡ y ∔ x
+  +-comm 0 y = 0 ∔ y ≡⟨ +-base-on-first y ⟩
+               y     ≡⟨ refl _ ⟩
+               y ∔ 0 ∎
+  +-comm (succ x) y = succ x ∔ y  ≡⟨ +-step-on-first x y ⟩
+                      succ(x ∔ y) ≡⟨ ap succ IH ⟩
+                      succ(y ∔ x) ≡⟨ refl _ ⟩
+                      y ∔ succ x  ∎
+    where
+     IH : x ∔ y ≡ y ∔ x
+     IH = +-comm x y
+\end{code}
+
+This completes the exercises on natural numbers.
+
+For the moment we leave the following solutions unexplained.
+
+\begin{code}
+graph-is-domain {𝓤} {𝓥} {X} {Y} f = g , invertibles-are-equivs g (h , η , ε)
+ where
+  g : (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) → X
+  g (y , x , p) = x
+  h : X → Σ \(y : Y) → Σ \(x : X) → f x ≡ y
+  h x = (f x , x , refl (f x))
+  η : ∀ t → h (g t) ≡ t
+  η (_ , x , refl _) = refl (f x , x , refl _)
+  ε : (x : X) → g (h x) ≡ x
+  ε = refl
+
+has-section-charac f = ΠΣ-distr-≃
+
 succ-no-fixed-point : (n : ℕ) → succ n ≢ n
 succ-no-fixed-point 0        = positive-not-zero 0
 succ-no-fixed-point (succ n) = γ

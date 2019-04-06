@@ -76,8 +76,8 @@ module Arithmetic where
   x × 0      = 0
   x × succ y = x + x × y
 
-  infixl 0 _+_
-  infixl 1 _×_
+  infixl 10 _+_
+  infixl 11 _×_
 
 module Arithmetic' where
 
@@ -1758,6 +1758,9 @@ inhabited-functorial fe X Y f = inhabited-recursion
 image' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)⁺ ̇
 image' f = Σ \(y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
 
+graph-is-domain : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                → (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) ≃ X
+
 restriction' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
              → image' f → Y
 restriction' f (y , _) = y
@@ -1769,6 +1772,9 @@ corestriction' f x = f x ,
 
 is-surjection' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)⁺ ̇
 is-surjection' f = (y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
+
+has-section-charac : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                   → ((y : Y) → Σ \(x : X) → f x ≡ y) ≃ has-section f
 
 record subsingleton-truncations-exist : 𝓤ω where
  field
@@ -1930,6 +1936,147 @@ SN 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → Σ \(X : 𝓤 ̇ ) → P ⇔ 
 SN-gives-DNE : SN 𝓤 → DNE 𝓤
 
 DNE-gives-SN : DNE 𝓤 → SN 𝓤
+
+propext : ∀ 𝓤  → 𝓤 ⁺ ̇
+propext 𝓤 = (P Q : 𝓤 ̇) → is-prop P → is-prop Q
+                        → (P → Q) → (Q → P)
+                        → P ≡ Q
+
+univalence-gives-propext : is-univalent 𝓤 → propext 𝓤
+univalence-gives-propext ua P Q i j f g = Eq-to-Id ua P Q
+                                           (f ,
+                                            invertibles-are-equivs f
+                                              (g , (λ x → i (g (f x)) x) ,
+                                                   (λ y → j (f (g y)) y)))
+
+module ℕ-more where
+
+  open ℕ-order
+  open Arithmetic renaming (_+_ to _∔_)
+
+  _≼_ : ℕ → ℕ → 𝓤₀ ̇
+  x ≼ y = Σ \(z : ℕ) → x ∔ z ≡ y
+
+  +-base-on-first : (x : ℕ) → 0 ∔ x ≡ x
+  +-base-on-first 0        = refl 0
+  +-base-on-first (succ x) = 0 ∔ succ x   ≡⟨ refl _ ⟩
+                             succ (0 ∔ x) ≡⟨ ap succ IH ⟩
+                             succ x       ∎
+   where
+    IH : 0 ∔ x ≡ x
+    IH = +-base-on-first x
+
+  +-step-on-first : (x y : ℕ) → succ x ∔ y ≡ succ (x ∔ y)
+  +-step-on-first x zero     = refl (succ x)
+  +-step-on-first x (succ y) = succ x ∔ succ y   ≡⟨ refl _ ⟩
+                               succ (succ x ∔ y) ≡⟨ ap succ IH ⟩
+                               succ (x ∔ succ y) ∎
+   where
+    IH : succ x ∔ y ≡ succ (x ∔ y)
+    IH = +-step-on-first x y
+
+  +-lc : (x z z' : ℕ) → x ∔ z ≡ x ∔ z' → z ≡ z'
+  +-lc 0        z z' p = z      ≡⟨ (+-base-on-first z)⁻¹ ⟩
+                         0 ∔ z  ≡⟨ p ⟩
+                         0 ∔ z' ≡⟨ +-base-on-first z' ⟩
+                         z'     ∎
+  +-lc (succ x) z z' p = IH
+   where
+    q = succ (x ∔ z)  ≡⟨ (+-step-on-first x z)⁻¹ ⟩
+        succ x ∔ z    ≡⟨ p ⟩
+        succ x ∔ z'   ≡⟨ +-step-on-first x z' ⟩
+        succ (x ∔ z') ∎
+    IH : z ≡ z'
+    IH = +-lc x z z' (succ-lc q)
+
+  ≤-gives-≼ : (x y : ℕ) → x ≤ y → x ≼ y
+  ≤-gives-≼ 0 0               l = 0 , refl 0
+  ≤-gives-≼ 0 (succ y)        l = succ y , +-base-on-first (succ y)
+  ≤-gives-≼ (succ x) 0        l = !𝟘 (succ x ≼ zero) l
+  ≤-gives-≼ (succ x) (succ y) l = γ
+   where
+    IH : x ≼ y
+    IH = ≤-gives-≼ x y l
+    z : ℕ
+    z = pr₁ IH
+    p : x ∔ z ≡ y
+    p = pr₂ IH
+    γ : succ x ≼ succ y
+    γ = z , (succ x ∔ z   ≡⟨ +-step-on-first x z ⟩
+             succ (x ∔ z) ≡⟨ ap succ p ⟩
+             succ y       ∎)
+
+  ≼-gives-≤ : (x y : ℕ) → x ≼ y → x ≤ y
+  ≼-gives-≤ 0 0               (z , p) = ⋆
+  ≼-gives-≤ 0 (succ y)        (z , p) = ⋆
+  ≼-gives-≤ (succ x) 0        (z , p) = positive-not-zero (x ∔ z) q
+   where
+    q = succ (x ∔ z) ≡⟨ (+-step-on-first x z)⁻¹ ⟩
+        succ x ∔ z   ≡⟨ p ⟩
+        zero ∎
+  ≼-gives-≤ (succ x) (succ y) (z , p) = IH
+   where
+    q = succ (x ∔ z) ≡⟨ (+-step-on-first x z)⁻¹ ⟩
+        succ x ∔ z   ≡⟨ p ⟩
+        succ y       ∎
+    IH : x ≤ y
+    IH = ≼-gives-≤ x y (z , succ-lc q)
+
+  ≤-prop-valued : (x y : ℕ) → is-prop (x ≤ y)
+  ≤-prop-valued 0 y               = 𝟙-is-subsingleton
+  ≤-prop-valued (succ x) zero     = 𝟘-is-subsingleton
+  ≤-prop-valued (succ x) (succ y) = ≤-prop-valued x y
+
+  ≼-prop-valued : (x y : ℕ) → is-prop (x ≼ y)
+  ≼-prop-valued x y (z , p) (z' , p') = to-Σ-≡ (q , r)
+   where
+    q : z ≡ z'
+    q = +-lc x z z' (x ∔ z  ≡⟨ p ⟩
+                     y      ≡⟨ p' ⁻¹ ⟩
+                     x ∔ z' ∎)
+    r : transport (λ - → x ∔ - ≡ y) q p ≡ p'
+    r = ℕ-is-set (x ∔ z') y (transport (λ - → x ∔ - ≡ y) q p) p'
+
+  ≤-charac : propext 𝓤₀ → (x y : ℕ) → (x ≤ y) ≡ (x ≼ y)
+  ≤-charac pe x y = pe (x ≤ y) (x ≼ y)
+                       (≤-prop-valued x y) (≼-prop-valued x y)
+                       (≤-gives-≼ x y) (≼-gives-≤ x y)
+
+  +-assoc : (x y z : ℕ) → (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
+  +-assoc x y zero     = (x ∔ y) ∔ 0 ≡⟨ refl _ ⟩
+                         x ∔ (y ∔ 0) ∎
+  +-assoc x y (succ z) = (x ∔ y) ∔ succ z   ≡⟨ refl _ ⟩
+                         succ ((x ∔ y) ∔ z) ≡⟨ ap succ IH ⟩
+                         succ (x ∔ (y ∔ z)) ≡⟨ refl _ ⟩
+                         x ∔ (y ∔ succ z)   ∎
+   where
+    IH : (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
+    IH = +-assoc x y z
+
+  +-comm : (x y : ℕ) → x ∔ y ≡ y ∔ x
+  +-comm 0 y = 0 ∔ y ≡⟨ +-base-on-first y ⟩
+               y     ≡⟨ refl _ ⟩
+               y ∔ 0 ∎
+  +-comm (succ x) y = succ x ∔ y  ≡⟨ +-step-on-first x y ⟩
+                      succ(x ∔ y) ≡⟨ ap succ IH ⟩
+                      succ(y ∔ x) ≡⟨ refl _ ⟩
+                      y ∔ succ x  ∎
+    where
+     IH : x ∔ y ≡ y ∔ x
+     IH = +-comm x y
+
+graph-is-domain {𝓤} {𝓥} {X} {Y} f = g , invertibles-are-equivs g (h , η , ε)
+ where
+  g : (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) → X
+  g (y , x , p) = x
+  h : X → Σ \(y : Y) → Σ \(x : X) → f x ≡ y
+  h x = (f x , x , refl (f x))
+  η : ∀ t → h (g t) ≡ t
+  η (_ , x , refl _) = refl (f x , x , refl _)
+  ε : (x : X) → g (h x) ≡ x
+  ε = refl
+
+has-section-charac f = ΠΣ-distr-≃
 
 succ-no-fixed-point : (n : ℕ) → succ n ≢ n
 succ-no-fixed-point 0        = positive-not-zero 0
