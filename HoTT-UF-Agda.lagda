@@ -1888,19 +1888,19 @@ We now show that addition is cancellable in its right argument, by
 induction on the left argument:
 
 \begin{code}
-  +-lc : (x z z' : ℕ) → x ∔ z ≡ x ∔ z' → z ≡ z'
-  +-lc 0        z z' p = z      ≡⟨ (+-base-on-first z)⁻¹ ⟩
-                         0 ∔ z  ≡⟨ p ⟩
-                         0 ∔ z' ≡⟨ +-base-on-first z' ⟩
-                         z'     ∎
-  +-lc (succ x) z z' p = IH
+  +-lc : (x y z : ℕ) → x ∔ y ≡ x ∔ z → y ≡ z
+  +-lc 0        y z p = y     ≡⟨ (+-base-on-first y)⁻¹ ⟩
+                        0 ∔ y ≡⟨ p ⟩
+                        0 ∔ z ≡⟨ +-base-on-first z ⟩
+                        z     ∎
+  +-lc (succ x) y z p = IH
    where
-    q = succ (x ∔ z)  ≡⟨ (+-step-on-first x z)⁻¹ ⟩
-        succ x ∔ z    ≡⟨ p ⟩
-        succ x ∔ z'   ≡⟨ +-step-on-first x z' ⟩
-        succ (x ∔ z') ∎
-    IH : z ≡ z'
-    IH = +-lc x z z' (succ-lc q)
+    q = succ (x ∔ y) ≡⟨ (+-step-on-first x y)⁻¹ ⟩
+        succ x ∔ y   ≡⟨ p ⟩
+        succ x ∔ z   ≡⟨ +-step-on-first x z ⟩
+        succ (x ∔ z) ∎
+    IH : y ≡ z
+    IH = +-lc x y z (succ-lc q)
 \end{code}
 
 Now we solve part of an exercise given above, namely that `(x ≤ y) ⇔ Σ \(z : ℕ) → x + z ≡ y`.
@@ -4502,7 +4502,7 @@ univalence. For simplicity, we assume global univalence, from which we
 get global function extensionality.
 
 \begin{code}
-module _ (ua : global-univalence) where
+module magma-equivalences (ua : global-univalence) where
 
  dfe : ∀ {𝓤 𝓥} → dfunext 𝓤 𝓥
  dfe {𝓤} {𝓥} = global-univalence-gives-global-dfunext ua 𝓤 𝓥

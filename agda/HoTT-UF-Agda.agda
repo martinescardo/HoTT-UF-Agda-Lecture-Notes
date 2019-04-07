@@ -409,19 +409,19 @@ module BasicArithmetic where
      IH : x ∔ y ≡ y ∔ x
      IH = +-comm x y
 
-  +-lc : (x z z' : ℕ) → x ∔ z ≡ x ∔ z' → z ≡ z'
-  +-lc 0        z z' p = z      ≡⟨ (+-base-on-first z)⁻¹ ⟩
-                         0 ∔ z  ≡⟨ p ⟩
-                         0 ∔ z' ≡⟨ +-base-on-first z' ⟩
-                         z'     ∎
-  +-lc (succ x) z z' p = IH
+  +-lc : (x y z : ℕ) → x ∔ y ≡ x ∔ z → y ≡ z
+  +-lc 0        y z p = y     ≡⟨ (+-base-on-first y)⁻¹ ⟩
+                        0 ∔ y ≡⟨ p ⟩
+                        0 ∔ z ≡⟨ +-base-on-first z ⟩
+                        z     ∎
+  +-lc (succ x) y z p = IH
    where
-    q = succ (x ∔ z)  ≡⟨ (+-step-on-first x z)⁻¹ ⟩
-        succ x ∔ z    ≡⟨ p ⟩
-        succ x ∔ z'   ≡⟨ +-step-on-first x z' ⟩
-        succ (x ∔ z') ∎
-    IH : z ≡ z'
-    IH = +-lc x z z' (succ-lc q)
+    q = succ (x ∔ y) ≡⟨ (+-step-on-first x y)⁻¹ ⟩
+        succ x ∔ y   ≡⟨ p ⟩
+        succ x ∔ z   ≡⟨ +-step-on-first x z ⟩
+        succ (x ∔ z) ∎
+    IH : y ≡ z
+    IH = +-lc x y z (succ-lc q)
 
   _≼_ : ℕ → ℕ → 𝓤₀ ̇
   x ≼ y = Σ \(z : ℕ) → x ∔ z ≡ y
@@ -1856,7 +1856,7 @@ univalence-gives-propext : is-univalent 𝓤 → propext 𝓤
 univalence-gives-propext ua P Q i j f g =
  Eq-to-Id ua P Q (logically-equivalent-subsingletons-are-equivalent P Q i j (f , g))
 
-module _ (ua : global-univalence) where
+module magma-equivalences (ua : global-univalence) where
 
  dfe : ∀ {𝓤 𝓥} → dfunext 𝓤 𝓥
  dfe {𝓤} {𝓥} = global-univalence-gives-global-dfunext ua 𝓤 𝓥
