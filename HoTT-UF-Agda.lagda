@@ -269,6 +269,10 @@ by [Dan Grayson](https://faculty.math.illinois.edu/~dan/):
 
    - [An introduction to univalent foundations for mathematicians](https://www.ams.org/journals/bull/2018-55-04/S0273-0979-2018-01616-9/).
 
+Lecture by Benedikt Ahrens:
+
+   - [Univalent foundations - an introduction](https://benediktahrens.net/talks/6WFT.pdf).
+
 We have based these lecture notes
 on the slides of our talk [*logic in univalent type theory*](https://www.newton.ac.uk/seminar/20170711100011001).
 
@@ -4372,6 +4376,13 @@ global-dfunext = ∀ 𝓤 𝓥 → dfunext 𝓤 𝓥
 
 global-univalence-gives-global-dfunext : global-univalence → global-dfunext
 global-univalence-gives-global-dfunext ua 𝓤 𝓥 = univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
+
+global-hfunext : 𝓤ω
+global-hfunext = ∀ 𝓤 𝓥 → hfunext 𝓤 𝓥
+
+global-univalence-gives-global-hfunext : global-univalence → global-hfunext
+global-univalence-gives-global-hfunext ua 𝓤 𝓥 = univalence-gives-hfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
+
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -5218,8 +5229,7 @@ Up-≃ {𝓤} {𝓥} X = down {𝓤} {𝓥} , invertibles-are-equivs down (up , 
 
 up-down {𝓤} {𝓥} {X} = Up-induction 𝓥 X
                         (λ l → up (down l) ≡ l)
-                        (λ x → up (down {𝓤} {𝓥} (up x)) ≡⟨ ap up (down-up {𝓤} {𝓥}x) ⟩
-                               up x                      ∎)
+                        (λ x → refl (up (down {𝓤} {𝓥} (up x))))
 
 Up-left-≃ {𝓤} {𝓥} {𝓦} X Y e = Up 𝓦 X ≃⟨ Up-≃ X ⟩
                                 X     ≃⟨ e ⟩

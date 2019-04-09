@@ -1792,6 +1792,12 @@ global-dfunext = ∀ 𝓤 𝓥 → dfunext 𝓤 𝓥
 global-univalence-gives-global-dfunext : global-univalence → global-dfunext
 global-univalence-gives-global-dfunext ua 𝓤 𝓥 = univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
 
+global-hfunext : 𝓤ω
+global-hfunext = ∀ 𝓤 𝓥 → hfunext 𝓤 𝓥
+
+global-univalence-gives-global-hfunext : global-univalence → global-hfunext
+global-univalence-gives-global-hfunext ua 𝓤 𝓥 = univalence-gives-hfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
+
 being-subsingleton-is-a-subsingleton : {X : 𝓤 ̇ } → dfunext 𝓤 𝓤
                                      → is-subsingleton (is-subsingleton X)
 being-subsingleton-is-a-subsingleton {𝓤} {X} fe i j = c
@@ -2293,8 +2299,7 @@ Up-≃ {𝓤} {𝓥} X = down {𝓤} {𝓥} , invertibles-are-equivs down (up , 
 
 up-down {𝓤} {𝓥} {X} = Up-induction 𝓥 X
                         (λ l → up (down l) ≡ l)
-                        (λ x → up (down {𝓤} {𝓥} (up x)) ≡⟨ ap up (down-up {𝓤} {𝓥}x) ⟩
-                               up x                      ∎)
+                        (λ x → refl (up (down {𝓤} {𝓥} (up x))))
 
 Up-left-≃ {𝓤} {𝓥} {𝓦} X Y e = Up 𝓦 X ≃⟨ Up-≃ X ⟩
                                 X     ≃⟨ e ⟩
