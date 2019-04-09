@@ -22,10 +22,10 @@ $ sudo agda-mode compile
 ```
 
 ### Debian and Ubuntu
-Start by installing `emacs`, `git`, `ghc`, `cabal-install`, `zlib`, `alex` and
+Start by installing `emacs`, `git`, `ghc`, `cabal-install`, `alex` and
 `happy` using the package manager:
 ```bash
-$ sudo apt install emacs git ghc cabal-install zlib alex happy
+$ sudo apt install emacs git ghc cabal-install alex happy
 ```
 
 Next, create a directory `mgs-2019` for the Midlands Graduate School 2019 in
