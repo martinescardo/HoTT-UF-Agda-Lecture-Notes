@@ -4694,9 +4694,9 @@ Lift-is-embedding {𝓤} {𝓥} ua = universe-embedding-criterion ua 𝓤 𝓥 (
 ≃-Lift {𝓤} {𝓥} X = lift , invertibles-are-equivs lift (lower , lower-lift {𝓤} {𝓥} , lift-lower)
 \end{code}
 
-Using lifting, we can generalize equivalence induction. Notice that
-lifting is used in the proof but not in the formulation of the first
-lemma:
+With universe lifting, we can generalize equivalence induction as
+follows. Notice that lifting is used in the proof but not in the
+formulation of the first lemma:
 
 \begin{code}
 
@@ -4752,77 +4752,6 @@ H'-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
   q : p ≡ refl t
   q = subsingletons-are-sets (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
        (≃-subsingleton' {𝓤} {𝓤 ⊔ 𝓥} ua X) t t p (refl t)
-
-J'-≃ : Univalence
-     → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓥 ̇ )
-     → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) (≃-Lift X))
-     → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A X Y e
-J'-≃ ua A φ X = H'-≃ ua X (A X) (φ X)
-
-H'-equiv : Univalence
-         → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
-         → A (Lift 𝓥 X) lift → (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → is-equiv f → A Y f
-H'-equiv {𝓤} {𝓥} {𝓦} ua X A a Y f i = γ (f , i) i
- where
-  B : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-  B Y (f , i) = is-equiv f → A Y f
-  b : B (Lift 𝓥 X) (≃-Lift X)
-  b = λ (_ : is-equiv lift) → a
-  γ : (e : X ≃ Y) → B Y e
-  γ = H'-≃ ua X B b Y
-
-J'-equiv : Univalence
-         → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
-         → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) lift)
-         → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → is-equiv f → A X Y f
-J'-equiv ua A φ X = H'-equiv ua X (A X) (φ X)
-
-J'-invertible : Univalence
-              → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
-              → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) lift)
-              → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → invertible f → A X Y f
-J'-invertible ua A φ X Y f i = J'-equiv ua A φ X Y f (invertibles-are-equivs f i)
-\end{code}
-
-Here is an example. First, `lift` is a half-adjoint equivalence on the nose:
-
-\begin{code}
-lift-is-hae : (X : 𝓤 ̇) → is-hae {𝓤} {𝓤 ⊔ 𝓥} {X} {Lift 𝓥 X} (lift {𝓤} {𝓥})
-lift-is-hae {𝓤} {𝓥} X = lower ,
-                        lower-lift {𝓤} {𝓥} ,
-                        lift-lower ,
-                        (λ x → refl (refl (lift x)))
-\end{code}
-
-Hence all invertible maps going up universe levels are half-adjoint
-equivalences:
-
-\begin{code}
-invertibles-are-haes' : Univalence
-                      → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y)
-                      → invertible f → is-hae f
-invertibles-are-haes' {𝓤} {𝓥} ua = J'-invertible {𝓤} {𝓥} ua (λ X Y f → is-hae f) lift-is-hae
-\end{code}
-
-And here is a corollary:
-\begin{code}
-Σ-change-of-variables'' : Univalence
-                        → {X : 𝓤 ̇ } {Y : 𝓤 ⊔ 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
-                        → invertible f
-                        → Σ A ≃ Σ (A ∘ f)
-Σ-change-of-variables'' {𝓤} {𝓥} ua A f i = Σ-change-of-variables-hae A f
-                                              (invertibles-are-haes' {𝓤} {𝓥} ua _ _ f i)
-\end{code}
-
-
-We also get an easy proof that `lower` is a half-adjoint equivalence:
-
-\begin{code}
-lower-is-hae : (X : 𝓤 ̇) → is-hae (lower {𝓤} {𝓥} {X})
-lower-is-hae {𝓤} {𝓥} X = lift ,
-                         lift-lower ,
-                         lower-lift {𝓤} {𝓥} ,
-                         (λ x → refl (refl (lower x)))
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -5545,6 +5474,81 @@ SN-gives-DNE {𝓤} sn P i = h
   h' φ = g (λ (x : X) → φ (λ (p : P) → f p x))
 
 DNE-gives-SN dne P i = (¬ P) , dni P , dne P i
+\end{code}
+
+Examples:
+
+\begin{code}
+J'-≃ : Univalence
+     → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓥 ̇ )
+     → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) (≃-Lift X))
+     → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A X Y e
+J'-≃ ua A φ X = H'-≃ ua X (A X) (φ X)
+
+H'-equiv : Univalence
+         → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
+         → A (Lift 𝓥 X) lift → (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → is-equiv f → A Y f
+H'-equiv {𝓤} {𝓥} {𝓦} ua X A a Y f i = γ (f , i) i
+ where
+  B : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+  B Y (f , i) = is-equiv f → A Y f
+  b : B (Lift 𝓥 X) (≃-Lift X)
+  b = λ (_ : is-equiv lift) → a
+  γ : (e : X ≃ Y) → B Y e
+  γ = H'-≃ ua X B b Y
+
+J'-equiv : Univalence
+         → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
+         → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) lift)
+         → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → is-equiv f → A X Y f
+J'-equiv ua A φ X = H'-equiv ua X (A X) (φ X)
+
+J'-invertible : Univalence
+              → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
+              → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) lift)
+              → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → invertible f → A X Y f
+J'-invertible ua A φ X Y f i = J'-equiv ua A φ X Y f (invertibles-are-equivs f i)
+\end{code}
+
+Here is an example. First, `lift` is a half-adjoint equivalence on the nose:
+
+\begin{code}
+lift-is-hae : (X : 𝓤 ̇) → is-hae {𝓤} {𝓤 ⊔ 𝓥} {X} {Lift 𝓥 X} (lift {𝓤} {𝓥})
+lift-is-hae {𝓤} {𝓥} X = lower ,
+                        lower-lift {𝓤} {𝓥} ,
+                        lift-lower ,
+                        (λ x → refl (refl (lift x)))
+\end{code}
+
+Hence all invertible maps going up universe levels are half-adjoint
+equivalences:
+
+\begin{code}
+invertibles-are-haes' : Univalence
+                      → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y)
+                      → invertible f → is-hae f
+invertibles-are-haes' {𝓤} {𝓥} ua = J'-invertible {𝓤} {𝓥} ua (λ X Y f → is-hae f) lift-is-hae
+\end{code}
+
+And here is a corollary:
+\begin{code}
+Σ-change-of-variables'' : Univalence
+                        → {X : 𝓤 ̇ } {Y : 𝓤 ⊔ 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+                        → invertible f
+                        → Σ A ≃ Σ (A ∘ f)
+Σ-change-of-variables'' {𝓤} {𝓥} ua A f i = Σ-change-of-variables-hae A f
+                                              (invertibles-are-haes' {𝓤} {𝓥} ua _ _ f i)
+\end{code}
+
+
+We also get an easy proof that `lower` is a half-adjoint equivalence:
+
+\begin{code}
+lower-is-hae : (X : 𝓤 ̇) → is-hae (lower {𝓤} {𝓥} {X})
+lower-is-hae {𝓤} {𝓥} X = lift ,
+                         lift-lower ,
+                         lower-lift {𝓤} {𝓥} ,
+                         (λ x → refl (refl (lower x)))
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
