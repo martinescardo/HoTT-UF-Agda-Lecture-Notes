@@ -132,7 +132,8 @@ pattern ₁ = inr ⋆
                          (𝟙-induction (λ (y : 𝟙) → A (inr y)) a₁)
 
 record Σ {𝓤 𝓥} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
-  constructor _,_
+  constructor
+   _,_
   field
    x : X
    y : Y x
@@ -1862,6 +1863,83 @@ univalence-gives-propext : is-univalent 𝓤 → propext 𝓤
 univalence-gives-propext ua P Q i j f g =
  Eq-to-Id ua P Q (logically-equivalent-subsingletons-are-equivalent P Q i j (f , g))
 
+is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+is-embedding f = (y : codomain f) → is-subsingleton(fiber f y)
+
+being-embedding-is-a-subsingleton : global-dfunext
+                                  → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                  → is-subsingleton(is-embedding f)
+being-embedding-is-a-subsingleton {𝓤} {𝓥} fe f =
+  Π-is-subsingleton (fe 𝓥 (𝓤 ⊔ 𝓥))
+    (λ x → being-subsingleton-is-a-subsingleton (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)))
+
+embedding-lemma : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                → ((x : X) → is-singleton (fiber f (f x)))
+                → is-embedding f
+embedding-lemma f φ = γ
+ where
+  γ : (y : codomain f) (u v : fiber f y) → u ≡ v
+  γ y (x , p) v = j (x , p) v
+   where
+    q : fiber f (f x) ≡ fiber f y
+    q = ap (fiber f) p
+    i : is-singleton (fiber f y)
+    i = transport is-singleton q (φ x)
+    j : is-subsingleton (fiber f y)
+    j = singletons-are-subsingletons (fiber f y) i
+
+embedding-criterion : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                    → ((x' x : X) → (f x' ≡ f x) ≃ (x' ≡ x))
+                    → is-embedding f
+embedding-criterion {𝓤} {𝓥} {X} {Y} f e = embedding-lemma f b
+ where
+  a : (x : X) → (Σ \(x' : X) → f x' ≡ f x) ≃ (Σ \(x' : X) → x' ≡ x)
+  a x = Σ-cong (λ x' → e x' x)
+  a' : (x : X) → fiber f (f x) ≃ singleton-type x
+  a' = a
+  b : (x : X) → is-singleton (fiber f (f x))
+  b x = equiv-to-singleton (fiber f (f x)) (singleton-type x)
+         (a' x) (singleton-types-are-singletons X x)
+
+record Lift {𝓤 : Universe} (𝓥 : Universe) (X : 𝓤 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
+ constructor
+  lift
+ field
+  down : X
+
+Lift-induction : ∀ {𝓤} 𝓥 (X : 𝓤 ̇ ) (A : Lift 𝓥 X → 𝓦 ̇ )
+               → ((x : X) → A (lift x))
+               → (l : Lift 𝓥 X) → A l
+Lift-induction 𝓥 X A φ (lift x) = φ x
+
+Lift-recursion : ∀ {𝓤} 𝓥 {X : 𝓤 ̇ } {B : 𝓦 ̇ }
+               → (X → B) → Lift 𝓥 X → B
+Lift-recursion 𝓥 {X} {B} = Lift-induction 𝓥 X (λ _ → B)
+
+down : {X : 𝓤 ̇ } → Lift 𝓥 X → X
+down = Lift-recursion _ id
+
+down-lift : {X : 𝓤 ̇ } (x : X) → down {𝓤} {𝓥} (lift x) ≡ x
+down-lift = refl
+
+lift-down : {X : 𝓤 ̇ } (l : Lift 𝓥 X) → lift (down l) ≡ l
+lift-down {𝓤} {𝓥} {X} = Lift-induction 𝓥 X
+                        (λ l → lift (down l) ≡ l)
+                        (λ x → refl (lift (down {𝓤} {𝓥} (lift x))))
+
+Lift-≃ : (X : 𝓤 ̇ ) → X ≃ Lift 𝓥 X
+Lift-≃ {𝓤} {𝓥} X = lift , invertibles-are-equivs lift (down , down-lift {𝓤} {𝓥} , lift-down)
+
+Lift-left-≃ : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → Lift 𝓦 X ≃ Y
+Lift-left-≃ {𝓤} {𝓥} {𝓦} X Y e = Lift 𝓦 X ≃⟨ ≃-sym (Lift-≃ X) ⟩
+                                X     ≃⟨ e ⟩
+                                Y     ■
+
+Lift-cong : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → Lift 𝓦 X ≃ Lift 𝓣 Y
+Lift-cong {𝓤} {𝓥} {𝓦} {𝓣} X Y e = Lift 𝓦 X  ≃⟨ Lift-left-≃ X Y e ⟩
+                                  Y       ≃⟨ Lift-≃ Y ⟩
+                                  Lift 𝓣 Y  ■
+
 module magma-equivalences (ua : global-univalence) where
 
  dfe : ∀ {𝓤 𝓥} → dfunext 𝓤 𝓥
@@ -2126,31 +2204,9 @@ cantors-diagonal : ¬(Σ \(e : ℕ → (ℕ → ℕ)) → (α : ℕ → ℕ) →
 
 𝟚-has-𝟚-automorphisms : dfunext 𝓤₀ 𝓤₀ → (𝟚 ≃ 𝟚) ≃ 𝟚
 
-data Up {𝓤 : Universe} (𝓥 : Universe) (X : 𝓤 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
- up : X → Up 𝓥 X
-
-Up-induction : ∀ {𝓤} 𝓥 (X : 𝓤 ̇ ) (A : Up 𝓥 X → 𝓦 ̇ )
-             → ((x : X) → A (up x))
-             → ((l : Up 𝓥 X) → A l)
-
-Up-recursion : ∀ {𝓤} 𝓥 {X : 𝓤 ̇ } {B : 𝓦 ̇ }
-             → (X → B) → Up 𝓥 X → B
-
-down : {X : 𝓤 ̇ } → Up 𝓥 X → X
-
-down-up : {X : 𝓤 ̇ } (x : X) → down {𝓤} {𝓥} (up x) ≡ x
-
-up-down : {X : 𝓤 ̇ } (l : Up 𝓥 X) → up (down l) ≡ l
-
-Up-≃ : (X : 𝓤 ̇ ) → Up 𝓥 X ≃ X
-
-Up-left-≃ : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → Up 𝓦 X ≃ Y
-
-ap-Up-≃ : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → Up 𝓦 X ≃ Up 𝓣 Y
-
-uptwo : is-univalent 𝓤₀
+lifttwo : is-univalent 𝓤₀
       → is-univalent 𝓤₁
-      → (𝟚 ≡ 𝟚) ≡ Up 𝓤₁ 𝟚
+      → (𝟚 ≡ 𝟚) ≡ Lift 𝓤₁ 𝟚
 
 DNE : ∀ 𝓤 → 𝓤 ⁺ ̇
 DNE 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → ¬¬ P → P
@@ -2287,34 +2343,12 @@ cantors-diagonal (e , γ) = c
   ε ₀ = refl ₀
   ε ₁ = refl ₁
 
-Up-induction 𝓥 X A φ (up x) = φ x
-
-Up-recursion 𝓥 {X} {B} = Up-induction 𝓥 X (λ _ → B)
-
-down = Up-recursion _ id
-
-down-up = refl
-
-Up-≃ {𝓤} {𝓥} X = down {𝓤} {𝓥} , invertibles-are-equivs down (up , up-down , down-up {𝓤} {𝓥})
-
-up-down {𝓤} {𝓥} {X} = Up-induction 𝓥 X
-                        (λ l → up (down l) ≡ l)
-                        (λ x → refl (up (down {𝓤} {𝓥} (up x))))
-
-Up-left-≃ {𝓤} {𝓥} {𝓦} X Y e = Up 𝓦 X ≃⟨ Up-≃ X ⟩
-                                X     ≃⟨ e ⟩
-                                Y     ■
-
-ap-Up-≃ {𝓤} {𝓥} {𝓦} {𝓣} X Y e = Up 𝓦 X  ≃⟨ Up-left-≃ X Y e ⟩
-                                 Y       ≃⟨ ≃-sym (Up-≃ Y) ⟩
-                                 Up 𝓣 Y  ■
-
-uptwo ua₀ ua₁ = Eq-to-Id ua₁ (𝟚 ≡ 𝟚) (Up 𝓤₁ 𝟚) e
+lifttwo ua₀ ua₁ = Eq-to-Id ua₁ (𝟚 ≡ 𝟚) (Lift 𝓤₁ 𝟚) e
  where
-  e = (𝟚 ≡ 𝟚) ≃⟨ Id-to-Eq 𝟚 𝟚 , ua₀ 𝟚 𝟚 ⟩
-      (𝟚 ≃ 𝟚) ≃⟨ 𝟚-has-𝟚-automorphisms (univalence-gives-dfunext ua₀) ⟩
-      𝟚       ≃⟨ ≃-sym (Up-≃ 𝟚) ⟩
-      Up 𝓤₁ 𝟚 ■
+  e = (𝟚 ≡ 𝟚)   ≃⟨ Id-to-Eq 𝟚 𝟚 , ua₀ 𝟚 𝟚 ⟩
+      (𝟚 ≃ 𝟚)   ≃⟨ 𝟚-has-𝟚-automorphisms (univalence-gives-dfunext ua₀) ⟩
+      𝟚         ≃⟨ Lift-≃ 𝟚 ⟩
+      Lift 𝓤₁ 𝟚 ■
 
 neg-is-subsingleton fe X f g = fe (λ x → !𝟘 (f x ≡ g x) (f x))
 
