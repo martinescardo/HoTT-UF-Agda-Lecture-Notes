@@ -4355,13 +4355,13 @@ MLTT to have such a universe if we so wished, in which case we would
 be able to formulate and prove:
 
 \begin{code}
-univalence : 𝓤ω
-univalence = ∀ 𝓤 → is-univalent 𝓤
+Univalence : 𝓤ω
+Univalence = ∀ 𝓤 → is-univalent 𝓤
 
-univalence-is-a-subsingletonω : univalence → is-subsingleton (is-univalent 𝓤)
+univalence-is-a-subsingletonω : Univalence → is-subsingleton (is-univalent 𝓤)
 univalence-is-a-subsingletonω {𝓤} γ = univalence-is-a-subsingleton (γ (𝓤 ⁺))
 
-univalence-is-a-singleton : univalence → is-singleton (is-univalent 𝓤)
+univalence-is-a-singleton : Univalence → is-singleton (is-univalent 𝓤)
 univalence-is-a-singleton {𝓤} γ = pointed-subsingletons-are-singletons
                                    (is-univalent 𝓤)
                                    (γ 𝓤)
@@ -4386,13 +4386,13 @@ global function extensionality:
 global-dfunext : 𝓤ω
 global-dfunext = ∀ {𝓤 𝓥} → dfunext 𝓤 𝓥
 
-univalence-gives-global-dfunext : univalence → global-dfunext
+univalence-gives-global-dfunext : Univalence → global-dfunext
 univalence-gives-global-dfunext ua {𝓤} {𝓥} = univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
 
 global-hfunext : 𝓤ω
 global-hfunext = ∀ {𝓤 𝓥} → hfunext 𝓤 𝓥
 
-univalence-gives-global-hfunext : univalence → global-hfunext
+univalence-gives-global-hfunext : Univalence → global-hfunext
 univalence-gives-global-hfunext ua {𝓤} {𝓥} = univalence-gives-hfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
 \end{code}
 
@@ -4645,7 +4645,7 @@ from `X : 𝓤` we would get `X : 𝓤⁺` or `X : 𝓤 ⊔ 𝓥`.  Instead we w
 with embeddings of universes into larger universes.
 
 \begin{code}
-universe-embedding-criterion : univalence
+universe-embedding-criterion : Univalence
                              → (𝓤 𝓥 : Universe) (f : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇ )
                              → ((X : 𝓤 ̇ ) → f X ≃ X)
                              → is-embedding f
@@ -4658,20 +4658,19 @@ universe-embedding-criterion ua 𝓤 𝓥 f i = embedding-criterion f γ
             (X ≡ X')      ■
 \end{code}
 
-The following should be considered as part of the universe handling of
-our Martin-Löf type theory:
+The following together with its induction principle should be
+considered as part of the universe handling of our spartan Martin-Löf
+type theory:
 
 \begin{code}
 record Lift {𝓤 : Universe} (𝓥 : Universe) (X : 𝓤 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
  constructor
   lift
  field
-  down : X
-\end{code}
+  lower : X
 
-This gives an embedding `Lift 𝓥 : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇` and an embedding `lift : X
-→ Lift 𝓥 X`.
-\begin{code}
+open Lift public
+
 Lift-induction : ∀ {𝓤} 𝓥 (X : 𝓤 ̇ ) (A : Lift 𝓥 X → 𝓦 ̇ )
                → ((x : X) → A (lift x))
                → (l : Lift 𝓥 X) → A l
@@ -4680,32 +4679,29 @@ Lift-induction 𝓥 X A φ (lift x) = φ x
 Lift-recursion : ∀ {𝓤} 𝓥 {X : 𝓤 ̇ } {B : 𝓦 ̇ }
                → (X → B) → Lift 𝓥 X → B
 Lift-recursion 𝓥 {X} {B} = Lift-induction 𝓥 X (λ _ → B)
-
-down : {X : 𝓤 ̇ } → Lift 𝓥 X → X
-down = Lift-recursion _ id
-
-down-lift : {X : 𝓤 ̇ } (x : X) → down {𝓤} {𝓥} (lift x) ≡ x
-down-lift = refl
-
-lift-down : {X : 𝓤 ̇ } (l : Lift 𝓥 X) → lift (down l) ≡ l
-lift-down {𝓤} {𝓥} {X} = Lift-induction 𝓥 X
-                        (λ l → lift (down l) ≡ l)
-                        (λ x → refl (lift (down {𝓤} {𝓥} (lift x))))
-
-Lift-≃ : (X : 𝓤 ̇ ) → X ≃ Lift 𝓥 X
-Lift-≃ {𝓤} {𝓥} X = lift , invertibles-are-equivs lift (down , down-lift {𝓤} {𝓥} , lift-down)
-
-Lift-left-≃ : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → Lift 𝓦 X ≃ Y
-Lift-left-≃ {𝓤} {𝓥} {𝓦} X Y e = Lift 𝓦 X ≃⟨ ≃-sym (Lift-≃ X) ⟩
-                                X     ≃⟨ e ⟩
-                                Y     ■
-
-Lift-cong : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → Lift 𝓦 X ≃ Lift 𝓣 Y
-Lift-cong {𝓤} {𝓥} {𝓦} {𝓣} X Y e = Lift 𝓦 X  ≃⟨ Lift-left-≃ X Y e ⟩
-                                  Y       ≃⟨ Lift-≃ Y ⟩
-                                  Lift 𝓣 Y  ■
 \end{code}
 
+This gives an equivalence `lift : X → Lift 𝓥 X` and hence an embedding
+`Lift 𝓥 : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇`. The following two constructions can be
+performed with induction, but actually hold on the nose by the η rule
+for records:
+
+\begin{code}
+lower-lift : {X : 𝓤 ̇ } (x : X) → lower {𝓤} {𝓥} (lift x) ≡ x
+lower-lift = refl
+
+lift-lower : {X : 𝓤 ̇ } (l : Lift 𝓥 X) → lift (lower l) ≡ l
+lift-lower = refl
+
+Lift-≃ : (X : 𝓤 ̇ ) → Lift 𝓥 X ≃ X
+Lift-≃ {𝓤} {𝓥} X = lower , invertibles-are-equivs lower (lift , lift-lower , lower-lift {𝓤} {𝓥})
+
+Lift-is-embedding : Univalence → is-embedding (Lift {𝓤} 𝓥)
+Lift-is-embedding {𝓤} {𝓥} ua = universe-embedding-criterion ua 𝓤 𝓥 (Lift 𝓥) Lift-≃
+
+≃-Lift : (X : 𝓤 ̇ ) → X ≃ Lift 𝓥 X
+≃-Lift {𝓤} {𝓥} X = lift , invertibles-are-equivs lift (lower , lower-lift {𝓤} {𝓥} , lift-lower)
+\end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="magmaequivalences"></a> Magma equivalences
@@ -4716,7 +4712,7 @@ univalence. For simplicity, we assume global univalence, from which we
 get global function extensionality.
 
 \begin{code}
-module magma-equivalences (ua : univalence) where
+module magma-equivalences (ua : Univalence) where
 
  dfe : global-dfunext
  dfe = univalence-gives-global-dfunext ua
@@ -5391,7 +5387,7 @@ lifttwo ua₀ ua₁ = Eq-to-Id ua₁ (𝟚 ≡ 𝟚) (Lift 𝓤₁ 𝟚) e
  where
   e = (𝟚 ≡ 𝟚)   ≃⟨ Id-to-Eq 𝟚 𝟚 , ua₀ 𝟚 𝟚 ⟩
       (𝟚 ≃ 𝟚)   ≃⟨ 𝟚-has-𝟚-automorphisms (univalence-gives-dfunext ua₀) ⟩
-      𝟚         ≃⟨ Lift-≃ 𝟚 ⟩
+      𝟚         ≃⟨ ≃-sym (Lift-≃ 𝟚) ⟩
       Lift 𝓤₁ 𝟚 ■
 
 neg-is-subsingleton fe X f g = fe (λ x → !𝟘 (f x ≡ g x) (f x))
