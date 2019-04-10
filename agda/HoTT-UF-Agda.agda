@@ -1065,6 +1065,9 @@ Id-to-Eq X X (refl X) = ≃-refl X
 is-univalent : (𝓤 : Universe) → 𝓤 ⁺ ̇
 is-univalent 𝓤 = (X Y : 𝓤 ̇ ) → is-equiv (Id-to-Eq X Y)
 
+is-univalent-≃ : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
+is-univalent-≃ ua X Y = Id-to-Eq X Y , ua X Y
+
 Eq-to-Id : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → X ≃ Y → X ≡ Y
 Eq-to-Id ua X Y = inverse (Id-to-Eq X Y) (ua X Y)
 
@@ -1775,29 +1778,29 @@ univalence-is-a-subsingleton {𝓤} ua⁺ ua ua' = p
   p : ua ≡ ua'
   p = i ua ua'
 
-global-univalence : 𝓤ω
-global-univalence = ∀ 𝓤 → is-univalent 𝓤
+univalence : 𝓤ω
+univalence = ∀ 𝓤 → is-univalent 𝓤
 
-univalence-is-a-subsingletonω : global-univalence → is-subsingleton (is-univalent 𝓤)
+univalence-is-a-subsingletonω : univalence → is-subsingleton (is-univalent 𝓤)
 univalence-is-a-subsingletonω {𝓤} γ = univalence-is-a-subsingleton (γ (𝓤 ⁺))
 
-univalence-is-a-singleton : global-univalence → is-singleton (is-univalent 𝓤)
+univalence-is-a-singleton : univalence → is-singleton (is-univalent 𝓤)
 univalence-is-a-singleton {𝓤} γ = pointed-subsingletons-are-singletons
                                    (is-univalent 𝓤)
                                    (γ 𝓤)
                                    (univalence-is-a-subsingletonω γ)
 
 global-dfunext : 𝓤ω
-global-dfunext = ∀ 𝓤 𝓥 → dfunext 𝓤 𝓥
+global-dfunext = ∀ {𝓤 𝓥} → dfunext 𝓤 𝓥
 
-global-univalence-gives-global-dfunext : global-univalence → global-dfunext
-global-univalence-gives-global-dfunext ua 𝓤 𝓥 = univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
+univalence-gives-global-dfunext : univalence → global-dfunext
+univalence-gives-global-dfunext ua {𝓤} {𝓥} = univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
 
 global-hfunext : 𝓤ω
-global-hfunext = ∀ 𝓤 𝓥 → hfunext 𝓤 𝓥
+global-hfunext = ∀ {𝓤 𝓥} → hfunext 𝓤 𝓥
 
-global-univalence-gives-global-hfunext : global-univalence → global-hfunext
-global-univalence-gives-global-hfunext ua 𝓤 𝓥 = univalence-gives-hfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
+univalence-gives-global-hfunext : univalence → global-hfunext
+univalence-gives-global-hfunext ua {𝓤} {𝓥} = univalence-gives-hfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
 
 being-subsingleton-is-a-subsingleton : {X : 𝓤 ̇ } → dfunext 𝓤 𝓤
                                      → is-subsingleton (is-subsingleton X)
@@ -1863,6 +1866,53 @@ univalence-gives-propext : is-univalent 𝓤 → propext 𝓤
 univalence-gives-propext ua P Q i j f g =
  Eq-to-Id ua P Q (logically-equivalent-subsingletons-are-equivalent P Q i j (f , g))
 
+module _ (dfe : global-dfunext) where
+
+ ≃-refl-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+             → ≃-refl X ● α ≡ α
+ ≃-refl-left α = to-Σ-≡ (refl _ , being-equiv-is-a-subsingleton dfe dfe _ _ _)
+
+ ≃-sym-left-inverse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+                    → ≃-sym α ● α ≡ ≃-refl Y
+ ≃-sym-left-inverse {𝓤} {𝓥} (f , e) = to-Σ-≡ (p , being-equiv-is-a-subsingleton dfe dfe _ _ _)
+  where
+   p : f ∘ inverse f e ≡ id
+   p = dfe (inverse-is-section f e)
+
+ ≃-sym-right-inverse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+                     → α ● ≃-sym α ≡ ≃-refl X
+ ≃-sym-right-inverse {𝓤} {𝓥} (f , e) = to-Σ-≡ (p , being-equiv-is-a-subsingleton dfe dfe _ _ _)
+  where
+   p : inverse f e ∘ f ≡ id
+   p = dfe (inverse-is-retraction f e)
+
+ ≃-Sym : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+       → (X ≃ Y) ≃ (Y ≃ X)
+ ≃-Sym = ≃-sym , invertibles-are-equivs ≃-sym ( ≃-sym , ≃-sym-involutive dfe dfe , ≃-sym-involutive dfe dfe)
+
+ ≃-Comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (Z : 𝓦 ̇ )
+        → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
+ ≃-Comp Z α = (α ●_) , invertibles-are-equivs (α ●_) ((≃-sym α ●_) , p , q)
+  where
+   p = λ β → ≃-sym α ● (α ● β) ≡⟨ ●-assoc dfe dfe (≃-sym α) α β ⟩
+             (≃-sym α ● α) ● β ≡⟨ ap (_● β) (≃-sym-left-inverse α) ⟩
+             ≃-refl _ ● β      ≡⟨ ≃-refl-left _ ⟩
+             β                 ∎
+
+   q = λ γ → α ● (≃-sym α ● γ) ≡⟨ ●-assoc dfe dfe α (≃-sym α) γ ⟩
+             (α ● ≃-sym α) ● γ ≡⟨ ap (_● γ) (≃-sym-right-inverse α) ⟩
+             ≃-refl _ ● γ      ≡⟨ ≃-refl-left _ ⟩
+             γ ∎
+
+ Eq-Eq-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
+            → X ≃ A → Y ≃ B → (X ≃ Y) ≃ (A ≃ B)
+ Eq-Eq-cong {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} α β =
+  (X ≃ Y)  ≃⟨ ≃-Comp Y (≃-sym α)⟩
+  (A ≃ Y)  ≃⟨ ≃-Sym ⟩
+  (Y ≃ A)  ≃⟨ ≃-Comp A (≃-sym β) ⟩
+  (B ≃ A)  ≃⟨ ≃-Sym ⟩
+  (A ≃ B)  ■
+
 is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-embedding f = (y : codomain f) → is-subsingleton(fiber f y)
 
@@ -1870,8 +1920,7 @@ being-embedding-is-a-subsingleton : global-dfunext
                                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                   → is-subsingleton(is-embedding f)
 being-embedding-is-a-subsingleton {𝓤} {𝓥} fe f =
-  Π-is-subsingleton (fe 𝓥 (𝓤 ⊔ 𝓥))
-    (λ x → being-subsingleton-is-a-subsingleton (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)))
+  Π-is-subsingleton fe (λ x → being-subsingleton-is-a-subsingleton fe)
 
 embedding-lemma : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → ((x : X) → is-singleton (fiber f (f x)))
@@ -1900,6 +1949,18 @@ embedding-criterion {𝓤} {𝓥} {X} {Y} f e = embedding-lemma f b
   b : (x : X) → is-singleton (fiber f (f x))
   b x = equiv-to-singleton (fiber f (f x)) (singleton-type x)
          (a' x) (singleton-types-are-singletons X x)
+
+universe-embedding-criterion : univalence
+                             → (𝓤 𝓥 : Universe) (f : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇ )
+                             → ((X : 𝓤 ̇ ) → f X ≃ X)
+                             → is-embedding f
+universe-embedding-criterion ua 𝓤 𝓥 f i = embedding-criterion f γ
+ where
+  γ : (X X' : 𝓤 ̇ ) → (f X ≡ f X') ≃ (X ≡ X')
+  γ X X' =  (f X ≡ f X')  ≃⟨ is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) (f X) (f X') ⟩
+            (f X ≃ f X')  ≃⟨ Eq-Eq-cong (univalence-gives-global-dfunext ua) (i X) (i X') ⟩
+            (X ≃ X')      ≃⟨ ≃-sym (is-univalent-≃ (ua 𝓤) X X') ⟩
+            (X ≡ X')      ■
 
 record Lift {𝓤 : Universe} (𝓥 : Universe) (X : 𝓤 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
  constructor
@@ -1940,10 +2001,10 @@ Lift-cong {𝓤} {𝓥} {𝓦} {𝓣} X Y e = Lift 𝓦 X  ≃⟨ Lift-left-≃ 
                                   Y       ≃⟨ Lift-≃ Y ⟩
                                   Lift 𝓣 Y  ■
 
-module magma-equivalences (ua : global-univalence) where
+module magma-equivalences (ua : univalence) where
 
- dfe : ∀ {𝓤 𝓥} → dfunext 𝓤 𝓥
- dfe {𝓤} {𝓥} = global-univalence-gives-global-dfunext ua 𝓤 𝓥
+ dfe : global-dfunext
+ dfe = univalence-gives-global-dfunext ua
 
  being-magma-hom-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
                                    → is-subsingleton (is-magma-hom M N f)
@@ -2045,10 +2106,10 @@ is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
 inhabitation-is-a-subsingleton : global-dfunext → (X : 𝓤 ̇ )
                                → is-subsingleton (is-inhabited X)
 inhabitation-is-a-subsingleton {𝓤} fe X =
-  Π-is-subsingleton (fe (𝓤 ⁺) 𝓤)
-    λ P → Π-is-subsingleton (fe 𝓤 𝓤)
+  Π-is-subsingleton fe
+    λ P → Π-is-subsingleton fe
            (λ (s : is-subsingleton P)
-                 → Π-is-subsingleton (fe 𝓤 𝓤) (λ (f : X → P) → s))
+                 → Π-is-subsingleton fe (λ (f : X → P) → s))
 
 pointed-is-inhabited : (X : 𝓤 ̇ ) → X → is-inhabited X
 pointed-is-inhabited X x = λ P s f → f x

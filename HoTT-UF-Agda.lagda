@@ -351,6 +351,7 @@ to practice univalent mathematics should consult the above references.
      1. [`hfunext` and `vvfunext` are subsingletons](HoTT-UF-Agda.html#hfunextsubsingleton)
      1. [More applications of function extensionality](HoTT-UF-Agda.html#morefunextuses)
      1. [Propositional extensionality](HoTT-UF-Agda.html#propositionalextensionality)
+     1. [Some constructions with types of equivalences](HoTT-UF-Agda.html#equivconstructions)
      1. [Type embeddings](HoTT-UF-Agda.html#embeddings)
      1. [Universe lifting](HoTT-UF-Agda.html#universelifting)
      1. [Magma equivalences](HoTT-UF-Agda.html#magmaequivalences)
@@ -3361,6 +3362,9 @@ what univalence is (like the type that says what the [twin-prime
 conjecture](HoTT-UF-Agda.html#twinprime) is).
 
 \begin{code}
+is-univalent-≃ : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
+is-univalent-≃ ua X Y = Id-to-Eq X Y , ua X Y
+
 Eq-to-Id : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → X ≃ Y → X ≡ Y
 Eq-to-Id ua X Y = inverse (Id-to-Eq X Y) (ua X Y)
 \end{code}
@@ -4351,20 +4355,20 @@ MLTT to have such a universe if we so wished, in which case we would
 be able to formulate and prove:
 
 \begin{code}
-global-univalence : 𝓤ω
-global-univalence = ∀ 𝓤 → is-univalent 𝓤
+univalence : 𝓤ω
+univalence = ∀ 𝓤 → is-univalent 𝓤
 
-univalence-is-a-subsingletonω : global-univalence → is-subsingleton (is-univalent 𝓤)
+univalence-is-a-subsingletonω : univalence → is-subsingleton (is-univalent 𝓤)
 univalence-is-a-subsingletonω {𝓤} γ = univalence-is-a-subsingleton (γ (𝓤 ⁺))
 
-univalence-is-a-singleton : global-univalence → is-singleton (is-univalent 𝓤)
+univalence-is-a-singleton : univalence → is-singleton (is-univalent 𝓤)
 univalence-is-a-singleton {𝓤} γ = pointed-subsingletons-are-singletons
                                    (is-univalent 𝓤)
                                    (γ 𝓤)
                                    (univalence-is-a-subsingletonω γ)
 \end{code}
 
-That the type `global-univalence` would be a subsingleton can't even
+That the type `univalence` would be a subsingleton can't even
 be formulated in the absence of a successor `𝓤ω⁺` of `𝓤ω`, and Agda
 doesn't have such a successor universe (but there isn't any fundamental reason why it couldn't have it).
 
@@ -4380,17 +4384,16 @@ global function extensionality:
 
 \begin{code}
 global-dfunext : 𝓤ω
-global-dfunext = ∀ 𝓤 𝓥 → dfunext 𝓤 𝓥
+global-dfunext = ∀ {𝓤 𝓥} → dfunext 𝓤 𝓥
 
-global-univalence-gives-global-dfunext : global-univalence → global-dfunext
-global-univalence-gives-global-dfunext ua 𝓤 𝓥 = univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
+univalence-gives-global-dfunext : univalence → global-dfunext
+univalence-gives-global-dfunext ua {𝓤} {𝓥} = univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
 
 global-hfunext : 𝓤ω
-global-hfunext = ∀ 𝓤 𝓥 → hfunext 𝓤 𝓥
+global-hfunext = ∀ {𝓤 𝓥} → hfunext 𝓤 𝓥
 
-global-univalence-gives-global-hfunext : global-univalence → global-hfunext
-global-univalence-gives-global-hfunext ua 𝓤 𝓥 = univalence-gives-hfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
-
+univalence-gives-global-hfunext : univalence → global-hfunext
+univalence-gives-global-hfunext ua {𝓤} {𝓥} = univalence-gives-hfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -4513,6 +4516,70 @@ universe is an ordinal in the next universe, which requires univalence
 for sets (see the HoTT Book).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="equivconstructions"></a> Some constructions with types of equivalences
+
+We assume global function extensionality here. We first prove some
+properties of equivalence symmetrization and composition:
+
+\begin{code}
+
+module _ (dfe : global-dfunext) where
+
+ ≃-refl-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+             → ≃-refl X ● α ≡ α
+ ≃-refl-left α = to-Σ-≡ (refl _ , being-equiv-is-a-subsingleton dfe dfe _ _ _)
+
+ ≃-sym-left-inverse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+                    → ≃-sym α ● α ≡ ≃-refl Y
+ ≃-sym-left-inverse {𝓤} {𝓥} (f , e) = to-Σ-≡ (p , being-equiv-is-a-subsingleton dfe dfe _ _ _)
+  where
+   p : f ∘ inverse f e ≡ id
+   p = dfe (inverse-is-section f e)
+
+ ≃-sym-right-inverse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+                     → α ● ≃-sym α ≡ ≃-refl X
+ ≃-sym-right-inverse {𝓤} {𝓥} (f , e) = to-Σ-≡ (p , being-equiv-is-a-subsingleton dfe dfe _ _ _)
+  where
+   p : inverse f e ∘ f ≡ id
+   p = dfe (inverse-is-retraction f e)
+\end{code}
+
+We then transfer the above to equivalence types:
+
+\begin{code}
+ ≃-Sym : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+       → (X ≃ Y) ≃ (Y ≃ X)
+ ≃-Sym = ≃-sym , invertibles-are-equivs ≃-sym ( ≃-sym , ≃-sym-involutive dfe dfe , ≃-sym-involutive dfe dfe)
+
+ ≃-Comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (Z : 𝓦 ̇ )
+        → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
+ ≃-Comp Z α = (α ●_) , invertibles-are-equivs (α ●_) ((≃-sym α ●_) , p , q)
+  where
+   p = λ β → ≃-sym α ● (α ● β) ≡⟨ ●-assoc dfe dfe (≃-sym α) α β ⟩
+             (≃-sym α ● α) ● β ≡⟨ ap (_● β) (≃-sym-left-inverse α) ⟩
+             ≃-refl _ ● β      ≡⟨ ≃-refl-left _ ⟩
+             β                 ∎
+
+   q = λ γ → α ● (≃-sym α ● γ) ≡⟨ ●-assoc dfe dfe α (≃-sym α) γ ⟩
+             (α ● ≃-sym α) ● γ ≡⟨ ap (_● γ) (≃-sym-right-inverse α) ⟩
+             ≃-refl _ ● γ      ≡⟨ ≃-refl-left _ ⟩
+             γ ∎
+\end{code}
+
+Using this we get the following self-congruence property of equivalences:
+
+\begin{code}
+ Eq-Eq-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
+            → X ≃ A → Y ≃ B → (X ≃ Y) ≃ (A ≃ B)
+ Eq-Eq-cong {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} α β =
+  (X ≃ Y)  ≃⟨ ≃-Comp Y (≃-sym α)⟩
+  (A ≃ Y)  ≃⟨ ≃-Sym ⟩
+  (Y ≃ A)  ≃⟨ ≃-Comp A (≃-sym β) ⟩
+  (B ≃ A)  ≃⟨ ≃-Sym ⟩
+  (A ≃ B)  ■
+\end{code}
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="embeddings"></a> Type embeddings
 
 A function is called an embedding it its fibers are all
@@ -4528,8 +4595,7 @@ being-embedding-is-a-subsingleton : global-dfunext
                                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                   → is-subsingleton(is-embedding f)
 being-embedding-is-a-subsingleton {𝓤} {𝓥} fe f =
-  Π-is-subsingleton (fe 𝓥 (𝓤 ⊔ 𝓥))
-    (λ x → being-subsingleton-is-a-subsingleton (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)))
+  Π-is-subsingleton fe (λ x → being-subsingleton-is-a-subsingleton fe)
 \end{code}
 
 We can use the following criterion to prove that some maps are embeddings:
@@ -4575,8 +4641,22 @@ converse fails in general.
 ### <a id="universelifting"></a> Universe lifting
 
 Universes are not cumulative on the nose in Agda, in the sense that
-from `X : 𝓤` we would get `X : 𝓤⁺` or `X : 𝓤 ⊔ 𝓥`.  Instead
-we work with embeddings of universes into larger universes.
+from `X : 𝓤` we would get `X : 𝓤⁺` or `X : 𝓤 ⊔ 𝓥`.  Instead we work
+with embeddings of universes into larger universes.
+
+\begin{code}
+universe-embedding-criterion : univalence
+                             → (𝓤 𝓥 : Universe) (f : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇ )
+                             → ((X : 𝓤 ̇ ) → f X ≃ X)
+                             → is-embedding f
+universe-embedding-criterion ua 𝓤 𝓥 f i = embedding-criterion f γ
+ where
+  γ : (X X' : 𝓤 ̇ ) → (f X ≡ f X') ≃ (X ≡ X')
+  γ X X' =  (f X ≡ f X')  ≃⟨ is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) (f X) (f X') ⟩
+            (f X ≃ f X')  ≃⟨ Eq-Eq-cong (univalence-gives-global-dfunext ua) (i X) (i X') ⟩
+            (X ≃ X')      ≃⟨ ≃-sym (is-univalent-≃ (ua 𝓤) X X') ⟩
+            (X ≡ X')      ■
+\end{code}
 
 The following should be considered as part of the universe handling of
 our Martin-Löf type theory:
@@ -4636,10 +4716,10 @@ univalence. For simplicity, we assume global univalence, from which we
 get global function extensionality.
 
 \begin{code}
-module magma-equivalences (ua : global-univalence) where
+module magma-equivalences (ua : univalence) where
 
- dfe : ∀ {𝓤 𝓥} → dfunext 𝓤 𝓥
- dfe {𝓤} {𝓥} = global-univalence-gives-global-dfunext ua 𝓤 𝓥
+ dfe : global-dfunext
+ dfe = univalence-gives-global-dfunext ua
 \end{code}
 
 The magma homomorphism and isomorphism conditions are subsingleton
@@ -4803,10 +4883,10 @@ A type can be pointed in many ways, but inhabited in at most one way:
 inhabitation-is-a-subsingleton : global-dfunext → (X : 𝓤 ̇ )
                                → is-subsingleton (is-inhabited X)
 inhabitation-is-a-subsingleton {𝓤} fe X =
-  Π-is-subsingleton (fe (𝓤 ⁺) 𝓤)
-    λ P → Π-is-subsingleton (fe 𝓤 𝓤)
+  Π-is-subsingleton fe
+    λ P → Π-is-subsingleton fe
            (λ (s : is-subsingleton P)
-                 → Π-is-subsingleton (fe 𝓤 𝓤) (λ (f : X → P) → s))
+                 → Π-is-subsingleton fe (λ (f : X → P) → s))
 
 pointed-is-inhabited : (X : 𝓤 ̇ ) → X → is-inhabited X
 pointed-is-inhabited X x = λ P s f → f x
