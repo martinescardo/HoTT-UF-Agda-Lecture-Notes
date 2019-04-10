@@ -1994,6 +1994,113 @@ Lift-is-embedding {𝓤} {𝓥} ua = universe-embedding-criterion ua 𝓤 𝓥 (
 ≃-Lift : (X : 𝓤 ̇ ) → X ≃ Lift 𝓥 X
 ≃-Lift {𝓤} {𝓥} X = lift , invertibles-are-equivs lift (lower , lower-lift {𝓤} {𝓥} , lift-lower)
 
+abstract
+ ≃-subsingleton' : Univalence → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+ ≃-subsingleton' {𝓤} {𝓥} ua X = singletons-are-subsingletons (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) s
+   where
+    e : (Y : 𝓤 ⊔ 𝓥 ̇ ) → (Lift 𝓥 X ≡ Y) ≃ (X ≃ Y)
+    e Y = (Lift 𝓥 X ≡ Y) ≃⟨ is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) (Lift 𝓥 X) Y ⟩
+          (Lift 𝓥 X ≃ Y) ≃⟨ Eq-Eq-cong (univalence-gives-global-dfunext ua) (Lift-≃ X) (≃-refl Y) ⟩
+          (X ≃ Y)        ■
+    d : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → Lift 𝓥 X ≡ Y) ≃ (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+    d = Σ-cong e
+    s : is-singleton (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+    s = equiv-to-singleton
+         (Σ \(Y : 𝓤 ⊔ 𝓥 ̇) → X ≃ Y)
+         (Σ \(Y : 𝓤 ⊔ 𝓥 ̇) → Lift 𝓥 X ≡ Y)
+         (≃-sym d)
+         (singleton-types'-are-singletons (𝓤 ⊔ 𝓥 ̇)
+         (Lift 𝓥 X))
+
+H'-≃ : Univalence
+    → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
+    → A (Lift 𝓥 X) (≃-Lift X) → (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A Y e
+H'-≃ {𝓤} {𝓥} {𝓦} ua X A a Y e = τ a
+ where
+  B : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇) → X ≃ Y) → 𝓦 ̇
+  B (Y , e) = A Y e
+  t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇) → X ≃ Y
+  t = (Lift 𝓥 X , ≃-Lift X)
+  p : t ≡ (Y , e)
+  p = ≃-subsingleton' {𝓤} {𝓥} ua X t (Y , e)
+  τ : B t → B (Y , e)
+  τ = transport B p
+
+H'-≃-equation : (ua : Univalence)
+              → (X : 𝓤 ̇ )
+              → (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
+              → (a : A (Lift 𝓥 X) (≃-Lift X))
+              → H'-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡ a
+H'-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
+  H'-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡⟨ refl _ ⟩
+  transport B p a                 ≡⟨ ap (λ - → transport B - a) q ⟩
+  transport B (refl t) a          ≡⟨ refl _ ⟩
+  a                               ∎
+ where
+  B : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇) → X ≃ Y) → 𝓦 ̇
+  B (Y , e) = A Y e
+  t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇) → X ≃ Y
+  t = (Lift 𝓥 X , ≃-Lift X)
+  p : t ≡ t
+  p = ≃-subsingleton' {𝓤} {𝓥} ua X t t
+  q : p ≡ refl t
+  q = subsingletons-are-sets (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+       (≃-subsingleton' {𝓤} {𝓤 ⊔ 𝓥} ua X) t t p (refl t)
+
+J'-≃ : Univalence
+     → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓥 ̇ )
+     → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) (≃-Lift X))
+     → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A X Y e
+J'-≃ ua A φ X = H'-≃ ua X (A X) (φ X)
+
+H'-equiv : Univalence
+         → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
+         → A (Lift 𝓥 X) lift → (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → is-equiv f → A Y f
+H'-equiv {𝓤} {𝓥} {𝓦} ua X A a Y f i = γ (f , i) i
+ where
+  B : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+  B Y (f , i) = is-equiv f → A Y f
+  b : B (Lift 𝓥 X) (≃-Lift X)
+  b = λ (_ : is-equiv lift) → a
+  γ : (e : X ≃ Y) → B Y e
+  γ = H'-≃ ua X B b Y
+
+J'-equiv : Univalence
+         → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
+         → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) lift)
+         → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → is-equiv f → A X Y f
+J'-equiv ua A φ X = H'-equiv ua X (A X) (φ X)
+
+J'-invertible : Univalence
+              → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
+              → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) lift)
+              → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → invertible f → A X Y f
+J'-invertible ua A φ X Y f i = J'-equiv ua A φ X Y f (invertibles-are-equivs f i)
+
+lift-is-hae : (X : 𝓤 ̇) → is-hae {𝓤} {𝓤 ⊔ 𝓥} {X} {Lift 𝓥 X} (lift {𝓤} {𝓥})
+lift-is-hae {𝓤} {𝓥} X = lower ,
+                        lower-lift {𝓤} {𝓥} ,
+                        lift-lower ,
+                        (λ x → refl (refl (lift x)))
+
+invertibles-are-haes' : Univalence
+                      → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y)
+                      → invertible f → is-hae f
+invertibles-are-haes' {𝓤} {𝓥} ua = J'-invertible {𝓤} {𝓥} ua (λ X Y f → is-hae f) lift-is-hae
+
+Σ-change-of-variables'' : Univalence
+                        → {X : 𝓤 ̇ } {Y : 𝓤 ⊔ 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+                        → invertible f
+                        → Σ A ≃ Σ (A ∘ f)
+Σ-change-of-variables'' {𝓤} {𝓥} ua A f i = Σ-change-of-variables-hae A f
+                                              (invertibles-are-haes' {𝓤} {𝓥} ua _ _ f i)
+
+lower-is-hae : (X : 𝓤 ̇) → is-hae (lower {𝓤} {𝓥} {X})
+lower-is-hae {𝓤} {𝓥} X = lift ,
+                         lift-lower ,
+                         lower-lift {𝓤} {𝓥} ,
+                         (λ x → refl (refl (lower x)))
+
 module magma-equivalences (ua : Univalence) where
 
  dfe : global-dfunext
