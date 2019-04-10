@@ -4825,10 +4825,6 @@ lower-is-hae {𝓤} {𝓥} X = lift ,
                          (λ x → refl (refl (lower x)))
 \end{code}
 
-*Exercise.* It is possible to further generalize the the above, by
-lifting both `X : 𝓤` and `Y : 𝓥` to the common universe, `𝓤 ⊔ 𝓥`,
-rather than requiring `Y : 𝓤 ⊔ 𝓥`.
-
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="magmaequivalences"></a> Magma equivalences
 
