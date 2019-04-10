@@ -3726,15 +3726,10 @@ equivs-have-sections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv 
 
 equivs-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f → left-cancellable f
 
-equiv-to-subsingleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                      → is-equiv f
+equiv-to-subsingleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                      → X ≃ Y
                       → is-subsingleton Y
                       → is-subsingleton X
-
-equiv-to-subsingleton' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                       → is-equiv f
-                       → is-subsingleton X
-                       → is-subsingleton Y
 
 sections-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
                         → has-retraction f
@@ -3889,11 +3884,7 @@ equivs-have-sections f e = (inverse f e , inverse-is-section f e)
 
 equivs-are-lc f e = sections-are-lc f (equivs-have-retractions f e)
 
-equiv-to-subsingleton f e = lc-maps-reflect-subsingletonness f (equivs-are-lc f e)
-
-equiv-to-subsingleton' f e = lc-maps-reflect-subsingletonness
-                               (inverse f e)
-                               (equivs-are-lc (inverse f e) (inverse-is-equiv f e))
+equiv-to-subsingleton (f , i) = lc-maps-reflect-subsingletonness f (equivs-are-lc f i)
 
 sections-closed-under-∼ f g (r , rf) h = (r ,
                                           λ x → r (g x) ≡⟨ ap r (h x) ⟩
@@ -4437,7 +4428,7 @@ Here is a situation where `hfunext` is what is needed:
   a : is-subsingleton (f ∼ g)
   a p q = hfunext-gives-dfunext hfe ((λ x → s x (f x) (g x) (p x) (q x)))
   b : is-subsingleton(f ≡ g)
-  b = equiv-to-subsingleton (happly f g) (hfe f g) a
+  b = equiv-to-subsingleton (happly f g , hfe f g) a
 
 being-set-is-a-subsingleton : dfunext 𝓤 𝓤 → {X : 𝓤 ̇ } → is-subsingleton (is-set X)
 being-set-is-a-subsingleton {𝓤} fe {X} =
@@ -4704,28 +4695,28 @@ Lift-is-embedding {𝓤} {𝓥} ua = universe-embedding-criterion ua 𝓤 𝓥 (
 \end{code}
 
 Using lifting, we can generalize equivalence induction. Notice that
-lifting is used in the proofs but not in the formulations of the first
-construction:
+lifting is used in the proof but not in the formulation of the first
+lemma:
 
 \begin{code}
 
 abstract
- ≃-subsingleton' : Univalence → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
- ≃-subsingleton' {𝓤} {𝓥} ua X = singletons-are-subsingletons (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) s
+ ≃-subsingleton' : Univalence → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
+ ≃-subsingleton' {𝓤} {𝓥} ua X = s
    where
-    e : (Y : 𝓤 ⊔ 𝓥 ̇ ) → (Lift 𝓥 X ≡ Y) ≃ (X ≃ Y)
-    e Y = (Lift 𝓥 X ≡ Y) ≃⟨ is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) (Lift 𝓥 X) Y ⟩
-          (Lift 𝓥 X ≃ Y) ≃⟨ Eq-Eq-cong (univalence-gives-global-dfunext ua) (Lift-≃ X) (≃-refl Y) ⟩
-          (X ≃ Y)        ■
-    d : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → Lift 𝓥 X ≡ Y) ≃ (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+    dfe : global-dfunext
+    dfe = univalence-gives-global-dfunext ua
+    e : (Y : 𝓥 ̇ ) → (X ≃ Y) ≃ (Lift 𝓤 Y ≡ Lift 𝓥 X)
+    e Y = (X ≃ Y)                       ≃⟨ ≃-Sym dfe ⟩
+          (Y ≃ X)                       ≃⟨ Eq-Eq-cong dfe (≃-Lift Y) (≃-Lift X) ⟩
+          (Lift 𝓤 Y ≃ Lift 𝓥 X)        ≃⟨ ≃-sym (is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) (Lift 𝓤 Y) (Lift 𝓥 X)) ⟩
+          (Lift 𝓤 Y ≡ Lift 𝓥 X)        ■
+    d : (Σ \(Y : 𝓥 ̇ ) → X ≃ Y) ≃ (Σ \(Y : 𝓥 ̇ ) → Lift 𝓤 Y ≡ Lift 𝓥 X)
     d = Σ-cong e
-    s : is-singleton (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
-    s = equiv-to-singleton
-         (Σ \(Y : 𝓤 ⊔ 𝓥 ̇) → X ≃ Y)
-         (Σ \(Y : 𝓤 ⊔ 𝓥 ̇) → Lift 𝓥 X ≡ Y)
-         (≃-sym d)
-         (singleton-types'-are-singletons (𝓤 ⊔ 𝓥 ̇)
-         (Lift 𝓥 X))
+    i : is-subsingleton (Σ \(Y : 𝓥 ̇ ) → Lift 𝓤 Y ≡ Lift 𝓥 X)
+    i = Lift-is-embedding ua (Lift 𝓥 X)
+    s : is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
+    s = equiv-to-subsingleton d i
 
 H'-≃ : Univalence
     → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
@@ -4737,7 +4728,7 @@ H'-≃ {𝓤} {𝓥} {𝓦} ua X A a Y e = τ a
   t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇) → X ≃ Y
   t = (Lift 𝓥 X , ≃-Lift X)
   p : t ≡ (Y , e)
-  p = ≃-subsingleton' {𝓤} {𝓥} ua X t (Y , e)
+  p = ≃-subsingleton' {𝓤} {𝓤 ⊔ 𝓥} ua X t (Y , e)
   τ : B t → B (Y , e)
   τ = transport B p
 
@@ -4757,7 +4748,7 @@ H'-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
   t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇) → X ≃ Y
   t = (Lift 𝓥 X , ≃-Lift X)
   p : t ≡ t
-  p = ≃-subsingleton' {𝓤} {𝓥} ua X t t
+  p = ≃-subsingleton' {𝓤} {𝓤 ⊔ 𝓥} ua X t t
   q : p ≡ refl t
   q = subsingletons-are-sets (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
        (≃-subsingleton' {𝓤} {𝓤 ⊔ 𝓥} ua X) t t p (refl t)
