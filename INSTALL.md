@@ -22,6 +22,7 @@ $ sudo agda-mode compile
 ```
 
 ### Debian and Ubuntu
+
 Start by installing `emacs`, `git`, `ghc`, `cabal-install`, `alex` and
 `happy` using the package manager:
 ```bash
@@ -34,7 +35,22 @@ your home directory:
 $ mkdir ~/mgs-2019
 ```
 
-#### Installing Agda 2.6.0 
+#### Standard Agda installation
+This section describes the standard way to install Agda 2.6.0.
+If this does not work, then please try the instruction using Git.
+```bash
+$ cd ~/mgs-2019
+$ mkdir agda
+$ cd agda
+$ cabal sandbox init
+$ cabal update
+$ cabal install Agda
+```
+
+Now continue with [Setting up Emacs to work with
+Agda](#Setting-up-Emacs-to-work-with-Agda).
+
+#### Agda installation using Git
 Inside that directory, we download and install Agda 2.6.0:
 ```bash
 $ cd ~/mgs-2019
@@ -45,6 +61,7 @@ $ cabal sandbox init
 $ cabal update
 $ cabal install
 ```
+
 #### Setting up Emacs to work with Agda
 Finally, we set up Emacs to work with Agda:
 ```bash
