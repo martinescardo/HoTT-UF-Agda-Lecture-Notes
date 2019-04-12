@@ -2513,10 +2513,7 @@ J'-invertible : Univalence
 J'-invertible ua A φ X Y f i = J'-equiv ua A φ X Y f (invertibles-are-equivs f i)
 
 lift-is-hae : (X : 𝓤 ̇) → is-hae {𝓤} {𝓤 ⊔ 𝓥} {X} {Lift 𝓥 X} (lift {𝓤} {𝓥})
-lift-is-hae {𝓤} {𝓥} X = lower ,
-                        lower-lift {𝓤} {𝓥} ,
-                        lift-lower ,
-                        (λ x → refl (refl (lift x)))
+lift-is-hae {𝓤} {𝓥} X = lower , lower-lift {𝓤} {𝓥} , lift-lower , λ x → refl (refl (lift x))
 
 invertibles-are-haes' : Univalence
                       → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y)

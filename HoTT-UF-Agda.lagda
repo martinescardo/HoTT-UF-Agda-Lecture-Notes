@@ -253,6 +253,7 @@ Regarding the computer language Agda, we recommend the following as
 starting points:
 
    - [Agda wiki](https://wiki.portal.chalmers.se/agda/pmwiki.php).
+   - [Dependent types at work](http://www.cse.chalmers.se/~peterd/papers/DependentTypesAtWork.pdf) by Ana Bove and Peter Dybjer.
    - [Agda reference manual](https://agda.readthedocs.io/en/latest/getting-started/index.html).
    - [Agda further references](https://wiki.portal.chalmers.se/agda/pmwiki.php?n=Main.Documentation).
    - [Cubical Agda blog post](https://homotopytypetheory.org/2018/12/06/cubical-agda/).
@@ -5514,10 +5515,7 @@ Here is an example. First, `lift` is a half-adjoint equivalence on the nose:
 
 \begin{code}
 lift-is-hae : (X : 𝓤 ̇) → is-hae {𝓤} {𝓤 ⊔ 𝓥} {X} {Lift 𝓥 X} (lift {𝓤} {𝓥})
-lift-is-hae {𝓤} {𝓥} X = lower ,
-                        lower-lift {𝓤} {𝓥} ,
-                        lift-lower ,
-                        (λ x → refl (refl (lift x)))
+lift-is-hae {𝓤} {𝓥} X = lower , lower-lift {𝓤} {𝓥} , lift-lower , λ x → refl (refl (lift x))
 \end{code}
 
 Hence all invertible maps going up universe levels are half-adjoint
