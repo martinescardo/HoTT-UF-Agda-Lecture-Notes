@@ -98,13 +98,34 @@ Install `alex`, `happy` and `emacs` using `nix-env`.
 $ nix-env -iA nixpkgs.haskellPackages.alex nixpkgs.haskellPackages.happy emacs
 ```
 
-### Installing Agda 2.6.0
 Next, create a directory `mgs-2019` for the Midlands Graduate School 2019 in
 your home directory:
 ```bash
 $ mkdir ~/mgs-2019
 ```
-Inside that directory, we download and install Agda 2.6.0 using `nix-shell`:
+
+### Standard Agda installation
+This section describes the standard way to install Agda 2.6.0.
+If this does not work, then please try the instruction using Git.
+
+Inside that directory, we download and install Agda 2.6.0 using `nix-shell`.
+```bash
+$ nix-shell -p zlib ghc cabal-install
+$ cd ~/mgs-2019
+$ mkdir agda
+$ cd agda
+$ cabal sandbox init
+$ cabal update
+$ ZLIB="$(nix-build --no-out-link "<nixpkgs>" -A zlib)"
+$ LIBRARY_PATH=${ZLIB}/lib cabal install Agda
+```
+
+Close the terminal, open a new one and continue by following the GNU/Linux
+instructions from [Setting up Emacs to work with
+Agda](#Setting-up-Emacs-to-work-with-Agda) on.
+
+### Agda installation using Git
+We download and install Agda 2.6.0 using `nix-shell` and `git`:
 ```bash
 $ nix-shell -p zlib ghc cabal-install git
 $ cd ~/mgs-2019
