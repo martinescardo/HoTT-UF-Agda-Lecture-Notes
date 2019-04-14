@@ -37,7 +37,7 @@ $ mkdir ~/mgs-2019
 
 #### Standard Agda installation
 This section describes the standard way to install Agda 2.6.0.
-If this does not work, then please try the instruction using Git.
+If this does not work, then please try the instructions using Git.
 ```bash
 $ cd ~/mgs-2019
 $ mkdir agda
@@ -106,7 +106,7 @@ $ mkdir ~/mgs-2019
 
 ### Standard Agda installation
 This section describes the standard way to install Agda 2.6.0.
-If this does not work, then please try the instruction using Git.
+If this does not work, then please try the instructions using Git.
 
 Inside that directory, we download and install Agda 2.6.0 using `nix-shell`.
 ```bash
