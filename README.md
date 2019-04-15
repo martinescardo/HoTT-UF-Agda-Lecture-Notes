@@ -5,9 +5,9 @@ https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html
 
 Agda [2.6.0](https://agda.readthedocs.io/en/v2.6.0/getting-started/installation.html) is required.
 
-* The (literate) `*.lagda` files are used to generate the `html` pages with the script `../build`.
+* The (literate) `*.lagda` files are used to generate the `html` pages with the script `./build`.
 
-* This script also generates (illiterate) `../agda/*.agda` files using the script `illiterate`, which calls the Haskell program `illiterator.hs`.
+* This script also generates (illiterate) `./agda/*.agda` files using the script `illiterate`, which calls the Haskell program `illiterator.hs`.
 
 * The program `agdatomd.hs` converts from `.lagda` to `.md` for use by the script `fastloop`.
 
