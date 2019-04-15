@@ -22,6 +22,7 @@ $ sudo agda-mode compile
 ```
 
 ### Debian and Ubuntu
+
 Start by installing `emacs`, `git`, `ghc`, `cabal-install`, `alex` and
 `happy` using the package manager:
 ```bash
@@ -34,7 +35,22 @@ your home directory:
 $ mkdir ~/mgs-2019
 ```
 
-#### Installing Agda 2.6.0 
+#### Standard Agda installation
+This section describes the standard way to install Agda 2.6.0.
+If this does not work, then please try the instructions using Git.
+```bash
+$ cd ~/mgs-2019
+$ mkdir agda
+$ cd agda
+$ cabal sandbox init
+$ cabal update
+$ cabal install Agda
+```
+
+Now continue with [Setting up Emacs to work with
+Agda](#Setting-up-Emacs-to-work-with-Agda).
+
+#### Agda installation using Git
 Inside that directory, we download and install Agda 2.6.0:
 ```bash
 $ cd ~/mgs-2019
@@ -45,6 +61,7 @@ $ cabal sandbox init
 $ cabal update
 $ cabal install
 ```
+
 #### Setting up Emacs to work with Agda
 Finally, we set up Emacs to work with Agda:
 ```bash
@@ -81,13 +98,34 @@ Install `alex`, `happy` and `emacs` using `nix-env`.
 $ nix-env -iA nixpkgs.haskellPackages.alex nixpkgs.haskellPackages.happy emacs
 ```
 
-### Installing Agda 2.6.0
 Next, create a directory `mgs-2019` for the Midlands Graduate School 2019 in
 your home directory:
 ```bash
 $ mkdir ~/mgs-2019
 ```
-Inside that directory, we download and install Agda 2.6.0 using `nix-shell`:
+
+### Standard Agda installation
+This section describes the standard way to install Agda 2.6.0.
+If this does not work, then please try the instructions using Git.
+
+Inside that directory, we download and install Agda 2.6.0 using `nix-shell`.
+```bash
+$ nix-shell -p zlib ghc cabal-install
+$ cd ~/mgs-2019
+$ mkdir agda
+$ cd agda
+$ cabal sandbox init
+$ cabal update
+$ ZLIB="$(nix-build --no-out-link "<nixpkgs>" -A zlib)"
+$ LIBRARY_PATH=${ZLIB}/lib cabal install Agda
+```
+
+Close the terminal, open a new one and continue by following the GNU/Linux
+instructions from [Setting up Emacs to work with
+Agda](#Setting-up-Emacs-to-work-with-Agda) on.
+
+### Agda installation using Git
+We download and install Agda 2.6.0 using `nix-shell` and `git`:
 ```bash
 $ nix-shell -p zlib ghc cabal-install git
 $ cd ~/mgs-2019
