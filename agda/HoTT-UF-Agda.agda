@@ -29,8 +29,11 @@ data 𝟘 : 𝓤₀ ̇  where
             → (x : 𝟘) → A x
 𝟘-induction A ()
 
+𝟘-recursion : (A : 𝓤 ̇ ) → 𝟘 → A
+𝟘-recursion A a = 𝟘-induction (λ _ → A) a
+
 !𝟘 : (A : 𝓤 ̇ ) → 𝟘 → A
-!𝟘 A a = 𝟘-induction (λ _ → A) a
+!𝟘 = 𝟘-recursion
 
 is-empty : 𝓤 ̇ → 𝓤 ̇
 is-empty X = X → 𝟘

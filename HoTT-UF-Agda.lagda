@@ -681,8 +681,15 @@ true](https://en.wikipedia.org/wiki/Vacuous_truth). The unique
 function from `𝟘` to any type is a particular case of `𝟘-induction`.
 
 \begin{code}
+𝟘-recursion : (A : 𝓤 ̇ ) → 𝟘 → A
+𝟘-recursion A a = 𝟘-induction (λ _ → A) a
+\end{code}
+
+We will use the following categorical notation for `𝟘-recursion`:
+
+\begin{code}
 !𝟘 : (A : 𝓤 ̇ ) → 𝟘 → A
-!𝟘 A a = 𝟘-induction (λ _ → A) a
+!𝟘 = 𝟘-recursion
 \end{code}
 
 We give the two names `is-empty` and `¬` to the same function now:
