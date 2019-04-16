@@ -530,8 +530,11 @@ asks to make all definitions in the file `Universe` visible in our
 file here. The Agda code in these notes has syntax highlighting and
 links, so that we can navigate to the definition of a name or symbol by clicking at it.
 \begin{code}
-open import Universes
+open import Universes public
 \end{code}
+
+The keyword `public` makes the contents of the file `Universes`
+available to importers of our module `HoTT-UF-Agda`.
 
 We will refer to universes by letters `𝓤,𝓥,𝓦,𝓣`:
 
