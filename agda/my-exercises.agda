@@ -31,8 +31,32 @@ data List ℕ : 𝓤₀ ̇ where
  _::_ : ℕ → List ℕ → List ℕ
 
 _++_ : List ℕ → List ℕ → List ℕ
-_++_ = {!!}
+[] ++ ys        = ys
+(x :: xs) ++ ys = x :: xs ++ ys
+
+infixr 4 _::_
+infixr 6 _++_
 
 ++assoc : (xs ys zs : List ℕ) → (xs ++ ys) ++ zs
                               ≡ xs ++ (ys ++ zs)
-++assoc = {!!}
+++assoc [] ys zs = refl (ys ++ zs)
+++assoc (x :: xs) ys zs = g
+ where
+  IH : (xs ++ ys) ++ zs ≡ xs ++ (ys ++ zs)
+  IH = ++assoc xs ys zs
+  g : (x :: xs ++ ys) ++ zs   ≡ (x :: xs) ++ (ys ++ zs)
+  g = (x :: xs ++ ys) ++ zs   ≡⟨ refl _ ⟩
+      x :: ((xs ++ ys) ++ zs) ≡⟨ ap (λ ts → x :: ts) IH ⟩
+      x :: (xs ++ (ys ++ zs)) ≡⟨ refl _ ⟩
+      (x :: xs) ++ (ys ++ zs) ∎
+
+-- \== \< \> \qed
+-- ≡⟨ ⟩ ∎
+
+{- Formulate and prove:
+
+(i) 0 + y ≡ y
+(ii) succ x + y ≡ y
+(iii) x + y ≡ y + x
+
+-}
