@@ -56,7 +56,7 @@ infixr 6 _++_
 {- Formulate and prove:
 
 (i) 0 + y ≡ y
-(ii) succ x + y ≡ y
+(ii) succ x + y ≡ succ (x + y)
 (iii) x + y ≡ y + x
 
 -}
