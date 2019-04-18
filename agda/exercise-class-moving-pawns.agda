@@ -1,6 +1,6 @@
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module my-exercises where
+module exercise-class-moving-pawns where
 
 open import Universes
 open import HoTT-UF-Agda
