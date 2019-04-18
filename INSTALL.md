@@ -165,3 +165,11 @@ Try prefixing `cabal install` with `LANG=C.UTF-8`, i.e.
 ```bash
 $ LANG=C.UTF-8 cabal install
 ```
+
+#### Some unicode symbols (e.g. 𝟘 𝟙) appear as weird squares
+Try adding
+```
+(set-fontset-font "fontset-default" nil
+                  (font-spec :name "DejaVu Sans"))
+```
+to your `.emacs` file (in `~/mgs-2019/`).
