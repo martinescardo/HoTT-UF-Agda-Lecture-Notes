@@ -343,7 +343,7 @@ to practice univalent mathematics should consult the above references.
      1. [Voevodsky's univalence axiom](HoTT-UF-Agda.html#univalence)
      1. [Example of a type that is not a set under univalence](HoTT-UF-Agda.html#notsets)
      1. [Equivalence induction](HoTT-UF-Agda.html#equivalenceinduction)
-     1. [Half-adjoint equivalences](HoTT-UF-Agda.html#haes)
+     1. [Half adjoint equivalences](HoTT-UF-Agda.html#haes)
      1. [Exercises](HoTT-UF-Agda.html#lefttothereader)
      1. [Solutions](HoTT-UF-Agda.html#solutions)
      1. [Function extensionality from univalence](HoTT-UF-Agda.html#funextfromua)
@@ -3629,13 +3629,13 @@ This particular proof works only because inversion [is involutive on
 the nose](HoTT-UF-Agda.html#inversion-involutive).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="haes"></a> Half-adjoint equivalences
+### <a id="haes"></a> Half adjoint equivalences
 
 An often useful alternative formulation of the notion of equivalence
-is that of half-adjoint equivalence. If we have a function `f : X → Y`
+is that of half adjoint equivalence. If we have a function `f : X → Y`
 with inversion data `g : Y → X` and `η : g ∘ f ∼ id` and `ε : f ∘ g ∼
 id`, then for any `x : X` we have that `ap f (η x)` and `ε (f x)` are
-two identifications of `f (g (f x))` with `f x`. The half-adjointness
+two identifications of `f (g (f x))` with `f x`. The half adjointness
 condition says that these two identifications are themselves
 identified. The addition of the constraint `τ x : ap f (η x) ≡ ε (f
 x)` turns invertibility, which is data in general, into property of
@@ -3673,7 +3673,7 @@ invertibles-are-haes ua = J-invertible ua (λ X Y f → is-hae f) id-is-hae
 The above can be proved without univalence, as is done in the HoTT
 book, with a more complicated argument.
 
-Here is a use of the half-adjoint condition, where, compared to
+Here is a use of the half adjoint condition, where, compared to
 [`Σ-change-of-variables`](HoTT-UF-Agda.html#Σ-change-of-variables), we
 remove univalence from the hypothesis, generalize the universe of the
 type `Y`, and weaken equality to equivalence in the conclusion. Notice
@@ -5521,14 +5521,14 @@ J'-invertible : Univalence
 J'-invertible ua A φ X Y f i = J'-equiv ua A φ X Y f (invertibles-are-equivs f i)
 \end{code}
 
-Here is an example. First, `lift` is a half-adjoint equivalence on the nose:
+Here is an example. First, `lift` is a half adjoint equivalence on the nose:
 
 \begin{code}
 lift-is-hae : (X : 𝓤 ̇) → is-hae {𝓤} {𝓤 ⊔ 𝓥} {X} {Lift 𝓥 X} (lift {𝓤} {𝓥})
 lift-is-hae {𝓤} {𝓥} X = lower , lower-lift {𝓤} {𝓥} , lift-lower , λ x → refl (refl (lift x))
 \end{code}
 
-Hence all invertible maps going up universe levels are half-adjoint
+Hence all invertible maps going up universe levels are half adjoint
 equivalences:
 
 \begin{code}
@@ -5549,7 +5549,7 @@ And here is a corollary:
 \end{code}
 
 
-We also get an easy proof that `lower` is a half-adjoint equivalence:
+We also get an easy proof that `lower` is a half adjoint equivalence:
 
 \begin{code}
 lower-is-hae : (X : 𝓤 ̇) → is-hae (lower {𝓤} {𝓥} {X})
