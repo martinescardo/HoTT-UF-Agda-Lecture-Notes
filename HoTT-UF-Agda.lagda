@@ -1139,21 +1139,21 @@ We have the following uses of `Σ`.
     a specific `x : X` and a proof `a : A x`, together in a pair `(x ,
     a)`.
 
-  * Later we will discuss *unspecified* existence `∃ \(x : X) → A x`,
+  * Later we will discuss *unspecified* existence `∃ (x : X), A x`,
     which will be obtained by a sort of quotient of `Σ (x : X), A x`,
-    written `∥ Σ \(x : X), A x ∥` that identifies all the elements of
-    the type `Σ \(x : X), A x` in a single equivalence class, called
+    written `∥ Σ (x : X), A x ∥` that identifies all the elements of
+    the type `Σ (x : X), A x` in a single equivalence class, called
     its propositional or subsingleton
     [truncation](HoTT-UF-Agda.html#truncation).
 
-  * Another reading of `Σ \(x : X), A x` is as "the type of `x : X`
+  * Another reading of `Σ (x : X), A x` is as "the type of `x : X`
     with `A x`", similar to subset notation `{ x ∈ X | A x }` in set
     theory. But have to be careful because if there is more than one
     element in the type `A x`, then `x` is put more than once in this
     type. In such situations, if we don't want that, we have to be
     careful and either ensure that the type `A x` has at most one
     element for every `x : X`, or instead consider the truncated type
-    `∥ A x ∥` and write `Σ \(x : X), ∥ A x ∥`.
+    `∥ A x ∥` and write `Σ (x : X), ∥ A x ∥`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="pitypes"></a> `Π` types
