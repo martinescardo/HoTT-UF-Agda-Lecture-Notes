@@ -1260,7 +1260,7 @@ We will use the following alternative notation for the identity type
 former `Id`, where the symbol "`_`" in the right-hand side of the
 definition indicates that we ask Agda to infer which type we are
 talking about (which is `X`, but this name is not available in the
-scope of the *definiting equation* of `_≡_`):
+scope of the *defining equation* of `_≡_`):
 
 \begin{code}
 _≡_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
