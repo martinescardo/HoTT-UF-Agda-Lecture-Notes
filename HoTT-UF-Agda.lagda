@@ -3030,7 +3030,7 @@ retract-of-singleton (r , s , η) (c , φ) = r c , γ
             y       ∎
 \end{code}
 
-Sometimes need the following symmetric versions of the above:
+Sometimes we need the following symmetric versions of the above:
 
 \begin{code}
 singleton-type' : {X : 𝓤 ̇ } → X → 𝓤 ̇
