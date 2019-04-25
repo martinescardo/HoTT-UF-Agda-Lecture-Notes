@@ -2805,7 +2805,7 @@ hlevel-upper X (succ n) = λ h x y → hlevel-upper (x ≡ y) n (h x y)
 \end{code}
 
 To be consistent with the above terminology, we have to stipulate that
-all types have hlevel `∞`. We don't need a definition for this vacuous
+all types have hlevel `∞`. We don't need a definition for this
 notion. But what may happen (and it does with univalence) is that
 there are types which don't have any finite hlevel. We can say that
 such types then have minimal hlevel `∞`.
