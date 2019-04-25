@@ -907,7 +907,7 @@ module ℕ-order where
 
    > `x ≤ y` if and only if `Σ \(z : ℕ) → x + z ≡ y`.
 
-Later, learning
+Later, after learning
 [univalence](HoTT-UF-Agda.html#univalence) prove that in this case
 [this implies](HoTT-UF-Agda.html#mlttexercisessol)
 
