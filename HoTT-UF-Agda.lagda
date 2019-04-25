@@ -4635,8 +4635,7 @@ embedding-criterion {𝓤} {𝓥} {X} {Y} f e = embedding-lemma f b
 \end{code}
 
 An equivalent formulation of `f` being an embedding is that the map
-`ap f {x} {x'} : x ≡ x' → f x ≡ f x'` is an equivalence for all `x x'
-: X`. Embeddings of arbitrary types are left cancellable, but the
+`ap f {x} {x'} : x ≡ x' → f x ≡ f x'` is an equivalence for all `x x' : X`. Embeddings of arbitrary types are left cancellable, but the
 converse fails in general.
 
 *Exercise.* Left cancellable maps into *sets* are always embeddings.
