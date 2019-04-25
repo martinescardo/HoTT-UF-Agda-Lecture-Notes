@@ -1140,7 +1140,7 @@ We have the following uses of `Σ`.
     a)`.
 
   * Later we will discuss *unspecified* existence `∃ \(x : X) → A x`,
-    which will be obtained by a sort of quotient of `Σ \(x : X), A x`,
+    which will be obtained by a sort of quotient of `Σ (x : X), A x`,
     written `∥ Σ \(x : X), A x ∥` that identifies all the elements of
     the type `Σ \(x : X), A x` in a single equivalence class, called
     its propositional or subsingleton
