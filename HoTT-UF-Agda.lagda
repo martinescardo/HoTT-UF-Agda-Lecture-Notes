@@ -1132,7 +1132,7 @@ We have the following uses of `Σ`.
     rather than meta-mathematical entities like in set theory. They are
     just elements of types.
 
-  * The more general type `Σ \(x : X), A x`, if the type `X` stands
+  * The more general type `Σ (x : X), A x`, if the type `X` stands
     for a mathematical object and `A` stands for a mathematical
     statement, represents *designated* existence "there is a
     designated `x : X` with `A x`".  To prove this, we have to provide
