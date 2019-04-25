@@ -77,7 +77,7 @@ set-based mathematics may be shocking at first sight:
 
  1. The kinds of objects we take as basic.
 
-    - Certain things called types, or higher-groupoids, rather than sets, are the primitive objects.
+    - Certain things called types, or higher groupoids, rather than sets, are the primitive objects.
     - Sets, also called 0-groupoids, are particular kinds of types.
     - So we have more general objects as a starting point.
     - E.g. the type `ℕ` of natural numbers is a set, and this is a theorem, not a definition.
@@ -566,7 +566,7 @@ a type, we also create freshly new elements for it, in this case
 us to sometimes use the same name for different things.)
 
 Next we want to give a mechanism to prove that all points of the
-type `𝟙` satify a given property `A`.
+type `𝟙` satisfy a given property `A`.
 
   * The property is a function `A : 𝟙 → 𝓤` for some universe `𝓤`.
 
