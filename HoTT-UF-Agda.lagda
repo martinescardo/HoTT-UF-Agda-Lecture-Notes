@@ -4711,11 +4711,10 @@ follows. Notice that lifting is used in the proof but not in the
 formulation of the first lemma:
 
 \begin{code}
-
-abstract
- ≃-subsingleton' : Univalence → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
- ≃-subsingleton' {𝓤} {𝓥} ua X = s
-   where
+≃-subsingleton' : Univalence → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
+≃-subsingleton' {𝓤} {𝓥} ua X = s
+ where
+  abstract
     dfe : global-dfunext
     dfe = univalence-gives-global-dfunext ua
     e : (Y : 𝓥 ̇ ) → (X ≃ Y) ≃ (Lift 𝓤 Y ≡ Lift 𝓥 X)
