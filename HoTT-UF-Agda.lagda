@@ -3410,21 +3410,23 @@ by [Mike Shulman](https://home.sandiego.edu/~shulman/).
 The following is often useful:
 
 \begin{code}
-abstract
- ≃-subsingleton : is-univalent 𝓤
-                → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
- ≃-subsingleton {𝓤} ua X = singletons-are-subsingletons (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) s
+≃-subsingleton : is-univalent 𝓤
+               → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+≃-subsingleton {𝓤} ua X = γ
   where
-   e : (Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
-   e Y = Id-to-Eq X Y , ua X Y
-   d : (Σ \(Y : 𝓤 ̇ ) → X ≡ Y) ≃ (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-   d = Σ-cong e
-   s : is-singleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-   s = equiv-to-singleton
-        (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-        (Σ \(Y : 𝓤 ̇ ) → X ≡ Y)
-        (≃-sym d)
-        (singleton-types'-are-singletons (𝓤 ̇ ) X)
+   abstract
+    e : (Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
+    e Y = Id-to-Eq X Y , ua X Y
+    d : (Σ \(Y : 𝓤 ̇ ) → X ≡ Y) ≃ (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+    d = Σ-cong e
+    s : is-singleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+    s = equiv-to-singleton
+         (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+         (Σ \(Y : 𝓤 ̇ ) → X ≡ Y)
+         (≃-sym d)
+         (singleton-types'-are-singletons (𝓤 ̇ ) X)
+    γ : is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+    γ = singletons-are-subsingletons (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) s
 \end{code}
 
 The converse [also holds](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-Yoneda.html#univalence-via-singletons).
