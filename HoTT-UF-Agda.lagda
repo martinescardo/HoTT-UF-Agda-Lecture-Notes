@@ -4990,7 +4990,7 @@ graph-is-domain : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 \end{code}
 
 This is similar to what happens in set
-theory: the graph of any function is isomorphic to its domain.
+theory: the graph of any function is in bijection with its domain.
 
 
 We can define the restriction and corestriction of a function to its
