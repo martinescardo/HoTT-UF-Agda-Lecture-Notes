@@ -1081,21 +1081,23 @@ Id-to-funs-agree : {X Y : 𝓤 ̇ } (p : X ≡ Y)
                  → Id-to-fun p ≡ Id-to-Fun p
 Id-to-funs-agree (refl X) = refl (𝑖𝑑 X)
 
-abstract
- ≃-subsingleton : is-univalent 𝓤
-                → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
- ≃-subsingleton {𝓤} ua X = singletons-are-subsingletons (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) s
+≃-subsingleton : is-univalent 𝓤
+               → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+≃-subsingleton {𝓤} ua X = γ
   where
-   e : (Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
-   e Y = Id-to-Eq X Y , ua X Y
-   d : (Σ \(Y : 𝓤 ̇ ) → X ≡ Y) ≃ (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-   d = Σ-cong e
-   s : is-singleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-   s = equiv-to-singleton
-        (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-        (Σ \(Y : 𝓤 ̇ ) → X ≡ Y)
-        (≃-sym d)
-        (singleton-types'-are-singletons (𝓤 ̇ ) X)
+   abstract
+    e : (Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
+    e Y = Id-to-Eq X Y , ua X Y
+    d : (Σ \(Y : 𝓤 ̇ ) → X ≡ Y) ≃ (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+    d = Σ-cong e
+    s : is-singleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+    s = equiv-to-singleton
+         (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+         (Σ \(Y : 𝓤 ̇ ) → X ≡ Y)
+         (≃-sym d)
+         (singleton-types'-are-singletons (𝓤 ̇ ) X)
+    γ : is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+    γ = singletons-are-subsingletons (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) s
 
 swap₂ : 𝟚 → 𝟚
 swap₂ ₀ = ₁
@@ -1988,10 +1990,10 @@ Lift-is-embedding {𝓤} {𝓥} ua = universe-embedding-criterion ua 𝓤 𝓥 (
 ≃-Lift : (X : 𝓤 ̇ ) → X ≃ Lift 𝓥 X
 ≃-Lift {𝓤} {𝓥} X = lift , invertibles-are-equivs lift (lower , lower-lift {𝓤} {𝓥} , lift-lower)
 
-abstract
- ≃-subsingleton' : Univalence → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
- ≃-subsingleton' {𝓤} {𝓥} ua X = s
-   where
+≃-subsingleton' : Univalence → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
+≃-subsingleton' {𝓤} {𝓥} ua X = s
+ where
+  abstract
     dfe : global-dfunext
     dfe = univalence-gives-global-dfunext ua
     e : (Y : 𝓥 ̇ ) → (X ≃ Y) ≃ (Lift 𝓤 Y ≡ Lift 𝓥 X)
@@ -2306,8 +2308,8 @@ cantors-diagonal : ¬(Σ \(e : ℕ → (ℕ → ℕ)) → (α : ℕ → ℕ) →
 𝟚-has-𝟚-automorphisms : dfunext 𝓤₀ 𝓤₀ → (𝟚 ≃ 𝟚) ≃ 𝟚
 
 lifttwo : is-univalent 𝓤₀
-      → is-univalent 𝓤₁
-      → (𝟚 ≡ 𝟚) ≡ Lift 𝓤₁ 𝟚
+        → is-univalent 𝓤₁
+        → (𝟚 ≡ 𝟚) ≡ Lift 𝓤₁ 𝟚
 
 DNE : ∀ 𝓤 → 𝓤 ⁺ ̇
 DNE 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → ¬¬ P → P

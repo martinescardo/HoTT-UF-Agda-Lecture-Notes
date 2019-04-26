@@ -5276,8 +5276,8 @@ But we do have that
 
 \begin{code}
 lifttwo : is-univalent 𝓤₀
-      → is-univalent 𝓤₁
-      → (𝟚 ≡ 𝟚) ≡ Lift 𝓤₁ 𝟚
+        → is-univalent 𝓤₁
+        → (𝟚 ≡ 𝟚) ≡ Lift 𝓤₁ 𝟚
 \end{code}
 
 We now discuss alternative formulations of the principle of excluded middle.
