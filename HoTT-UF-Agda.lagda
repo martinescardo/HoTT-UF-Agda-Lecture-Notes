@@ -5186,8 +5186,8 @@ the choice functorially.
 
 The above is equivalent to another familiar formulation of choice,
 namely that a set-indexed product of non-empty sets is non-empty,
-where in a constructive setting we generalize `non-empty` to
-`inhabited` (but this generalization is immaterial, because choice
+where in a constructive setting we strengthen `non-empty` to
+`inhabited` (but this strengthening is immaterial, because choice
 implies excluded middle, and excluded middle implies that
 non-emptiness and inhabitation are the same notion).
 
