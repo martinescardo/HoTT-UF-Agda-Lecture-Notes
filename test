@@ -1,0 +1,6 @@
+#!/bin/bash
+
+./generatehtml
+./illiterate
+jekyll build
+htmlproofer --assume-extension ./_site
