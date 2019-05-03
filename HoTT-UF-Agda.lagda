@@ -293,7 +293,7 @@ ordinals](http://www.cs.bham.ac.uk/~mhe/agda-new/Ordinals.html) and
 
 This is intended as an introductory graduate course. We include what
 we regard as the essence of univalent foundations and univalent
-mathematics, but we are certainly omiting important material that is
+mathematics, but we are certainly omitting important material that is
 needed to do univalent mathematics in practice, and the readers who wish
 to practice univalent mathematics should consult the above references.
 
@@ -1568,7 +1568,7 @@ theory.  However, global choice is inconsistent with univalence [[HoTT
 book](https://homotopytypetheory.org/book/), Theorem 3.2.2], because
 there is no way to choose an element of every non-empty type in a way
 that is invariant under automorphisms. However, the [axiom of
-choice](Inhabitedness.html#choice) *is* consistent with univalent type
+choice](#choice) *is* consistent with univalent type
 theory, as stated in the [introduction](HoTT-UF-Agda.html#introduction).
 
 In the proof of the following, we assume we are given hypothetical
@@ -1599,7 +1599,7 @@ tno A = contrapositive (dni A)
 Hence, using `dni` once again, we get that `¬¬¬ A` if and only if `¬
 A`.  It is entertaining to see how Brouwer formulated and proved this
 fact in his [Cambridge Lectures on
-Intuitionism](https://mathscinet.ams.org/mathscinet/search/publdoc.html?arg3=&co4=AND&co5=AND&co6=AND&co7=AND&dr=all&pg4=AUCN&pg5=TI&pg6=PC&pg7=ALLF&pg8=ET&r=1&review_format=html&s4=&s5=cambridge%20lectures%20on%20intuitionism&s6=&s7=&s8=All&sort=Newest&vfpref=html&yearRangeFirst=&yearRangeSecond=&yrop=eq):
+Intuitionism](https://books.google.co.uk/books/about/Brouwer_s_Cambridge_Lectures_on_Intuitio.html?id=B88L2k5KnkkC&redir_esc=y):
 
 <blockquote>
     Theorem. Absurdity of absurdity of absurdity is equivalent to absurdity.
@@ -3054,8 +3054,8 @@ singleton-types'-are-singletons X x = singleton-type'-center x ,
 
 The main notions of univalent mathematics conceived by Voevodsky, with
 formulations in MLTT, are those of [singleton
-type](HoTT-UF-Agda.html#hlevels) (or contractible type),
-[hlevel](HoTT-UF-Agda.html#hlevels) (including the notions of
+type](HoTT-UF-Agda.html#hlevel) (or contractible type),
+[hlevel](HoTT-UF-Agda.html#hlevel) (including the notions of
 subsingleton and set), and of type equivalence, which we define now.
 For that purpose, we need to define the notion of fiber of a function
 first.
@@ -4064,7 +4064,7 @@ The crucial step in [Voevodsky's
 proof](http://www.math.uwo.ca/faculty/kapulkin/notes/ua_implies_fe.pdf)
 that univalence implies `funext` is to establish the conclusion of the
 above exercise assuming univalence instead. We prove this by
-[equivalence induction](HoTT-UF-Agda.html#equivalence-induction) on
+[equivalence induction](HoTT-UF-Agda.html#equivalenceinduction) on
 `f`, which means that we only need to consider the case when `f` is an
 identity function, for which pre-composition with `f` is itself an
 identity function (of a function type), and hence an equivalence:
@@ -4335,8 +4335,8 @@ univalence-is-a-subsingleton {𝓤} ua⁺ ua ua' = p
   dfe₂ : dfunext (𝓤 ⁺) (𝓤 ⁺)
 
   fe₀  = univalence-gives-funext ua
-  fe₁  = univalence-gives-funext ua⁺
-  fe₂  = univalence-gives-funext ua⁺
+  fe₁  = univalence-gives-funext {𝓤 ⁺} {𝓤}   ua⁺
+  fe₂  = univalence-gives-funext {𝓤 ⁺} {𝓤 ⁺} ua⁺
   dfe₁ = funext-gives-dfunext fe₁ fe₀
   dfe₂ = funext-gives-dfunext fe₂ fe₂
 

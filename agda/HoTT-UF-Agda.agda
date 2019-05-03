@@ -1761,8 +1761,8 @@ univalence-is-a-subsingleton {𝓤} ua⁺ ua ua' = p
   dfe₂ : dfunext (𝓤 ⁺) (𝓤 ⁺)
 
   fe₀  = univalence-gives-funext ua
-  fe₁  = univalence-gives-funext ua⁺
-  fe₂  = univalence-gives-funext ua⁺
+  fe₁  = univalence-gives-funext {𝓤 ⁺} {𝓤}   ua⁺
+  fe₂  = univalence-gives-funext {𝓤 ⁺} {𝓤 ⁺} ua⁺
   dfe₁ = funext-gives-dfunext fe₁ fe₀
   dfe₂ = funext-gives-dfunext fe₂ fe₂
 

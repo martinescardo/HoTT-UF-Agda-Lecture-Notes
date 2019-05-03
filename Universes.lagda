@@ -5,7 +5,7 @@ date : 2019-03-04
 ---
 ## <a name="lecturenotes">Introduction to Univalent Foundations of Mathematics with Agda</a>
 
-[<sub>Table of contents ⇑</sub>](toc.html#contents)
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ## Universes
 
 We define our notation for type universes used in these notes, which
@@ -13,8 +13,8 @@ is different from the [standard Agda notation](https://agda.readthedocs.io/en/la
 standard notation in HoTT/UF.
 
 Readers unfamiliar with Agda should probably try to understand this
-only after doing some [MLTT in Agda](MLTT-Agda) and [HoTT/UF in
-Agda](HoTT-UF-Agda).
+only after doing some [MLTT in Agda](HoTT-UF-Agda.html#mlttinagda) and [HoTT/UF in
+Agda](HoTT-UF-Agda.html#uminagda).
 
 \begin{code}
 {-# OPTIONS --without-K --exact-split --safe #-}
