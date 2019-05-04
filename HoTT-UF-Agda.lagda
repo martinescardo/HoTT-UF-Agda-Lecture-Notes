@@ -2478,7 +2478,7 @@ above particular case.
 
 This time, the meaningful comparison, given `p : x ≡ y`, is
 
-   > `transport A p a = b`,
+   > `transport A p a ≡ b`,
 
 For example, this idea applies when comparing the values of a dependent function:
 
