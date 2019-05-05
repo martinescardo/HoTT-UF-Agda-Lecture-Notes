@@ -931,21 +931,12 @@ invertibles-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 invertibles-are-equivs {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = γ
  where
   a : (y : Y) → (f (g y) ≡ y₀) ◁ (y ≡ y₀)
-  a y = r , s , rs
+  a y =  r , s , transport-is-section (_≡ y₀) (ε y)
    where
     r : y ≡ y₀ → f (g y) ≡ y₀
-    r p = f (g y) ≡⟨ ε y ⟩
-          y       ≡⟨ p ⟩
-          y₀      ∎
+    r = transport (_≡ y₀) ((ε y)⁻¹)
     s : f (g y) ≡ y₀ → y ≡ y₀
-    s q = y       ≡⟨ (ε y)⁻¹ ⟩
-          f (g y) ≡⟨ q ⟩
-          y₀      ∎
-    rs : (q : f (g y) ≡ y₀) → r (s q) ≡ q
-    rs q = ε y ∙ ((ε y)⁻¹ ∙ q) ≡⟨ (∙assoc (ε y) ((ε y)⁻¹) q)⁻¹ ⟩
-           (ε y ∙ (ε y)⁻¹) ∙ q ≡⟨ ap (_∙ q) (⁻¹-right∙ (ε y)) ⟩
-           refl (f (g y)) ∙ q  ≡⟨ refl-left ⟩
-           q                   ∎
+    s = transport (_≡ y₀) (ε y)
   b : fiber f y₀ ◁ singleton-type y₀
   b = (Σ \(x : X) → f x ≡ y₀)     ◁⟨ Σ-reindex-retraction g (f , η) ⟩
       (Σ \(y : Y) → f (g y) ≡ y₀) ◁⟨ Σ-retract Y (λ y → f (g y) ≡ y₀) (λ y → y ≡ y₀) a ⟩
@@ -1147,7 +1138,7 @@ H-≃ : is-univalent 𝓤
     → A X (≃-refl X) → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A Y e
 H-≃ {𝓤} {𝓥} ua X A a Y e = τ a
  where
-  B : (Σ \(Y : 𝓤 ̇) → X ≃ Y) → 𝓥 ̇
+  B : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇
   B (Y , e) = A Y e
   p : (X , ≃-refl X) ≡ (Y , e)
   p = ≃-subsingleton ua X (X , ≃-refl X) (Y , e)
@@ -1164,9 +1155,9 @@ H-≃-equation {𝓤} {𝓥} ua X A a =
   transport B (refl t) a    ≡⟨ refl _ ⟩
   a                         ∎
  where
-  B : (Σ \(Y : 𝓤 ̇) → X ≃ Y) → 𝓥 ̇
+  B : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇
   B (Y , e) = A Y e
-  t : Σ \(Y : 𝓤 ̇) → X ≃ Y
+  t : Σ \(Y : 𝓤 ̇ ) → X ≃ Y
   t = (X , ≃-refl X)
   p : t ≡ t
   p = ≃-subsingleton ua X t t
@@ -2013,9 +2004,9 @@ H'-≃ : Univalence
     → A (Lift 𝓥 X) (≃-Lift X) → (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A Y e
 H'-≃ {𝓤} {𝓥} {𝓦} ua X A a Y e = τ a
  where
-  B : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇) → X ≃ Y) → 𝓦 ̇
+  B : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇
   B (Y , e) = A Y e
-  t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇) → X ≃ Y
+  t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
   t = (Lift 𝓥 X , ≃-Lift X)
   p : t ≡ (Y , e)
   p = ≃-subsingleton' {𝓤} {𝓤 ⊔ 𝓥} ua X t (Y , e)
@@ -2033,9 +2024,9 @@ H'-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
   transport B (refl t) a          ≡⟨ refl _ ⟩
   a                               ∎
  where
-  B : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇) → X ≃ Y) → 𝓦 ̇
+  B : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇
   B (Y , e) = A Y e
-  t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇) → X ≃ Y
+  t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
   t = (Lift 𝓥 X , ≃-Lift X)
   p : t ≡ t
   p = ≃-subsingleton' {𝓤} {𝓤 ⊔ 𝓥} ua X t t
@@ -2517,7 +2508,7 @@ J'-invertible : Univalence
               → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → invertible f → A X Y f
 J'-invertible ua A φ X Y f i = J'-equiv ua A φ X Y f (invertibles-are-equivs f i)
 
-lift-is-hae : (X : 𝓤 ̇) → is-hae {𝓤} {𝓤 ⊔ 𝓥} {X} {Lift 𝓥 X} (lift {𝓤} {𝓥})
+lift-is-hae : (X : 𝓤 ̇ ) → is-hae {𝓤} {𝓤 ⊔ 𝓥} {X} {Lift 𝓥 X} (lift {𝓤} {𝓥})
 lift-is-hae {𝓤} {𝓥} X = lower , lower-lift {𝓤} {𝓥} , lift-lower , λ x → refl (refl (lift x))
 
 invertibles-are-haes' : Univalence
@@ -2532,7 +2523,7 @@ invertibles-are-haes' {𝓤} {𝓥} ua = J'-invertible {𝓤} {𝓥} ua (λ X Y 
 Σ-change-of-variables'' {𝓤} {𝓥} ua A f i = Σ-change-of-variables-hae A f
                                               (invertibles-are-haes' {𝓤} {𝓥} ua _ _ f i)
 
-lower-is-hae : (X : 𝓤 ̇) → is-hae (lower {𝓤} {𝓥} {X})
+lower-is-hae : (X : 𝓤 ̇ ) → is-hae (lower {𝓤} {𝓥} {X})
 lower-is-hae {𝓤} {𝓥} X = lift ,
                          lift-lower ,
                          lower-lift {𝓤} {𝓥} ,

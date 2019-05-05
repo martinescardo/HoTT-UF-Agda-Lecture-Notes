@@ -3156,21 +3156,12 @@ invertibles-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 invertibles-are-equivs {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = γ
  where
   a : (y : Y) → (f (g y) ≡ y₀) ◁ (y ≡ y₀)
-  a y = r , s , rs
+  a y =  r , s , transport-is-section (_≡ y₀) (ε y)
    where
     r : y ≡ y₀ → f (g y) ≡ y₀
-    r p = f (g y) ≡⟨ ε y ⟩
-          y       ≡⟨ p ⟩
-          y₀      ∎
+    r = transport (_≡ y₀) ((ε y)⁻¹)
     s : f (g y) ≡ y₀ → y ≡ y₀
-    s q = y       ≡⟨ (ε y)⁻¹ ⟩
-          f (g y) ≡⟨ q ⟩
-          y₀      ∎
-    rs : (q : f (g y) ≡ y₀) → r (s q) ≡ q
-    rs q = ε y ∙ ((ε y)⁻¹ ∙ q) ≡⟨ (∙assoc (ε y) ((ε y)⁻¹) q)⁻¹ ⟩
-           (ε y ∙ (ε y)⁻¹) ∙ q ≡⟨ ap (_∙ q) (⁻¹-right∙ (ε y)) ⟩
-           refl (f (g y)) ∙ q  ≡⟨ refl-left ⟩
-           q                   ∎
+    s = transport (_≡ y₀) (ε y)
   b : fiber f y₀ ◁ singleton-type y₀
   b = (Σ \(x : X) → f x ≡ y₀)     ◁⟨ Σ-reindex-retraction g (f , η) ⟩
       (Σ \(y : Y) → f (g y) ≡ y₀) ◁⟨ Σ-retract Y (λ y → f (g y) ≡ y₀) (λ y → y ≡ y₀) a ⟩
