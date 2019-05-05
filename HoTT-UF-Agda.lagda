@@ -2844,7 +2844,7 @@ equality. Generalize the above to account for this.
 
 *Exercise.* Prove that the types of magmas, monoids and groups have
 hlevel `3` (they are `1`-groupoids) but not hlevel `2` (they are not
-sets).  Prove that this is their minimal hlevel. It is possible to do this what what we have learned so far?
+sets).  Prove that this is their minimal hlevel. Is it possible to do this what what we have learned so far?
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="retracts"></a> Retracts
