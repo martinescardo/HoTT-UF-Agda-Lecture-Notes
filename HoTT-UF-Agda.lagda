@@ -3519,7 +3519,7 @@ H-≃ : is-univalent 𝓤
     → A X (≃-refl X) → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A Y e
 H-≃ {𝓤} {𝓥} ua X A a Y e = τ a
  where
-  B : (Σ \(Y : 𝓤 ̇) → X ≃ Y) → 𝓥 ̇
+  B : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇
   B (Y , e) = A Y e
   p : (X , ≃-refl X) ≡ (Y , e)
   p = ≃-subsingleton ua X (X , ≃-refl X) (Y , e)
@@ -3536,9 +3536,9 @@ H-≃-equation {𝓤} {𝓥} ua X A a =
   transport B (refl t) a    ≡⟨ refl _ ⟩
   a                         ∎
  where
-  B : (Σ \(Y : 𝓤 ̇) → X ≃ Y) → 𝓥 ̇
+  B : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇
   B (Y , e) = A Y e
-  t : Σ \(Y : 𝓤 ̇) → X ≃ Y
+  t : Σ \(Y : 𝓤 ̇ ) → X ≃ Y
   t = (X , ≃-refl X)
   p : t ≡ t
   p = ≃-subsingleton ua X t t
@@ -4734,9 +4734,9 @@ H'-≃ : Univalence
     → A (Lift 𝓥 X) (≃-Lift X) → (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A Y e
 H'-≃ {𝓤} {𝓥} {𝓦} ua X A a Y e = τ a
  where
-  B : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇) → X ≃ Y) → 𝓦 ̇
+  B : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇
   B (Y , e) = A Y e
-  t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇) → X ≃ Y
+  t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
   t = (Lift 𝓥 X , ≃-Lift X)
   p : t ≡ (Y , e)
   p = ≃-subsingleton' {𝓤} {𝓤 ⊔ 𝓥} ua X t (Y , e)
@@ -4754,9 +4754,9 @@ H'-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
   transport B (refl t) a          ≡⟨ refl _ ⟩
   a                               ∎
  where
-  B : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇) → X ≃ Y) → 𝓦 ̇
+  B : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇
   B (Y , e) = A Y e
-  t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇) → X ≃ Y
+  t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
   t = (Lift 𝓥 X , ≃-Lift X)
   p : t ≡ t
   p = ≃-subsingleton' {𝓤} {𝓤 ⊔ 𝓥} ua X t t
@@ -5524,7 +5524,7 @@ J'-invertible ua A φ X Y f i = J'-equiv ua A φ X Y f (invertibles-are-equivs f
 Here is an example. First, `lift` is a half adjoint equivalence on the nose:
 
 \begin{code}
-lift-is-hae : (X : 𝓤 ̇) → is-hae {𝓤} {𝓤 ⊔ 𝓥} {X} {Lift 𝓥 X} (lift {𝓤} {𝓥})
+lift-is-hae : (X : 𝓤 ̇ ) → is-hae {𝓤} {𝓤 ⊔ 𝓥} {X} {Lift 𝓥 X} (lift {𝓤} {𝓥})
 lift-is-hae {𝓤} {𝓥} X = lower , lower-lift {𝓤} {𝓥} , lift-lower , λ x → refl (refl (lift x))
 \end{code}
 
@@ -5552,7 +5552,7 @@ And here is a corollary:
 We also get an easy proof that `lower` is a half adjoint equivalence:
 
 \begin{code}
-lower-is-hae : (X : 𝓤 ̇) → is-hae (lower {𝓤} {𝓥} {X})
+lower-is-hae : (X : 𝓤 ̇ ) → is-hae (lower {𝓤} {𝓥} {X})
 lower-is-hae {𝓤} {𝓥} X = lift ,
                          lift-lower ,
                          lower-lift {𝓤} {𝓥} ,
