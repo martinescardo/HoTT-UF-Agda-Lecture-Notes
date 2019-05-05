@@ -2811,10 +2811,19 @@ there are types which don't have any finite hlevel. We can say that
 such types then have minimal hlevel `∞`.
 
 *Exercise.* Formulate and prove the following. The type `𝟙` has
-minimal hlevel `0`. The type `𝟘` has minimal hlevel `1`, the type `ℕ`
-has minimal hlevel `2`. More ambitiously, after
-[univalence](HoTT-UF-Agda.html#univalence) is available, show that
-the type of monoids has minimal hlevel `3`.
+minimal hlevel `0`.
+
+\begin{code}
+_has-minimal-hlevel_ : 𝓤 ̇ → ℕ → 𝓤 ̇
+X has-minimal-hlevel 0 = X is-of-hlevel 0
+X has-minimal-hlevel (succ n) = (X is-of-hlevel (succ n)) × ¬(X is-of-hlevel n)
+\end{code}
+
+The type `𝟘` has minimal hlevel `1`, the type `ℕ` has minimal hlevel
+`2`. The solution to the fact that `ℕ` has hlevel 2 is given in the
+next section. More ambitiously, after
+[univalence](HoTT-UF-Agda.html#univalence) is available, show that the
+type of monoids has minimal hlevel `3`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="naturalsset"></a> `ℕ` is a set
@@ -2841,10 +2850,6 @@ argument is due to Hedberg.
 
 *Exercise.* Hedberg proved this for any type with decidable
 equality. Generalize the above to account for this.
-
-*Exercise.* Prove that the types of magmas, monoids and groups have
-hlevel `3` (they are `1`-groupoids) but not hlevel `2` (they are not
-sets).  Prove that this is their minimal hlevel. Is it possible to do this what what we have learned so far?
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="retracts"></a> Retracts
