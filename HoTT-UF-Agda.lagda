@@ -4691,7 +4691,28 @@ lower-lift = refl
 
 lift-lower : {X : 𝓤 ̇ } (l : Lift 𝓥 X) → lift (lower l) ≡ l
 lift-lower = refl
+\end{code}
 
+Using these definitional equalities, we get the following:
+
+\begin{code}
+lower-dfunext : dfunext (𝓤 ⊔ 𝓥) (𝓦 ⊔ 𝓣) → dfunext 𝓤 𝓦
+lower-dfunext {𝓤} {𝓥} {𝓦} {𝓣} fe {X} {A} {f} {g} h = p
+ where
+  A' : Lift 𝓥 X → 𝓦 ⊔ 𝓣 ̇
+  A' y = Lift 𝓣 (A (lower y))
+  f' g' : Π A'
+  f' y = lift (f (lower y))
+  g' y = lift (g (lower y))
+  h' : f' ∼ g'
+  h' y = ap lift (h (lower y))
+  p' : f' ≡ g'
+  p' = fe h'
+  p : f ≡ g
+  p = ap (λ f' x → lower (f' (lift x))) p'
+\end{code}
+
+\begin{code}
 Lift-≃ : (X : 𝓤 ̇ ) → Lift 𝓥 X ≃ X
 Lift-≃ {𝓤} {𝓥} X = lower , invertibles-are-equivs lower (lift , lift-lower , lower-lift {𝓤} {𝓥})
 
