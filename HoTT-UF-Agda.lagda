@@ -34,6 +34,9 @@ flavour](https://homotopytypetheory.org/2018/12/06/cubical-agda/), and
 we hope these notes provide a base for researchers interested in
 learning Cubical Type Theory and Cubical Agda as the next step.
 
+Compared to most expositions of the subject, we work with explicit
+universe levels.
+
 **Keywords.** Univalent mathematics. Univalent foundations. Univalent
   type theory. Univalence axiom. `∞`-Groupoid. Homotopy type. Type
   theory. Homotopy type theory. Intensional Martin-Löf type
@@ -5616,7 +5619,6 @@ And here is a corollary:
 Σ-change-of-variables'' {𝓤} {𝓥} ua A f i = Σ-change-of-variables-hae A f
                                               (invertibles-are-haes' {𝓤} {𝓥} ua _ _ f i)
 \end{code}
-
 
 We also get an easy proof that `lower` is a half adjoint equivalence:
 

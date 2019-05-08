@@ -1842,7 +1842,7 @@ hlevel-relation-is-subsingleton {𝓤} fe (succ n) X =
   q : d ≡ e
   q = being-equiv-is-a-subsingleton fe fe' (h ∘ g ∘ f) _ _
 
-≃-sym-involutive : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓥 ⊔ 𝓤) (𝓥 ⊔ 𝓤) →
+≃-sym-involutive : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥) →
                    {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
                  → ≃-sym (≃-sym α) ≡ α
 ≃-sym-involutive fe fe' (f , a) = to-Σ-≡ (inversion-involutive f a ,
@@ -1857,52 +1857,65 @@ univalence-gives-propext : is-univalent 𝓤 → propext 𝓤
 univalence-gives-propext ua P Q i j f g =
  Eq-to-Id ua P Q (logically-equivalent-subsingletons-are-equivalent P Q i j (f , g))
 
-module _ (dfe : global-dfunext) where
+≃-refl-left : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥) → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+            → ≃-refl X ● α ≡ α
+≃-refl-left fe fe' α = to-Σ-≡ (refl _ , being-equiv-is-a-subsingleton fe fe' _ _ _)
 
- ≃-refl-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
-             → ≃-refl X ● α ≡ α
- ≃-refl-left α = to-Σ-≡ (refl _ , being-equiv-is-a-subsingleton dfe dfe _ _ _)
+≃-sym-left-inverse : dfunext 𝓥 𝓥  → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+                   → ≃-sym α ● α ≡ ≃-refl Y
+≃-sym-left-inverse fe (f , e) = to-Σ-≡ (p , being-equiv-is-a-subsingleton fe fe _ _ _)
+ where
+  p : f ∘ inverse f e ≡ id
+  p = fe (inverse-is-section f e)
 
- ≃-sym-left-inverse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
-                    → ≃-sym α ● α ≡ ≃-refl Y
- ≃-sym-left-inverse {𝓤} {𝓥} (f , e) = to-Σ-≡ (p , being-equiv-is-a-subsingleton dfe dfe _ _ _)
-  where
-   p : f ∘ inverse f e ≡ id
-   p = dfe (inverse-is-section f e)
+≃-sym-right-inverse : dfunext 𝓤 𝓤 → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+                    → α ● ≃-sym α ≡ ≃-refl X
+≃-sym-right-inverse fe (f , e) = to-Σ-≡ (p , being-equiv-is-a-subsingleton fe fe _ _ _)
+ where
+  p : inverse f e ∘ f ≡ id
+  p = fe (inverse-is-retraction f e)
 
- ≃-sym-right-inverse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
-                     → α ● ≃-sym α ≡ ≃-refl X
- ≃-sym-right-inverse {𝓤} {𝓥} (f , e) = to-Σ-≡ (p , being-equiv-is-a-subsingleton dfe dfe _ _ _)
-  where
-   p : inverse f e ∘ f ≡ id
-   p = dfe (inverse-is-retraction f e)
+≃-Sym : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+      → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+      → (X ≃ Y) ≃ (Y ≃ X)
+≃-Sym fe₀ fe₁ fe₂ = ≃-sym ,
+                    invertibles-are-equivs
+                      ≃-sym
+                      ( ≃-sym , ≃-sym-involutive fe₀ fe₂ , ≃-sym-involutive fe₁ fe₂)
 
- ≃-Sym : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-       → (X ≃ Y) ≃ (Y ≃ X)
- ≃-Sym = ≃-sym , invertibles-are-equivs ≃-sym ( ≃-sym , ≃-sym-involutive dfe dfe , ≃-sym-involutive dfe dfe)
+≃-Comp : dfunext 𝓦 (𝓥 ⊔ 𝓦) → dfunext (𝓥 ⊔ 𝓦) (𝓥 ⊔ 𝓦 ) → dfunext 𝓥 𝓥 → dfunext 𝓦 (𝓤 ⊔ 𝓦)
+       → dfunext (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓦 ) → dfunext 𝓤 𝓤
+       → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (Z : 𝓦 ̇ )
+       → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
+≃-Comp fe₀ fe₁ fe₂ fe₃ fe₄ fe₅ Z α = (α ●_) , invertibles-are-equivs (α ●_) ((≃-sym α ●_) , p , q)
+ where
+  p = λ β → ≃-sym α ● (α ● β) ≡⟨ ●-assoc fe₀ fe₁ (≃-sym α) α β ⟩
+            (≃-sym α ● α) ● β ≡⟨ ap (_● β) (≃-sym-left-inverse fe₂ α) ⟩
+            ≃-refl _ ● β      ≡⟨ ≃-refl-left fe₀ fe₁ _ ⟩
+            β                 ∎
 
- ≃-Comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (Z : 𝓦 ̇ )
-        → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
- ≃-Comp Z α = (α ●_) , invertibles-are-equivs (α ●_) ((≃-sym α ●_) , p , q)
-  where
-   p = λ β → ≃-sym α ● (α ● β) ≡⟨ ●-assoc dfe dfe (≃-sym α) α β ⟩
-             (≃-sym α ● α) ● β ≡⟨ ap (_● β) (≃-sym-left-inverse α) ⟩
-             ≃-refl _ ● β      ≡⟨ ≃-refl-left _ ⟩
-             β                 ∎
+  q = λ γ → α ● (≃-sym α ● γ) ≡⟨ ●-assoc fe₃ fe₄ α (≃-sym α) γ ⟩
+            (α ● ≃-sym α) ● γ ≡⟨ ap (_● γ) (≃-sym-right-inverse fe₅ α) ⟩
+            ≃-refl _ ● γ      ≡⟨ ≃-refl-left fe₃ fe₄ _ ⟩
+            γ                 ∎
 
-   q = λ γ → α ● (≃-sym α ● γ) ≡⟨ ●-assoc dfe dfe α (≃-sym α) γ ⟩
-             (α ● ≃-sym α) ● γ ≡⟨ ap (_● γ) (≃-sym-right-inverse α) ⟩
-             ≃-refl _ ● γ      ≡⟨ ≃-refl-left _ ⟩
-             γ ∎
-
- Eq-Eq-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
+Eq-Eq-cong' : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓤
+            → dfunext 𝓥 (𝓥 ⊔ 𝓦) → dfunext (𝓥 ⊔ 𝓦) (𝓥 ⊔ 𝓦) → dfunext 𝓦 𝓦
+            → dfunext 𝓦 (𝓥 ⊔ 𝓦) → dfunext 𝓥 𝓥 → dfunext 𝓦 (𝓦 ⊔ 𝓣)
+            → dfunext (𝓦 ⊔ 𝓣) (𝓦 ⊔ 𝓣) → dfunext 𝓣 𝓣 → dfunext 𝓣 (𝓦 ⊔ 𝓣)
+            → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
             → X ≃ A → Y ≃ B → (X ≃ Y) ≃ (A ≃ B)
- Eq-Eq-cong {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} α β =
-  (X ≃ Y)  ≃⟨ ≃-Comp Y (≃-sym α)⟩
-  (A ≃ Y)  ≃⟨ ≃-Sym ⟩
-  (Y ≃ A)  ≃⟨ ≃-Comp A (≃-sym β) ⟩
-  (B ≃ A)  ≃⟨ ≃-Sym ⟩
+Eq-Eq-cong' fe₀ fe₁ fe₂ fe₃ fe₄ fe₅ fe₆ fe₇ fe₈ fe₉ fe₁₀ fe₁₁ {X} {Y} {A} {B} α β =
+  (X ≃ Y)  ≃⟨ ≃-Comp fe₀ fe₁ fe₂ fe₃ fe₄ fe₅ Y (≃-sym α) ⟩
+  (A ≃ Y)  ≃⟨ ≃-Sym fe₃ fe₆ fe₄ ⟩
+  (Y ≃ A)  ≃⟨ ≃-Comp fe₆ fe₄ fe₇ fe₈ fe₉ fe₁₀ A (≃-sym β) ⟩
+  (B ≃ A)  ≃⟨ ≃-Sym fe₈ fe₁₁ fe₉ ⟩
   (A ≃ B)  ■
+
+Eq-Eq-cong : global-dfunext
+           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
+           → X ≃ A → Y ≃ B → (X ≃ Y) ≃ (A ≃ B)
+Eq-Eq-cong fe = Eq-Eq-cong' fe fe fe fe fe fe fe fe fe fe fe fe
 
 is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-embedding f = (y : codomain f) → is-subsingleton(fiber f y)
@@ -1941,18 +1954,6 @@ embedding-criterion {𝓤} {𝓥} {X} {Y} f e = embedding-lemma f b
   b x = equiv-to-singleton (fiber f (f x)) (singleton-type x)
          (a' x) (singleton-types-are-singletons X x)
 
-universe-embedding-criterion : Univalence
-                             → (𝓤 𝓥 : Universe) (f : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇ )
-                             → ((X : 𝓤 ̇ ) → f X ≃ X)
-                             → is-embedding f
-universe-embedding-criterion ua 𝓤 𝓥 f i = embedding-criterion f γ
- where
-  γ : (X X' : 𝓤 ̇ ) → (f X ≡ f X') ≃ (X ≡ X')
-  γ X X' =  (f X ≡ f X')  ≃⟨ is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) (f X) (f X') ⟩
-            (f X ≃ f X')  ≃⟨ Eq-Eq-cong (univalence-gives-global-dfunext ua) (i X) (i X') ⟩
-            (X ≃ X')      ≃⟨ ≃-sym (is-univalent-≃ (ua 𝓤) X X') ⟩
-            (X ≡ X')      ■
-
 record Lift {𝓤 : Universe} (𝓥 : Universe) (X : 𝓤 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
  constructor
   lift
@@ -1976,10 +1977,16 @@ lower-lift = refl
 lift-lower : {X : 𝓤 ̇ } (l : Lift 𝓥 X) → lift (lower l) ≡ l
 lift-lower = refl
 
-lower-dfunext : dfunext (𝓤 ⊔ 𝓥) (𝓦 ⊔ 𝓣) → dfunext 𝓤 𝓦
-lower-dfunext {𝓤} {𝓥} {𝓦} {𝓣} fe {X} {A} {f} {g} h = p
+Lift-≃ : (X : 𝓤 ̇ ) → Lift 𝓥 X ≃ X
+Lift-≃ {𝓤} {𝓥} X = lower , invertibles-are-equivs lower (lift , lift-lower , lower-lift {𝓤} {𝓥})
+
+≃-Lift : (X : 𝓤 ̇ ) → X ≃ Lift 𝓥 X
+≃-Lift {𝓤} {𝓥} X = lift , invertibles-are-equivs lift (lower , lower-lift {𝓤} {𝓥} , lift-lower)
+
+lower-dfunext : ∀ 𝓦 𝓣 𝓤 𝓥 → dfunext (𝓤 ⊔ 𝓦) (𝓥 ⊔ 𝓣) → dfunext 𝓤 𝓥
+lower-dfunext 𝓦 𝓣 𝓤 𝓥 fe {X} {A} {f} {g} h = p
  where
-  A' : Lift 𝓥 X → 𝓦 ⊔ 𝓣 ̇
+  A' : Lift 𝓦 X → 𝓥 ⊔ 𝓣 ̇
   A' y = Lift 𝓣 (A (lower y))
   f' g' : Π A'
   f' y = lift (f (lower y))
@@ -1991,34 +1998,57 @@ lower-dfunext {𝓤} {𝓥} {𝓦} {𝓣} fe {X} {A} {f} {g} h = p
   p : f ≡ g
   p = ap (λ f' x → lower (f' (lift x))) p'
 
-Lift-≃ : (X : 𝓤 ̇ ) → Lift 𝓥 X ≃ X
-Lift-≃ {𝓤} {𝓥} X = lower , invertibles-are-equivs lower (lift , lift-lower , lower-lift {𝓤} {𝓥})
+universe-embedding-criterion : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥)
+                             → (f : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇ )
+                             → ((X : 𝓤 ̇ ) → f X ≃ X)
+                             → is-embedding f
+universe-embedding-criterion {𝓤} {𝓥} ua ua' f i = embedding-criterion f γ
+ where
+  fe : dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+  fe = univalence-gives-dfunext ua'
+  fe₀ : dfunext 𝓤 𝓤
+  fe₀ = lower-dfunext 𝓥 𝓥 𝓤 𝓤 fe
+  fe₁ : dfunext 𝓤 (𝓤 ⊔ 𝓥)
+  fe₁ = lower-dfunext 𝓥 𝓥 𝓤 (𝓤 ⊔ 𝓥) fe
+  γ : (X X' : 𝓤 ̇ ) → (f X ≡ f X') ≃ (X ≡ X')
+  γ X X' =  (f X ≡ f X')  ≃⟨ is-univalent-≃ ua' (f X) (f X') ⟩
+            (f X ≃ f X')  ≃⟨ Eq-Eq-cong' fe fe fe fe fe fe₀ fe₁ fe fe₀ fe₀ fe₀ fe₀ (i X) (i X') ⟩
+            (X ≃ X')      ≃⟨ ≃-sym (is-univalent-≃ ua X X') ⟩
+            (X ≡ X')      ■
 
-Lift-is-embedding : Univalence → is-embedding (Lift {𝓤} 𝓥)
-Lift-is-embedding {𝓤} {𝓥} ua = universe-embedding-criterion ua 𝓤 𝓥 (Lift 𝓥) Lift-≃
+Lift-is-embedding : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → is-embedding (Lift {𝓤} 𝓥)
+Lift-is-embedding {𝓤} {𝓥} ua ua' = universe-embedding-criterion {𝓤} {𝓥} ua ua' (Lift 𝓥) Lift-≃
 
-≃-Lift : (X : 𝓤 ̇ ) → X ≃ Lift 𝓥 X
-≃-Lift {𝓤} {𝓥} X = lift , invertibles-are-equivs lift (lower , lower-lift {𝓤} {𝓥} , lift-lower)
-
-≃-subsingleton' : Univalence → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
-≃-subsingleton' {𝓤} {𝓥} ua X = s
+≃-subsingleton' : is-univalent 𝓥 → is-univalent (𝓤 ⊔ 𝓥) → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
+≃-subsingleton' {𝓥} {𝓤} ua ua' X = s
  where
   abstract
-    dfe : global-dfunext
-    dfe = univalence-gives-global-dfunext ua
+    fe : dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+    fe = univalence-gives-dfunext ua'
+    fe₀ : dfunext 𝓥 (𝓤 ⊔ 𝓥)
+    fe₀ = lower-dfunext 𝓤 𝓤 𝓥 (𝓤 ⊔ 𝓥) fe
+    fe₁ : dfunext 𝓤 (𝓤 ⊔ 𝓥)
+    fe₁ = lower-dfunext (𝓤 ⊔ 𝓥) 𝓤 𝓤 (𝓤 ⊔ 𝓥) fe
+    fe₂ : dfunext 𝓥 𝓥
+    fe₂ = lower-dfunext 𝓤 𝓤 𝓥 𝓥 fe
+    fe₃ : dfunext 𝓤 𝓤
+    fe₃ = lower-dfunext 𝓥 𝓥 𝓤 𝓤 fe
     e : (Y : 𝓥 ̇ ) → (X ≃ Y) ≃ (Lift 𝓤 Y ≡ Lift 𝓥 X)
-    e Y = (X ≃ Y)                       ≃⟨ ≃-Sym dfe ⟩
-          (Y ≃ X)                       ≃⟨ Eq-Eq-cong dfe (≃-Lift Y) (≃-Lift X) ⟩
-          (Lift 𝓤 Y ≃ Lift 𝓥 X)        ≃⟨ ≃-sym (is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) (Lift 𝓤 Y) (Lift 𝓥 X)) ⟩
-          (Lift 𝓤 Y ≡ Lift 𝓥 X)        ■
+    e Y = (X ≃ Y)                ≃⟨ ≃-Sym fe₀ fe₁ fe ⟩
+          (Y ≃ X)                ≃⟨ Eq-Eq-cong' fe₁ fe fe₂ fe₁ fe fe fe fe₃ fe fe fe fe (≃-Lift Y) (≃-Lift X) ⟩
+          (Lift 𝓤 Y ≃ Lift 𝓥 X) ≃⟨ ≃-sym (is-univalent-≃ ua' (Lift 𝓤 Y) (Lift 𝓥 X)) ⟩
+          (Lift 𝓤 Y ≡ Lift 𝓥 X) ■
     d : (Σ \(Y : 𝓥 ̇ ) → X ≃ Y) ≃ (Σ \(Y : 𝓥 ̇ ) → Lift 𝓤 Y ≡ Lift 𝓥 X)
     d = Σ-cong e
     i : is-subsingleton (Σ \(Y : 𝓥 ̇ ) → Lift 𝓤 Y ≡ Lift 𝓥 X)
-    i = Lift-is-embedding ua (Lift 𝓥 X)
+    i = Lift-is-embedding ua ua' (Lift 𝓥 X)
     s : is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
     s = equiv-to-subsingleton d i
 
-H'-≃ : Univalence
+≃-subsingleton'' : is-univalent (𝓤 ⊔ 𝓥) → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+≃-subsingleton'' ua = ≃-subsingleton' ua ua
+
+H'-≃ : is-univalent (𝓤 ⊔ 𝓥)
     → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
     → A (Lift 𝓥 X) (≃-Lift X) → (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A Y e
 H'-≃ {𝓤} {𝓥} {𝓦} ua X A a Y e = τ a
@@ -2028,11 +2058,11 @@ H'-≃ {𝓤} {𝓥} {𝓦} ua X A a Y e = τ a
   t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
   t = (Lift 𝓥 X , ≃-Lift X)
   p : t ≡ (Y , e)
-  p = ≃-subsingleton' {𝓤} {𝓤 ⊔ 𝓥} ua X t (Y , e)
+  p = ≃-subsingleton'' {𝓤} {𝓥} ua X t (Y , e)
   τ : B t → B (Y , e)
   τ = transport B p
 
-H'-≃-equation : (ua : Univalence)
+H'-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
               → (X : 𝓤 ̇ )
               → (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
               → (a : A (Lift 𝓥 X) (≃-Lift X))
@@ -2048,10 +2078,10 @@ H'-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
   t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
   t = (Lift 𝓥 X , ≃-Lift X)
   p : t ≡ t
-  p = ≃-subsingleton' {𝓤} {𝓤 ⊔ 𝓥} ua X t t
+  p = ≃-subsingleton'' {𝓤} {𝓥} ua X t t
   q : p ≡ refl t
   q = subsingletons-are-sets (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
-       (≃-subsingleton' {𝓤} {𝓤 ⊔ 𝓥} ua X) t t p (refl t)
+       (≃-subsingleton'' {𝓤} {𝓥} ua X) t t p (refl t)
 
 module magma-equivalences (ua : Univalence) where
 
@@ -2497,13 +2527,13 @@ SN-gives-DNE {𝓤} sn P i = h
 
 DNE-gives-SN dne P i = (¬ P) , dni P , dne P i
 
-J'-≃ : Univalence
+J'-≃ : is-univalent (𝓤 ⊔ 𝓥)
      → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓥 ̇ )
      → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) (≃-Lift X))
      → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A X Y e
 J'-≃ ua A φ X = H'-≃ ua X (A X) (φ X)
 
-H'-equiv : Univalence
+H'-equiv : is-univalent (𝓤 ⊔ 𝓥)
          → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
          → A (Lift 𝓥 X) lift → (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → is-equiv f → A Y f
 H'-equiv {𝓤} {𝓥} {𝓦} ua X A a Y f i = γ (f , i) i
@@ -2515,13 +2545,13 @@ H'-equiv {𝓤} {𝓥} {𝓦} ua X A a Y f i = γ (f , i) i
   γ : (e : X ≃ Y) → B Y e
   γ = H'-≃ ua X B b Y
 
-J'-equiv : Univalence
+J'-equiv : is-univalent (𝓤 ⊔ 𝓥)
          → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
          → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) lift)
          → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → is-equiv f → A X Y f
 J'-equiv ua A φ X = H'-equiv ua X (A X) (φ X)
 
-J'-invertible : Univalence
+J'-invertible : is-univalent (𝓤 ⊔ 𝓥)
               → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
               → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) lift)
               → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → invertible f → A X Y f
@@ -2530,12 +2560,12 @@ J'-invertible ua A φ X Y f i = J'-equiv ua A φ X Y f (invertibles-are-equivs f
 lift-is-hae : (X : 𝓤 ̇ ) → is-hae {𝓤} {𝓤 ⊔ 𝓥} {X} {Lift 𝓥 X} (lift {𝓤} {𝓥})
 lift-is-hae {𝓤} {𝓥} X = lower , lower-lift {𝓤} {𝓥} , lift-lower , λ x → refl (refl (lift x))
 
-invertibles-are-haes' : Univalence
+invertibles-are-haes' : is-univalent (𝓤 ⊔ 𝓥)
                       → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y)
                       → invertible f → is-hae f
 invertibles-are-haes' {𝓤} {𝓥} ua = J'-invertible {𝓤} {𝓥} ua (λ X Y f → is-hae f) lift-is-hae
 
-Σ-change-of-variables'' : Univalence
+Σ-change-of-variables'' : is-univalent (𝓤 ⊔ 𝓥)
                         → {X : 𝓤 ̇ } {Y : 𝓤 ⊔ 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
                         → invertible f
                         → Σ A ≃ Σ (A ∘ f)
