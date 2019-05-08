@@ -11,4 +11,5 @@ cp -a  _site/HoTT-UF-Agda.html ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
 cp -a  _site/Universes.html    ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
 cp -a  _site/css               ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
 cp -a  _site/LICENSE           ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
+echo "Now will generate pdf from HTML"
 ./generatepdf
