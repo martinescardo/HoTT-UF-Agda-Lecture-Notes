@@ -1344,8 +1344,8 @@ pr₁-equivalence : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
 
 singleton-types-≃ : {X : 𝓤 ̇ } (x : X) → singleton-type' x ≃ singleton-type x
 
-singletons-equivalent : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
-                      → is-singleton X → is-singleton Y → X ≃ Y
+singletons-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+             → is-singleton X → is-singleton Y → X ≃ Y
 
 maps-of-singletons-are-equivs : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (f : X → Y)
                               → is-singleton X → is-singleton Y → is-equiv f
@@ -1489,7 +1489,7 @@ pr₁-equivalence {𝓤} {𝓥} X A s = invertibles-are-equivs pr₁ (g , η , �
 
 singleton-types-≃ x = Σ-cong (λ y → ⁻¹-≃ x y)
 
-singletons-equivalent X Y i j = f , invertibles-are-equivs f (g , η , ε)
+singletons-≃ {𝓤} {𝓥} {X} {Y} i j = f , invertibles-are-equivs f (g , η , ε)
  where
   f : X → Y
   f x = center Y j
@@ -1954,6 +1954,32 @@ embedding-criterion {𝓤} {𝓥} {X} {Y} f e = embedding-lemma f b
   b x = equiv-to-singleton (fiber f (f x)) (singleton-type x)
          (a' x) (singleton-types-are-singletons X x)
 
+ap-is-equiv-gives-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                            → ((x x' : X) → is-equiv (λ (p : x ≡ x') → ap f {x} {x'} p))
+                            → is-embedding f
+ap-is-equiv-gives-embedding {𝓤} {𝓥} {X} {Y} f i = embedding-criterion f
+                                                    (λ x' x → ≃-sym (ap f {x'} {x} , (i x' x)))
+
+embedding-gives-ap-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                            → is-embedding f
+                            → (x x' : X) → is-equiv (λ (p : x ≡ x') → ap f {x} {x'} p)
+embedding-gives-ap-is-equiv f i x x' = γ x' x
+ where
+  X = domain f
+  α : (x' x : X) → x ≡ x' → f x ≡ f x'
+  α x' x = ap f {x} {x'}
+  β : (x' : X) → singleton-type x' → fiber f (f x')
+  β x' = NatΣ (α x')
+  e : (x' : X) → is-equiv (β x')
+  e x' = maps-of-singletons-are-equivs
+          (singleton-type x')
+          (fiber f (f x'))
+          (β x')
+          (singleton-types-are-singletons X x')
+          (pointed-subsingletons-are-singletons (fiber f (f x')) (x' , (refl (f x'))) (i (f x')))
+  γ : (x' x : X) → is-equiv (α x' x)
+  γ x' = NatΣ-equiv-gives-fiberwise-equiv (λ x → x ≡ x') (λ x → f x ≡ f x') (α x') (e x')
+
 record Lift {𝓤 : Universe} (𝓥 : Universe) (X : 𝓤 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
  constructor
   lift
@@ -2198,17 +2224,17 @@ invertibles-are-haes↓ : is-univalent (𝓤 ⊔ 𝓥)
                       → invertible f → is-hae f
 invertibles-are-haes↓ {𝓤} {𝓥} ua = J↓-invertible {𝓤} {𝓥} ua (λ X Y f → is-hae f) lower-is-hae
 
+Id-to-Eq-is-hae : is-univalent 𝓤 → is-univalent (𝓤 ⁺)
+                → (X Y : 𝓤 ̇) → is-hae (Id-to-Eq X Y)
+Id-to-Eq-is-hae ua ua⁺ X Y = invertibles-are-haes↓ ua⁺ (X ≡ Y) (X ≃ Y) (Id-to-Eq X Y)
+                               (equivs-are-invertible (Id-to-Eq X Y) (ua X Y))
+
 Σ-change-of-variables↓ : is-univalent (𝓤 ⊔ 𝓥)
                        → {X : 𝓤 ⊔ 𝓥 ̇ } {Y : 𝓤 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
                        → invertible f
                        → Σ A ≃ Σ (A ∘ f)
 Σ-change-of-variables↓ {𝓤} {𝓥} ua A f i = Σ-change-of-variables-hae A f
                                               (invertibles-are-haes↓ {𝓤} {𝓥} ua _ _ f i)
-
-Id-to-Eq-is-hae : is-univalent 𝓤 → is-univalent (𝓤 ⁺)
-                → (X Y : 𝓤 ̇) → is-hae (Id-to-Eq X Y)
-Id-to-Eq-is-hae ua ua⁺ X Y = invertibles-are-haes↓ ua⁺ (X ≡ Y) (X ≃ Y) (Id-to-Eq X Y)
-                               (equivs-are-invertible (Id-to-Eq X Y) (ua X Y))
 
 global-property-of-types : 𝓤ω
 global-property-of-types = {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
