@@ -4925,9 +4925,9 @@ invertibles-are-haes↑ {𝓤} {𝓥} ua = J↑-invertible {𝓤} {𝓥} ua (λ 
 And here is a corollary:
 \begin{code}
 Σ-change-of-variables↑ : is-univalent (𝓤 ⊔ 𝓥)
-                        → {X : 𝓤 ̇ } {Y : 𝓤 ⊔ 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
-                        → invertible f
-                        → Σ A ≃ Σ (A ∘ f)
+                       → {X : 𝓤 ̇ } {Y : 𝓤 ⊔ 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+                       → invertible f
+                       → Σ A ≃ Σ (A ∘ f)
 Σ-change-of-variables↑ {𝓤} {𝓥} ua A f i = Σ-change-of-variables-hae A f
                                               (invertibles-are-haes↑ {𝓤} {𝓥} ua _ _ f i)
 \end{code}
@@ -4936,8 +4936,8 @@ We have a similar development with the universes going down:
 
 \begin{code}
 H↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
-      → (Y : 𝓤 ̇ ) (A : (X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
-      → A (Lift 𝓥 Y) (Lift-≃ Y) → (X : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A X e
+     → (Y : 𝓤 ̇ ) (A : (X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
+     → A (Lift 𝓥 Y) (Lift-≃ Y) → (X : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A X e
 H↓-≃ {𝓤} {𝓥} {𝓦} ua Y A a X e = τ a
  where
   B : (Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇
@@ -4956,8 +4956,8 @@ J↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
 J↓-≃ ua A φ X Y = H↓-≃ ua Y (λ X → A X Y) (φ Y) X
 
 H↓-equiv : is-univalent (𝓤 ⊔ 𝓥)
-          → (Y : 𝓤 ̇ ) (A : (X : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
-          → A (Lift 𝓥 Y) lower → (X : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → is-equiv f → A X f
+         → (Y : 𝓤 ̇ ) (A : (X : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
+         → A (Lift 𝓥 Y) lower → (X : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → is-equiv f → A X f
 H↓-equiv {𝓤} {𝓥} {𝓦} ua Y A a X f i = γ (f , i) i
  where
   B : (X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
@@ -4968,9 +4968,9 @@ H↓-equiv {𝓤} {𝓥} {𝓦} ua Y A a X f i = γ (f , i) i
   γ = H↓-≃ ua Y B b X
 
 J↓-equiv : is-univalent (𝓤 ⊔ 𝓥)
-          → (A : (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) → (X → Y) → 𝓦 ̇ )
-          → ((Y : 𝓤 ̇ ) → A (Lift 𝓥 Y) Y lower)
-          → (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → A X Y f
+         → (A : (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) → (X → Y) → 𝓦 ̇ )
+         → ((Y : 𝓤 ̇ ) → A (Lift 𝓥 Y) Y lower)
+         → (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → A X Y f
 J↓-equiv ua A φ X Y = H↓-equiv ua Y (λ X → A X Y) (φ Y) X
 \end{code}
 
