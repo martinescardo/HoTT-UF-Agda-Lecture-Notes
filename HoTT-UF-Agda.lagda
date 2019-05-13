@@ -3409,9 +3409,9 @@ by [Mike Shulman](https://home.sandiego.edu/~shulman/).
 The following is often useful:
 
 \begin{code}
-≃-subsingleton : is-univalent 𝓤
-               → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-≃-subsingleton {𝓤} ua X = γ
+equivs-from-form-subsingleton : is-univalent 𝓤
+                              → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+equivs-from-form-subsingleton {𝓤} ua X = γ
   where
    abstract
     e : (Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
@@ -3521,7 +3521,7 @@ H-≃ {𝓤} {𝓥} ua X A a Y e = τ a
   B : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇
   B (Y , e) = A Y e
   p : (X , ≃-refl X) ≡ (Y , e)
-  p = ≃-subsingleton ua X (X , ≃-refl X) (Y , e)
+  p = equivs-from-form-subsingleton ua X (X , ≃-refl X) (Y , e)
   τ : B (X , ≃-refl X) → B (Y , e)
   τ = transport B p
 
@@ -3540,10 +3540,10 @@ H-≃-equation {𝓤} {𝓥} ua X A a =
   t : Σ \(Y : 𝓤 ̇ ) → X ≃ Y
   t = (X , ≃-refl X)
   p : t ≡ t
-  p = ≃-subsingleton ua X t t
+  p = equivs-from-form-subsingleton ua X t t
   q : p ≡ refl t
   q = subsingletons-are-sets (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-       (≃-subsingleton ua X) t t p (refl t)
+       (equivs-from-form-subsingleton ua X) t t p (refl t)
 \end{code}
 
 The induction principle `H-≃` keeps `X` fixed and lets `Y` vary, while
@@ -3636,7 +3636,7 @@ An often useful alternative formulation of the notion of equivalence
 is that of half adjoint equivalence. If we have a function `f : X → Y`
 with inversion data `g : Y → X` and `η : g ∘ f ∼ id` and `ε : f ∘ g ∼
 id`, then for any `x : X` we have that `ap f (η x)` and `ε (f x)` are
-two identifications of `f (g (f x))` with `f x`. The half adjointness
+two identifications of `f (g (f x))` with `f x`. The half adjoint
 condition says that these two identifications are themselves
 identified. The addition of the constraint `τ x : ap f (η x) ≡ ε (f
 x)` turns invertibility, which is data in general, into property of
@@ -4760,68 +4760,96 @@ Lift-is-embedding : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → is-em
 Lift-is-embedding {𝓤} {𝓥} ua ua' = universe-embedding-criterion {𝓤} {𝓥} ua ua' (Lift 𝓥) Lift-≃
 \end{code}
 
-Thirdly, we have a generalization of `≃-subsingleton` from a single
-universe to a pair of low and high universes.
+Thirdly, we have a generalization of `equivs-from-form-subsingleton`
+from a single universe to a pair of universes. We work with two
+symmetrical versions, where the second is derived from the first. Here
+an anonymous module is used to provide the same hypotheses to both
+versions:
 
 \begin{code}
-≃-subsingleton' : is-univalent 𝓥 → is-univalent (𝓤 ⊔ 𝓥) → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
-≃-subsingleton' {𝓥} {𝓤} ua ua' X = s
+module _ {𝓤 𝓥 : Universe}
+         (ua : is-univalent 𝓥)
+         (ua' : is-univalent (𝓤 ⊔ 𝓥))
  where
-  abstract
-    fe : dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
-    fe = univalence-gives-dfunext ua'
-    fe₀ : dfunext 𝓥 (𝓤 ⊔ 𝓥)
-    fe₀ = lower-dfunext 𝓤 𝓤 𝓥 (𝓤 ⊔ 𝓥) fe
-    fe₁ : dfunext 𝓤 (𝓤 ⊔ 𝓥)
-    fe₁ = lower-dfunext (𝓤 ⊔ 𝓥) 𝓤 𝓤 (𝓤 ⊔ 𝓥) fe
-    fe₂ : dfunext 𝓥 𝓥
-    fe₂ = lower-dfunext 𝓤 𝓤 𝓥 𝓥 fe
-    fe₃ : dfunext 𝓤 𝓤
-    fe₃ = lower-dfunext 𝓥 𝓥 𝓤 𝓤 fe
-    e : (Y : 𝓥 ̇ ) → (X ≃ Y) ≃ (Lift 𝓤 Y ≡ Lift 𝓥 X)
-    e Y = (X ≃ Y)                ≃⟨ ≃-Sym fe₀ fe₁ fe ⟩
-          (Y ≃ X)                ≃⟨ Eq-Eq-cong' fe₁ fe fe₂ fe₁ fe fe fe fe₃ fe fe fe fe (≃-Lift Y) (≃-Lift X) ⟩
-          (Lift 𝓤 Y ≃ Lift 𝓥 X) ≃⟨ ≃-sym (is-univalent-≃ ua' (Lift 𝓤 Y) (Lift 𝓥 X)) ⟩
-          (Lift 𝓤 Y ≡ Lift 𝓥 X) ■
-    d : (Σ \(Y : 𝓥 ̇ ) → X ≃ Y) ≃ (Σ \(Y : 𝓥 ̇ ) → Lift 𝓤 Y ≡ Lift 𝓥 X)
-    d = Σ-cong e
-    i : is-subsingleton (Σ \(Y : 𝓥 ̇ ) → Lift 𝓤 Y ≡ Lift 𝓥 X)
-    i = Lift-is-embedding ua ua' (Lift 𝓥 X)
-    s : is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
-    s = equiv-to-subsingleton d i
+
+ private
+  fe : dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+  fe = univalence-gives-dfunext ua'
+  fe₀ : dfunext 𝓥 (𝓤 ⊔ 𝓥)
+  fe₀ = lower-dfunext 𝓤 𝓤 𝓥 (𝓤 ⊔ 𝓥) fe
+  fe₁ : dfunext 𝓤 (𝓤 ⊔ 𝓥)
+  fe₁ = lower-dfunext (𝓤 ⊔ 𝓥) 𝓤 𝓤 (𝓤 ⊔ 𝓥) fe
+  fe₂ : dfunext 𝓥 𝓥
+  fe₂ = lower-dfunext 𝓤 𝓤 𝓥 𝓥 fe
+  fe₃ : dfunext 𝓤 𝓤
+  fe₃ = lower-dfunext 𝓥 𝓥 𝓤 𝓤 fe
+
+ equivs-from-form-subsingleton' : (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
+ equivs-from-form-subsingleton' X = s
+  where
+   abstract
+     e : (Y : 𝓥 ̇ ) → (X ≃ Y) ≃ (Lift 𝓤 Y ≡ Lift 𝓥 X)
+     e Y = (X ≃ Y)                ≃⟨ ≃-Sym fe₀ fe₁ fe ⟩
+           (Y ≃ X)                ≃⟨ Eq-Eq-cong' fe₁ fe fe₂ fe₁ fe fe fe fe₃ fe fe fe fe (≃-Lift Y) (≃-Lift X) ⟩
+           (Lift 𝓤 Y ≃ Lift 𝓥 X) ≃⟨ ≃-sym (is-univalent-≃ ua' (Lift 𝓤 Y) (Lift 𝓥 X)) ⟩
+           (Lift 𝓤 Y ≡ Lift 𝓥 X) ■
+     d : (Σ \(Y : 𝓥 ̇ ) → X ≃ Y) ≃ (Σ \(Y : 𝓥 ̇ ) → Lift 𝓤 Y ≡ Lift 𝓥 X)
+     d = Σ-cong e
+     i : is-subsingleton (Σ \(Y : 𝓥 ̇ ) → Lift 𝓤 Y ≡ Lift 𝓥 X)
+     i = Lift-is-embedding ua ua' (Lift 𝓥 X)
+     s : is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
+     s = equiv-to-subsingleton d i
+
+ equivs-to-form-subsingleton' : (Y : 𝓤 ̇ ) → is-subsingleton (Σ \(X : 𝓥 ̇ ) → X ≃ Y)
+ equivs-to-form-subsingleton' Y = equiv-to-subsingleton e i
+  where
+   e : (Σ \(X : 𝓥 ̇ ) → X ≃ Y) ≃ (Σ \(X : 𝓥 ̇ ) → Y ≃ X)
+   e = Σ-cong (λ X → ≃-Sym fe₁ fe₀ fe)
+   i : is-subsingleton (Σ \(X : 𝓥 ̇ ) → Y ≃ X)
+   i = equivs-from-form-subsingleton' Y
 \end{code}
 
-We are interested in this corollary:
+This is the end of the anonymous module. We are interested in these corollaries:
 
 \begin{code}
-≃-subsingleton'' : is-univalent (𝓤 ⊔ 𝓥) → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
-≃-subsingleton'' ua = ≃-subsingleton' ua ua
+equivs-from-form-subsingleton'' : is-univalent (𝓤 ⊔ 𝓥) → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+equivs-from-form-subsingleton'' ua = equivs-from-form-subsingleton' ua ua
+
+equivs-to-form-subsingleton'' : is-univalent (𝓤 ⊔ 𝓥) → (Y : 𝓤 ̇ ) → is-subsingleton (Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+equivs-to-form-subsingleton'' ua = equivs-to-form-subsingleton' ua ua
 \end{code}
 
-Which is applied to get the following:
+The first one is applied to get the following, where `Y` lives in a
+universe above that of `X`:
 
 \begin{code}
-H'-≃ : is-univalent (𝓤 ⊔ 𝓥)
-    → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
-    → A (Lift 𝓥 X) (≃-Lift X) → (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A Y e
-H'-≃ {𝓤} {𝓥} {𝓦} ua X A a Y e = τ a
+H↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
+     → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
+     → A (Lift 𝓥 X) (≃-Lift X) → (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A Y e
+H↑-≃ {𝓤} {𝓥} {𝓦} ua X A a Y e = τ a
  where
   B : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇
   B (Y , e) = A Y e
   t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
   t = (Lift 𝓥 X , ≃-Lift X)
   p : t ≡ (Y , e)
-  p = ≃-subsingleton'' {𝓤} {𝓥} ua X t (Y , e)
+  p = equivs-from-form-subsingleton'' {𝓤} {𝓥} ua X t (Y , e)
   τ : B t → B (Y , e)
   τ = transport B p
+\end{code}
 
-H'-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
+The difference with `H-≃` is that here, to get the conclusion, we need
+to assume `A (Lift 𝓥 X) (≃-Lift X)` rather than `A X (≃-refl)`. The
+analogous equation is satisfied by `H↑-≃`:
+
+\begin{code}
+H↑-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
               → (X : 𝓤 ̇ )
               → (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
               → (a : A (Lift 𝓥 X) (≃-Lift X))
-              → H'-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡ a
-H'-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
-  H'-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡⟨ refl _ ⟩
+              → H↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡ a
+H↑-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
+  H↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡⟨ refl _ ⟩
   transport B p a                 ≡⟨ ap (λ - → transport B - a) q ⟩
   transport B (refl t) a          ≡⟨ refl _ ⟩
   a                               ∎
@@ -4831,11 +4859,84 @@ H'-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
   t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
   t = (Lift 𝓥 X , ≃-Lift X)
   p : t ≡ t
-  p = ≃-subsingleton'' {𝓤} {𝓥} ua X t t
+  p = equivs-from-form-subsingleton'' {𝓤} {𝓥} ua X t t
   q : p ≡ refl t
   q = subsingletons-are-sets (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
-       (≃-subsingleton'' {𝓤} {𝓥} ua X) t t p (refl t)
+       (equivs-from-form-subsingleton'' {𝓤} {𝓥} ua X) t t p (refl t)
 \end{code}
+
+And we have a similar development with a similar example:
+
+\begin{code}
+J↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
+     → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓥 ̇ )
+     → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) (≃-Lift X))
+     → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A X Y e
+J↑-≃ ua A φ X = H↑-≃ ua X (A X) (φ X)
+
+H↑-equiv : is-univalent (𝓤 ⊔ 𝓥)
+         → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
+         → A (Lift 𝓥 X) lift → (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → is-equiv f → A Y f
+H↑-equiv {𝓤} {𝓥} {𝓦} ua X A a Y f i = γ (f , i) i
+ where
+  B : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+  B Y (f , i) = is-equiv f → A Y f
+  b : B (Lift 𝓥 X) (≃-Lift X)
+  b = λ (_ : is-equiv lift) → a
+  γ : (e : X ≃ Y) → B Y e
+  γ = H↑-≃ ua X B b Y
+
+J↑-equiv : is-univalent (𝓤 ⊔ 𝓥)
+         → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
+         → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) lift)
+         → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → is-equiv f → A X Y f
+J↑-equiv ua A φ X = H↑-equiv ua X (A X) (φ X)
+
+J↑-invertible : is-univalent (𝓤 ⊔ 𝓥)
+              → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
+              → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) lift)
+              → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → invertible f → A X Y f
+J↑-invertible ua A φ X Y f i = J↑-equiv ua A φ X Y f (invertibles-are-equivs f i)
+\end{code}
+
+Here is an example. First, `lift` is a half adjoint equivalence on the nose:
+
+\begin{code}
+lift-is-hae : (X : 𝓤 ̇ ) → is-hae {𝓤} {𝓤 ⊔ 𝓥} {X} {Lift 𝓥 X} (lift {𝓤} {𝓥})
+lift-is-hae {𝓤} {𝓥} X = lower , lower-lift {𝓤} {𝓥} , lift-lower , λ x → refl (refl (lift x))
+\end{code}
+
+Hence all invertible maps going up universe levels are half adjoint
+equivalences:
+
+\begin{code}
+invertibles-are-haes↑ : is-univalent (𝓤 ⊔ 𝓥)
+                      → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y)
+                      → invertible f → is-hae f
+invertibles-are-haes↑ {𝓤} {𝓥} ua = J↑-invertible {𝓤} {𝓥} ua (λ X Y f → is-hae f) lift-is-hae
+\end{code}
+
+And here is a corollary:
+\begin{code}
+Σ-change-of-variables↑ : is-univalent (𝓤 ⊔ 𝓥)
+                        → {X : 𝓤 ̇ } {Y : 𝓤 ⊔ 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+                        → invertible f
+                        → Σ A ≃ Σ (A ∘ f)
+Σ-change-of-variables↑ {𝓤} {𝓥} ua A f i = Σ-change-of-variables-hae A f
+                                              (invertibles-are-haes↑ {𝓤} {𝓥} ua _ _ f i)
+\end{code}
+
+We also get an easy proof that `lower` is a half adjoint equivalence:
+
+\begin{code}
+lower-is-hae : (X : 𝓤 ̇ ) → is-hae (lower {𝓤} {𝓥} {X})
+lower-is-hae {𝓤} {𝓥} X = lift ,
+                         lift-lower ,
+                         lower-lift {𝓤} {𝓥} ,
+                         (λ x → refl (refl (lower x)))
+\end{code}
+
+
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="magmaequivalences"></a> Magma equivalences
@@ -5557,77 +5658,6 @@ SN-gives-DNE {𝓤} sn P i = h
   h' φ = g (λ (x : X) → φ (λ (p : P) → f p x))
 
 DNE-gives-SN dne P i = (¬ P) , dni P , dne P i
-\end{code}
-
-Examples:
-
-\begin{code}
-J'-≃ : is-univalent (𝓤 ⊔ 𝓥)
-     → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓥 ̇ )
-     → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) (≃-Lift X))
-     → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A X Y e
-J'-≃ ua A φ X = H'-≃ ua X (A X) (φ X)
-
-H'-equiv : is-univalent (𝓤 ⊔ 𝓥)
-         → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
-         → A (Lift 𝓥 X) lift → (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → is-equiv f → A Y f
-H'-equiv {𝓤} {𝓥} {𝓦} ua X A a Y f i = γ (f , i) i
- where
-  B : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-  B Y (f , i) = is-equiv f → A Y f
-  b : B (Lift 𝓥 X) (≃-Lift X)
-  b = λ (_ : is-equiv lift) → a
-  γ : (e : X ≃ Y) → B Y e
-  γ = H'-≃ ua X B b Y
-
-J'-equiv : is-univalent (𝓤 ⊔ 𝓥)
-         → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
-         → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) lift)
-         → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → is-equiv f → A X Y f
-J'-equiv ua A φ X = H'-equiv ua X (A X) (φ X)
-
-J'-invertible : is-univalent (𝓤 ⊔ 𝓥)
-              → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
-              → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) lift)
-              → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → invertible f → A X Y f
-J'-invertible ua A φ X Y f i = J'-equiv ua A φ X Y f (invertibles-are-equivs f i)
-\end{code}
-
-Here is an example. First, `lift` is a half adjoint equivalence on the nose:
-
-\begin{code}
-lift-is-hae : (X : 𝓤 ̇ ) → is-hae {𝓤} {𝓤 ⊔ 𝓥} {X} {Lift 𝓥 X} (lift {𝓤} {𝓥})
-lift-is-hae {𝓤} {𝓥} X = lower , lower-lift {𝓤} {𝓥} , lift-lower , λ x → refl (refl (lift x))
-\end{code}
-
-Hence all invertible maps going up universe levels are half adjoint
-equivalences:
-
-\begin{code}
-invertibles-are-haes' : is-univalent (𝓤 ⊔ 𝓥)
-                      → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y)
-                      → invertible f → is-hae f
-invertibles-are-haes' {𝓤} {𝓥} ua = J'-invertible {𝓤} {𝓥} ua (λ X Y f → is-hae f) lift-is-hae
-\end{code}
-
-And here is a corollary:
-\begin{code}
-Σ-change-of-variables'' : is-univalent (𝓤 ⊔ 𝓥)
-                        → {X : 𝓤 ̇ } {Y : 𝓤 ⊔ 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
-                        → invertible f
-                        → Σ A ≃ Σ (A ∘ f)
-Σ-change-of-variables'' {𝓤} {𝓥} ua A f i = Σ-change-of-variables-hae A f
-                                              (invertibles-are-haes' {𝓤} {𝓥} ua _ _ f i)
-\end{code}
-
-We also get an easy proof that `lower` is a half adjoint equivalence:
-
-\begin{code}
-lower-is-hae : (X : 𝓤 ̇ ) → is-hae (lower {𝓤} {𝓥} {X})
-lower-is-hae {𝓤} {𝓥} X = lift ,
-                         lift-lower ,
-                         lower-lift {𝓤} {𝓥} ,
-                         (λ x → refl (refl (lower x)))
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
