@@ -1942,7 +1942,7 @@ embedding-lemma f φ = γ
     j = singletons-are-subsingletons (fiber f y) i
 
 embedding-criterion : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                    → ((x' x : X) → (f x' ≡ f x) ≃ (x' ≡ x))
+                    → ((x x' : X) → (f x ≡ f x') ≃ (x ≡ x'))
                     → is-embedding f
 embedding-criterion {𝓤} {𝓥} {X} {Y} f e = embedding-lemma f b
  where
@@ -1957,8 +1957,8 @@ embedding-criterion {𝓤} {𝓥} {X} {Y} f e = embedding-lemma f b
 ap-is-equiv-gives-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                             → ((x x' : X) → is-equiv (λ (p : x ≡ x') → ap f {x} {x'} p))
                             → is-embedding f
-ap-is-equiv-gives-embedding {𝓤} {𝓥} {X} {Y} f i = embedding-criterion f
-                                                    (λ x' x → ≃-sym (ap f {x'} {x} , (i x' x)))
+ap-is-equiv-gives-embedding f i = embedding-criterion f
+                                   (λ x' x → ≃-sym (ap f {x'} {x} , (i x' x)))
 
 embedding-gives-ap-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                             → is-embedding f
@@ -1979,6 +1979,12 @@ embedding-gives-ap-is-equiv f i x x' = γ x' x
           (pointed-subsingletons-are-singletons (fiber f (f x')) (x' , (refl (f x'))) (i (f x')))
   γ : (x' x : X) → is-equiv (α x' x)
   γ x' = NatΣ-equiv-gives-fiberwise-equiv (λ x → x ≡ x') (λ x → f x ≡ f x') (α x') (e x')
+
+embedding-criterion-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                             → is-embedding f
+                             → ((x' x : X) → (f x' ≡ f x) ≃ (x' ≡ x))
+embedding-criterion-converse f e x' x = ≃-sym (ap f {x'} {x} ,
+                                               embedding-gives-ap-is-equiv f e x' x)
 
 record Lift {𝓤 : Universe} (𝓥 : Universe) (X : 𝓤 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
  constructor
