@@ -1015,9 +1015,9 @@ transport-is-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
                    → is-equiv (transport A p)
 transport-is-equiv A (refl x) = id-is-equiv (A x)
 
-Σ-≡-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ τ : Σ A)
-          → (σ ≡ τ) ≃ (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
-Σ-≡-equiv  {𝓤} {𝓥} {X} {A}  σ τ = from-Σ-≡ ,
+Σ-≡-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ τ : Σ A)
+      → (σ ≡ τ) ≃ (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
+Σ-≡-≃  {𝓤} {𝓥} {X} {A}  σ τ = from-Σ-≡ ,
                                   invertibles-are-equivs from-Σ-≡ (to-Σ-≡ , ε , η)
  where
   η : (w : Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ) → from-Σ-≡ (to-Σ-≡ w) ≡ w
@@ -1848,10 +1848,33 @@ hlevel-relation-is-subsingleton {𝓤} fe (succ n) X =
 ≃-sym-involutive fe fe' (f , a) = to-Σ-≡ (inversion-involutive f a ,
                                           being-equiv-is-a-subsingleton fe fe' f _ _)
 
+Π-cong : dfunext 𝓤 𝓥 → dfunext 𝓤 𝓦
+       → (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) (Y' : X → 𝓦 ̇ )
+       → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
+Π-cong fe fe' X Y Y' φ = F , invertibles-are-equivs F (G , GF , FG)
+ where
+  f : (x : X) → Y x → Y' x
+  f x = Eq-to-fun (φ x)
+  e : (x : X) → is-equiv (f x)
+  e x = Eq-to-fun-is-equiv (φ x)
+  g : (x : X) → Y' x → Y x
+  g x = inverse (f x) (e x)
+  fg : (x : X) (y' : Y' x) → f x (g x y') ≡ y'
+  fg x = inverse-is-section (f x) (e x)
+  gf : (x : X) (y : Y x) → g x (f x y) ≡ y
+  gf x = inverse-is-retraction (f x) (e x)
+
+  F : ((x : X) → Y x) → ((x : X) → Y' x)
+  F φ x = f x (φ x)
+  G : ((x : X) → Y' x) → (x : X) → Y x
+  G γ x = g x (γ x)
+  FG :  (γ : ((x : X) → Y' x)) → F(G γ) ≡ γ
+  FG γ = fe' (λ x → fg x (γ x))
+  GF : (φ : ((x : X) → Y x)) → G(F φ) ≡ φ
+  GF φ = fe (λ x → gf x (φ x))
+
 propext : ∀ 𝓤  → 𝓤 ⁺ ̇
-propext 𝓤 = (P Q : 𝓤 ̇ ) → is-prop P → is-prop Q
-                        → (P → Q) → (Q → P)
-                        → P ≡ Q
+propext 𝓤 = (P Q : 𝓤 ̇ ) → is-prop P → is-prop Q → (P → Q) → (Q → P) → P ≡ Q
 
 univalence-gives-propext : is-univalent 𝓤 → propext 𝓤
 univalence-gives-propext ua P Q i j f g =
@@ -1925,6 +1948,13 @@ being-embedding-is-a-subsingleton : global-dfunext
                                   → is-subsingleton(is-embedding f)
 being-embedding-is-a-subsingleton {𝓤} {𝓥} fe f =
   Π-is-subsingleton fe (λ x → being-subsingleton-is-a-subsingleton fe)
+
+pr₂-embedding : (A X : 𝓤 ̇ )
+              → is-subsingleton A → is-embedding (λ (z : A × X) → pr₂ z)
+pr₂-embedding {𝓤} A X i x ((a , x) , refl x) ((b , x) , refl x) = p
+ where
+  p : ((a , x) , refl x) ≡ ((b , x) , refl x)
+  p = ap (λ - → ((- , x) , refl x)) (i a b)
 
 embedding-lemma : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → ((x : X) → is-singleton (fiber f (f x)))
@@ -2281,6 +2311,9 @@ module magma-equivalences (ua : Univalence) where
  dfe : global-dfunext
  dfe = univalence-gives-global-dfunext ua
 
+ hfe : global-hfunext
+ hfe = univalence-gives-global-hfunext ua
+
  being-magma-hom-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
                                    → is-subsingleton (is-magma-hom M N f)
  being-magma-hom-is-a-subsingleton M N f =
@@ -2374,6 +2407,46 @@ module magma-equivalences (ua : Univalence) where
  ≅ₘ-charac' : (M N : Magma 𝓤)
             → (M ≅ₘ N) ≡ (M ≃ₘ N)
  ≅ₘ-charac' M N = ap Σ (magma-iso-charac'' M N)
+
+ magma-structure : 𝓤 ̇ → 𝓤 ̇
+ magma-structure X = is-set X × (X → X → X)
+
+ structure-of : (M : Magma 𝓤) → magma-structure ⟨ M ⟩
+ structure-of (X , s) = s
+
+ transport-of-magma-structure : (X Y : 𝓤 ̇)
+                                (s : magma-structure X) (t : magma-structure Y)
+                                (p : X ≡ Y)
+                              → (transport magma-structure p s ≡ t)
+                              ≃ is-magma-hom (X , s) (Y , t) (Id-to-fun p)
+ transport-of-magma-structure {𝓤} X X (i , _·_) (j , _*_) (refl X) =
+   ((i , _·_) ≡ (j , _*_))                       ≃⟨ a ⟩
+   (_·_ ≡ _*_)                                   ≃⟨ b ⟩
+   ((x : X) → (λ x' → x · x') ≡ (λ x' → x * x')) ≃⟨ c ⟩
+   ((x x' : X) → x · x' ≡ x * x')                ■
+  where
+   a = ≃-sym (embedding-criterion-converse pr₂
+               (pr₂-embedding (is-set X) (X → X → X) (being-set-is-a-subsingleton dfe))
+               (i , _·_)
+               (j , _*_))
+   b = happly _·_ _*_ , hfe _·_ _*_
+   c = Π-cong dfe dfe X _ _ (λ x → happly (x ·_) (x *_) , hfe (x ·_) (x *_))
+
+ Magma-identity : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≃ₘ N)
+ Magma-identity {𝓤} M N =
+   (M ≡ N)                                                                                   ≃⟨ a ⟩
+   (Σ \(p : ⟨ M ⟩ ≡ ⟨ N ⟩) → transport magma-structure p (structure-of M) ≡ structure-of N)  ≃⟨ b ⟩
+   (Σ \(p : ⟨ M ⟩ ≡ ⟨ N ⟩) → is-magma-hom M N (Eq-to-fun (Id-to-Eq ⟨ M ⟩ ⟨ N ⟩ p)))          ≃⟨ c ⟩
+   (Σ \(e : ⟨ M ⟩ ≃ ⟨ N ⟩) → is-magma-hom M N (Eq-to-fun e))                                 ≃⟨ Σ-assoc ⟩
+   (Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-equiv f × is-magma-hom M N f)                                ■
+
+  where
+   a = Σ-≡-≃ M N
+   b = Σ-cong (transport-of-magma-structure ⟨ M ⟩ ⟨ N ⟩ (structure-of M) (structure-of N))
+   c = ≃-sym (Σ-change-of-variables-hae
+                (λ e → is-magma-hom M N (Eq-to-fun e))
+                (Id-to-Eq ⟨ M ⟩ ⟨ N ⟩)
+                (Id-to-Eq-is-hae (ua 𝓤) (ua (𝓤 ⁺)) ⟨ M ⟩ ⟨ N ⟩))
 
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
