@@ -2146,11 +2146,69 @@ invertibles-are-haes↑ {𝓤} {𝓥} ua = J↑-invertible {𝓤} {𝓥} ua (λ 
 Σ-change-of-variables↑ {𝓤} {𝓥} ua A f i = Σ-change-of-variables-hae A f
                                               (invertibles-are-haes↑ {𝓤} {𝓥} ua _ _ f i)
 
+H↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
+      → (Y : 𝓤 ̇ ) (A : (X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
+      → A (Lift 𝓥 Y) (Lift-≃ Y) → (X : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A X e
+H↓-≃ {𝓤} {𝓥} {𝓦} ua Y A a X e = τ a
+ where
+  B : (Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇
+  B (X , e) = A X e
+  t : Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
+  t = (Lift 𝓥 Y , Lift-≃ Y)
+  p : t ≡ (X , e)
+  p = equivs-to-form-subsingleton' ua ua Y t (X , e)
+  τ : B t → B (X , e)
+  τ = transport B p
+
+J↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
+     → (A : (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
+     → ((Y : 𝓤 ̇ ) → A (Lift 𝓥 Y) Y (Lift-≃ Y))
+     → (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) (e : X ≃ Y) → A X Y e
+J↓-≃ ua A φ X Y = H↓-≃ ua Y (λ X → A X Y) (φ Y) X
+
+H↓-equiv : is-univalent (𝓤 ⊔ 𝓥)
+          → (Y : 𝓤 ̇ ) (A : (X : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
+          → A (Lift 𝓥 Y) lower → (X : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → is-equiv f → A X f
+H↓-equiv {𝓤} {𝓥} {𝓦} ua Y A a X f i = γ (f , i) i
+ where
+  B : (X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+  B X (f , i) = is-equiv f → A X f
+  b : B (Lift 𝓥 Y) (Lift-≃ Y)
+  b = λ (_ : is-equiv lower) → a
+  γ : (e : X ≃ Y) → B X e
+  γ = H↓-≃ ua Y B b X
+
+J↓-equiv : is-univalent (𝓤 ⊔ 𝓥)
+          → (A : (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) → (X → Y) → 𝓦 ̇ )
+          → ((Y : 𝓤 ̇ ) → A (Lift 𝓥 Y) Y lower)
+          → (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → A X Y f
+J↓-equiv ua A φ X Y = H↓-equiv ua Y (λ X → A X Y) (φ Y) X
+
+J↓-invertible : is-univalent (𝓤 ⊔ 𝓥)
+              → (A : (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) → (X → Y) → 𝓦 ̇ )
+              → ((Y : 𝓤 ̇ ) → A (Lift 𝓥 Y) Y lower)
+              → (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) (f : X → Y) → invertible f → A X Y f
+J↓-invertible ua A φ X Y f i = J↓-equiv ua A φ X Y f (invertibles-are-equivs f i)
+
 lower-is-hae : (X : 𝓤 ̇ ) → is-hae (lower {𝓤} {𝓥} {X})
-lower-is-hae {𝓤} {𝓥} X = lift ,
-                         lift-lower ,
-                         lower-lift {𝓤} {𝓥} ,
-                         (λ x → refl (refl (lower x)))
+lower-is-hae {𝓤} {𝓥} X = lift , lift-lower , lower-lift {𝓤} {𝓥} , (λ x → refl (refl (lower x)))
+
+invertibles-are-haes↓ : is-univalent (𝓤 ⊔ 𝓥)
+                      → (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) (f : X → Y)
+                      → invertible f → is-hae f
+invertibles-are-haes↓ {𝓤} {𝓥} ua = J↓-invertible {𝓤} {𝓥} ua (λ X Y f → is-hae f) lower-is-hae
+
+Σ-change-of-variables↓ : is-univalent (𝓤 ⊔ 𝓥)
+                       → {X : 𝓤 ⊔ 𝓥 ̇ } {Y : 𝓤 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+                       → invertible f
+                       → Σ A ≃ Σ (A ∘ f)
+Σ-change-of-variables↓ {𝓤} {𝓥} ua A f i = Σ-change-of-variables-hae A f
+                                              (invertibles-are-haes↓ {𝓤} {𝓥} ua _ _ f i)
+
+Id-to-Eq-is-hae : is-univalent 𝓤 → is-univalent (𝓤 ⁺)
+                → (X Y : 𝓤 ̇) → is-hae (Id-to-Eq X Y)
+Id-to-Eq-is-hae ua ua⁺ X Y = invertibles-are-haes↓ ua⁺ (X ≡ Y) (X ≃ Y) (Id-to-Eq X Y)
+                               (equivs-are-invertible (Id-to-Eq X Y) (ua X Y))
 
 module magma-equivalences (ua : Univalence) where
 
