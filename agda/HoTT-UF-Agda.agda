@@ -2210,6 +2210,40 @@ Id-to-Eq-is-hae : is-univalent 𝓤 → is-univalent (𝓤 ⁺)
 Id-to-Eq-is-hae ua ua⁺ X Y = invertibles-are-haes↓ ua⁺ (X ≡ Y) (X ≃ Y) (Id-to-Eq X Y)
                                (equivs-are-invertible (Id-to-Eq X Y) (ua X Y))
 
+global-property-of-types : 𝓤ω
+global-property-of-types = {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
+
+cumulative : global-property-of-types → 𝓤ω
+cumulative A = {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) → A X ≃ A (Lift 𝓥 X)
+
+global-≃-ap : Univalence
+            → (A : global-property-of-types)
+            → cumulative A
+            → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → A X ≃ A Y
+
+global-≃-ap' : Univalence
+             → (F : Universe → Universe)
+             → (A : {𝓤 : Universe} → 𝓤 ̇ → (F 𝓤) ̇ )
+             → ({𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) → A X ≃ A (Lift 𝓥 X))
+             → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → A X ≃ A Y
+global-≃-ap' {𝓤} {𝓥} ua F A φ X Y e =
+  A X          ≃⟨ φ X ⟩
+  A (Lift 𝓥 X) ≃⟨ Id-to-Eq (A (Lift 𝓥 X)) (A (Lift 𝓤 Y)) q ⟩
+  A (Lift 𝓤 Y) ≃⟨ ≃-sym (φ Y) ⟩
+  A Y          ■
+ where
+  d : Lift 𝓥 X ≃ Lift 𝓤 Y
+  d = Lift 𝓥 X ≃⟨ Lift-≃ X ⟩
+      X        ≃⟨ e ⟩
+      Y        ≃⟨ ≃-sym (Lift-≃ Y) ⟩
+      Lift 𝓤 Y ■
+  p : Lift 𝓥 X ≡ Lift 𝓤 Y
+  p = Eq-to-Id (ua (𝓤 ⊔ 𝓥)) (Lift 𝓥 X) (Lift 𝓤 Y) d
+  q : A (Lift 𝓥 X) ≡ A (Lift 𝓤 Y)
+  q = ap A p
+
+global-≃-ap ua = global-≃-ap' ua id
+
 module magma-equivalences (ua : Univalence) where
 
  dfe : global-dfunext
