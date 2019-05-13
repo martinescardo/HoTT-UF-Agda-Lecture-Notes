@@ -5010,6 +5010,73 @@ Id-to-Eq-is-hae ua ua⁺ X Y = invertibles-are-haes↓ ua⁺ (X ≡ Y) (X ≃ Y)
                                (equivs-are-invertible (Id-to-Eq X Y) (ua X Y))
 \end{code}
 
+The remainder of this section is not used anywhere else.  Using the
+universe `𝓤ω` discussed above, we can consider global properties:
+
+\begin{code}
+global-property-of-types : 𝓤ω
+global-property-of-types = {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
+\end{code}
+
+We have already considered a few global properties, in fact,
+such as `is-singleton`, `is-subsingleton`, `is-set` and `_is-of-hlevel n`.
+
+We may hope to have that if `A` is a global property of types, then,
+in the presence of univalence, for any `X : 𝓤` and `Y : 𝓥`, if `A X` holds
+then so does `A Y`.  However, because we have a type of universes, or
+universe levels, we may define e.g. `A {𝓤} X = (𝓤 ≡ 𝓤₀), which violates
+this hope. To get this conclusion, we need an assumption on `A`. We
+say that `A` is cumulative if it is preserved by the embedding `Lift`
+of universes into higher universes:
+
+\begin{code}
+cumulative : global-property-of-types → 𝓤ω
+cumulative A = {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) → A X ≃ A (Lift 𝓥 X)
+\end{code}
+
+We can prove the following:
+
+\begin{code}
+global-≃-ap : Univalence
+            → (A : global-property-of-types)
+            → cumulative A
+            → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → A X ≃ A Y
+\end{code}
+
+However, the notion of global property is very restrictive. For
+example, `is-inhabited` defined above is a global property of type
+`{𝓤 : Universe} → 𝓤 ̇ → 𝓤 ⁺ ̇ `.
+Hence we prove something more general, where in this example we take `F 𝓤 = 𝓤 ⁺`.
+
+\begin{code}
+global-≃-ap' : Univalence
+             → (F : Universe → Universe)
+             → (A : {𝓤 : Universe} → 𝓤 ̇ → (F 𝓤) ̇ )
+             → ({𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) → A X ≃ A (Lift 𝓥 X))
+             → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → A X ≃ A Y
+global-≃-ap' {𝓤} {𝓥} ua F A φ X Y e =
+  A X          ≃⟨ φ X ⟩
+  A (Lift 𝓥 X) ≃⟨ Id-to-Eq (A (Lift 𝓥 X)) (A (Lift 𝓤 Y)) q ⟩
+  A (Lift 𝓤 Y) ≃⟨ ≃-sym (φ Y) ⟩
+  A Y          ■
+ where
+  d : Lift 𝓥 X ≃ Lift 𝓤 Y
+  d = Lift 𝓥 X ≃⟨ Lift-≃ X ⟩
+      X        ≃⟨ e ⟩
+      Y        ≃⟨ ≃-sym (Lift-≃ Y) ⟩
+      Lift 𝓤 Y ■
+  p : Lift 𝓥 X ≡ Lift 𝓤 Y
+  p = Eq-to-Id (ua (𝓤 ⊔ 𝓥)) (Lift 𝓥 X) (Lift 𝓤 Y) d
+  q : A (Lift 𝓥 X) ≡ A (Lift 𝓤 Y)
+  q = ap A p
+\end{code}
+
+The first claim follows with `F = id`:
+
+\begin{code}
+global-≃-ap ua = global-≃-ap' ua id
+\end{code}
+
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="magmaequivalences"></a> Magma equivalences
 
