@@ -5100,7 +5100,7 @@ global-≃-ap : Univalence
             → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → A X ≃ A Y
 \end{code}
 
-However, the notion of global property is very restrictive. For
+However, the above notion of global property is very restrictive. For
 example, `is-inhabited` defined [below](HoTT-UF-Agda.html#truncation) is a global property of type
 `{𝓤 : Universe} → 𝓤 ̇ → 𝓤 ⁺ ̇ `.
 Hence we prove something more general, where in this example we take `F 𝓤 = 𝓤 ⁺`.
