@@ -4996,16 +4996,6 @@ invertibles-are-haes↑ : is-univalent (𝓤 ⊔ 𝓥)
 invertibles-are-haes↑ {𝓤} {𝓥} ua = J↑-invertible {𝓤} {𝓥} ua (λ X Y f → is-hae f) lift-is-hae
 \end{code}
 
-And here is a corollary:
-\begin{code}
-Σ-change-of-variables↑ : is-univalent (𝓤 ⊔ 𝓥)
-                       → {X : 𝓤 ̇ } {Y : 𝓤 ⊔ 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
-                       → invertible f
-                       → Σ A ≃ Σ (A ∘ f)
-Σ-change-of-variables↑ {𝓤} {𝓥} ua A f i = Σ-change-of-variables-hae A f
-                                              (invertibles-are-haes↑ {𝓤} {𝓥} ua _ _ f i)
-\end{code}
-
 We have a similar development with the universes going down:
 
 \begin{code}
@@ -5024,7 +5014,7 @@ H↓-≃ {𝓤} {𝓥} {𝓦} ua Y A a X e = τ a
   τ = transport B p
 
 J↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
-     → (A : (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
+     → (A : (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) → X ≃ Y → 𝓦 ̇ )
      → ((Y : 𝓤 ̇ ) → A (Lift 𝓥 Y) Y (Lift-≃ Y))
      → (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) (e : X ≃ Y) → A X Y e
 J↓-≃ ua A φ X Y = H↓-≃ ua Y (λ X → A X Y) (φ Y) X
@@ -5075,13 +5065,6 @@ Id-to-Eq-is-hae : is-univalent 𝓤 → is-univalent (𝓤 ⁺)
                 → (X Y : 𝓤 ̇) → is-hae (Id-to-Eq X Y)
 Id-to-Eq-is-hae ua ua⁺ X Y = invertibles-are-haes↓ ua⁺ (X ≡ Y) (X ≃ Y) (Id-to-Eq X Y)
                                (equivs-are-invertible (Id-to-Eq X Y) (ua X Y))
-
-Σ-change-of-variables↓ : is-univalent (𝓤 ⊔ 𝓥)
-                       → {X : 𝓤 ⊔ 𝓥 ̇ } {Y : 𝓤 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
-                       → invertible f
-                       → Σ A ≃ Σ (A ∘ f)
-Σ-change-of-variables↓ {𝓤} {𝓥} ua A f i = Σ-change-of-variables-hae A f
-                                              (invertibles-are-haes↓ {𝓤} {𝓥} ua _ _ f i)
 \end{code}
 
 The remainder of this section is not used anywhere else.  Using the
