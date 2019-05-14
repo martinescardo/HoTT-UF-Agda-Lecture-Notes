@@ -5081,7 +5081,7 @@ such as `is-singleton`, `is-subsingleton`, `is-set` and `_is-of-hlevel n`.
 We may hope to have that if `A` is a global property of types, then,
 in the presence of univalence, for any `X : 𝓤` and `Y : 𝓥`, if `A X` holds
 then so does `A Y`.  However, because we have a type of universes, or
-universe levels, we may define e.g. `A {𝓤} X = (𝓤 ≡ 𝓤₀), which violates
+universe levels, we may define e.g. `A {𝓤} X = (𝓤 ≡ 𝓤₀)`, which violates
 this hope. To get this conclusion, we need an assumption on `A`. We
 say that `A` is cumulative if it is preserved by the embedding `Lift`
 of universes into higher universes:
