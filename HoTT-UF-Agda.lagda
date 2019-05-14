@@ -4255,7 +4255,7 @@ funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
   γ = retract-of-singleton (r , s , rs) i
 \end{code}
 
-We have the following corollaries. We first ~/.emformulate the types of
+We have the following corollaries. We first formulate the types of
 some functions:
 
 \begin{code}
