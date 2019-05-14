@@ -2987,7 +2987,7 @@ transport-is-section    : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x �
 transport-is-section A (refl x) = refl
 \end{code}
 
-Using this, we can reindex retracts of `Σ` types as follows:
+Using this, we have the following reindexing retraction of `Σ` types:
 
 \begin{code}
 Σ-reindex-retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → 𝓦 ̇ } (r : Y → X)
@@ -5101,7 +5101,7 @@ global-≃-ap : Univalence
 \end{code}
 
 However, the notion of global property is very restrictive. For
-example, `is-inhabited` defined above is a global property of type
+example, `is-inhabited` defined [below](HoTT-UF-Agda.html#truncation) is a global property of type
 `{𝓤 : Universe} → 𝓤 ̇ → 𝓤 ⁺ ̇ `.
 Hence we prove something more general, where in this example we take `F 𝓤 = 𝓤 ⁺`.
 
