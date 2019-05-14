@@ -2432,14 +2432,13 @@ module magma-equivalences (ua : Univalence) where
    b = happly _·_ _*_ , hfe _·_ _*_
    c = Π-cong dfe dfe X _ _ (λ x → happly (x ·_) (x *_) , hfe (x ·_) (x *_))
 
- Magma-identity : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≃ₘ N)
- Magma-identity {𝓤} M N =
+ magma-identity-is-equivalence : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≃ₘ N)
+ magma-identity-is-equivalence {𝓤} M N =
    (M ≡ N)                                                                                   ≃⟨ a ⟩
    (Σ \(p : ⟨ M ⟩ ≡ ⟨ N ⟩) → transport magma-structure p (structure-of M) ≡ structure-of N)  ≃⟨ b ⟩
    (Σ \(p : ⟨ M ⟩ ≡ ⟨ N ⟩) → is-magma-hom M N (Eq-to-fun (Id-to-Eq ⟨ M ⟩ ⟨ N ⟩ p)))          ≃⟨ c ⟩
    (Σ \(e : ⟨ M ⟩ ≃ ⟨ N ⟩) → is-magma-hom M N (Eq-to-fun e))                                 ≃⟨ Σ-assoc ⟩
    (Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-equiv f × is-magma-hom M N f)                                ■
-
   where
    a = Σ-≡-≃ M N
    b = Σ-cong (transport-of-magma-structure ⟨ M ⟩ ⟨ N ⟩ (structure-of M) (structure-of N))
@@ -2447,6 +2446,9 @@ module magma-equivalences (ua : Univalence) where
                 (λ e → is-magma-hom M N (Eq-to-fun e))
                 (Id-to-Eq ⟨ M ⟩ ⟨ N ⟩)
                 (Id-to-Eq-is-hae (ua 𝓤) (ua (𝓤 ⁺)) ⟨ M ⟩ ⟨ N ⟩))
+
+ magma-identity-is-isomorphism : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≅ₘ N)
+ magma-identity-is-isomorphism {𝓤} M N = magma-identity-is-equivalence M N ● ≃-sym (≅ₘ-charac M N)
 
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
