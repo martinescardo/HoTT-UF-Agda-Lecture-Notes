@@ -1974,8 +1974,9 @@ embedding-lemma f φ = γ
 embedding-criterion : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → ((x x' : X) → (f x ≡ f x') ≃ (x ≡ x'))
                     → is-embedding f
-embedding-criterion {𝓤} {𝓥} {X} {Y} f e = embedding-lemma f b
+embedding-criterion f e = embedding-lemma f b
  where
+  X = domain f
   a : (x : X) → (Σ \(x' : X) → f x' ≡ f x) ≃ (Σ \(x' : X) → x' ≡ x)
   a x = Σ-cong (λ x' → e x' x)
   a' : (x : X) → fiber f (f x) ≃ singleton-type x
@@ -1985,14 +1986,14 @@ embedding-criterion {𝓤} {𝓥} {X} {Y} f e = embedding-lemma f b
          (a' x) (singleton-types-are-singletons X x)
 
 ap-is-equiv-gives-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                            → ((x x' : X) → is-equiv (λ (p : x ≡ x') → ap f {x} {x'} p))
+                            → ((x x' : X) → is-equiv (ap f {x} {x'}))
                             → is-embedding f
 ap-is-equiv-gives-embedding f i = embedding-criterion f
                                    (λ x' x → ≃-sym (ap f {x'} {x} , (i x' x)))
 
 embedding-gives-ap-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                             → is-embedding f
-                            → (x x' : X) → is-equiv (λ (p : x ≡ x') → ap f {x} {x'} p)
+                            → (x x' : X) → is-equiv (ap f {x} {x'})
 embedding-gives-ap-is-equiv f i x x' = γ x' x
  where
   X = domain f
