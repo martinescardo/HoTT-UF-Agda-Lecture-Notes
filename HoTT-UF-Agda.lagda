@@ -3626,10 +3626,10 @@ ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x x' :
 ### <a id="unicharac"></a> A characterization of univalence
 
 \begin{code}
-retract-singleton-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
-                        → ((y : X) → A y ◁ (x ≡ y))
-                        → is-singleton (Σ A)
-retract-singleton-lemma {𝓤} {𝓥} {X} {A} x ρ = i
+retract-subsingleton-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
+                           → ((y : X) → A y ◁ (x ≡ y))
+                           → is-subsingleton (Σ A)
+retract-subsingleton-lemma {𝓤} {𝓥} {X} {A} x ρ = singletons-are-subsingletons (Σ A) i
  where
   σ : Σ A ◁ singleton-type' x
   σ = Σ-retract ρ
@@ -3642,38 +3642,33 @@ The following consequence is often useful:
 \begin{code}
 univalence-alternative : is-univalent 𝓤
                        → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-univalence-alternative {𝓤} ua X = singletons-are-subsingletons (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) γ
+univalence-alternative {𝓤} ua X = retract-subsingleton-lemma X ρ
  where
   ρ : (Y : 𝓤 ̇) → (X ≃ Y) ◁ (X ≡ Y)
   ρ Y = ≃-gives-◁ (≃-sym (is-univalent-≃ ua X Y))
-  γ : is-singleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-  γ = retract-singleton-lemma X ρ
 \end{code}
 
 The converse also holds. Again we can say something more general:
 
 \begin{code}
-singleton-equiv-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
-                      → (f : (y : X) → x ≡ y → A y)
-                      → is-singleton (Σ A)
-                      → (y : X) → is-equiv (f y)
-singleton-equiv-lemma {𝓤} {𝓥} {X} {A} x f i = γ
+subsingleton-equiv-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
+                         → (f : (y : X) → x ≡ y → A y)
+                         → is-subsingleton (Σ A)
+                         → (y : X) → is-equiv (f y)
+subsingleton-equiv-lemma {𝓤} {𝓥} {X} {A} x f i = γ
  where
+  j : is-singleton (Σ A)
+  j = pointed-subsingletons-are-singletons (Σ A) (x , (f x (refl x))) i
   g : singleton-type' x → Σ A
   g = NatΣ f
   e : is-equiv g
-  e = maps-of-singletons-are-equivs g (singleton-types'-are-singletons X x) i
+  e = maps-of-singletons-are-equivs g (singleton-types'-are-singletons X x) j
   γ : (y : X) → is-equiv (f y)
   γ = NatΣ-equiv-gives-fiberwise-equiv f e
 
 univalence-alternative-converse : ((X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y))
                                 → is-univalent 𝓤
-univalence-alternative-converse {𝓤} i X Y = γ
- where
-  s : is-singleton (Σ \(Y : 𝓤 ̇) → X ≃ Y)
-  s = pointed-subsingletons-are-singletons (Σ (\(Y : 𝓤 ̇) → X ≃ Y)) (X , ≃-refl X) (i X)
-  γ : is-equiv (Id-to-Eq X Y)
-  γ = singleton-equiv-lemma X (Id-to-Eq X) s Y
+univalence-alternative-converse {𝓤} i X = subsingleton-equiv-lemma X (Id-to-Eq X) (i X)
 \end{code}
 
 Combining the two lemmas, we get the [following](https://github.com/HoTT/book/issues/718#issuecomment-65378867):
@@ -3687,10 +3682,10 @@ fiberwise-retraction-of-Id-is-equiv {𝓤} {𝓥} {X} {A} x f s = γ
  where
   ρ : (y : X) → A y ◁ (x ≡ y)
   ρ y = f y , s y
-  i : is-singleton (Σ A)
-  i = retract-singleton-lemma x ρ
+  i : is-subsingleton (Σ A)
+  i = retract-subsingleton-lemma x ρ
   γ : (y : X) → is-equiv (f y)
-  γ = singleton-equiv-lemma x f i
+  γ = subsingleton-equiv-lemma x f i
 \end{code}
 
 This says that a fiberwise retraction of an identity type is an
