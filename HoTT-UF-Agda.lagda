@@ -802,7 +802,7 @@ an element of the type `A n` by [primitive
 recursion](https://www.encyclopediaofmath.org/index.php/Primitive_recursion).
 
 Notice also that `ℕ-induction` is the dependently typed version of
-primitive recursion, where the non-dependently type version is
+primitive recursion, where the non-dependently typed version is
 
 \begin{code}
 ℕ-recursion : (X : 𝓤 ̇ )
