@@ -1287,7 +1287,7 @@ model of type theory in which types are interpreted as
 spirit similar to the non-provability of the [parallel
 postulate](https://en.wikipedia.org/wiki/Parallel_postulate) in
 Euclidean geometry, which also considers models, which in turn are
-interesting on their own right.
+interesting in their own right.
 
 However, for the elements of *some* types, such as `ℕ`, it is
 [possible to prove](HoTT-UF-Agda.html#naturalsset) that any identity
