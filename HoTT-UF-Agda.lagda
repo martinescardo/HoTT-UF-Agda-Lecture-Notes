@@ -3882,7 +3882,7 @@ fiberwise-◁-≃ {𝓤} {𝓥} {X} {A} x ρ y = ≃-sym γ
 \end{code}
 
 We also have the following corollary, which says that a family whose
-total space is a singleton is fiberwise equivalent to an identity
+total space is a singleton is pointwise equivalent to an identity
 type:
 
 \begin{code}
