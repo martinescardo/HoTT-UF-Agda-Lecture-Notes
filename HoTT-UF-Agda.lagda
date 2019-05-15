@@ -3638,9 +3638,7 @@ univalence-alternative {𝓤} ua X = γ
    d : (Σ \(Y : 𝓤 ̇ ) → X ≡ Y) ≃ (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
    d = Σ-cong e
    s : is-singleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-   s = equiv-to-singleton
-        (≃-sym d)
-        (singleton-types'-are-singletons (𝓤 ̇ ) X)
+   s = equiv-to-singleton (≃-sym d) (singleton-types'-are-singletons (𝓤 ̇ ) X)
    γ : is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
    γ = singletons-are-subsingletons (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) s
 \end{code}
@@ -3706,7 +3704,9 @@ fiberwise-retraction-of-Id-is-equiv {𝓤} {𝓥} {X} {A} x f s = γ
   γ = singleton-equiv-lemma x f i
 \end{code}
 
-Perhaps the following (weaker) formulation is more appealing:
+This says that a fiberwise retraction of an identity type is an
+equivalence. Perhaps the following (weaker) formulation is more
+appealing.
 
 \begin{code}
 fiberwise-◁-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
