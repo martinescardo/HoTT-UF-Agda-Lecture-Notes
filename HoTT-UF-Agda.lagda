@@ -1533,7 +1533,11 @@ write the *definiens* as
 
 or, with our `Π` notation,
 
-   > `Π \x → f x ≡ g x`
+   > `Π \x → f x ≡ g x`,
+
+or, with our `domain` notation
+
+   > `(x : domain f) → f x ≡ g x`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="negation"></a> Reasoning with negation
