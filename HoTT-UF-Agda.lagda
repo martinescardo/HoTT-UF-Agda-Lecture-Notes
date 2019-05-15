@@ -1113,7 +1113,7 @@ curry f x y = f (x , y)
 \end{code}
 
 An important particular case of the sum type is the binary cartesian
-product, when the type family doesn't depend on the indexing family:
+product, when the type family doesn't depend on the indexing type:
 
 \begin{code}
 _×_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
