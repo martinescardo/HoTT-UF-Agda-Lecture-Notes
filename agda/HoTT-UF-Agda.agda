@@ -1880,18 +1880,21 @@ univalence-gives-propext : is-univalent 𝓤 → propext 𝓤
 univalence-gives-propext ua P Q i j f g =
  Eq-to-Id ua P Q (logically-equivalent-subsingletons-are-equivalent P Q i j (f , g))
 
-≃-refl-left : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥) → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+≃-refl-left : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+            → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
             → ≃-refl X ● α ≡ α
 ≃-refl-left fe fe' α = to-Σ-≡ (refl _ , being-equiv-is-a-subsingleton fe fe' _ _ _)
 
-≃-sym-left-inverse : dfunext 𝓥 𝓥  → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+≃-sym-left-inverse : dfunext 𝓥 𝓥
+                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
                    → ≃-sym α ● α ≡ ≃-refl Y
 ≃-sym-left-inverse fe (f , e) = to-Σ-≡ (p , being-equiv-is-a-subsingleton fe fe _ _ _)
  where
   p : f ∘ inverse f e ≡ id
   p = fe (inverse-is-section f e)
 
-≃-sym-right-inverse : dfunext 𝓤 𝓤 → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+≃-sym-right-inverse : dfunext 𝓤 𝓤
+                    → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
                     → α ● ≃-sym α ≡ ≃-refl X
 ≃-sym-right-inverse fe (f , e) = to-Σ-≡ (p , being-equiv-is-a-subsingleton fe fe _ _ _)
  where
