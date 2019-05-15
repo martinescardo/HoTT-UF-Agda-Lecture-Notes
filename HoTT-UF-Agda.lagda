@@ -3650,8 +3650,8 @@ univalence-alternative {𝓤} ua X = γ
 The converse [also
 holds](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-Yoneda.html#univalence-via-singletons),
 as we now show.
-
 In fact we can say something more general:
+
 \begin{code}
 singleton-equiv-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
                       → (f : (y : X) → x ≡ y → A y)
