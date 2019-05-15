@@ -3625,6 +3625,8 @@ ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x x' :
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="unicharac"></a> A characterization of univalence
 
+We begin with a general lemma.
+
 \begin{code}
 retract-subsingleton-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
                            → ((y : X) → A y ◁ (x ≡ y))
@@ -3637,15 +3639,24 @@ retract-subsingleton-lemma {𝓤} {𝓥} {X} {A} x ρ = singletons-are-subsingle
   i = retract-of-singleton σ (singleton-types'-are-singletons X x)
 \end{code}
 
+In particular:
+
+\begin{code}
+equiv-subsingleton-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
+                         → ((y : X) → A y ≃ (x ≡ y))
+                         → is-subsingleton (Σ A)
+equiv-subsingleton-lemma {𝓤} {𝓥} {X} {A} x e = retract-subsingleton-lemma x (λ x → ≃-gives-◁ (e x))
+\end{code}
+
 The following consequence is often useful:
 
 \begin{code}
 univalence-alternative : is-univalent 𝓤
                        → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-univalence-alternative {𝓤} ua X = retract-subsingleton-lemma X ρ
+univalence-alternative {𝓤} ua X = equiv-subsingleton-lemma X e
  where
-  ρ : (Y : 𝓤 ̇) → (X ≃ Y) ◁ (X ≡ Y)
-  ρ Y = ≃-gives-◁ (≃-sym (is-univalent-≃ ua X Y))
+  e : (Y : 𝓤 ̇) → (X ≃ Y) ≃ (X ≡ Y)
+  e Y = ≃-sym (is-univalent-≃ ua X Y)
 \end{code}
 
 The converse also holds. Again we can say something more general:
@@ -3668,7 +3679,10 @@ subsingleton-equiv-lemma {𝓤} {𝓥} {X} {A} x f i = γ
 
 univalence-alternative-converse : ((X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y))
                                 → is-univalent 𝓤
-univalence-alternative-converse {𝓤} i X = subsingleton-equiv-lemma X (Id-to-Eq X) (i X)
+univalence-alternative-converse {𝓤} i X = γ
+ where
+  γ : (Y : 𝓤 ̇ ) → is-equiv (Id-to-Eq X Y)
+  γ = subsingleton-equiv-lemma X (Id-to-Eq X) (i X)
 \end{code}
 
 Combining the two lemmas, we get the [following](https://github.com/HoTT/book/issues/718#issuecomment-65378867):
@@ -3704,6 +3718,28 @@ fiberwise-◁-≃ {𝓤} {𝓥} {X} {A} x ρ y = ≃-sym γ
         (λ y → retraction (ρ y))
         (λ y → retraction-has-section (ρ y))
         y
+\end{code}
+
+We also have the following corollary, which says that a family whose
+total space is a singleton is fiberwise equivalent to an identity
+type:
+
+\begin{code}
+singleton-Σ-is-Id : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                  → is-singleton (Σ A)
+                  → Σ \(x : X) → (y : X) → A y ≃ (x ≡ y)
+singleton-Σ-is-Id {𝓤} {𝓥} {X} {A} s = x , φ
+ where
+  x : X
+  x = pr₁ (center (Σ A) s)
+  a : A x
+  a = pr₂ (center (Σ A) s)
+  f : (y : X) → x ≡ y → A y
+  f y p = transport A p a
+  e : (y : X) → is-equiv (f y)
+  e = subsingleton-equiv-lemma x f (singletons-are-subsingletons (Σ A) s)
+  φ : (y : X) → A y ≃ (x ≡ y)
+  φ y = ≃-sym (f y , e y)
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
