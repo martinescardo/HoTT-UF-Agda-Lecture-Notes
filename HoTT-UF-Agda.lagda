@@ -5732,9 +5732,11 @@ excluded middle.
 
 ### <a id="infixop"></a> Operator fixities and precedences
 
+
 Without the following list of operator precedences and
 associativities (left or right), this agda file doesn't parse and is
 rejected by Agda.
+
 
 \begin{code}
 
