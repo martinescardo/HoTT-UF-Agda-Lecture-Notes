@@ -3325,9 +3325,9 @@ The following are often useful:
 ≃-gives-▷ : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → Y ◁ X
 ≃-gives-▷ X Y (f , e) = (f , inverse f e , inverse-is-section f e)
 
-equiv-to-singleton : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+equiv-to-singleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                    → X ≃ Y → is-singleton Y → is-singleton X
-equiv-to-singleton X Y e = retract-of-singleton (≃-gives-◁ X Y e)
+equiv-to-singleton {𝓤} {𝓥} {X} {Y} e = retract-of-singleton (≃-gives-◁ X Y e)
 \end{code}
 
 
@@ -3548,7 +3548,7 @@ equivs-closed-under-∼' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
                        → f ∼ g
                        → is-equiv g
 
-equiv-to-singleton' : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+equiv-to-singleton' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                     → X ≃ Y → is-singleton X → is-singleton Y
 
 subtypes-of-sets-are-sets : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
@@ -3639,8 +3639,6 @@ univalence-alternative {𝓤} ua X = γ
    d = Σ-cong e
    s : is-singleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
    s = equiv-to-singleton
-        (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-        (Σ \(Y : 𝓤 ̇ ) → X ≡ Y)
         (≃-sym d)
         (singleton-types'-are-singletons (𝓤 ̇ ) X)
    γ : is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
@@ -3976,7 +3974,7 @@ equivs-closed-under-∼ f g e h =
 
 equivs-closed-under-∼' f g e h = equivs-closed-under-∼ f g e (λ x → (h x)⁻¹)
 
-equiv-to-singleton' X Y e = retract-of-singleton (≃-gives-▷ X Y e)
+equiv-to-singleton' {𝓤} {𝓥} {X} {Y} e = retract-of-singleton (≃-gives-▷ X Y e)
 
 subtypes-of-sets-are-sets {𝓤} {𝓥} {X} m i h = Id-collapsibles-are-sets X c
  where
@@ -4059,12 +4057,12 @@ NatΣ-fiber-equiv A B φ x b = (f , invertibles-are-equivs f (g , ε , η))
 
 NatΣ-equiv-gives-fiberwise-equiv {𝓤} {𝓥} {𝓦} {X} {A} {B} φ e x b = γ
  where
+  d : fiber (φ x) b ≃ fiber (NatΣ φ) (x , b)
+  d = NatΣ-fiber-equiv A B φ x b
+  s : is-singleton (fiber (NatΣ φ) (x , b))
+  s = e (x , b)
   γ : is-singleton (fiber (φ x) b)
-  γ = equiv-to-singleton
-         (fiber (φ x) b)
-         (fiber (NatΣ φ) (x , b))
-         (NatΣ-fiber-equiv A B φ x b)
-         (e (x , b))
+  γ = equiv-to-singleton d s
 
 Σ-is-subsingleton i j (x , a) (y , b) = to-Σ-≡ (i x y , j y _ _)
 
@@ -4734,8 +4732,7 @@ embedding-criterion f e = embedding-lemma f b
   a' : (x : X) → fiber f (f x) ≃ singleton-type x
   a' = a
   b : (x : X) → is-singleton (fiber f (f x))
-  b x = equiv-to-singleton (fiber f (f x)) (singleton-type x)
-         (a' x) (singleton-types-are-singletons X x)
+  b x = equiv-to-singleton (a' x) (singleton-types-are-singletons X x)
 \end{code}
 
 An equivalent formulation of `f` being an embedding is that the map
