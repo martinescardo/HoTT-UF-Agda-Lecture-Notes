@@ -788,6 +788,9 @@ section (r , s , η) = s
 retract-equation : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (ρ : X ◁ Y) → retraction ρ ∘ section ρ ∼ 𝑖𝑑 X
 retract-equation (r , s , η) = η
 
+retraction-has-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (ρ : X ◁ Y) → has-section (retraction ρ)
+retraction-has-section (r , h) = h
+
 ◁-refl : (X : 𝓤 ̇ ) → X ◁ X
 ◁-refl X = 𝑖𝑑 X , 𝑖𝑑 X , refl
 
@@ -1257,28 +1260,62 @@ univalence-alternative {𝓤} ua X = γ
    γ : is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
    γ = singletons-are-subsingletons (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) s
 
-singleton-equiv-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                      → is-singleton (Σ A)
-                      → (x : X)
+singleton-equiv-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
                       → (f : (y : X) → x ≡ y → A y)
+                      → is-singleton (Σ A)
                       → (y : X) → is-equiv (f y)
-singleton-equiv-lemma {𝓤} {𝓥} {X} {A} i x f = γ
+singleton-equiv-lemma {𝓤} {𝓥} {X} {A} x f i = γ
  where
   g : singleton-type' x → Σ A
   g = NatΣ f
   e : is-equiv g
   e = maps-of-singletons-are-equivs g (singleton-types'-are-singletons X x) i
-  γ : (x : X) → is-equiv (f x)
+  γ : (y : X) → is-equiv (f y)
   γ = NatΣ-equiv-gives-fiberwise-equiv f e
 
-univalence-alternative-back : ((X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y))
-                            → is-univalent 𝓤
-univalence-alternative-back {𝓤} φ X Y = γ
+univalence-alternative-converse : ((X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y))
+                                → is-univalent 𝓤
+univalence-alternative-converse {𝓤} φ X Y = γ
  where
   s : is-singleton (Σ \(Y : 𝓤 ̇) → X ≃ Y)
   s = pointed-subsingletons-are-singletons (Σ (\(Y : 𝓤 ̇) → X ≃ Y)) (X , ≃-refl X) (φ X)
   γ : is-equiv (Id-to-Eq X Y)
-  γ = singleton-equiv-lemma s X (Id-to-Eq X) Y
+  γ = singleton-equiv-lemma X (Id-to-Eq X) s Y
+
+singleton-equiv-lemma-back : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
+                           → ((y : X) → A y ◁ (x ≡ y))
+                           → is-singleton (Σ A)
+singleton-equiv-lemma-back {𝓤} {𝓥} {X} {A} x ρ = i
+ where
+  σ : Σ A ◁ singleton-type' x
+  σ = Σ-retract ρ
+  i : is-singleton (Σ A)
+  i = retract-of-singleton σ (singleton-types'-are-singletons X x)
+
+fiberwise-retraction-of-Id-is-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
+                                    → (f : (y : X) → x ≡ y → A y)
+                                    → ((y : X) → has-section (f y))
+                                    → ((y : X) → is-equiv (f y))
+fiberwise-retraction-of-Id-is-equiv {𝓤} {𝓥} {X} {A} x f s = γ
+ where
+  ρ : (y : X) → A y ◁ (x ≡ y)
+  ρ y = f y , s y
+  i : is-singleton (Σ A)
+  i = singleton-equiv-lemma-back x ρ
+  γ : (y : X) → is-equiv (f y)
+  γ = singleton-equiv-lemma x f i
+
+fiberwise-◁-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
+              → ((y : X) → A y ◁ (x ≡ y))
+              → ((y : X) → A y ≃ (x ≡ y))
+fiberwise-◁-≃ {𝓤} {𝓥} {X} {A} x ρ y = ≃-sym γ
+ where
+  γ : (x ≡ y) ≃ A y
+  γ = retraction (ρ y) ,
+      fiberwise-retraction-of-Id-is-equiv x
+        (λ y → retraction (ρ y))
+        (λ y → retraction-has-section (ρ y))
+        y
 
 H-≃ : is-univalent 𝓤
     → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
