@@ -324,7 +324,6 @@ to practice univalent mathematics should consult the above references.
      1. [Reasoning with negation](HoTT-UF-Agda.html#negation)
      1. [Example: formulation of the twin-prime conjecture](HoTT-UF-Agda.html#twinprime)
      1. [Remaining Peano axioms and basic arithmetic](HoTT-UF-Agda.html#basicarithmetic)
-     1. [Operator fixities and precedences](HoTT-UF-Agda.html#infix)
   1. [Univalent Mathematics in Agda](HoTT-UF-Agda.html#uminagda)
      1. [Our univalent type theory](HoTT-UF-Agda.html#axiomaticutt)
      1. [Subsingletons (or propositions or truth values) and sets](HoTT-UF-Agda.html#subsingletonsandsets)
@@ -345,10 +344,11 @@ to practice univalent mathematics should consult the above references.
      1. [Voevodsky' notion of type equivalence](HoTT-UF-Agda.html#fibersandequivalences)
      1. [Voevodsky's univalence axiom](HoTT-UF-Agda.html#univalence)
      1. [Example of a type that is not a set under univalence](HoTT-UF-Agda.html#notsets)
-     1. [Equivalence induction](HoTT-UF-Agda.html#equivalenceinduction)
-     1. [Half adjoint equivalences](HoTT-UF-Agda.html#haes)
      1. [Exercises](HoTT-UF-Agda.html#lefttothereader)
      1. [Solutions](HoTT-UF-Agda.html#solutions)
+     1. [A characterization of univalence](HoTT-UF-Agda.html#unicharac)
+     1. [Equivalence induction](HoTT-UF-Agda.html#equivalenceinduction)
+     1. [Half adjoint equivalences](HoTT-UF-Agda.html#haes)
      1. [Function extensionality from univalence](HoTT-UF-Agda.html#funextfromua)
      1. [Variations of function extensionality and their logical equivalence](HoTT-UF-Agda.html#hfunext)
      1. [The univalence axiom is a (sub)singleton type](HoTT-UF-Agda.html#univalencesubsingleton)
@@ -362,8 +362,8 @@ to practice univalent mathematics should consult the above references.
      1. [Structure identity principle](HoTT-UF-Agda.html#sip)
      1. [Subsingleton truncation](HoTT-UF-Agda.html#truncation)
      1. [The univalent axiom of choice](HoTT-UF-Agda.html#choice)
-     1. [Operator fixities and precedences](HoTT-UF-Agda.html#infix2)
   1. [Appendix](HoTT-UF-Agda.html#appendix)
+     1. [Operator fixities and precedences](HoTT-UF-Agda.html#infix)
      1. [Additional exercises](HoTT-UF-Agda.html#moreexercises)
      1. [Solutions](HoTT-UF-Agda.html#mlttexercisessol)
      1. [Agda files automatically extracted from these notes](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes/tree/master/agda)
@@ -1985,28 +1985,6 @@ In both cases, we proceed by induction on both arguments.
 [Later](HoTT-UF-Agda.html#mlttexercisessol) we will show that `(x ≤ y) ≡ Σ \(z : ℕ) → x + z ≡ y`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="infix"></a> Operator fixities and precedences
-
-Without the following list of operator precedences and
-associativities (left or right), this agda file doesn't parse and is
-rejected by Agda.
-
-\begin{code}
-
-infix  4  _∼_
-infixr 4 _,_
-infixr 2 _×_
-infixr 1 _+_
-infixl 5 _∘_
-infix  0 _≡_
-infixl 2 _∙_
-infixr 0 _≡⟨_⟩_
-infix  1 _∎
-infix  3  _⁻¹
-
-\end{code}
-
-[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ## <a id="uminagda"></a> Univalent Mathematics in Agda
 
 ### <a id="axiomaticutt"></a> Our univalent type theory
@@ -2964,9 +2942,9 @@ maps](HoTT-UF-Agda.html#fibersandequivalences).
 
 A pointwise retraction gives  a retraction of the total spaces:
 \begin{code}
-Σ-retract : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
+Σ-retract : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
           → ((x : X) → (A x) ◁ (B x)) → Σ A ◁ Σ B
-Σ-retract X A B ρ = NatΣ r , NatΣ s , η'
+Σ-retract {𝓤} {𝓥} {𝓦} {X} {A} {B} ρ = NatΣ r , NatΣ s , η'
  where
   r : (x : X) → B x → A x
   r x = retraction (ρ x)
@@ -2996,10 +2974,10 @@ transport-is-section A (refl x) = refl
 Using this, we have the following reindexing retraction of `Σ` types:
 
 \begin{code}
-Σ-reindex-retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → 𝓦 ̇ } (r : Y → X)
+Σ-reindexing-retract : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → 𝓦 ̇ } (r : Y → X)
                      → has-section r
                      → (Σ \(x : X) → A x) ◁ (Σ \(y : Y) → A (r y))
-Σ-reindex-retraction {𝓤} {𝓥} {𝓦} {X} {Y} {A} r (s , η) = γ , φ , γφ
+Σ-reindexing-retract {𝓤} {𝓥} {𝓦} {X} {Y} {A} r (s , η) = γ , φ , γφ
  where
   γ : Σ (A ∘ r) → Σ A
   γ (y , a) = (r y , a)
@@ -3167,7 +3145,7 @@ retraction techniques explained [above](HoTT-UF-Agda.html#retracts):
 \begin{code}
 invertibles-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                        → invertible f → is-equiv f
-invertibles-are-equivs {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = γ
+invertibles-are-equivs {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = c
  where
   a : (y : Y) → (f (g y) ≡ y₀) ◁ (y ≡ y₀)
   a y =  r , s , transport-is-section (_≡ y₀) (ε y)
@@ -3177,11 +3155,11 @@ invertibles-are-equivs {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = γ
     s : f (g y) ≡ y₀ → y ≡ y₀
     s = transport (_≡ y₀) (ε y)
   b : fiber f y₀ ◁ singleton-type y₀
-  b = (Σ \(x : X) → f x ≡ y₀)     ◁⟨ Σ-reindex-retraction g (f , η) ⟩
-      (Σ \(y : Y) → f (g y) ≡ y₀) ◁⟨ Σ-retract Y (λ y → f (g y) ≡ y₀) (λ y → y ≡ y₀) a ⟩
+  b = (Σ \(x : X) → f x ≡ y₀)     ◁⟨ Σ-reindexing-retract g (f , η) ⟩
+      (Σ \(y : Y) → f (g y) ≡ y₀) ◁⟨ Σ-retract a ⟩
       (Σ \(y : Y) → y ≡ y₀)       ◀
-  γ : is-singleton (fiber f y₀)
-  γ = retract-of-singleton b (singleton-types-are-singletons Y y₀)
+  c : is-singleton (fiber f y₀)
+  c = retract-of-singleton b (singleton-types-are-singletons Y y₀)
 \end{code}
 
 \begin{code}
@@ -3412,30 +3390,6 @@ book](https://homotopytypetheory.org/book/). There is a [solution in
 Coq](https://github.com/HoTT/HoTT/blob/master/contrib/HoTTBookExercises.v)
 by [Mike Shulman](https://home.sandiego.edu/~shulman/).
 
-The following is often useful:
-
-\begin{code}
-equivs-from-form-subsingleton : is-univalent 𝓤
-                              → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-equivs-from-form-subsingleton {𝓤} ua X = γ
-  where
-   abstract
-    e : (Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
-    e Y = Id-to-Eq X Y , ua X Y
-    d : (Σ \(Y : 𝓤 ̇ ) → X ≡ Y) ≃ (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-    d = Σ-cong e
-    s : is-singleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-    s = equiv-to-singleton
-         (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-         (Σ \(Y : 𝓤 ̇ ) → X ≡ Y)
-         (≃-sym d)
-         (singleton-types'-are-singletons (𝓤 ̇ ) X)
-    γ : is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-    γ = singletons-are-subsingletons (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) s
-\end{code}
-
-The converse [also holds](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-Yoneda.html#univalence-via-singletons).
-
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="notsets"></a> Example of a type that is not a set under univalence
 
@@ -3509,6 +3463,218 @@ If the universe `𝓤₀` were a set, then the identifications `p₀` and
 For more examples, see [Kraus and Sattler](https://arxiv.org/abs/1311.4002).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="lefttothereader"></a> Exercises
+
+Here are some facts whose proofs are left to the reader but that we
+will need from the next section onwards. Sample solutions are given
+[below](HoTT-UF-Agda.html#solutions).
+
+Define functions for the following type declarations. As a matter of
+procedure, we suggest to import this file and add another declaration
+with the same type and new name e.g. `section-are-lc-solution`,
+because we already have solutions in this file.
+
+We start with the notion of left cancellability.
+
+\begin{code}
+left-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+left-cancellable f = {x x' : domain f} → f x ≡ f x' → x ≡ x'
+
+lc-maps-reflect-subsingletonness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                 → left-cancellable f
+                                 → is-subsingleton Y
+                                 → is-subsingleton X
+
+has-retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+has-retraction s = Σ \(r : codomain s → domain s) → r ∘ s ∼ id
+
+sections-are-lc : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (s : X → A) → has-retraction s → left-cancellable s
+
+equivs-have-retractions : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f → has-retraction f
+
+equivs-have-sections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f → has-section f
+
+equivs-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f → left-cancellable f
+
+equiv-to-subsingleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                      → X ≃ Y
+                      → is-subsingleton Y
+                      → is-subsingleton X
+
+sections-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
+                        → has-retraction f
+                        → g ∼ f
+                        → has-retraction g
+
+retractions-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
+                           → has-section f
+                           → g ∼ f
+                           → has-section g
+\end{code}
+
+An alternative notion of equivalence, equivalent to Voevodsky's, has
+been given by Andre Joyal:
+
+\begin{code}
+is-joyal-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+is-joyal-equiv f = has-section f × has-retraction f
+\end{code}
+
+Provide definitions for the following type declarations:
+
+\begin{code}
+joyal-equivs-are-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                            → is-joyal-equiv f → invertible f
+
+joyal-equivs-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                        → is-joyal-equiv f → is-equiv f
+
+invertibles-are-joyal-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                             → invertible f → is-joyal-equiv f
+
+equivs-are-joyal-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                        → is-equiv f → is-joyal-equiv f
+
+equivs-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
+                      → is-equiv f
+                      → g ∼ f
+                      → is-equiv g
+
+equivs-closed-under-∼' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
+                       → is-equiv f
+                       → f ∼ g
+                       → is-equiv g
+
+equiv-to-singleton' : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+                    → X ≃ Y → is-singleton X → is-singleton Y
+
+subtypes-of-sets-are-sets : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
+                          → left-cancellable m → is-set Y → is-set X
+
+pr₁-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ((x : X) → is-subsingleton (A x))
+       → left-cancellable  (λ (t : Σ A) → pr₁ t)
+
+subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+                         → is-set X
+                         → ((x : X) → is-subsingleton(A x))
+                         → is-set(Σ \(x : X) → A x)
+
+pr₁-equivalence : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+                → ((x : X) → is-singleton (A x))
+                → is-equiv (λ (t : Σ A) → pr₁ t)
+
+ΠΣ-distr-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
+           → (Π \(x : X) → Σ \(a : A x) → P x a) ≃ (Σ \(f : Π A) → Π \(x : X) → P x (f x))
+
+Σ-assoc : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : Σ Y → 𝓦 ̇ }
+        → Σ Z ≃ (Σ \(x : X) → Σ \(y : Y x) → Z (x , y))
+
+⁻¹-≃ : {X : 𝓤 ̇ } (x y : X) → (x ≡ y) ≃ (y ≡ x)
+
+
+singleton-types-≃ : {X : 𝓤 ̇ } (x : X) → singleton-type' x ≃ singleton-type x
+
+singletons-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+             → is-singleton X → is-singleton Y → X ≃ Y
+
+maps-of-singletons-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                              → is-singleton X → is-singleton Y → is-equiv f
+
+logically-equivalent-subsingletons-are-equivalent : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+                                                  → is-subsingleton X
+                                                  → is-subsingleton Y
+                                                  → X ⇔ Y
+                                                  → X ≃ Y
+
+NatΣ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (φ : Nat A B)
+                 → (x : X) (b : B x) → fiber (φ x) b ≃ fiber (NatΣ φ) (x , b)
+
+NatΣ-equiv-gives-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } (φ : Nat A B)
+                                 → is-equiv (NatΣ φ) → ((x : X) → is-equiv (φ x))
+
+Σ-is-subsingleton : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                  → is-subsingleton X
+                  → ((x : X) → is-subsingleton (A x))
+                  → is-subsingleton (Σ A)
+
+×-is-subsingleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                  → is-subsingleton X
+                  → is-subsingleton Y
+                  → is-subsingleton (X × Y)
+
+to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
+       → pr₁ z ≡ pr₁ t
+       → pr₂ z ≡ pr₂ t
+       → z ≡ t
+
+×-is-subsingleton' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                   → ((Y → is-subsingleton X) × (X → is-subsingleton Y))
+                   → is-subsingleton (X × Y)
+
+×-is-subsingleton'-back : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                        → is-subsingleton (X × Y)
+                        → (Y → is-subsingleton X) × (X → is-subsingleton Y)
+
+ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x x' : X} {y y' : Y}
+    → x ≡ x' → y ≡ y' → f x y ≡ f x' y'
+\end{code}
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="unicharac"></a> A characterization of univalence
+
+The following is often useful:
+
+\begin{code}
+univalence-alternative : is-univalent 𝓤
+                       → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+univalence-alternative {𝓤} ua X = γ
+ where
+  abstract
+   e : (Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
+   e Y = Id-to-Eq X Y , ua X Y
+   d : (Σ \(Y : 𝓤 ̇ ) → X ≡ Y) ≃ (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+   d = Σ-cong e
+   s : is-singleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+   s = equiv-to-singleton
+        (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+        (Σ \(Y : 𝓤 ̇ ) → X ≡ Y)
+        (≃-sym d)
+        (singleton-types'-are-singletons (𝓤 ̇ ) X)
+   γ : is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+   γ = singletons-are-subsingletons (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) s
+\end{code}
+
+The converse [also
+holds](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-Yoneda.html#univalence-via-singletons),
+as we now show.
+
+In fact we can say something more general:
+\begin{code}
+singleton-equiv-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                      → is-singleton (Σ A)
+                      → (x : X)
+                      → (f : (y : X) → x ≡ y → A y)
+                      → (y : X) → is-equiv (f y)
+singleton-equiv-lemma {𝓤} {𝓥} {X} {A} i x f = γ
+ where
+  g : singleton-type' x → Σ A
+  g = NatΣ f
+  e : is-equiv g
+  e = maps-of-singletons-are-equivs g (singleton-types'-are-singletons X x) i
+  γ : (x : X) → is-equiv (f x)
+  γ = NatΣ-equiv-gives-fiberwise-equiv f e
+
+univalence-alternative-back : ((X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y))
+                            → is-univalent 𝓤
+univalence-alternative-back {𝓤} φ X Y = γ
+ where
+  s : is-singleton (Σ \(Y : 𝓤 ̇) → X ≃ Y)
+  s = pointed-subsingletons-are-singletons (Σ (\(Y : 𝓤 ̇) → X ≃ Y)) (X , ≃-refl X) (φ X)
+  γ : is-equiv (Id-to-Eq X Y)
+  γ = singleton-equiv-lemma s X (Id-to-Eq X) Y
+\end{code}
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="equivalenceinduction"></a> Equivalence induction
 
 Under univalence, we get an induction principle for type equivalences,
@@ -3527,7 +3693,7 @@ H-≃ {𝓤} {𝓥} ua X A a Y e = τ a
   B : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇
   B (Y , e) = A Y e
   p : (X , ≃-refl X) ≡ (Y , e)
-  p = equivs-from-form-subsingleton ua X (X , ≃-refl X) (Y , e)
+  p = univalence-alternative ua X (X , ≃-refl X) (Y , e)
   τ : B (X , ≃-refl X) → B (Y , e)
   τ = transport B p
 
@@ -3546,10 +3712,10 @@ H-≃-equation {𝓤} {𝓥} ua X A a =
   t : Σ \(Y : 𝓤 ̇ ) → X ≃ Y
   t = (X , ≃-refl X)
   p : t ≡ t
-  p = equivs-from-form-subsingleton ua X t t
+  p = univalence-alternative ua X t t
   q : p ≡ refl t
   q = subsingletons-are-sets (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-       (equivs-from-form-subsingleton ua X) t t p (refl t)
+       (univalence-alternative ua X) t t p (refl t)
 \end{code}
 
 The induction principle `H-≃` keeps `X` fixed and lets `Y` vary, while
@@ -3685,7 +3851,7 @@ Here is a use of the half adjoint condition, where, compared to
 remove univalence from the hypothesis, generalize the universe of the
 type `Y`, and weaken equality to equivalence in the conclusion. Notice
 that the proof starts as that of
-[`Σ-reindex-retraction`](HoTT-UF-Agda.html#Σ-reindex-retraction).
+[`Σ-reindexing-retract`](HoTT-UF-Agda.html#Σ-reindexing-retract).
 
 \begin{code}
 Σ-change-of-variables-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
@@ -3708,181 +3874,6 @@ that the proof starts as that of
         transport A (ap f (η x)) b ≡⟨ ap (λ - → transport A - b) (τ x) ⟩
         transport A (ε (f x))    b ≡⟨ transport-is-retraction A (ε (f x)) a ⟩
         a                          ∎
-\end{code}
-
-[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="lefttothereader"></a> Exercises
-
-Here are some facts whose proofs are left to the reader but that we
-will need from the next section onwards. Sample solutions are given
-[below](HoTT-UF-Agda.html#solutions).
-
-Define functions for the following type declarations. As a matter of
-procedure, we suggest to import this file and add another declaration
-with the same type and new name e.g. `section-are-lc-solution`,
-because we already have solutions in this file.
-
-We start with the notion of left cancellability.
-
-\begin{code}
-left-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-left-cancellable f = {x x' : domain f} → f x ≡ f x' → x ≡ x'
-
-lc-maps-reflect-subsingletonness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                 → left-cancellable f
-                                 → is-subsingleton Y
-                                 → is-subsingleton X
-
-has-retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-has-retraction s = Σ \(r : codomain s → domain s) → r ∘ s ∼ id
-
-sections-are-lc : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (s : X → A) → has-retraction s → left-cancellable s
-
-equivs-have-retractions : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f → has-retraction f
-
-equivs-have-sections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f → has-section f
-
-equivs-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f → left-cancellable f
-
-equiv-to-subsingleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                      → X ≃ Y
-                      → is-subsingleton Y
-                      → is-subsingleton X
-
-sections-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
-                        → has-retraction f
-                        → g ∼ f
-                        → has-retraction g
-
-retractions-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
-                           → has-section f
-                           → g ∼ f
-                           → has-section g
-\end{code}
-
-An alternative notion of equivalence, equivalent to Voevodsky's, has
-been given by Andre Joyal:
-
-\begin{code}
-is-joyal-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-is-joyal-equiv f = has-section f × has-retraction f
-\end{code}
-
-Provide definitions for the following type declarations:
-
-\begin{code}
-joyal-equivs-are-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                            → is-joyal-equiv f → invertible f
-
-joyal-equivs-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                        → is-joyal-equiv f → is-equiv f
-
-invertibles-are-joyal-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                             → invertible f → is-joyal-equiv f
-
-equivs-are-joyal-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                        → is-equiv f → is-joyal-equiv f
-
-equivs-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
-                      → is-equiv f
-                      → g ∼ f
-                      → is-equiv g
-
-equivs-closed-under-∼' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
-                       → is-equiv f
-                       → f ∼ g
-                       → is-equiv g
-
-equiv-to-singleton' : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
-                    → X ≃ Y → is-singleton X → is-singleton Y
-
-subtypes-of-sets-are-sets : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
-                          → left-cancellable m → is-set Y → is-set X
-
-pr₁-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ((x : X) → is-subsingleton (A x))
-       → left-cancellable  (λ (t : Σ A) → pr₁ t)
-
-subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
-                         → is-set X
-                         → ((x : X) → is-subsingleton(A x))
-                         → is-set(Σ \(x : X) → A x)
-
-pr₁-equivalence : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
-                → ((x : X) → is-singleton (A x))
-                → is-equiv (λ (t : Σ A) → pr₁ t)
-
-ΠΣ-distr-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
-           → (Π \(x : X) → Σ \(a : A x) → P x a) ≃ (Σ \(f : Π A) → Π \(x : X) → P x (f x))
-
-Σ-assoc : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : Σ Y → 𝓦 ̇ }
-        → Σ Z ≃ (Σ \(x : X) → Σ \(y : Y x) → Z (x , y))
-
-⁻¹-≃ : {X : 𝓤 ̇ } (x y : X) → (x ≡ y) ≃ (y ≡ x)
-
-
-singleton-types-≃ : {X : 𝓤 ̇ } (x : X) → singleton-type' x ≃ singleton-type x
-
-singletons-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-             → is-singleton X → is-singleton Y → X ≃ Y
-
-maps-of-singletons-are-equivs : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (f : X → Y)
-                              → is-singleton X → is-singleton Y → is-equiv f
-
-logically-equivalent-subsingletons-are-equivalent : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
-                                                  → is-subsingleton X
-                                                  → is-subsingleton Y
-                                                  → X ⇔ Y
-                                                  → X ≃ Y
-
-NatΣ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (φ : Nat A B)
-                 → (x : X) (b : B x) → fiber (φ x) b ≃ fiber (NatΣ φ) (x , b)
-
-NatΣ-equiv-gives-fiberwise-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (φ : Nat A B)
-                                 → is-equiv (NatΣ φ) → ((x : X) → is-equiv (φ x))
-
-Σ-is-subsingleton : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                  → is-subsingleton X
-                  → ((x : X) → is-subsingleton (A x))
-                  → is-subsingleton (Σ A)
-
-×-is-subsingleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                  → is-subsingleton X
-                  → is-subsingleton Y
-                  → is-subsingleton (X × Y)
-
-to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
-       → pr₁ z ≡ pr₁ t
-       → pr₂ z ≡ pr₂ t
-       → z ≡ t
-
-×-is-subsingleton' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                   → ((Y → is-subsingleton X) × (X → is-subsingleton Y))
-                   → is-subsingleton (X × Y)
-
-×-is-subsingleton'-back : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                        → is-subsingleton (X × Y)
-                        → (Y → is-subsingleton X) × (X → is-subsingleton Y)
-
-ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x x' : X} {y y' : Y}
-    → x ≡ x' → y ≡ y' → f x y ≡ f x' y'
-\end{code}
-
-[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="infix2"></a> Operator fixities and precedences
-
-Without the following list of operator precedences and associativity
-(left or right), this agda file doesn't parse and is rejected by Agda.
-
-\begin{code}
-
-infix  0 _◁_
-infix  1 _◀
-infixr 0 _◁⟨_⟩_
-infix  0 _≃_
-infixl 2 _●_
-infixr 0 _≃⟨_⟩_
-infix  1 _■
-
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -3993,7 +3984,7 @@ singletons-≃ {𝓤} {𝓥} {X} {Y} i j = f , invertibles-are-equivs f (g , η 
   ε : (y : Y) → f (g y) ≡ y
   ε = centrality Y j
 
-maps-of-singletons-are-equivs X Y f i j = invertibles-are-equivs f (g , η , ε)
+maps-of-singletons-are-equivs {𝓤} {𝓥} {X} {Y} f i j = invertibles-are-equivs f (g , η , ε)
  where
   g : Y → X
   g y = center X i
@@ -4016,7 +4007,7 @@ NatΣ-fiber-equiv A B φ x b = (f , invertibles-are-equivs f (g , ε , η))
   η : (t : fiber (NatΣ φ) (x , b)) → f (g t) ≡ t
   η ((x , a) , refl _) = refl ((x , a) , refl (NatΣ φ (x , a)))
 
-NatΣ-equiv-gives-fiberwise-equiv A B φ e x b = γ
+NatΣ-equiv-gives-fiberwise-equiv {𝓤} {𝓥} {𝓦} {X} {A} {B} φ e x b = γ
  where
   γ : is-singleton (fiber (φ x) b)
   γ = equiv-to-singleton
@@ -4227,10 +4218,9 @@ vvfunext-gives-hfunext {𝓤} {𝓥} vfe {X} {Y} f = γ
   e : (Σ \(g : Π Y) → f ≡ g) → (Σ \(g : Π Y) → f ∼ g)
   e = NatΣ (happly f)
   i : is-equiv e
-  i = maps-of-singletons-are-equivs (Σ (λ g → f ≡ g)) (Σ (λ g → f ∼ g)) e
-       (singleton-types'-are-singletons (Π Y) f) d
+  i = maps-of-singletons-are-equivs e (singleton-types'-are-singletons (Π Y) f) d
   γ : (g : Π Y) → is-equiv (happly f g)
-  γ = NatΣ-equiv-gives-fiberwise-equiv (λ g → f ≡ g) (λ g → f ∼ g) (happly f) i
+  γ = NatΣ-equiv-gives-fiberwise-equiv (happly f) i
 \end{code}
 
 And finally the seemingly rather weak, non-dependent version `funext`
@@ -4719,14 +4709,11 @@ embedding-gives-ap-is-equiv f i x x' = γ x' x
   β : (x' : X) → singleton-type x' → fiber f (f x')
   β x' = NatΣ (α x')
   e : (x' : X) → is-equiv (β x')
-  e x' = maps-of-singletons-are-equivs
-          (singleton-type x')
-          (fiber f (f x'))
-          (β x')
+  e x' = maps-of-singletons-are-equivs (β x')
           (singleton-types-are-singletons X x')
           (pointed-subsingletons-are-singletons (fiber f (f x')) (x' , (refl (f x'))) (i (f x')))
   γ : (x' x : X) → is-equiv (α x' x)
-  γ x' = NatΣ-equiv-gives-fiberwise-equiv (λ x → x ≡ x') (λ x → f x ≡ f x') (α x') (e x')
+  γ x' = NatΣ-equiv-gives-fiberwise-equiv (α x') (e x')
 
 embedding-criterion-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → is-embedding f
@@ -4843,7 +4830,7 @@ Lift-is-embedding : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → is-em
 Lift-is-embedding {𝓤} {𝓥} ua ua' = universe-embedding-criterion {𝓤} {𝓥} ua ua' (Lift 𝓥) Lift-≃
 \end{code}
 
-Thirdly, we have a generalization of `equivs-from-form-subsingleton`
+Thirdly, we have a generalization of `univalence-alternative`
 from a single universe to a pair of universes. We work with two
 symmetrical versions, where the second is derived from the first. Here
 an anonymous module is used to provide the same hypotheses to both
@@ -4867,8 +4854,8 @@ module _ {𝓤 𝓥 : Universe}
   fe₃ : dfunext 𝓤 𝓤
   fe₃ = lower-dfunext 𝓥 𝓥 𝓤 𝓤 fe
 
- equivs-from-form-subsingleton' : (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
- equivs-from-form-subsingleton' X = s
+ univalence-alternative' : (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
+ univalence-alternative' X = s
   where
    abstract
      e : (Y : 𝓥 ̇ ) → (X ≃ Y) ≃ (Lift 𝓤 Y ≡ Lift 𝓥 X)
@@ -4883,23 +4870,23 @@ module _ {𝓤 𝓥 : Universe}
      s : is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
      s = equiv-to-subsingleton d i
 
- equivs-to-form-subsingleton' : (Y : 𝓤 ̇ ) → is-subsingleton (Σ \(X : 𝓥 ̇ ) → X ≃ Y)
- equivs-to-form-subsingleton' Y = equiv-to-subsingleton e i
+ univalence-alternative'-dual : (Y : 𝓤 ̇ ) → is-subsingleton (Σ \(X : 𝓥 ̇ ) → X ≃ Y)
+ univalence-alternative'-dual Y = equiv-to-subsingleton e i
   where
    e : (Σ \(X : 𝓥 ̇ ) → X ≃ Y) ≃ (Σ \(X : 𝓥 ̇ ) → Y ≃ X)
    e = Σ-cong (λ X → ≃-Sym fe₁ fe₀ fe)
    i : is-subsingleton (Σ \(X : 𝓥 ̇ ) → Y ≃ X)
-   i = equivs-from-form-subsingleton' Y
+   i = univalence-alternative' Y
 \end{code}
 
 This is the end of the anonymous module. We are interested in these corollaries:
 
 \begin{code}
-equivs-from-form-subsingleton'' : is-univalent (𝓤 ⊔ 𝓥) → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
-equivs-from-form-subsingleton'' ua = equivs-from-form-subsingleton' ua ua
+univalence-alternative'' : is-univalent (𝓤 ⊔ 𝓥) → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+univalence-alternative'' ua = univalence-alternative' ua ua
 
-equivs-to-form-subsingleton'' : is-univalent (𝓤 ⊔ 𝓥) → (Y : 𝓤 ̇ ) → is-subsingleton (Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
-equivs-to-form-subsingleton'' ua = equivs-to-form-subsingleton' ua ua
+univalence-alternative'-dual' : is-univalent (𝓤 ⊔ 𝓥) → (Y : 𝓤 ̇ ) → is-subsingleton (Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+univalence-alternative'-dual' ua = univalence-alternative'-dual ua ua
 \end{code}
 
 The first one is applied to get the following, where `Y` lives in a
@@ -4916,7 +4903,7 @@ H↑-≃ {𝓤} {𝓥} {𝓦} ua X A a Y e = τ a
   t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
   t = (Lift 𝓥 X , ≃-Lift X)
   p : t ≡ (Y , e)
-  p = equivs-from-form-subsingleton'' {𝓤} {𝓥} ua X t (Y , e)
+  p = univalence-alternative'' {𝓤} {𝓥} ua X t (Y , e)
   τ : B t → B (Y , e)
   τ = transport B p
 \end{code}
@@ -4942,10 +4929,10 @@ H↑-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
   t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
   t = (Lift 𝓥 X , ≃-Lift X)
   p : t ≡ t
-  p = equivs-from-form-subsingleton'' {𝓤} {𝓥} ua X t t
+  p = univalence-alternative'' {𝓤} {𝓥} ua X t t
   q : p ≡ refl t
   q = subsingletons-are-sets (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
-       (equivs-from-form-subsingleton'' {𝓤} {𝓥} ua X) t t p (refl t)
+       (univalence-alternative'' {𝓤} {𝓥} ua X) t t p (refl t)
 \end{code}
 
 And we have a similar development with a similar example:
@@ -5018,7 +5005,7 @@ H↓-≃ {𝓤} {𝓥} {𝓦} ua Y A a X e = τ a
   t : Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
   t = (Lift 𝓥 Y , Lift-≃ Y)
   p : t ≡ (X , e)
-  p = equivs-to-form-subsingleton' ua ua Y t (X , e)
+  p = univalence-alternative'-dual ua ua Y t (X , e)
   τ : B t → B (X , e)
   τ = transport B p
 
@@ -5676,6 +5663,35 @@ excluded middle.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ## <a id="appendix"></a> Appendix
 
+### <a id="infix"></a> Operator fixities and precedences
+
+Without the following list of operator precedences and
+associativities (left or right), this agda file doesn't parse and is
+rejected by Agda.
+
+\begin{code}
+
+infix  4  _∼_
+infixr 4 _,_
+infixr 2 _×_
+infixr 1 _+_
+infixl 5 _∘_
+infix  0 _≡_
+infixl 2 _∙_
+infixr 0 _≡⟨_⟩_
+infix  1 _∎
+infix  3  _⁻¹
+infix  0 _◁_
+infix  1 _◀
+infixr 0 _◁⟨_⟩_
+infix  0 _≃_
+infixl 2 _●_
+infixr 0 _≃⟨_⟩_
+infix  1 _■
+
+\end{code}
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="moreexercises"></a> Additional exercises
 
 Solutions are available [at the end](#mlttexercisessol).
