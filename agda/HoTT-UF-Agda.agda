@@ -1252,14 +1252,14 @@ retract-subsingleton-lemma {𝓤} {𝓥} {X} {A} x ρ = singletons-are-subsingle
   i : is-singleton (Σ A)
   i = retract-of-singleton σ (singleton-types'-are-singletons X x)
 
-equiv-subsingleton-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
-                         → ((y : X) → A y ≃ (x ≡ y))
-                         → is-subsingleton (Σ A)
-equiv-subsingleton-lemma {𝓤} {𝓥} {X} {A} x e = retract-subsingleton-lemma x (λ x → ≃-gives-◁ (e x))
+equiv-subsingleton-corollary : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
+                             → ((y : X) → A y ≃ (x ≡ y))
+                             → is-subsingleton (Σ A)
+equiv-subsingleton-corollary {𝓤} {𝓥} {X} {A} x e = retract-subsingleton-lemma x (λ x → ≃-gives-◁ (e x))
 
 univalence-alternative : is-univalent 𝓤
                        → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-univalence-alternative {𝓤} ua X = equiv-subsingleton-lemma X e
+univalence-alternative {𝓤} ua X = equiv-subsingleton-corollary X e
  where
   e : (Y : 𝓤 ̇) → (X ≃ Y) ≃ (X ≡ Y)
   e Y = ≃-sym (is-univalent-≃ ua X Y)
