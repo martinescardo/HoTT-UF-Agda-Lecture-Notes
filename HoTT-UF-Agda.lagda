@@ -586,7 +586,7 @@ type `𝟙` satisfy a given property `A`.
     x` holds for all `x : 𝟙`".
 
 
-  * In Agda above `Π` type is written as
+  * In Agda the above `Π` type is written as
 
     > `(A : 𝟙 → 𝓤 ̇ ) → A ⋆ → (x : 𝟙) → A x`.
 
