@@ -3623,6 +3623,167 @@ ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x x' :
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="solutions"></a> Solutions
+
+\begin{code}
+lc-maps-reflect-subsingletonness f l s x x' = l (s (f x) (f x'))
+
+sections-are-lc s (r , ε) {x} {y} p = x       ≡⟨ (ε x)⁻¹ ⟩
+                                      r (s x) ≡⟨ ap r p ⟩
+                                      r (s y) ≡⟨ ε y ⟩
+                                      y       ∎
+
+equivs-have-retractions f e = (inverse f e , inverse-is-retraction f e)
+
+equivs-have-sections f e = (inverse f e , inverse-is-section f e)
+
+equivs-are-lc f e = sections-are-lc f (equivs-have-retractions f e)
+
+equiv-to-subsingleton (f , i) = lc-maps-reflect-subsingletonness f (equivs-are-lc f i)
+
+sections-closed-under-∼ f g (r , rf) h = (r ,
+                                          λ x → r (g x) ≡⟨ ap r (h x) ⟩
+                                                r (f x) ≡⟨ rf x ⟩
+                                                x       ∎)
+
+retractions-closed-under-∼ f g (s , fs) h = (s ,
+                                             λ y → g (s y) ≡⟨ h (s y) ⟩
+                                                   f (s y) ≡⟨ fs y ⟩
+                                                   y ∎)
+
+joyal-equivs-are-invertible f ((s , fs) , (r , rf)) = (s , sf , fs)
+ where
+  sf = λ (x : domain f) → s(f x)       ≡⟨ (rf (s (f x)))⁻¹ ⟩
+                          r(f(s(f x))) ≡⟨ ap r (fs (f x)) ⟩
+                          r(f x)       ≡⟨ rf x ⟩
+                          x            ∎
+
+joyal-equivs-are-equivs f j = invertibles-are-equivs f (joyal-equivs-are-invertible f j)
+
+invertibles-are-joyal-equivs f (g , gf , fg) = ((g , fg) , (g , gf))
+
+equivs-are-joyal-equivs f e = invertibles-are-joyal-equivs f
+                                (equivs-are-invertible f e)
+
+equivs-closed-under-∼ f g e h =
+ joyal-equivs-are-equivs g
+  (retractions-closed-under-∼ f g (equivs-have-sections    f e) h ,
+   sections-closed-under-∼    f g (equivs-have-retractions f e) h)
+
+equivs-closed-under-∼' f g e h = equivs-closed-under-∼ f g e (λ x → (h x)⁻¹)
+
+equiv-to-singleton' e = retract-of-singleton (≃-gives-▷ e)
+
+subtypes-of-sets-are-sets {𝓤} {𝓥} {X} m i h = Id-collapsibles-are-sets X c
+ where
+  f : (x x' : X) → x ≡ x' → x ≡ x'
+  f x x' r = i (ap m r)
+  κ : (x x' : X) (r s : x ≡ x') → f x x' r ≡ f x x' s
+  κ x x' r s = ap i (h (m x) (m x') (ap m r) (ap m s))
+  c : Id-collapsible X
+  c x x' = f x x' , κ x x'
+
+pr₁-lc i p = to-Σ-≡ (p , i _ _ _)
+
+subsets-of-sets-are-sets X A h p = subtypes-of-sets-are-sets pr₁ (pr₁-lc p) h
+
+pr₁-equivalence {𝓤} {𝓥} X A s = invertibles-are-equivs pr₁ (g , η , ε)
+ where
+  g : X → Σ A
+  g x = x , pr₁(s x)
+  ε : (x : X) → pr₁ (g x) ≡ x
+  ε x = refl (pr₁ (g x))
+  η : (σ : Σ A) → g (pr₁ σ) ≡ σ
+  η (x , a) = to-Σ-≡ (ε x , singletons-are-subsingletons (A x) (s x) _ a)
+
+ΠΣ-distr-≃ {𝓤} {𝓥} {𝓦} {X} {A} {P} = φ , invertibles-are-equivs φ (γ , η , ε)
+ where
+  φ : (Π \(x : X) → Σ \(a : A x) → P x a) → Σ \(f : Π A) → Π \(x : X) → P x (f x)
+  φ g = ((λ x → pr₁ (g x)) , λ x → pr₂ (g x))
+
+  γ : (Σ \(f : Π A) → Π \(x : X) → P x (f x)) → Π \(x : X) → Σ \(a : A x) → P x a
+  γ (f , φ) x = f x , φ x
+  η : γ ∘ φ ∼ id
+  η = refl
+  ε : φ ∘ γ ∼ id
+  ε = refl
+
+Σ-assoc {𝓤} {𝓥} {𝓦} {X} {Y} {Z} = f , invertibles-are-equivs f (g , refl , refl)
+ where
+  f : Σ Z → Σ \x → Σ \y → Z (x , y)
+  f ((x , y) , z) = (x , (y , z))
+  g : (Σ \x → Σ \y → Z (x , y)) → Σ Z
+  g (x , (y , z)) = ((x , y) , z)
+
+⁻¹-≃ x y = (_⁻¹ , invertibles-are-equivs _⁻¹ (_⁻¹ , ⁻¹-involutive , ⁻¹-involutive))
+
+singleton-types-≃ x = Σ-cong (λ y → ⁻¹-≃ x y)
+
+singletons-≃ {𝓤} {𝓥} {X} {Y} i j = f , invertibles-are-equivs f (g , η , ε)
+ where
+  f : X → Y
+  f x = center Y j
+  g : Y → X
+  g y = center X i
+  η : (x : X) → g (f x) ≡ x
+  η = centrality X i
+  ε : (y : Y) → f (g y) ≡ y
+  ε = centrality Y j
+
+maps-of-singletons-are-equivs {𝓤} {𝓥} {X} {Y} f i j = invertibles-are-equivs f (g , η , ε)
+ where
+  g : Y → X
+  g y = center X i
+  η : (x : X) → g (f x) ≡ x
+  η = centrality X i
+  ε : (y : Y) → f (g y) ≡ y
+  ε y = singletons-are-subsingletons Y j (f (g y)) y
+
+logically-equivalent-subsingletons-are-equivalent X Y i j (f , g) =
+  f , invertibles-are-equivs f (g , (λ x → i (g (f x)) x) , (λ y → j (f (g y)) y))
+
+NatΣ-fiber-equiv A B φ x b = (f , invertibles-are-equivs f (g , ε , η))
+ where
+  f : fiber (φ x) b → fiber (NatΣ φ) (x , b)
+  f (a , refl _) = ((x , a) , refl (x , φ x a))
+  g : fiber (NatΣ φ) (x , b) → fiber (φ x) b
+  g ((x , a) , refl _) = (a , refl (φ x a))
+  ε : (w : fiber (φ x) b) → g (f w) ≡ w
+  ε (a , refl _) = refl (a , refl (φ x a))
+  η : (t : fiber (NatΣ φ) (x , b)) → f (g t) ≡ t
+  η ((x , a) , refl _) = refl ((x , a) , refl (NatΣ φ (x , a)))
+
+NatΣ-equiv-gives-fiberwise-equiv {𝓤} {𝓥} {𝓦} {X} {A} {B} φ e x b = γ
+ where
+  d : fiber (φ x) b ≃ fiber (NatΣ φ) (x , b)
+  d = NatΣ-fiber-equiv A B φ x b
+  s : is-singleton (fiber (NatΣ φ) (x , b))
+  s = e (x , b)
+  γ : is-singleton (fiber (φ x) b)
+  γ = equiv-to-singleton d s
+
+Σ-is-subsingleton i j (x , a) (y , b) = to-Σ-≡ (i x y , j y _ _)
+
+×-is-subsingleton i j = Σ-is-subsingleton i (λ _ → j)
+
+to-×-≡ (refl x) (refl y) = refl (x , y)
+
+×-is-subsingleton' {𝓤} {𝓥} {X} {Y} (i , j) = k
+ where
+  k : is-subsingleton (X × Y)
+  k (x , y) (x' , y') = to-×-≡ (i y x x') (j x y y')
+
+×-is-subsingleton'-back {𝓤} {𝓥} {X} {Y} k = i , j
+ where
+  i : Y → is-subsingleton X
+  i y x x' = ap pr₁ (k (x , y) (x' , y))
+  j : X → is-subsingleton Y
+  j x y y' = ap pr₂ (k (x , y) (x , y'))
+
+ap₂ f (refl x) (refl y) = refl (f x y)
+\end{code}
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="unicharac"></a> A characterization of univalence
 
 We begin with a general lemma.
@@ -3942,167 +4103,6 @@ that the proof starts as that of
         transport A (ap f (η x)) b ≡⟨ ap (λ - → transport A - b) (τ x) ⟩
         transport A (ε (f x))    b ≡⟨ transport-is-retraction A (ε (f x)) a ⟩
         a                          ∎
-\end{code}
-
-[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="solutions"></a> Solutions
-
-\begin{code}
-lc-maps-reflect-subsingletonness f l s x x' = l (s (f x) (f x'))
-
-sections-are-lc s (r , ε) {x} {y} p = x       ≡⟨ (ε x)⁻¹ ⟩
-                                      r (s x) ≡⟨ ap r p ⟩
-                                      r (s y) ≡⟨ ε y ⟩
-                                      y       ∎
-
-equivs-have-retractions f e = (inverse f e , inverse-is-retraction f e)
-
-equivs-have-sections f e = (inverse f e , inverse-is-section f e)
-
-equivs-are-lc f e = sections-are-lc f (equivs-have-retractions f e)
-
-equiv-to-subsingleton (f , i) = lc-maps-reflect-subsingletonness f (equivs-are-lc f i)
-
-sections-closed-under-∼ f g (r , rf) h = (r ,
-                                          λ x → r (g x) ≡⟨ ap r (h x) ⟩
-                                                r (f x) ≡⟨ rf x ⟩
-                                                x       ∎)
-
-retractions-closed-under-∼ f g (s , fs) h = (s ,
-                                             λ y → g (s y) ≡⟨ h (s y) ⟩
-                                                   f (s y) ≡⟨ fs y ⟩
-                                                   y ∎)
-
-joyal-equivs-are-invertible f ((s , fs) , (r , rf)) = (s , sf , fs)
- where
-  sf = λ (x : domain f) → s(f x)       ≡⟨ (rf (s (f x)))⁻¹ ⟩
-                          r(f(s(f x))) ≡⟨ ap r (fs (f x)) ⟩
-                          r(f x)       ≡⟨ rf x ⟩
-                          x            ∎
-
-joyal-equivs-are-equivs f j = invertibles-are-equivs f (joyal-equivs-are-invertible f j)
-
-invertibles-are-joyal-equivs f (g , gf , fg) = ((g , fg) , (g , gf))
-
-equivs-are-joyal-equivs f e = invertibles-are-joyal-equivs f
-                                (equivs-are-invertible f e)
-
-equivs-closed-under-∼ f g e h =
- joyal-equivs-are-equivs g
-  (retractions-closed-under-∼ f g (equivs-have-sections    f e) h ,
-   sections-closed-under-∼    f g (equivs-have-retractions f e) h)
-
-equivs-closed-under-∼' f g e h = equivs-closed-under-∼ f g e (λ x → (h x)⁻¹)
-
-equiv-to-singleton' e = retract-of-singleton (≃-gives-▷ e)
-
-subtypes-of-sets-are-sets {𝓤} {𝓥} {X} m i h = Id-collapsibles-are-sets X c
- where
-  f : (x x' : X) → x ≡ x' → x ≡ x'
-  f x x' r = i (ap m r)
-  κ : (x x' : X) (r s : x ≡ x') → f x x' r ≡ f x x' s
-  κ x x' r s = ap i (h (m x) (m x') (ap m r) (ap m s))
-  c : Id-collapsible X
-  c x x' = f x x' , κ x x'
-
-pr₁-lc i p = to-Σ-≡ (p , i _ _ _)
-
-subsets-of-sets-are-sets X A h p = subtypes-of-sets-are-sets pr₁ (pr₁-lc p) h
-
-pr₁-equivalence {𝓤} {𝓥} X A s = invertibles-are-equivs pr₁ (g , η , ε)
- where
-  g : X → Σ A
-  g x = x , pr₁(s x)
-  ε : (x : X) → pr₁ (g x) ≡ x
-  ε x = refl (pr₁ (g x))
-  η : (σ : Σ A) → g (pr₁ σ) ≡ σ
-  η (x , a) = to-Σ-≡ (ε x , singletons-are-subsingletons (A x) (s x) _ a)
-
-ΠΣ-distr-≃ {𝓤} {𝓥} {𝓦} {X} {A} {P} = φ , invertibles-are-equivs φ (γ , η , ε)
- where
-  φ : (Π \(x : X) → Σ \(a : A x) → P x a) → Σ \(f : Π A) → Π \(x : X) → P x (f x)
-  φ g = ((λ x → pr₁ (g x)) , λ x → pr₂ (g x))
-
-  γ : (Σ \(f : Π A) → Π \(x : X) → P x (f x)) → Π \(x : X) → Σ \(a : A x) → P x a
-  γ (f , φ) x = f x , φ x
-  η : γ ∘ φ ∼ id
-  η = refl
-  ε : φ ∘ γ ∼ id
-  ε = refl
-
-Σ-assoc {𝓤} {𝓥} {𝓦} {X} {Y} {Z} = f , invertibles-are-equivs f (g , refl , refl)
- where
-  f : Σ Z → Σ \x → Σ \y → Z (x , y)
-  f ((x , y) , z) = (x , (y , z))
-  g : (Σ \x → Σ \y → Z (x , y)) → Σ Z
-  g (x , (y , z)) = ((x , y) , z)
-
-⁻¹-≃ x y = (_⁻¹ , invertibles-are-equivs _⁻¹ (_⁻¹ , ⁻¹-involutive , ⁻¹-involutive))
-
-singleton-types-≃ x = Σ-cong (λ y → ⁻¹-≃ x y)
-
-singletons-≃ {𝓤} {𝓥} {X} {Y} i j = f , invertibles-are-equivs f (g , η , ε)
- where
-  f : X → Y
-  f x = center Y j
-  g : Y → X
-  g y = center X i
-  η : (x : X) → g (f x) ≡ x
-  η = centrality X i
-  ε : (y : Y) → f (g y) ≡ y
-  ε = centrality Y j
-
-maps-of-singletons-are-equivs {𝓤} {𝓥} {X} {Y} f i j = invertibles-are-equivs f (g , η , ε)
- where
-  g : Y → X
-  g y = center X i
-  η : (x : X) → g (f x) ≡ x
-  η = centrality X i
-  ε : (y : Y) → f (g y) ≡ y
-  ε y = singletons-are-subsingletons Y j (f (g y)) y
-
-logically-equivalent-subsingletons-are-equivalent X Y i j (f , g) =
-  f , invertibles-are-equivs f (g , (λ x → i (g (f x)) x) , (λ y → j (f (g y)) y))
-
-NatΣ-fiber-equiv A B φ x b = (f , invertibles-are-equivs f (g , ε , η))
- where
-  f : fiber (φ x) b → fiber (NatΣ φ) (x , b)
-  f (a , refl _) = ((x , a) , refl (x , φ x a))
-  g : fiber (NatΣ φ) (x , b) → fiber (φ x) b
-  g ((x , a) , refl _) = (a , refl (φ x a))
-  ε : (w : fiber (φ x) b) → g (f w) ≡ w
-  ε (a , refl _) = refl (a , refl (φ x a))
-  η : (t : fiber (NatΣ φ) (x , b)) → f (g t) ≡ t
-  η ((x , a) , refl _) = refl ((x , a) , refl (NatΣ φ (x , a)))
-
-NatΣ-equiv-gives-fiberwise-equiv {𝓤} {𝓥} {𝓦} {X} {A} {B} φ e x b = γ
- where
-  d : fiber (φ x) b ≃ fiber (NatΣ φ) (x , b)
-  d = NatΣ-fiber-equiv A B φ x b
-  s : is-singleton (fiber (NatΣ φ) (x , b))
-  s = e (x , b)
-  γ : is-singleton (fiber (φ x) b)
-  γ = equiv-to-singleton d s
-
-Σ-is-subsingleton i j (x , a) (y , b) = to-Σ-≡ (i x y , j y _ _)
-
-×-is-subsingleton i j = Σ-is-subsingleton i (λ _ → j)
-
-to-×-≡ (refl x) (refl y) = refl (x , y)
-
-×-is-subsingleton' {𝓤} {𝓥} {X} {Y} (i , j) = k
- where
-  k : is-subsingleton (X × Y)
-  k (x , y) (x' , y') = to-×-≡ (i y x x') (j x y y')
-
-×-is-subsingleton'-back {𝓤} {𝓥} {X} {Y} k = i , j
- where
-  i : Y → is-subsingleton X
-  i y x x' = ap pr₁ (k (x , y) (x' , y))
-  j : X → is-subsingleton Y
-  j x y y' = ap pr₂ (k (x , y) (x , y'))
-
-ap₂ f (refl x) (refl y) = refl (f x y)
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
