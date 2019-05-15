@@ -3319,15 +3319,15 @@ The following are often useful:
   NatΣ-ε (x , b) = x , f x (g x b) ≡⟨ ap (λ - → x , -) (ε x b) ⟩
                    x , b           ∎
 
-≃-gives-◁ : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → X ◁ Y
-≃-gives-◁ X Y (f , e) = (inverse f e , f , inverse-is-retraction f e)
+≃-gives-◁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X ◁ Y
+≃-gives-◁ (f , e) = (inverse f e , f , inverse-is-retraction f e)
 
-≃-gives-▷ : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → Y ◁ X
-≃-gives-▷ X Y (f , e) = (f , inverse f e , inverse-is-section f e)
+≃-gives-▷ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → Y ◁ X
+≃-gives-▷ (f , e) = (f , inverse f e , inverse-is-section f e)
 
 equiv-to-singleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                    → X ≃ Y → is-singleton Y → is-singleton X
-equiv-to-singleton {𝓤} {𝓥} {X} {Y} e = retract-of-singleton (≃-gives-◁ X Y e)
+equiv-to-singleton e = retract-of-singleton (≃-gives-◁ e)
 \end{code}
 
 
@@ -3625,28 +3625,32 @@ ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x x' :
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="unicharac"></a> A characterization of univalence
 
-The following is often useful:
+\begin{code}
+retract-singleton-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
+                        → ((y : X) → A y ◁ (x ≡ y))
+                        → is-singleton (Σ A)
+retract-singleton-lemma {𝓤} {𝓥} {X} {A} x ρ = i
+ where
+  σ : Σ A ◁ singleton-type' x
+  σ = Σ-retract ρ
+  i : is-singleton (Σ A)
+  i = retract-of-singleton σ (singleton-types'-are-singletons X x)
+\end{code}
+
+The following consequence is often useful:
 
 \begin{code}
 univalence-alternative : is-univalent 𝓤
                        → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-univalence-alternative {𝓤} ua X = γ
+univalence-alternative {𝓤} ua X = singletons-are-subsingletons (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) γ
  where
-  abstract
-   e : (Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
-   e Y = Id-to-Eq X Y , ua X Y
-   d : (Σ \(Y : 𝓤 ̇ ) → X ≡ Y) ≃ (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-   d = Σ-cong e
-   s : is-singleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-   s = equiv-to-singleton (≃-sym d) (singleton-types'-are-singletons (𝓤 ̇ ) X)
-   γ : is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-   γ = singletons-are-subsingletons (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) s
+  ρ : (Y : 𝓤 ̇) → (X ≃ Y) ◁ (X ≡ Y)
+  ρ Y = ≃-gives-◁ (≃-sym (is-univalent-≃ ua X Y))
+  γ : is-singleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+  γ = retract-singleton-lemma X ρ
 \end{code}
 
-The converse [also
-holds](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-Yoneda.html#univalence-via-singletons),
-as we now show.
-In fact we can say something more general:
+The converse also holds. Again we can say something more general:
 
 \begin{code}
 singleton-equiv-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
@@ -3664,30 +3668,15 @@ singleton-equiv-lemma {𝓤} {𝓥} {X} {A} x f i = γ
 
 univalence-alternative-converse : ((X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y))
                                 → is-univalent 𝓤
-univalence-alternative-converse {𝓤} φ X Y = γ
+univalence-alternative-converse {𝓤} i X Y = γ
  where
   s : is-singleton (Σ \(Y : 𝓤 ̇) → X ≃ Y)
-  s = pointed-subsingletons-are-singletons (Σ (\(Y : 𝓤 ̇) → X ≃ Y)) (X , ≃-refl X) (φ X)
+  s = pointed-subsingletons-are-singletons (Σ (\(Y : 𝓤 ̇) → X ≃ Y)) (X , ≃-refl X) (i X)
   γ : is-equiv (Id-to-Eq X Y)
   γ = singleton-equiv-lemma X (Id-to-Eq X) s Y
 \end{code}
 
-The converse of `singleton-equiv-lemma` holds, and in fact with a weaker assumption:
-
-\begin{code}
-singleton-equiv-lemma-back : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
-                           → ((y : X) → A y ◁ (x ≡ y))
-                           → is-singleton (Σ A)
-singleton-equiv-lemma-back {𝓤} {𝓥} {X} {A} x ρ = i
- where
-  σ : Σ A ◁ singleton-type' x
-  σ = Σ-retract ρ
-  i : is-singleton (Σ A)
-  i = retract-of-singleton σ (singleton-types'-are-singletons X x)
-\end{code}
-
-Combining the lemma and its strengthened converse, we get the
-[following](https://github.com/HoTT/book/issues/718#issuecomment-65378867):
+Combining the two lemmas, we get the [following](https://github.com/HoTT/book/issues/718#issuecomment-65378867):
 
 \begin{code}
 fiberwise-retraction-of-Id-is-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
@@ -3699,7 +3688,7 @@ fiberwise-retraction-of-Id-is-equiv {𝓤} {𝓥} {X} {A} x f s = γ
   ρ : (y : X) → A y ◁ (x ≡ y)
   ρ y = f y , s y
   i : is-singleton (Σ A)
-  i = singleton-equiv-lemma-back x ρ
+  i = retract-singleton-lemma x ρ
   γ : (y : X) → is-equiv (f y)
   γ = singleton-equiv-lemma x f i
 \end{code}
@@ -3974,7 +3963,7 @@ equivs-closed-under-∼ f g e h =
 
 equivs-closed-under-∼' f g e h = equivs-closed-under-∼ f g e (λ x → (h x)⁻¹)
 
-equiv-to-singleton' {𝓤} {𝓥} {X} {Y} e = retract-of-singleton (≃-gives-▷ X Y e)
+equiv-to-singleton' e = retract-of-singleton (≃-gives-▷ e)
 
 subtypes-of-sets-are-sets {𝓤} {𝓥} {X} m i h = Id-collapsibles-are-sets X c
  where
@@ -4258,7 +4247,7 @@ vvfunext-gives-hfunext {𝓤} {𝓥} vfe {X} {Y} f = γ
   c : is-singleton ((x : X) → Σ \(y : Y x) → f x ≡ y)
   c = vfe a
   R : (Σ \(g : Π Y) → f ∼ g) ◁ (Π \(x : X) → Σ \(y : Y x) → f x ≡ y)
-  R = ≃-gives-▷ _ _ ΠΣ-distr-≃
+  R = ≃-gives-▷ ΠΣ-distr-≃
   r : (Π \(x : X) → Σ \(y : Y x) → f x ≡ y) → Σ \(g : Π Y) → f ∼ g
   r = λ _ → f , (λ x → refl (f x))
   d : is-singleton (Σ \(g : Π Y) → f ∼ g)
