@@ -3750,7 +3750,7 @@ corresponding to the induction principles [`H`](HoTT-UF-Agda.html#H)
 and [`J`](HoTT-UF-Agda.html#J) for identifications.  To prove a
 property of equivalences, it is enough to prove it for the identity
 equivalence `≃-refl X` for all `X`. In order to also easily derive an
-equation for this, we perform the construction using the fact that univalence implies that `Σ \(Y : 𝓤 ̇ ) → X ≃ Y` is a singleton for any `X`.
+equation for this, we perform the construction using the fact that univalence implies that `Σ \(Y : 𝓤 ̇ ) → X ≃ Y` is a subsingleton for any `X`.
 
 \begin{code}
 H-≃ : is-univalent 𝓤
