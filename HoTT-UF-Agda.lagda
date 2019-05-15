@@ -1992,6 +1992,7 @@ associativities (left or right), this agda file doesn't parse and is
 rejected by Agda.
 
 \begin{code}
+
 infix  4  _∼_
 infixr 4 _,_
 infixr 2 _×_
@@ -2002,6 +2003,7 @@ infixl 2 _∙_
 infixr 0 _≡⟨_⟩_
 infix  1 _∎
 infix  3  _⁻¹
+
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
