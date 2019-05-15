@@ -251,7 +251,7 @@ _⁻¹ : {X : 𝓤 ̇ } → {x y : X} → x ≡ y → y ≡ x
 p ⁻¹ = transport (_≡ lhs p) p (refl (lhs p))
 
 ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x x' : X} → x ≡ x' → f x ≡ f x'
-ap f p = transport (λ - → f (lhs p) ≡ f -) p (refl (f (lhs p)))
+ap f {x} {x'} p = transport (λ - → f x ≡ f -) p (refl (f x))
 
 _∼_ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → Π A → Π A → 𝓤 ⊔ 𝓥 ̇
 f ∼ g = ∀ x → f x ≡ g x

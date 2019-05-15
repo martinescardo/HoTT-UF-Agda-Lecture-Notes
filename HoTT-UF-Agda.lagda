@@ -1504,7 +1504,7 @@ Given an identification `p : x ≡ x'` we get an identification
 
 \begin{code}
 ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x x' : X} → x ≡ x' → f x ≡ f x'
-ap f p = transport (λ - → f (lhs p) ≡ f -) p (refl (f (lhs p)))
+ap f {x} {x'} p = transport (λ - → f x ≡ f -) p (refl (f x))
 \end{code}
 
 Here the symbol "`-`", which is not to be confused with the symbol
