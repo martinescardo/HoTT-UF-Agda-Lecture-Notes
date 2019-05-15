@@ -363,7 +363,7 @@ to practice univalent mathematics should consult the above references.
      1. [Subsingleton truncation](HoTT-UF-Agda.html#truncation)
      1. [The univalent axiom of choice](HoTT-UF-Agda.html#choice)
   1. [Appendix](HoTT-UF-Agda.html#appendix)
-     1. [Operator fixities and precedences](HoTT-UF-Agda.html#infix)
+     1. [Operator fixities and precedences](HoTT-UF-Agda.html#infixop)
      1. [Additional exercises](HoTT-UF-Agda.html#moreexercises)
      1. [Solutions](HoTT-UF-Agda.html#mlttexercisessol)
      1. [Agda files automatically extracted from these notes](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes/tree/master/agda)
@@ -5713,7 +5713,7 @@ excluded middle.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ## <a id="appendix"></a> Appendix
 
-### <a id="infix"></a> Operator fixities and precedences
+### <a id="infixop"></a> Operator fixities and precedences
 
 Without the following list of operator precedences and
 associativities (left or right), this agda file doesn't parse and is
