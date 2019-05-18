@@ -1111,13 +1111,17 @@ module _ (ua : is-univalent 𝓤₀) where
     q : p₀ ≡ p₁
     q = s 𝟚 𝟚 p₀ p₁
 
+subsingleton-criterion : {X : 𝓤 ̇ }
+                       → (X → is-singleton X)
+                       → is-subsingleton X
+
 left-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 left-cancellable f = {x x' : domain f} → f x ≡ f x' → x ≡ x'
 
-lc-maps-reflect-subsingletonness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                 → left-cancellable f
-                                 → is-subsingleton Y
-                                 → is-subsingleton X
+lc-maps-reflect-subsingletons : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                              → left-cancellable f
+                              → is-subsingleton Y
+                              → is-subsingleton X
 
 has-retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 has-retraction s = Σ \(r : codomain s → domain s) → r ∘ s ∼ id
@@ -1184,9 +1188,9 @@ subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
                          → ((x : X) → is-subsingleton(A x))
                          → is-set(Σ \(x : X) → A x)
 
-pr₁-equivalence : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
-                → ((x : X) → is-singleton (A x))
-                → is-equiv (λ (t : Σ A) → pr₁ t)
+pr₁-equiv : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+         → ((x : X) → is-singleton (A x))
+         → is-equiv (λ (t : Σ A) → pr₁ t)
 
 ΠΣ-distr-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
            → (Π \(x : X) → Σ \(a : A x) → P x a) ≃ (Σ \(f : Π A) → Π \(x : X) → P x (f x))
@@ -1242,7 +1246,9 @@ to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
 ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x x' : X} {y y' : Y}
     → x ≡ x' → y ≡ y' → f x y ≡ f x' y'
 
-lc-maps-reflect-subsingletonness f l s x x' = l (s (f x) (f x'))
+subsingleton-criterion f x = singletons-are-subsingletons (domain f) (f x) x
+
+lc-maps-reflect-subsingletons f l s x x' = l (s (f x) (f x'))
 
 sections-are-lc s (r , ε) {x} {y} p = x       ≡⟨ (ε x)⁻¹ ⟩
                                       r (s x) ≡⟨ ap r p ⟩
@@ -1255,7 +1261,7 @@ equivs-have-sections f e = (inverse f e , inverse-is-section f e)
 
 equivs-are-lc f e = sections-are-lc f (equivs-have-retractions f e)
 
-equiv-to-subsingleton (f , i) = lc-maps-reflect-subsingletonness f (equivs-are-lc f i)
+equiv-to-subsingleton (f , i) = lc-maps-reflect-subsingletons f (equivs-are-lc f i)
 
 sections-closed-under-∼ f g (r , rf) h = (r ,
                                           λ x → r (g x) ≡⟨ ap r (h x) ⟩
@@ -1303,7 +1309,7 @@ pr₁-lc i p = to-Σ-≡ (p , i _ _ _)
 
 subsets-of-sets-are-sets X A h p = subtypes-of-sets-are-sets pr₁ (pr₁-lc p) h
 
-pr₁-equivalence {𝓤} {𝓥} X A s = invertibles-are-equivs pr₁ (g , η , ε)
+pr₁-equiv {𝓤} {𝓥} X A s = invertibles-are-equivs pr₁ (g , η , ε)
  where
   g : X → Σ A
   g x = x , pr₁(s x)
@@ -1331,7 +1337,11 @@ pr₁-equivalence {𝓤} {𝓥} X A s = invertibles-are-equivs pr₁ (g , η , �
   g : (Σ \x → Σ \y → Z (x , y)) → Σ Z
   g (x , (y , z)) = ((x , y) , z)
 
-⁻¹-≃ x y = (_⁻¹ , invertibles-are-equivs _⁻¹ (_⁻¹ , ⁻¹-involutive , ⁻¹-involutive))
+⁻¹-is-equiv : {X : 𝓤 ̇ } (x y : X)
+             → is-equiv (λ (p : x ≡ y) → p ⁻¹)
+⁻¹-is-equiv x y = invertibles-are-equivs _⁻¹ (_⁻¹ , ⁻¹-involutive , ⁻¹-involutive)
+
+⁻¹-≃ x y = (_⁻¹ , ⁻¹-is-equiv x y)
 
 singleton-types-≃ x = Σ-cong (λ y → ⁻¹-≃ x y)
 
@@ -1398,27 +1408,21 @@ to-×-≡ (refl x) (refl y) = refl (x , y)
 
 ap₂ f (refl x) (refl y) = refl (f x y)
 
-retract-subsingleton-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
-                           → ((y : X) → A y ◁ (x ≡ y))
-                           → is-subsingleton (Σ A)
-retract-subsingleton-lemma {𝓤} {𝓥} {X} {A} x ρ = singletons-are-subsingletons (Σ A) i
+equiv-subsingleton-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
+                         → (f : (y : X) → x ≡ y → A y)
+                         → ((y : X) → is-equiv (f y))
+                         → is-subsingleton (Σ A)
+equiv-subsingleton-lemma {𝓤} {𝓥} {X} {A} x f i = γ
  where
-  σ : Σ A ◁ singleton-type' x
-  σ = Σ-retract ρ
-  i : is-singleton (Σ A)
-  i = retract-of-singleton σ (singleton-types'-are-singletons X x)
-
-equiv-subsingleton-corollary : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
-                             → ((y : X) → A y ≃ (x ≡ y))
-                             → is-subsingleton (Σ A)
-equiv-subsingleton-corollary {𝓤} {𝓥} {X} {A} x e = retract-subsingleton-lemma x (λ x → ≃-gives-◁ (e x))
-
-univalence-alternative : is-univalent 𝓤
-                       → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-univalence-alternative {𝓤} ua X = equiv-subsingleton-corollary X e
- where
-  e : (Y : 𝓤 ̇) → (X ≃ Y) ≃ (X ≡ Y)
-  e Y = ≃-sym (is-univalent-≃ ua X Y)
+  abstract
+   e : (y : X) → (x ≡ y) ≃ A y
+   e y = (f y , i y)
+   d : Σ A ≃ singleton-type' x
+   d = ≃-sym (Σ-cong e)
+   s : is-singleton (Σ A)
+   s = equiv-to-singleton d (singleton-types'-are-singletons X x)
+   γ : is-subsingleton (Σ A)
+   γ = singletons-are-subsingletons (Σ A) s
 
 subsingleton-equiv-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
                          → (f : (y : X) → x ≡ y → A y)
@@ -1426,62 +1430,23 @@ subsingleton-equiv-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
                          → (y : X) → is-equiv (f y)
 subsingleton-equiv-lemma {𝓤} {𝓥} {X} {A} x f i = γ
  where
-  j : is-singleton (Σ A)
-  j = pointed-subsingletons-are-singletons (Σ A) (x , (f x (refl x))) i
-  g : singleton-type' x → Σ A
-  g = NatΣ f
-  e : is-equiv g
-  e = maps-of-singletons-are-equivs g (singleton-types'-are-singletons X x) j
-  γ : (y : X) → is-equiv (f y)
-  γ = NatΣ-equiv-gives-fiberwise-equiv f e
+  abstract
+   j : is-singleton (Σ A)
+   j = pointed-subsingletons-are-singletons (Σ A) (x , (f x (refl x))) i
+   g : singleton-type' x → Σ A
+   g = NatΣ f
+   e : is-equiv g
+   e = maps-of-singletons-are-equivs g (singleton-types'-are-singletons X x) j
+   γ : (y : X) → is-equiv (f y)
+   γ = NatΣ-equiv-gives-fiberwise-equiv f e
 
-univalence-alternative-converse : ((X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y))
-                                → is-univalent 𝓤
-univalence-alternative-converse {𝓤} i X = γ
- where
-  γ : (Y : 𝓤 ̇ ) → is-equiv (Id-to-Eq X Y)
-  γ = subsingleton-equiv-lemma X (Id-to-Eq X) (i X)
+univalence→ : is-univalent 𝓤
+            → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+univalence→ ua X = equiv-subsingleton-lemma X (Id-to-Eq X) (ua X)
 
-fiberwise-retraction-of-Id-is-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
-                                    → (f : (y : X) → x ≡ y → A y)
-                                    → ((y : X) → has-section (f y))
-                                    → ((y : X) → is-equiv (f y))
-fiberwise-retraction-of-Id-is-equiv {𝓤} {𝓥} {X} {A} x f s = γ
- where
-  ρ : (y : X) → A y ◁ (x ≡ y)
-  ρ y = f y , s y
-  i : is-subsingleton (Σ A)
-  i = retract-subsingleton-lemma x ρ
-  γ : (y : X) → is-equiv (f y)
-  γ = subsingleton-equiv-lemma x f i
-
-fiberwise-◁-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
-              → ((y : X) → A y ◁ (x ≡ y))
-              → ((y : X) → A y ≃ (x ≡ y))
-fiberwise-◁-≃ {𝓤} {𝓥} {X} {A} x ρ y = ≃-sym γ
- where
-  γ : (x ≡ y) ≃ A y
-  γ = retraction (ρ y) ,
-      fiberwise-retraction-of-Id-is-equiv x
-        (λ y → retraction (ρ y))
-        (λ y → retraction-has-section (ρ y))
-        y
-
-singleton-Σ-is-Id : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                  → is-singleton (Σ A)
-                  → Σ \(x : X) → (y : X) → A y ≃ (x ≡ y)
-singleton-Σ-is-Id {𝓤} {𝓥} {X} {A} s = x , φ
- where
-  x : X
-  x = pr₁ (center (Σ A) s)
-  a : A x
-  a = pr₂ (center (Σ A) s)
-  f : (y : X) → x ≡ y → A y
-  f y p = transport A p a
-  e : (y : X) → is-equiv (f y)
-  e = subsingleton-equiv-lemma x f (singletons-are-subsingletons (Σ A) s)
-  φ : (y : X) → A y ≃ (x ≡ y)
-  φ y = ≃-sym (f y , e y)
+→univalence : ((X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y))
+            → is-univalent 𝓤
+→univalence i X = subsingleton-equiv-lemma X (Id-to-Eq X) (i X)
 
 H-≃ : is-univalent 𝓤
     → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
@@ -1491,7 +1456,7 @@ H-≃ {𝓤} {𝓥} ua X A a Y e = τ a
   B : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇
   B (Y , e) = A Y e
   p : (X , ≃-refl X) ≡ (Y , e)
-  p = univalence-alternative ua X (X , ≃-refl X) (Y , e)
+  p = univalence→ ua X (X , ≃-refl X) (Y , e)
   τ : B (X , ≃-refl X) → B (Y , e)
   τ = transport B p
 
@@ -1510,10 +1475,10 @@ H-≃-equation {𝓤} {𝓥} ua X A a =
   t : Σ \(Y : 𝓤 ̇ ) → X ≃ Y
   t = (X , ≃-refl X)
   p : t ≡ t
-  p = univalence-alternative ua X t t
+  p = univalence→ ua X t t
   q : p ≡ refl t
   q = subsingletons-are-sets (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-       (univalence-alternative ua X) t t p (refl t)
+       (univalence→ ua X) t t p (refl t)
 
 J-≃ : is-univalent 𝓤
     → (A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
@@ -1727,7 +1692,7 @@ funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
   f : Σ A → X
   f = pr₁
   f-is-equiv : is-equiv f
-  f-is-equiv = pr₁-equivalence X A φ
+  f-is-equiv = pr₁-equiv X A φ
   g : (X → Σ A) → (X → X)
   g h = f ∘ h
   g-is-equiv : is-equiv g
@@ -2046,19 +2011,14 @@ ap-is-equiv-gives-embedding f i = embedding-criterion f
 embedding-gives-ap-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                             → is-embedding f
                             → (x x' : X) → is-equiv (ap f {x} {x'})
-embedding-gives-ap-is-equiv f i x x' = γ x' x
+embedding-gives-ap-is-equiv {𝓤} {𝓥} {X} f e = γ
  where
-  X = domain f
-  α : (x' x : X) → x ≡ x' → f x ≡ f x'
-  α x' x = ap f {x} {x'}
-  β : (x' : X) → singleton-type x' → fiber f (f x')
-  β x' = NatΣ (α x')
-  e : (x' : X) → is-equiv (β x')
-  e x' = maps-of-singletons-are-equivs (β x')
-          (singleton-types-are-singletons X x')
-          (pointed-subsingletons-are-singletons (fiber f (f x')) (x' , (refl (f x'))) (i (f x')))
-  γ : (x' x : X) → is-equiv (α x' x)
-  γ x' = NatΣ-equiv-gives-fiberwise-equiv (α x') (e x')
+  d : (x' : X) → (Σ \(x : X) → f x' ≡ f x) ≃ (Σ \(x : X) → f x ≡ f x')
+  d x' = Σ-cong (λ x → ⁻¹-≃ (f x') (f x))
+  s : (x' : X) → is-subsingleton (Σ \(x : X) → f x' ≡ f x)
+  s x' = equiv-to-subsingleton (d x') (e (f x'))
+  γ : (x x' : X) → is-equiv (ap f {x} {x'})
+  γ x = subsingleton-equiv-lemma x (λ x' → ap f {x} {x'}) (s x)
 
 embedding-criterion-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → is-embedding f
@@ -2148,8 +2108,8 @@ module _ {𝓤 𝓥 : Universe}
   fe₃ : dfunext 𝓤 𝓤
   fe₃ = lower-dfunext 𝓥 𝓥 𝓤 𝓤 fe
 
- univalence-alternative' : (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
- univalence-alternative' X = s
+ univalence→' : (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
+ univalence→' X = s
   where
    abstract
      e : (Y : 𝓥 ̇ ) → (X ≃ Y) ≃ (Lift 𝓤 Y ≡ Lift 𝓥 X)
@@ -2164,19 +2124,19 @@ module _ {𝓤 𝓥 : Universe}
      s : is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
      s = equiv-to-subsingleton d i
 
- univalence-alternative'-dual : (Y : 𝓤 ̇ ) → is-subsingleton (Σ \(X : 𝓥 ̇ ) → X ≃ Y)
- univalence-alternative'-dual Y = equiv-to-subsingleton e i
+ univalence→'-dual : (Y : 𝓤 ̇ ) → is-subsingleton (Σ \(X : 𝓥 ̇ ) → X ≃ Y)
+ univalence→'-dual Y = equiv-to-subsingleton e i
   where
    e : (Σ \(X : 𝓥 ̇ ) → X ≃ Y) ≃ (Σ \(X : 𝓥 ̇ ) → Y ≃ X)
    e = Σ-cong (λ X → ≃-Sym fe₁ fe₀ fe)
    i : is-subsingleton (Σ \(X : 𝓥 ̇ ) → Y ≃ X)
-   i = univalence-alternative' Y
+   i = univalence→' Y
 
-univalence-alternative'' : is-univalent (𝓤 ⊔ 𝓥) → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
-univalence-alternative'' ua = univalence-alternative' ua ua
+univalence→'' : is-univalent (𝓤 ⊔ 𝓥) → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+univalence→'' ua = univalence→' ua ua
 
-univalence-alternative'-dual' : is-univalent (𝓤 ⊔ 𝓥) → (Y : 𝓤 ̇ ) → is-subsingleton (Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
-univalence-alternative'-dual' ua = univalence-alternative'-dual ua ua
+univalence→'-dual' : is-univalent (𝓤 ⊔ 𝓥) → (Y : 𝓤 ̇ ) → is-subsingleton (Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+univalence→'-dual' ua = univalence→'-dual ua ua
 
 H↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
      → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
@@ -2188,7 +2148,7 @@ H↑-≃ {𝓤} {𝓥} {𝓦} ua X A a Y e = τ a
   t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
   t = (Lift 𝓥 X , ≃-Lift X)
   p : t ≡ (Y , e)
-  p = univalence-alternative'' {𝓤} {𝓥} ua X t (Y , e)
+  p = univalence→'' {𝓤} {𝓥} ua X t (Y , e)
   τ : B t → B (Y , e)
   τ = transport B p
 
@@ -2208,10 +2168,10 @@ H↑-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
   t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
   t = (Lift 𝓥 X , ≃-Lift X)
   p : t ≡ t
-  p = univalence-alternative'' {𝓤} {𝓥} ua X t t
+  p = univalence→'' {𝓤} {𝓥} ua X t t
   q : p ≡ refl t
   q = subsingletons-are-sets (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
-       (univalence-alternative'' {𝓤} {𝓥} ua X) t t p (refl t)
+       (univalence→'' {𝓤} {𝓥} ua X) t t p (refl t)
 
 J↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
      → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓥 ̇ )
@@ -2261,7 +2221,7 @@ H↓-≃ {𝓤} {𝓥} {𝓦} ua Y A a X e = τ a
   t : Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
   t = (Lift 𝓥 Y , Lift-≃ Y)
   p : t ≡ (X , e)
-  p = univalence-alternative'-dual ua ua Y t (X , e)
+  p = univalence→'-dual ua ua Y t (X , e)
   τ : B t → B (X , e)
   τ = transport B p
 
