@@ -4930,7 +4930,7 @@ fiberwise-◁-gives-≃ X A x ρ = γ
   γ y = ≃-sym(f y , e y)
 \end{code}
 
-To prove that `𝓨 {𝓤 {X}` is an embedding of `X` into `X → 𝓤` for any
+To prove that [`𝓨 {𝓤} {X}` is an embedding](https://arxiv.org/abs/1903.01211) of `X` into `X → 𝓤` for any
 type `X : 𝓤`, we need the following two lemmas.
 
 \begin{code}
