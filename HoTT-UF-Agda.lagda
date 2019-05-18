@@ -357,6 +357,7 @@ to practice univalent mathematics should consult the above references.
      1. [Propositional extensionality](HoTT-UF-Agda.html#propositionalextensionality)
      1. [Some constructions with types of equivalences](HoTT-UF-Agda.html#equivconstructions)
      1. [Type embeddings](HoTT-UF-Agda.html#embeddings)
+     1. [The Yoneda Lemma for types](HoTT-UF-Agda.html#yoneda)
      1. [Universe lifting](HoTT-UF-Agda.html#universelifting)
      1. [Magma equivalences](HoTT-UF-Agda.html#magmaequivalences)
      1. [Structure identity principle](HoTT-UF-Agda.html#sip)
@@ -4735,6 +4736,253 @@ converse fails in general.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="yoneda"></a> The Yoneda Lemma for types
+
+As we [have seen](HoTT-UF-Agda.html#identitytypeuf), a type `X` can be
+seen as an `∞`-groupoids and hence as an `∞`-category.  Likewise a
+universe `𝓤` can be seen as the ∞-generalization of the category of
+sets, and hence a family `A : X → 𝓤` can be seen as an  `∞-`presheaf,
+because groupoids are self-dual categories.
+
+With this view, the identity type former `Id X : X → X → 𝓤` plays the role
+of the [Yoneda embedding](https://ncatlab.org/nlab/show/Yoneda+embedding):
+
+\begin{code}
+𝓨 : {X : 𝓤 ̇ } → X → (X → 𝓤 ̇)
+𝓨 {𝓤} {X} = Id X
+\end{code}
+
+By our definition of [`Nat`](HoTT-UF-Agda#Nat), for any `A : X → 𝓥 ̇ ` and `x : X` we have
+
+   > `Nat (𝓨 x) A = (y : X) → x ≡ y → A y`,
+
+and, by [`Nats-are-natural`](HoTT-UF-Agda#Nats-are-natural), we have
+that `Nat (𝓨 x) A` is the type of natural transformations from the
+presheaf `𝓨 x` to the presheaf `A`.
+
+The starting point of the Yoneda Lemma, in our context, is that every natural transformation
+`Nat (𝓨 x) A` is a transport:
+
+\begin{code}
+transport-lemma : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
+                → (τ : Nat (𝓨 x) A)
+                → (y : X) (p : x ≡ y) → τ y p ≡ transport A p (τ x (refl x))
+transport-lemma A x τ x (refl x) = refl (τ x (refl x))
+\end{code}
+
+We refer to `τ x (refl x)` as the Yoneda element of `τ` and denote it by
+`𝓔 A x τ`.
+
+\begin{code}
+𝓔 : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
+  → Nat (𝓨 x) A → A x
+𝓔 A x τ = τ x (refl x)
+\end{code}
+
+The function `𝓔 A x : Nat (𝓨 x) A → A x` is an equivalence with
+inverse `𝓝 A x`, the transport transformation induced by `A` and `x`:
+
+\begin{code}
+𝓝 : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
+  → A x → Nat (𝓨 x) A
+𝓝 A x a y p = transport A p a
+
+yoneda-η : dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
+         → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
+         → 𝓝 A x ∘ 𝓔 A x ∼ id
+yoneda-η fe fe' A x = γ
+ where
+  γ : (τ : Nat (𝓨 x) A) → (λ y p → transport A p (τ x (refl x))) ≡ τ
+  γ τ = fe (λ y → fe' λ p → (transport-lemma A x τ y p)⁻¹)
+
+yoneda-ε : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
+         → 𝓔 A x ∘ 𝓝 A x ∼ id
+yoneda-ε A x = γ
+ where
+  γ : (a : A x) → transport A (refl x) a ≡ a
+  γ = refl
+\end{code}
+
+By a fiberwise equivalence we mean a natural transformation whose
+components are all equivalences:
+
+\begin{code}
+is-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
+                   → Nat A B → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+is-fiberwise-equiv τ = ∀ x → is-equiv (τ x)
+
+𝓔-is-equiv : dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
+           → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+           → is-fiberwise-equiv (𝓔 A)
+𝓔-is-equiv fe fe' A x = invertibles-are-equivs (𝓔 A x ) (𝓝 A x , yoneda-η fe fe' A x , yoneda-ε A x)
+
+𝓝-is-equiv : dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
+           → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+           → is-fiberwise-equiv (𝓝 A)
+𝓝-is-equiv fe fe' A x = invertibles-are-equivs (𝓝 A x) (𝓔 A x , yoneda-ε A x , yoneda-η fe fe' A x)
+\end{code}
+
+This gives the [Yoneda
+Lemma](https://homotopytypetheory.org/2012/05/02/a-type-theoretical-yoneda-lemma/):
+
+\begin{code}
+Yoneda-Lemma : dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
+             → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
+             → Nat (𝓨 x) A ≃ A x
+Yoneda-Lemma fe fe' A x = 𝓔 A x , 𝓔-is-equiv fe fe' A x
+\end{code}
+
+A [universal element of a
+presheaf](https://en.wikipedia.org/wiki/Representable_functor) `A`
+corresponds in our context to an element of the type `is-singleton (Σ A)`.
+
+If the transport transformation is a fiberwise equivalence,
+then `A` has a universal element. More generally, we have the following:
+
+\begin{code}
+retract-universal-lemma : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
+                        → ((y : X) → A y ◁ (x ≡ y))
+                        → is-singleton (Σ A)
+retract-universal-lemma A x ρ = i
+ where
+  σ : Σ A ◁ singleton-type' x
+  σ = Σ-retract ρ
+  i : is-singleton (Σ A)
+  i = retract-of-singleton σ (singleton-types'-are-singletons (domain A) x)
+
+fiberwise-equiv-universal : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X) (a : A x)
+                          → is-fiberwise-equiv (𝓝 A x a)
+                          → is-singleton (Σ A)
+fiberwise-equiv-universal A x a e = retract-universal-lemma A x ρ
+ where
+  ρ : ∀ y → A y ◁ (x ≡ y)
+  ρ y = ≃-gives-▷ (𝓝 A x a y , e y)
+\end{code}
+
+A presheaf is called representable if it is pointwise equivalent to a
+presheaf of the form `𝓨 x`:
+
+\begin{code}
+_≃̇_ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+A ≃̇ B = ∀ x → A x ≃ B x
+
+is-representable : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+is-representable A = Σ \(x : domain A) → 𝓨 x ≃̇ A
+
+representable-universal : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                        → is-representable A
+                        → is-singleton (Σ A)
+representable-universal A (x , e) = retract-universal-lemma A x (λ x → ≃-gives-▷ (e x))
+
+universal-fiberwise-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
+                          → is-singleton (Σ A)
+                          → (τ : Nat (𝓨 x) A) → is-fiberwise-equiv τ
+universal-fiberwise-equiv {𝓤} {𝓥} {X} A x u τ = γ
+ where
+  g : singleton-type' x → Σ A
+  g = NatΣ τ
+  e : is-equiv g
+  e = maps-of-singletons-are-equivs g (singleton-types'-are-singletons X x) u
+  γ : is-fiberwise-equiv τ
+  γ = NatΣ-equiv-gives-fiberwise-equiv τ e
+
+universal-representable : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                        → is-singleton (Σ A)
+                        → is-representable A
+universal-representable {𝓤} {𝓥} {X} {A} ((x , a) , p) = x , φ
+ where
+  e : is-fiberwise-equiv (𝓝 A x a)
+  e = universal-fiberwise-equiv A x ((x , a) , p) (𝓝 A x a)
+  φ : (y : X) → (x ≡ y) ≃ A y
+  φ y = (𝓝 A x a y , e y)
+\end{code}
+
+Combining `retract-universal-lemma` and `universal-fiberwise-equiv` we get the
+[following](https://github.com/HoTT/book/issues/718#issuecomment-65378867):
+
+\begin{code}
+fiberwise-sections-are-equivs : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
+                              → (τ : Nat (𝓨 x) A)
+                              → ((y : X) → has-section (τ y))
+                              → is-fiberwise-equiv τ
+fiberwise-sections-are-equivs {𝓤} {𝓥} {X} A x τ s = γ
+ where
+  ρ : (y : X) → A y ◁ (x ≡ y)
+  ρ y = τ y , s y
+  i : is-singleton (Σ A)
+  i = retract-universal-lemma A x ρ
+  γ : is-fiberwise-equiv τ
+  γ = universal-fiberwise-equiv A x i τ
+\end{code}
+
+Perhaps the following formulation is more appealing:
+
+\begin{code}
+fiberwise-◁-gives-≃ : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (x : X)
+                    → ((y : X) → A y ◁ (x ≡ y))
+                    → ((y : X) → A y ≃ (x ≡ y))
+fiberwise-◁-gives-≃ X A x ρ = γ
+ where
+  f : (y : X) → (x ≡ y) → A y
+  f y = retraction (ρ y)
+  e : is-fiberwise-equiv f
+  e = fiberwise-sections-are-equivs A x f (λ y → retraction-has-section (ρ y))
+  γ : (y : X) → A y ≃ (x ≡ y)
+  γ y = ≃-sym(f y , e y)
+\end{code}
+
+To prove that `𝓨 {𝓤 {X}` is an embedding of `X` into `X → 𝓤` for any
+type `X : 𝓤`, we need the following two lemmas.
+
+\begin{code}
+being-fiberwise-equiv-is-a-subsingleton : global-dfunext
+                                        → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
+                                        → (τ : Nat A B)
+                                        → is-subsingleton (is-fiberwise-equiv τ)
+being-fiberwise-equiv-is-a-subsingleton fe τ = Π-is-subsingleton fe
+                                                (λ y → being-equiv-is-a-subsingleton fe fe (τ y))
+
+being-representable-is-a-subsingleton : global-dfunext
+                                      → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                                      → is-subsingleton (is-representable A)
+being-representable-is-a-subsingleton fe A r₀ r₁ = γ
+ where
+  X = domain A
+  u : is-singleton (Σ A)
+  u = representable-universal A r₀
+  i : (x : X) (τ : Nat (𝓨 x) A) → is-singleton (is-fiberwise-equiv τ)
+  i x τ = pointed-subsingletons-are-singletons
+           (is-fiberwise-equiv τ)
+           (universal-fiberwise-equiv A x u τ)
+           (being-fiberwise-equiv-is-a-subsingleton fe τ)
+  ε : (x : X) → (𝓨 x ≃̇ A) ≃ A x
+  ε x = ((y : X) → 𝓨 x y ≃ A y)                       ≃⟨ ΠΣ-distr-≃ ⟩
+        (Σ \(τ : Nat (𝓨 x) A) → is-fiberwise-equiv τ) ≃⟨ pr₁ , pr₁-equiv (Nat (𝓨 x) A) is-fiberwise-equiv (i x) ⟩
+        Nat (𝓨 x) A                                   ≃⟨ Yoneda-Lemma fe fe A x ⟩
+        A x                                            ■
+  δ : is-representable A ≃ Σ A
+  δ = Σ-cong ε
+  v : is-singleton (is-representable A)
+  v = equiv-to-singleton δ u
+  γ : r₀ ≡ r₁
+  γ = singletons-are-subsingletons (is-representable A) v r₀ r₁
+
+𝓨-embedding : Univalence → (X : 𝓤 ̇) → is-embedding (𝓨 {𝓤} {X})
+𝓨-embedding {𝓤} ua X A = γ
+ where
+  hfe : global-hfunext
+  hfe = univalence-gives-global-hfunext ua
+  dfe : global-dfunext
+  dfe = univalence-gives-global-dfunext ua
+  e : fiber 𝓨 A ≃ is-representable A
+  e = Σ-cong (λ x → (𝓨 x ≡ A)                 ≃⟨ (happly (𝓨 x) A) , hfe (𝓨 x) A ⟩
+                    ((y : X) → 𝓨 x y ≡ A y)   ≃⟨ Π-cong dfe dfe X
+                                                   (λ y → 𝓨 x y ≡ A y)
+                                                   (λ y → 𝓨 x y ≃ A y)
+                                                   (λ y → is-univalent-≃ (ua 𝓤) (𝓨 x y) (A y)) ⟩
+                    ((y : X) → 𝓨 x y ≃ A y)   ■)
+  γ : is-subsingleton (fiber 𝓨 A)
+  γ = equiv-to-subsingleton e (being-representable-is-a-subsingleton dfe A)
+\end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="universelifting"></a> Universe lifting
