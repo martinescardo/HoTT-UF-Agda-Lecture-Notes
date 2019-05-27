@@ -2176,7 +2176,7 @@ being-representable-is-a-subsingleton fe A r₀ r₁ = γ
   ε x = ((y : X) → 𝓨 x y ≃ A y)                       ≃⟨ ΠΣ-distr-≃ ⟩
         (Σ \(τ : Nat (𝓨 x) A) → is-fiberwise-equiv τ) ≃⟨ pr₁ , pr₁-equiv (Nat (𝓨 x) A) is-fiberwise-equiv (i x) ⟩
         Nat (𝓨 x) A                                   ≃⟨ Yoneda-Lemma fe fe A x ⟩
-        A x                                            ■
+        A x                                           ■
   δ : is-representable A ≃ Σ A
   δ = Σ-cong ε
   v : is-singleton (is-representable A)
@@ -2632,8 +2632,8 @@ inhabitation-is-a-subsingleton {𝓤} fe X =
            (λ (s : is-subsingleton P)
                  → Π-is-subsingleton fe (λ (f : X → P) → s))
 
-pointed-is-inhabited : (X : 𝓤 ̇ ) → X → is-inhabited X
-pointed-is-inhabited X x = λ P s f → f x
+pointed-is-inhabited : {X : 𝓤 ̇ } → X → is-inhabited X
+pointed-is-inhabited x = λ P s f → f x
 
 inhabited-recursion : (X P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → is-inhabited X → P
 inhabited-recursion X P s f φ = φ P s f
@@ -2648,7 +2648,7 @@ inhabited-functorial fe X Y f = inhabited-recursion
                                   X
                                   (is-inhabited Y)
                                   (inhabitation-is-a-subsingleton fe Y)
-                                  (pointed-is-inhabited Y ∘ f)
+                                  (pointed-is-inhabited ∘ f)
 
 image' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)⁺ ̇
 image' f = Σ \(y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
@@ -2662,8 +2662,7 @@ restriction' f (y , _) = y
 
 corestriction' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                → X → image' f
-corestriction' f x = f x ,
-                     pointed-is-inhabited (Σ \x' → f x' ≡ f x) (x , refl (f x))
+corestriction' f x = f x , pointed-is-inhabited (x , refl (f x))
 
 is-surjection' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)⁺ ̇
 is-surjection' f = (y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
@@ -2702,7 +2701,7 @@ module basic-truncation-development
   ∥∥-agrees-with-inhabitation X = a , b
    where
     a : ∥ X ∥ → is-inhabited X
-    a = ∥∥-rec (inhabitation-is-a-subsingleton fe X) (pointed-is-inhabited X)
+    a = ∥∥-rec (inhabitation-is-a-subsingleton fe X) pointed-is-inhabited
     b : is-inhabited X → ∥ X ∥
     b = inhabited-recursion X ∥ X ∥ ∥∥-is-a-subsingleton ∣_∣
 
