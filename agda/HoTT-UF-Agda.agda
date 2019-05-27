@@ -2696,7 +2696,7 @@ record subsingleton-truncations-exist : 𝓤ω where
   ∥_∥                  : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
   ∥∥-is-a-subsingleton : {𝓤 : Universe} {X : 𝓤 ̇ } → is-subsingleton ∥ X ∥
   ∣_∣                 : {𝓤 : Universe} {X : 𝓤 ̇ } → X → ∥ X ∥
-  ∥∥-rec               : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {P : 𝓥 ̇ }
+  ∥∥-recursion         : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {P : 𝓥 ̇ }
                        → is-subsingleton P → (X → P) → ∥ X ∥ → P
 
 module basic-truncation-development
@@ -2706,8 +2706,26 @@ module basic-truncation-development
 
   open subsingleton-truncations-exist pt public
 
+  ∥∥-induction : {X : 𝓤 ̇ } {P : ∥ X ∥ → 𝓥 ̇ }
+              → ((s : ∥ X ∥) → is-subsingleton (P s))
+              → ((x : X) → P ∣ x ∣)
+              → (s : ∥ X ∥) → P s
+  ∥∥-induction {𝓤} {𝓥} {X} {P} i f s = φ' s
+   where
+    φ : X → P s
+    φ x = transport P (∥∥-is-a-subsingleton ∣ x ∣ s) (f x)
+    φ' : ∥ X ∥ → P s
+    φ' = ∥∥-recursion (i s) φ
+
+  ∥∥-computation : {X : 𝓤 ̇ } {P : ∥ X ∥ → 𝓥 ̇ }
+                → (i : (s : ∥ X ∥) → is-subsingleton (P s))
+                → (f : (x : X) → P ∣ x ∣)
+                → (x : X)
+                → ∥∥-induction i f ∣ x ∣ ≡ f x
+  ∥∥-computation i f x = i ∣ x ∣ (∥∥-induction i f ∣ x ∣) (f x)
+
   ∥∥-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → ∥ X ∥ → ∥ Y ∥
-  ∥∥-functor f = ∥∥-rec ∥∥-is-a-subsingleton (λ x → ∣ f x ∣)
+  ∥∥-functor f = ∥∥-recursion ∥∥-is-a-subsingleton (λ x → ∣ f x ∣)
 
   ∃ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
   ∃ A = ∥ Σ A ∥
@@ -2722,7 +2740,7 @@ module basic-truncation-development
   ∥∥-agrees-with-inhabitation X = a , b
    where
     a : ∥ X ∥ → is-inhabited X
-    a = ∥∥-rec (inhabitation-is-a-subsingleton fe X) pointed-is-inhabited
+    a = ∥∥-recursion (inhabitation-is-a-subsingleton fe X) pointed-is-inhabited
     b : is-inhabited X → ∥ X ∥
     b = inhabited-recursion X ∥ X ∥ ∥∥-is-a-subsingleton ∣_∣
 
@@ -2746,7 +2764,7 @@ module basic-truncation-development
     f : X → ∃ \(x : X) → ∣ x ∣ ≡ s
     f x = ∣ (x , ∥∥-is-a-subsingleton ∣ x ∣ s) ∣
     γ : ∃ \(x : X) → ∣ x ∣ ≡ s
-    γ = ∥∥-rec ∥∥-is-a-subsingleton f s
+    γ = ∥∥-recursion ∥∥-is-a-subsingleton f s
 
   AC : ∀ 𝓣 (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
      → is-set X → ((x : X) → is-set (A x)) → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥 ̇
