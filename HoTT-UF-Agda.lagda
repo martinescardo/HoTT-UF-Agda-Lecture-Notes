@@ -5627,6 +5627,33 @@ inhabited-recursion : (X P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → i
 inhabited-recursion X P s f φ = φ P s f
 \end{code}
 
+We can derive induction from recursion in this case, but the
+"computation rule" holds up to an identification, rather than
+judgmentally:
+
+\begin{code}
+inhabited-induction : global-dfunext
+                    → {X : 𝓤 ̇ } {P : is-inhabited X → 𝓤 ̇ }
+                    → (i : (s : is-inhabited X) → is-subsingleton (P s))
+                    → (f : (x : X) → P (pointed-is-inhabited x))
+                    → (s : is-inhabited X) → P s
+inhabited-induction fe {X} {P} i f s = φ' s
+ where
+  φ : X → P s
+  φ x = transport P (inhabitation-is-a-subsingleton fe X (pointed-is-inhabited x) s) (f x)
+  φ' : is-inhabited X → P s
+  φ' = inhabited-recursion X (P s) (i s) φ
+
+inhabited-computation : (fe : global-dfunext) {X : 𝓤 ̇ } {P : is-inhabited X → 𝓤 ̇ }
+                      → (i : (s : is-inhabited X) → is-subsingleton (P s))
+                      → (f : (x : X) → P (pointed-is-inhabited x))
+                      → (x : X)
+                      → inhabited-induction fe i f (pointed-is-inhabited x) ≡ f x
+inhabited-computation fe i f x = i (pointed-is-inhabited x)
+                                   (inhabited-induction fe i f (pointed-is-inhabited x))
+                                   (f x)
+\end{code}
+
 Although we [don't necessarily have](HoTT-UF-Agda.html#moreexercises) that
 `¬¬ P → P`, we do have that `is-inhabited P → P` if `P` is a subsingleton:
 
