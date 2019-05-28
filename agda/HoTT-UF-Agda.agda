@@ -2048,7 +2048,7 @@ yoneda-η : dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
 yoneda-η fe fe' A x = γ
  where
   γ : (τ : Nat (𝓨 x) A) → (λ y p → transport A p (τ x (refl x))) ≡ τ
-  γ τ = fe (λ y → fe' λ p → (transport-lemma A x τ y p)⁻¹)
+  γ τ = fe (λ y → fe' (λ p → (transport-lemma A x τ y p)⁻¹))
 
 yoneda-ε : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
          → 𝓔 A x ∘ 𝓝 A x ∼ id
@@ -2127,11 +2127,11 @@ universal-representable {𝓤} {𝓥} {X} {A} ((x , a) , p) = x , φ
   φ : (y : X) → (x ≡ y) ≃ A y
   φ y = (𝓝 A x a y , e y)
 
-fiberwise-sections-are-equivs : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
-                              → (τ : Nat (𝓨 x) A)
-                              → ((y : X) → has-section (τ y))
-                              → is-fiberwise-equiv τ
-fiberwise-sections-are-equivs {𝓤} {𝓥} {X} A x τ s = γ
+fiberwise-retractions-are-equivs : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
+                                 → (τ : Nat (𝓨 x) A)
+                                 → ((y : X) → has-section (τ y))
+                                 → is-fiberwise-equiv τ
+fiberwise-retractions-are-equivs {𝓤} {𝓥} {X} A x τ s = γ
  where
   ρ : (y : X) → A y ◁ (x ≡ y)
   ρ y = τ y , s y
@@ -2148,7 +2148,7 @@ fiberwise-◁-gives-≃ X A x ρ = γ
   f : (y : X) → (x ≡ y) → A y
   f y = retraction (ρ y)
   e : is-fiberwise-equiv f
-  e = fiberwise-sections-are-equivs A x f (λ y → retraction-has-section (ρ y))
+  e = fiberwise-retractions-are-equivs A x f (λ y → retraction-has-section (ρ y))
   γ : (y : X) → A y ≃ (x ≡ y)
   γ y = ≃-sym(f y , e y)
 
@@ -2162,9 +2162,8 @@ being-fiberwise-equiv-is-a-subsingleton fe τ = Π-is-subsingleton fe
 being-representable-is-a-subsingleton : global-dfunext
                                       → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
                                       → is-subsingleton (is-representable A)
-being-representable-is-a-subsingleton fe A r₀ r₁ = γ
+being-representable-is-a-subsingleton fe {X} A r₀ r₁ = γ
  where
-  X = domain A
   u : is-singleton (Σ A)
   u = representable-universal A r₀
   i : (x : X) (τ : Nat (𝓨 x) A) → is-singleton (is-fiberwise-equiv τ)
@@ -2310,8 +2309,8 @@ module _ {𝓤 𝓥 : Universe}
 univalence→'' : is-univalent (𝓤 ⊔ 𝓥) → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
 univalence→'' ua = univalence→' ua ua
 
-univalence→'-dual' : is-univalent (𝓤 ⊔ 𝓥) → (Y : 𝓤 ̇ ) → is-subsingleton (Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
-univalence→'-dual' ua = univalence→'-dual ua ua
+univalence→''-dual : is-univalent (𝓤 ⊔ 𝓥) → (Y : 𝓤 ̇ ) → is-subsingleton (Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+univalence→''-dual ua = univalence→'-dual ua ua
 
 H↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
      → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
