@@ -2618,7 +2618,10 @@ module magma-equivalences (ua : Univalence) where
                 (Id-to-Eq-is-hae (ua 𝓤) (ua (𝓤 ⁺)) ⟨ M ⟩ ⟨ N ⟩))
 
  magma-identity-is-isomorphism : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≅ₘ N)
- magma-identity-is-isomorphism M N = magma-identity-is-equivalence M N ● ≃-sym (≅ₘ-charac M N)
+ magma-identity-is-isomorphism M N =
+   (M ≡ N)  ≃⟨ magma-identity-is-equivalence M N ⟩
+   (M ≃ₘ N) ≃⟨ ≃-sym (≅ₘ-charac M N) ⟩
+   (M ≅ₘ N) ■
 
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P

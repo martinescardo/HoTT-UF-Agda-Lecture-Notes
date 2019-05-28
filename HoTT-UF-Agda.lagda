@@ -5580,7 +5580,11 @@ Magma identity is equivalent to magma equivalence, and hence to magma isomorphis
                 (Id-to-Eq-is-hae (ua 𝓤) (ua (𝓤 ⁺)) ⟨ M ⟩ ⟨ N ⟩))
 
  magma-identity-is-isomorphism : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≅ₘ N)
- magma-identity-is-isomorphism M N = magma-identity-is-equivalence M N ● ≃-sym (≅ₘ-charac M N)
+ magma-identity-is-isomorphism M N =
+   (M ≡ N)  ≃⟨ magma-identity-is-equivalence M N ⟩
+   (M ≃ₘ N) ≃⟨ ≃-sym (≅ₘ-charac M N) ⟩
+   (M ≅ₘ N) ■
+
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
