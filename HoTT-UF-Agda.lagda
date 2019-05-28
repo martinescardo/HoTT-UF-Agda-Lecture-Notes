@@ -1243,15 +1243,17 @@ and `𝓥` fixed,
    > `_+_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇`
 
 But here we are defining a *type family* indexed by the *elements* of
-a give type, rather than a new type from old types. Given a type `X`
+a given type, rather than a new type from old types. Given a type `X`
 in a universe `𝓤`, we define a *function*
 
    > `Id X : X → X → 𝓤`
 
 by some mysterious sort of induction. It is this that prevents us from
 being able to prove that `refl x` would be the only element of the type `Id
-X x x`, or that for `Id X x y` would have at most one element no
-matter what `y : X` is. There is however, one interesting, and crucial, thing we
+X x x`, or that the type `Id X x y` would have at most one element no
+matter what `y : X` is.
+
+There is however, one interesting, and crucial, thing we
 [can prove](HoTT-UF-Agda.html#singleton-type), namely that for any fixed `x : X`, the
 type
 
@@ -1272,11 +1274,11 @@ x ≡ y = Id _ x y
 \end{code}
 
 Another intuition for this type family `_≡_ : X → X → 𝓤` is that it
-gives the least reflexive relation on the type `X`, as indicated by
+gives the least reflexive relation on the type `X`, as suggested by
 Martin-Löf's induction principle `J` discussed below.
 
 Whereas we can make the intuition that `x ≡ x` has precisely one
-element good by postulating a certain [`K`
+element good by *postulating* a certain [`K`
 axiom](https://ncatlab.org/nlab/show/axiom+K+%28type+theory%29) due to
 Thomas Streicher, which comes with Agda by default but we have
 [disabled above](HoTT-UF-Agda.html#gettingstartedagda), we cannot
