@@ -220,11 +220,11 @@ transportJ {𝓤} {𝓥} {X} A {x} {y} = J X (λ x y _ → A x → A y) (λ x �
 
 nondep-H : {X : 𝓤 ̇ } (x : X) (A : X → 𝓥 ̇ )
          → A x → (y : X) → x ≡ y → A y
-nondep-H {𝓤} {𝓥} {X} x A = H x (λ y _ → A y)
+nondep-H x A = H x (λ y _ → A y)
 
 transportH : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
            → x ≡ y → A x → A y
-transportH {𝓤} {𝓥} {X} A {x} {y} p a = nondep-H x A a y p
+transportH A {x} {y} p a = nondep-H x A a y p
 
 transports-agreement : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
                      → (transportH A p ≡ transport A p)
@@ -992,7 +992,7 @@ Eq-to-fun-is-equiv (f , i) = i
 ≃-refl X = 𝑖𝑑 X , id-is-equiv X
 
 _●_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ≃ Y → Y ≃ Z → X ≃ Z
-_●_ {𝓤} {𝓥} {𝓦} {X} {Y} {Z} (f , d) (f' , e) = f' ∘ f , ∘-is-equiv e d
+(f , d) ● (f' , e) = f' ∘ f , ∘-is-equiv e d
 
 ≃-sym : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → Y ≃ X
 ≃-sym (f , e) = inverse f e , inverse-is-equiv f e
@@ -1009,8 +1009,8 @@ transport-is-equiv A (refl x) = id-is-equiv (A x)
 
 Σ-≡-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ τ : Σ A)
       → (σ ≡ τ) ≃ (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
-Σ-≡-≃  {𝓤} {𝓥} {X} {A}  σ τ = from-Σ-≡ ,
-                                  invertibles-are-equivs from-Σ-≡ (to-Σ-≡ , ε , η)
+Σ-≡-≃ {𝓤} {𝓥} {X} {A}  σ τ = from-Σ-≡ ,
+                             invertibles-are-equivs from-Σ-≡ (to-Σ-≡ , ε , η)
  where
   η : (w : Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ) → from-Σ-≡ (to-Σ-≡ w) ≡ w
   η (refl p , refl q) = refl (refl p , refl q)
@@ -1309,7 +1309,7 @@ pr₁-lc i p = to-Σ-≡ (p , i _ _ _)
 
 subsets-of-sets-are-sets X A h p = subtypes-of-sets-are-sets pr₁ (pr₁-lc p) h
 
-pr₁-equiv {𝓤} {𝓥} X A s = invertibles-are-equivs pr₁ (g , η , ε)
+pr₁-equiv X A s = invertibles-are-equivs pr₁ (g , η , ε)
  where
   g : X → Σ A
   g x = x , pr₁(s x)
@@ -1549,7 +1549,7 @@ invertibles-are-haes ua = J-invertible ua (λ X Y f → is-hae f) id-is-hae
 
 Σ-change-of-variables-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
                           → is-hae f → Σ A ≃ Σ (A ∘ f)
-Σ-change-of-variables-hae {𝓤} {𝓥} {𝓦} {X} {Y} A f (g , η , ε , τ) = φ , invertibles-are-equivs φ (γ , γφ , φγ)
+Σ-change-of-variables-hae A f (g , η , ε , τ) = φ , invertibles-are-equivs φ (γ , γφ , φγ)
  where
   φ : Σ A → Σ (A ∘ f)
   φ (y , a) = (g y , transport A ((ε y)⁻¹) a)
@@ -1667,7 +1667,7 @@ post-comp-is-equiv fe fe' f e =
   (post-comp-is-invertible fe fe' f (equivs-are-invertible f e))
 
 vvfunext-gives-hfunext : vvfunext 𝓤 𝓥 → hfunext 𝓤 𝓥
-vvfunext-gives-hfunext {𝓤} {𝓥} vfe {X} {Y} f = γ
+vvfunext-gives-hfunext vfe {X} {Y} f = γ
  where
   a : (x : X) → is-singleton (Σ \(y : Y x) → f x ≡ y)
   a x = singleton-types'-are-singletons (Y x) (f x)
@@ -1831,18 +1831,18 @@ being-subsingleton-is-a-subsingleton {𝓤} {X} fe i j = c
   b = equiv-to-subsingleton (happly f g , hfe f g) a
 
 being-set-is-a-subsingleton : dfunext 𝓤 𝓤 → {X : 𝓤 ̇ } → is-subsingleton (is-set X)
-being-set-is-a-subsingleton {𝓤} fe {X} =
+being-set-is-a-subsingleton fe =
  Π-is-subsingleton fe
-   (λ x → Π-is-subsingleton fe
-           (λ y → being-subsingleton-is-a-subsingleton fe))
+  (λ x → Π-is-subsingleton fe
+          (λ y → being-subsingleton-is-a-subsingleton fe))
 
 hlevel-relation-is-subsingleton : dfunext 𝓤 𝓤
                                 → (n : ℕ) (X : 𝓤 ̇ ) → is-subsingleton (X is-of-hlevel n)
 hlevel-relation-is-subsingleton {𝓤} fe zero     X = being-singleton-is-a-subsingleton fe
-hlevel-relation-is-subsingleton {𝓤} fe (succ n) X =
+hlevel-relation-is-subsingleton fe (succ n) X =
   Π-is-subsingleton fe
-    (λ x → Π-is-subsingleton fe
-            (λ x' → hlevel-relation-is-subsingleton {𝓤} fe n (x ≡ x')))
+   (λ x → Π-is-subsingleton fe
+           (λ x' → hlevel-relation-is-subsingleton fe n (x ≡ x')))
 
 ●-assoc : dfunext 𝓣 (𝓤 ⊔ 𝓣) → dfunext (𝓤 ⊔ 𝓣) (𝓤 ⊔ 𝓣)
         → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {T : 𝓣 ̇ }
@@ -1964,12 +1964,12 @@ is-embedding f = (y : codomain f) → is-subsingleton(fiber f y)
 being-embedding-is-a-subsingleton : global-dfunext
                                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                   → is-subsingleton(is-embedding f)
-being-embedding-is-a-subsingleton {𝓤} {𝓥} fe f =
-  Π-is-subsingleton fe (λ x → being-subsingleton-is-a-subsingleton fe)
+being-embedding-is-a-subsingleton fe f =
+ Π-is-subsingleton fe (λ x → being-subsingleton-is-a-subsingleton fe)
 
-pr₂-embedding : (A X : 𝓤 ̇ )
+pr₂-embedding : (A : 𝓤 ̇ ) (X : 𝓥 ̇ )
               → is-subsingleton A → is-embedding (λ (z : A × X) → pr₂ z)
-pr₂-embedding {𝓤} A X i x ((a , x) , refl x) ((b , x) , refl x) = p
+pr₂-embedding A X i x ((a , x) , refl x) ((b , x) , refl x) = p
  where
   p : ((a , x) , refl x) ≡ ((b , x) , refl x)
   p = ap (λ - → ((- , x) , refl x)) (i a b)
@@ -2590,7 +2590,7 @@ module magma-equivalences (ua : Univalence) where
                                 (p : X ≡ Y)
                               → (transport magma-structure p s ≡ t)
                               ≃ is-magma-hom (X , s) (Y , t) (Id-to-fun p)
- transport-of-magma-structure {𝓤} X X (i , _·_) (j , _*_) (refl X) =
+ transport-of-magma-structure X X (i , _·_) (j , _*_) (refl X) =
    ((i , _·_) ≡ (j , _*_))                       ≃⟨ a ⟩
    (_·_ ≡ _*_)                                   ≃⟨ b ⟩
    ((x : X) → (λ x' → x · x') ≡ (λ x' → x * x')) ≃⟨ c ⟩
@@ -2619,18 +2619,18 @@ module magma-equivalences (ua : Univalence) where
                 (Id-to-Eq-is-hae (ua 𝓤) (ua (𝓤 ⁺)) ⟨ M ⟩ ⟨ N ⟩))
 
  magma-identity-is-isomorphism : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≅ₘ N)
- magma-identity-is-isomorphism {𝓤} M N = magma-identity-is-equivalence M N ● ≃-sym (≅ₘ-charac M N)
+ magma-identity-is-isomorphism M N = magma-identity-is-equivalence M N ● ≃-sym (≅ₘ-charac M N)
 
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
 
 inhabitation-is-a-subsingleton : global-dfunext → (X : 𝓤 ̇ )
                                → is-subsingleton (is-inhabited X)
-inhabitation-is-a-subsingleton {𝓤} fe X =
-  Π-is-subsingleton fe
-    λ P → Π-is-subsingleton fe
-           (λ (s : is-subsingleton P)
-                 → Π-is-subsingleton fe (λ (f : X → P) → s))
+inhabitation-is-a-subsingleton fe X =
+ Π-is-subsingleton fe
+   λ P → Π-is-subsingleton fe
+          (λ (s : is-subsingleton P)
+                → Π-is-subsingleton fe (λ (f : X → P) → s))
 
 pointed-is-inhabited : {X : 𝓤 ̇ } → X → is-inhabited X
 pointed-is-inhabited x = λ P s f → f x
