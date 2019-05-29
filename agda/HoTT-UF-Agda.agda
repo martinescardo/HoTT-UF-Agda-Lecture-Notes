@@ -2333,10 +2333,10 @@ H↑-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
               → (a : A (Lift 𝓥 X) (≃-Lift X))
               → H↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡ a
 H↑-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
-  H↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡⟨ refl _ ⟩
-  transport B p a                 ≡⟨ ap (λ - → transport B - a) q ⟩
-  transport B (refl t) a          ≡⟨ refl _ ⟩
-  a                               ∎
+  H↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X)  ≡⟨ refl _ ⟩
+  transport B p a                      ≡⟨ ap (λ - → transport B - a) q ⟩
+  transport B (refl t) a               ≡⟨ refl _ ⟩
+  a                                    ∎
  where
   B : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇
   B (Y , e) = A Y e

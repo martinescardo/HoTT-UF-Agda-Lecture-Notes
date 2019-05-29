@@ -5190,8 +5190,15 @@ H↑-≃ {𝓤} {𝓥} {𝓦} ua X A a Y e = τ a
 \end{code}
 
 The difference with `H-≃` is that here, to get the conclusion, we need
-to assume `A (Lift 𝓥 X) (≃-Lift X)` rather than `A X (≃-refl)`. The
-analogous equation is satisfied by `H↑-≃`:
+to assume
+
+   > `A (Lift 𝓥 X) (≃-Lift X)`
+
+rather than
+
+   > `A X (≃-refl)`.
+
+The analogous equation is satisfied by `H↑-≃`:
 
 \begin{code}
 H↑-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
@@ -5200,10 +5207,10 @@ H↑-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
               → (a : A (Lift 𝓥 X) (≃-Lift X))
               → H↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡ a
 H↑-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
-  H↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡⟨ refl _ ⟩
-  transport B p a                 ≡⟨ ap (λ - → transport B - a) q ⟩
-  transport B (refl t) a          ≡⟨ refl _ ⟩
-  a                               ∎
+  H↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X)  ≡⟨ refl _ ⟩
+  transport B p a                      ≡⟨ ap (λ - → transport B - a) q ⟩
+  transport B (refl t) a               ≡⟨ refl _ ⟩
+  a                                    ∎
  where
   B : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇
   B (Y , e) = A Y e
@@ -5246,7 +5253,12 @@ J↑-equiv ua A φ X = H↑-equiv ua X (A X) (φ X)
 
 All invertible functions from a type in a universe `𝓤` to a type in a
 higher universe `𝓤 ⊔ 𝓥` satisfy a given property if (and only if) the functions
-`lift : X → Lift 𝓥 X` satisfy the property for all `X : 𝓤`:
+
+
+   > `lift {𝓤} {𝓥} {X} : X → Lift 𝓥 X`
+
+satisfy the property for all `X : 𝓤` (where we don't write the
+implicit arguments for `lift`):
 
 \begin{code}
 J↑-invertible : is-univalent (𝓤 ⊔ 𝓥)
@@ -5273,7 +5285,8 @@ invertibles-are-haes↑ : is-univalent (𝓤 ⊔ 𝓥)
 invertibles-are-haes↑ {𝓤} {𝓥} ua = J↑-invertible {𝓤} {𝓥} ua (λ X Y f → is-hae f) lift-is-hae
 \end{code}
 
-We have a similar development with the universes going down:
+We have a similar development with the universes going down, where we
+consider `lower` in place of `lift`:
 
 \begin{code}
 H↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
@@ -5317,7 +5330,10 @@ J↓-equiv ua A φ X Y = H↓-equiv ua Y (λ X → A X Y) (φ Y) X
 
 All invertible functions from a type in a universe `𝓤 ⊔ 𝓥` to a type in the
 lower universe `𝓤` satisfy a given property if (and only if) the functions
-`lower : Lift 𝓥 Y → Y` satisfy the property for all `Y : 𝓤`:
+
+   > `lower {𝓤} {𝓥} {Y} : Lift 𝓥 Y → Y`
+
+satisfy the property for all `Y : 𝓤`:
 
 \begin{code}
 J↓-invertible : is-univalent (𝓤 ⊔ 𝓥)
@@ -5337,12 +5353,26 @@ invertibles-are-haes↓ : is-univalent (𝓤 ⊔ 𝓥)
                       → (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) (f : X → Y)
                       → invertible f → is-hae f
 invertibles-are-haes↓ {𝓤} {𝓥} ua = J↓-invertible {𝓤} {𝓥} ua (λ X Y f → is-hae f) lower-is-hae
+\end{code}
 
+A crucial example of an equivalence "going down one universe" is
+`Id-to-Eq X Y`. This is because the identity type `X ≡ Y` lives in the
+successor universe `𝓤 ⁺` if `X` and `Y` live in `𝓤`, whereas the
+equivalence type `X ≃ Y` lives in the same universe as `X` and
+`Y`. Hence we can apply `invertibles-are-haes↓` to `Id-to-Eq X Y` to
+conclude that it is a half adjoint equivalence:
+
+\begin{code}
 Id-to-Eq-is-hae : is-univalent 𝓤 → is-univalent (𝓤 ⁺)
                 → (X Y : 𝓤 ̇ ) → is-hae (Id-to-Eq X Y)
 Id-to-Eq-is-hae ua ua⁺ X Y = invertibles-are-haes↓ ua⁺ (X ≡ Y) (X ≃ Y) (Id-to-Eq X Y)
                                (equivs-are-invertible (Id-to-Eq X Y) (ua X Y))
 \end{code}
+
+We apply the fact that `Id-to-Eq X Y` is a half adjoint equivalence to
+get a simple proof that [Magma identity coincides with Magma
+equivalence](HoTT-UF-Agda.html#magmaequivalences) (and hence with
+Magma isomorphism).
 
 The remainder of this section is not used anywhere else.  Using the
 universe `𝓤ω` discussed above, we can consider global properties:
