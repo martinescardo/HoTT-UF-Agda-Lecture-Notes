@@ -1,6 +1,6 @@
 ---
 layout: default
-title : Introduction to Univalent Foundations of Mathematics with Agda
+title : Introduction to Homotopy Type Theory with Agda
 date : 2019-03-04
 ---
 ## <a id="lecturenotes">Introduction to Univalent Foundations of Mathematics with Agda</a>
