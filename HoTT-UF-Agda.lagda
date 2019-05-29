@@ -2493,7 +2493,6 @@ from-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
          → σ ≡ τ
          → Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ
 from-Σ-≡ (refl (x , a)) = (refl x , refl a)
-
 \end{code}
 
 The above gives
@@ -3834,7 +3833,6 @@ subsingleton-equiv-lemma {𝓤} {𝓥} {X} {A} x f i = γ
    e = maps-of-singletons-are-equivs g (singleton-types'-are-singletons X x) j
    γ : (y : X) → is-equiv (f y)
    γ = NatΣ-equiv-gives-fiberwise-equiv f e
-
 \end{code}
 
 With this we can characterize univalence as follows:
@@ -4063,9 +4061,10 @@ funext : ∀ 𝓤 𝓥 → (𝓤 ⊔ 𝓥)⁺ ̇
 funext 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y} → f ∼ g → f ≡ g
 \end{code}
 
-There [will be](HoTT-UF-Agda.html#hfunext) two stronger statements, namely
-the generalization to dependent functions, and the requirement that
-the canonical map `(f ≡ g) → (f ∼ g) ` is an equivalence.
+There [will be](HoTT-UF-Agda.html#hfunext) two seemingly stronger
+statements, namely the generalization to dependent functions, and the
+requirement that the canonical map `(f ≡ g) → (f ∼ g)` is an
+equivalence.
 
 *Exercise.* Assuming `funext`, prove that if `f : X → Y` is an equivalence
 then so is the function `(-) ∘ f : (Y → Z) → (X → Z)`.
@@ -4610,7 +4609,6 @@ We then transfer the above to equivalence types:
             (α ● ≃-sym α) ● γ ≡⟨ ap (_● γ) (≃-sym-right-inverse fe₅ α) ⟩
             ≃-refl _ ● γ      ≡⟨ ≃-refl-left fe₃ fe₄ _ ⟩
             γ                 ∎
-
 \end{code}
 
 Using this we get the following self-congruence property of equivalences:
@@ -5587,7 +5585,6 @@ Magma identity is equivalent to magma equivalence, and hence to magma isomorphis
    (M ≡ N)  ≃⟨ magma-identity-is-equivalence M N ⟩
    (M ≃ₘ N) ≃⟨ ≃-sym (≅ₘ-charac M N) ⟩
    (M ≅ₘ N) ■
-
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
