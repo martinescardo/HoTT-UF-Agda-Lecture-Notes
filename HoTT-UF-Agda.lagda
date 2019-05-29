@@ -280,6 +280,18 @@ Lecture by Benedikt Ahrens:
 We have based these lecture notes
 on the slides of our talk [*logic in univalent type theory*](https://www.newton.ac.uk/seminar/20170711100011001).
 
+By Egbert Rijke:
+
+   - [https://github.com/EgbertRijke/HoTT-Intro](https://github.com/EgbertRijke/HoTT-Intro).
+
+By Andrej Bauer and Jaka Smrekar:
+
+   - [A course on homotopy (type) theory](http://math.andrej.com/2019/05/08/a-course-on-homotopy-type-theory/).
+
+By Bob Harper:
+
+  - [15-819 Homotopy Type Theory](https://www.cs.cmu.edu/~rwh/courses/hott/).
+
 We also have an [Agda development](http://www.cs.bham.ac.uk/~mhe/agda-new/)
 of [univalent
 foundations](http://www.cs.bham.ac.uk/~mhe/agda-new/UF.html) which is
