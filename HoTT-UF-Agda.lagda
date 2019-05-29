@@ -3978,12 +3978,22 @@ the nose](HoTT-UF-Agda.html#inversion-involutive).
 An often useful alternative formulation of the notion of equivalence
 is that of half adjoint equivalence. If we have a function `f : X → Y`
 with inversion data `g : Y → X` and `η : g ∘ f ∼ id` and `ε : f ∘ g ∼
-id`, then for any `x : X` we have that `ap f (η x)` and `ε (f x)` are
-two identifications of `f (g (f x))` with `f x`. The half adjoint
+id`, then for any `x : X` we have that
+
+   > `ap f (η x)` and `ε (f x)`
+
+are two identifications of
+
+   > `f (g (f x))` with `f x`.
+
+The half adjoint
 condition says that these two identifications are themselves
-identified. The addition of the constraint `τ x : ap f (η x) ≡ ε (f
-x)` turns invertibility, which is data in general, into property of
-`f`, as discussed in the HoTT book.
+identified. The addition of the constraint
+
+   > `τ x : ap f (η x) ≡ ε (f x)`
+
+turns invertibility, which is data in general, into property of `f`,
+as discussed in the HoTT book.
 
 \begin{code}
 is-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
