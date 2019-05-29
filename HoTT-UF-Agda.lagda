@@ -267,30 +267,17 @@ Regarding the genesis of the subject:
    - [A very short note on homotopy λ-calculus](http://math.ucr.edu/home/baez/Voevodsky_note.ps).
    - [Notes on homotopy λ-calculus](https://github.com/vladimirias/2006_03_Homotopy_lambda_calculus/blob/master/homotopy_lambda_calculus_Mar_5_2006.pdf).
 
-A paper at the [Bulletin of the
+Additional expository material:
+
+   - [An introduction to univalent foundations for mathematicians](https://www.ams.org/journals/bull/2018-55-04/S0273-0979-2018-01616-9/), a paper at the [Bulletin of the
 AMS](https://www.ams.org/publications/journals/journalsframework/bull)
-by [Dan Grayson](https://faculty.math.illinois.edu/~dan/):
-
-   - [An introduction to univalent foundations for mathematicians](https://www.ams.org/journals/bull/2018-55-04/S0273-0979-2018-01616-9/).
-
-Lecture by Benedikt Ahrens:
-
-   - [Univalent foundations - an introduction](https://benediktahrens.net/talks/6WFT.pdf).
-
-We have based these lecture notes
-on the slides of our talk [*logic in univalent type theory*](https://www.newton.ac.uk/seminar/20170711100011001).
-
-By Egbert Rijke:
-
-   - [https://github.com/EgbertRijke/HoTT-Intro](https://github.com/EgbertRijke/HoTT-Intro).
-
-By Andrej Bauer and Jaka Smrekar:
-
-   - [A course on homotopy (type) theory](http://math.andrej.com/2019/05/08/a-course-on-homotopy-type-theory/).
-
-By Bob Harper:
-
-  - [15-819 Homotopy Type Theory](https://www.cs.cmu.edu/~rwh/courses/hott/).
+by [Dan Grayson](https://faculty.math.illinois.edu/~dan/).
+   - [Univalent foundations - an introduction](https://benediktahrens.net/talks/6WFT.pdf), Benedikt Ahrens.
+   - [Introduction to Homotopy Type Theory](https://github.com/EgbertRijke/HoTT-Intro), Egbert Rijke.
+   - [A course on homotopy (type) theory](http://math.andrej.com/2019/05/08/a-course-on-homotopy-type-theory/), Andrej Bauer and Jaka Smrekar.
+  - [15-819 Homotopy Type Theory](https://www.cs.cmu.edu/~rwh/courses/hott/), Bob Harper.
+  - [Homotopy type theory: the logic of space](https://arxiv.org/abs/1703.03007), Mike Shulman.
+  - [Logic in univalent type theory](https://www.newton.ac.uk/seminar/20170711100011001), Martin Escardo.
 
 We also have an [Agda development](http://www.cs.bham.ac.uk/~mhe/agda-new/)
 of [univalent
