@@ -2566,7 +2566,7 @@ the hlevels `1` (as subsingletons) and `2` (as sets), which we will
 develop [soon](HoTT-UF-Agda.html#setscharacterization).
 
 When working with singleton types, it will be convenient to have
-distinghished names for the two projections:
+distinguished names for the two projections:
 
 \begin{code}
 center : (X : 𝓤 ̇ ) → is-singleton X → X
