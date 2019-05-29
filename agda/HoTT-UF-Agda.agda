@@ -1571,7 +1571,8 @@ invertibles-are-haes ua = J-invertible ua (λ X Y f → is-hae f) id-is-hae
 funext : ∀ 𝓤 𝓥 → (𝓤 ⊔ 𝓥)⁺ ̇
 funext 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y} → f ∼ g → f ≡ g
 
-pre-comp-is-equiv : (ua : is-univalent 𝓤) (X Y : 𝓤 ̇ ) (f : X → Y)
+pre-comp-is-equiv : is-univalent 𝓤
+                  → (X Y : 𝓤 ̇ ) (f : X → Y)
                   → is-equiv f
                   → (Z : 𝓤 ̇ ) → is-equiv (λ (g : Y → Z) → g ∘ f)
 pre-comp-is-equiv {𝓤} ua =
@@ -1836,13 +1837,14 @@ being-set-is-a-subsingleton fe =
   (λ x → Π-is-subsingleton fe
           (λ y → being-subsingleton-is-a-subsingleton fe))
 
-hlevel-relation-is-subsingleton : dfunext 𝓤 𝓤
-                                → (n : ℕ) (X : 𝓤 ̇ ) → is-subsingleton (X is-of-hlevel n)
-hlevel-relation-is-subsingleton {𝓤} fe zero     X = being-singleton-is-a-subsingleton fe
-hlevel-relation-is-subsingleton fe (succ n) X =
+hlevel-relation-is-a-subsingleton : dfunext 𝓤 𝓤
+                                  → (n : ℕ) (X : 𝓤 ̇ )
+                                  → is-subsingleton (X is-of-hlevel n)
+hlevel-relation-is-a-subsingleton {𝓤} fe zero     X = being-singleton-is-a-subsingleton fe
+hlevel-relation-is-a-subsingleton fe (succ n) X =
   Π-is-subsingleton fe
    (λ x → Π-is-subsingleton fe
-           (λ x' → hlevel-relation-is-subsingleton fe n (x ≡ x')))
+           (λ x' → hlevel-relation-is-a-subsingleton fe n (x ≡ x')))
 
 ●-assoc : dfunext 𝓣 (𝓤 ⊔ 𝓣) → dfunext (𝓤 ⊔ 𝓣) (𝓤 ⊔ 𝓣)
         → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {T : 𝓣 ̇ }
