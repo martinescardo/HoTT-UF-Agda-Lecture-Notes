@@ -3984,11 +3984,10 @@ id`, then for any `x : X` we have that
 
 are two identifications of
 
-   > `f (g (f x))` with `f x`.
+   > `f (g (f x)) ≡ f x`.
 
-The half adjoint
-condition says that these two identifications are themselves
-identified. The addition of the constraint
+The half adjoint condition says that these two identifications are
+themselves identified. The addition of the constraint
 
    > `τ x : ap f (η x) ≡ ε (f x)`
 
