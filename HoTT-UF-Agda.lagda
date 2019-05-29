@@ -4025,7 +4025,7 @@ invertibles-are-haes ua = J-invertible ua (λ X Y f → is-hae f) id-is-hae
 \end{code}
 
 The above can be proved without univalence, as is done in the HoTT
-book, with a more complicated argument.
+book, with a more complicated argument coming from [category theory](https://ncatlab.org/nlab/show/adjoint+equivalence).
 
 Here is a use of the half adjoint condition, where, compared to
 [`Σ-change-of-variables`](HoTT-UF-Agda.html#Σ-change-of-variables), we
