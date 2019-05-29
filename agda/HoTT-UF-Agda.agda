@@ -1759,8 +1759,8 @@ being-singleton-is-a-subsingleton fe {X} (x , φ) (y , γ) = p
 being-equiv-is-a-subsingleton : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                               → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                               → is-subsingleton (is-equiv f)
-being-equiv-is-a-subsingleton fe fe' f =
- Π-is-subsingleton fe (λ x → being-singleton-is-a-subsingleton fe')
+being-equiv-is-a-subsingleton fe fe' f = Π-is-subsingleton fe
+                                          (λ x → being-singleton-is-a-subsingleton fe')
 
 univalence-is-a-subsingleton : is-univalent (𝓤 ⁺) → is-subsingleton (is-univalent 𝓤)
 univalence-is-a-subsingleton {𝓤} ua⁺ ua ua' = p
@@ -1832,19 +1832,18 @@ being-subsingleton-is-a-subsingleton {𝓤} {X} fe i j = c
   b = equiv-to-subsingleton (happly f g , hfe f g) a
 
 being-set-is-a-subsingleton : dfunext 𝓤 𝓤 → {X : 𝓤 ̇ } → is-subsingleton (is-set X)
-being-set-is-a-subsingleton fe =
- Π-is-subsingleton fe
-  (λ x → Π-is-subsingleton fe
-          (λ y → being-subsingleton-is-a-subsingleton fe))
+being-set-is-a-subsingleton fe = Π-is-subsingleton fe
+                                  (λ x → Π-is-subsingleton fe
+                                          (λ y → being-subsingleton-is-a-subsingleton fe))
 
 hlevel-relation-is-a-subsingleton : dfunext 𝓤 𝓤
                                   → (n : ℕ) (X : 𝓤 ̇ )
                                   → is-subsingleton (X is-of-hlevel n)
 hlevel-relation-is-a-subsingleton {𝓤} fe zero     X = being-singleton-is-a-subsingleton fe
 hlevel-relation-is-a-subsingleton fe (succ n) X =
-  Π-is-subsingleton fe
-   (λ x → Π-is-subsingleton fe
-           (λ x' → hlevel-relation-is-a-subsingleton fe n (x ≡ x')))
+ Π-is-subsingleton fe
+  (λ x → Π-is-subsingleton fe
+          (λ x' → hlevel-relation-is-a-subsingleton fe n (x ≡ x')))
 
 ●-assoc : dfunext 𝓣 (𝓤 ⊔ 𝓣) → dfunext (𝓤 ⊔ 𝓣) (𝓤 ⊔ 𝓣)
         → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {T : 𝓣 ̇ }
@@ -1966,8 +1965,8 @@ is-embedding f = (y : codomain f) → is-subsingleton(fiber f y)
 being-embedding-is-a-subsingleton : global-dfunext
                                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                   → is-subsingleton(is-embedding f)
-being-embedding-is-a-subsingleton fe f =
- Π-is-subsingleton fe (λ x → being-subsingleton-is-a-subsingleton fe)
+being-embedding-is-a-subsingleton fe f = Π-is-subsingleton fe
+                                          (λ x → being-subsingleton-is-a-subsingleton fe)
 
 pr₂-embedding : (A : 𝓤 ̇ ) (X : 𝓥 ̇ )
               → is-subsingleton A → is-embedding (λ (z : A × X) → pr₂ z)
@@ -2028,7 +2027,7 @@ embedding-criterion-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 embedding-criterion-converse f e x' x = ≃-sym (ap f {x'} {x} ,
                                                embedding-gives-ap-is-equiv f e x' x)
 
-𝓨 : {X : 𝓤 ̇ } → X → (X → 𝓤 ̇)
+𝓨 : {X : 𝓤 ̇ } → X → (X → 𝓤 ̇ )
 𝓨 {𝓤} {X} = Id X
 
 transport-lemma : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
@@ -2185,7 +2184,7 @@ being-representable-is-a-subsingleton fe {X} A r₀ r₁ = γ
   γ : r₀ ≡ r₁
   γ = singletons-are-subsingletons (is-representable A) v r₀ r₁
 
-𝓨-embedding : Univalence → (X : 𝓤 ̇) → is-embedding (𝓨 {𝓤} {X})
+𝓨-embedding : Univalence → (X : 𝓤 ̇ ) → is-embedding (𝓨 {𝓤} {X})
 𝓨-embedding {𝓤} ua X A = γ
  where
   hfe : global-hfunext
@@ -2440,7 +2439,7 @@ invertibles-are-haes↓ : is-univalent (𝓤 ⊔ 𝓥)
 invertibles-are-haes↓ {𝓤} {𝓥} ua = J↓-invertible {𝓤} {𝓥} ua (λ X Y f → is-hae f) lower-is-hae
 
 Id-to-Eq-is-hae : is-univalent 𝓤 → is-univalent (𝓤 ⁺)
-                → (X Y : 𝓤 ̇) → is-hae (Id-to-Eq X Y)
+                → (X Y : 𝓤 ̇ ) → is-hae (Id-to-Eq X Y)
 Id-to-Eq-is-hae ua ua⁺ X Y = invertibles-are-haes↓ ua⁺ (X ≡ Y) (X ≃ Y) (Id-to-Eq X Y)
                                (equivs-are-invertible (Id-to-Eq X Y) (ua X Y))
 
@@ -2586,7 +2585,7 @@ module magma-equivalences (ua : Univalence) where
  structure-of : (M : Magma 𝓤) → magma-structure ⟨ M ⟩
  structure-of (X , s) = s
 
- transport-of-magma-structure : (X Y : 𝓤 ̇)
+ transport-of-magma-structure : (X Y : 𝓤 ̇ )
                                 (s : magma-structure X) (t : magma-structure Y)
                                 (p : X ≡ Y)
                               → (transport magma-structure p s ≡ t)

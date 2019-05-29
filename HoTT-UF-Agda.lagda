@@ -4338,8 +4338,8 @@ being-singleton-is-a-subsingleton fe {X} (x , φ) (y , γ) = p
 being-equiv-is-a-subsingleton : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                               → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                               → is-subsingleton (is-equiv f)
-being-equiv-is-a-subsingleton fe fe' f =
- Π-is-subsingleton fe (λ x → being-singleton-is-a-subsingleton fe')
+being-equiv-is-a-subsingleton fe fe' f = Π-is-subsingleton fe
+                                          (λ x → being-singleton-is-a-subsingleton fe')
 
 univalence-is-a-subsingleton : is-univalent (𝓤 ⁺) → is-subsingleton (is-univalent 𝓤)
 univalence-is-a-subsingleton {𝓤} ua⁺ ua ua' = p
@@ -4460,10 +4460,9 @@ Here is a situation where `hfunext` is what is needed:
   b = equiv-to-subsingleton (happly f g , hfe f g) a
 
 being-set-is-a-subsingleton : dfunext 𝓤 𝓤 → {X : 𝓤 ̇ } → is-subsingleton (is-set X)
-being-set-is-a-subsingleton fe =
- Π-is-subsingleton fe
-  (λ x → Π-is-subsingleton fe
-          (λ y → being-subsingleton-is-a-subsingleton fe))
+being-set-is-a-subsingleton fe = Π-is-subsingleton fe
+                                  (λ x → Π-is-subsingleton fe
+                                          (λ y → being-subsingleton-is-a-subsingleton fe))
 \end{code}
 
 More generally:
@@ -4474,9 +4473,9 @@ hlevel-relation-is-a-subsingleton : dfunext 𝓤 𝓤
                                   → is-subsingleton (X is-of-hlevel n)
 hlevel-relation-is-a-subsingleton {𝓤} fe zero     X = being-singleton-is-a-subsingleton fe
 hlevel-relation-is-a-subsingleton fe (succ n) X =
-  Π-is-subsingleton fe
-   (λ x → Π-is-subsingleton fe
-           (λ x' → hlevel-relation-is-a-subsingleton fe n (x ≡ x')))
+ Π-is-subsingleton fe
+  (λ x → Π-is-subsingleton fe
+          (λ x' → hlevel-relation-is-a-subsingleton fe n (x ≡ x')))
 \end{code}
 
 Composition of equivalences is associative:
@@ -4660,8 +4659,8 @@ is-embedding f = (y : codomain f) → is-subsingleton(fiber f y)
 being-embedding-is-a-subsingleton : global-dfunext
                                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                   → is-subsingleton(is-embedding f)
-being-embedding-is-a-subsingleton fe f =
- Π-is-subsingleton fe (λ x → being-subsingleton-is-a-subsingleton fe)
+being-embedding-is-a-subsingleton fe f = Π-is-subsingleton fe
+                                          (λ x → being-subsingleton-is-a-subsingleton fe)
 \end{code}
 
 For example, if `A` is a subsingleton, then the second projection `A ×
@@ -4709,7 +4708,10 @@ embedding-criterion f e = embedding-lemma f b
 \end{code}
 
 An equivalent formulation of `f` being an embedding is that the map
-`ap f {x} {x'} : x ≡ x' → f x ≡ f x'` is an equivalence for all `x x' : X`.
+
+   > `ap f {x} {x'} : x ≡ x' → f x ≡ f x'`
+
+is an equivalence for all `x x' : X`.
 
 \begin{code}
 ap-is-equiv-gives-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -4746,10 +4748,15 @@ converse fails in general.
 ### <a id="yoneda"></a> The Yoneda Lemma for types
 
 As we [have seen](HoTT-UF-Agda.html#identitytypeuf), a type `X` can be
-seen as an `∞`-groupoid and hence as an `∞`-category.  Likewise a
-universe `𝓤` can be seen as the ∞-generalization of the category of
-sets, and hence a family `A : X → 𝓤` can be seen as an  `∞-`presheaf,
-because groupoids are self-dual categories.
+seen as an `∞`-groupoid and hence as an `∞`-category, with
+identifications as the arrows. Likewise
+a universe `𝓤` can be seen as the ∞-generalization of the category of
+sets, with functions as the arrows.  composition. Hence a type family
+
+   > `A : X → 𝓤`
+
+can be seen as an `∞-`presheaf, because groupoids are self-dual
+categories.
 
 With this view, the identity type former `Id X : X → X → 𝓤` plays the role
 of the [Yoneda embedding](https://ncatlab.org/nlab/show/Yoneda+embedding):
@@ -4786,8 +4793,16 @@ We refer to `τ x (refl x)` as the *Yoneda element* of `τ` and denote it by
 𝓔 A x τ = τ x (refl x)
 \end{code}
 
-The function `𝓔 A x : Nat (𝓨 x) A → A x` is an equivalence with
-inverse `𝓝 A x`, the transport transformation induced by `A` and `x`:
+The function
+
+   > `𝓔 A x : Nat (𝓨 x) A → A x`
+
+is an equivalence with
+inverse
+
+   > `𝓝 A x : A x → Nat (𝓨 x) A`,
+
+the transport natural transformation induced by `A` and `x`:
 
 \begin{code}
 𝓝 : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
@@ -4829,8 +4844,10 @@ is-fiberwise-equiv τ = ∀ x → is-equiv (τ x)
 𝓝-is-equiv fe fe' A x = invertibles-are-equivs (𝓝 A x) (𝓔 A x , yoneda-ε A x , yoneda-η fe fe' A x)
 \end{code}
 
-This gives the [Yoneda
-Lemma](https://homotopytypetheory.org/2012/05/02/a-type-theoretical-yoneda-lemma/):
+This gives the [Yoneda Lemma for
+types](https://homotopytypetheory.org/2012/05/02/a-type-theoretical-yoneda-lemma/),
+which says that natural transformations from `𝓨 x` to `A` are in
+canonical bijection with elements of `A x`:
 
 \begin{code}
 Yoneda-Lemma : dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
@@ -4840,7 +4857,7 @@ Yoneda-Lemma fe fe' A x = 𝓔 A x , 𝓔-is-equiv fe fe' A x
 \end{code}
 
 A [universal element of a
-presheaf](https://en.wikipedia.org/wiki/Representable_functor) `A`
+presheaf](https://en.wikipedia.org/wiki/Representable_functor#Universal_elements) `A`
 corresponds in our context to an element of the type `is-singleton (Σ A)`.
 
 If the transport transformation is a fiberwise equivalence,
@@ -4866,7 +4883,7 @@ fiberwise-equiv-universal A x a e = retract-universal-lemma A x ρ
   ρ y = ≃-gives-▷ (𝓝 A x a y , e y)
 \end{code}
 
-A presheaf is called representable if it is pointwise equivalent to a
+A presheaf is called *representable* if it is pointwise equivalent to a
 presheaf of the form `𝓨 x`:
 
 \begin{code}
