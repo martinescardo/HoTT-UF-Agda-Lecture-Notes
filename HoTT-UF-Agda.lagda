@@ -3982,7 +3982,7 @@ id`, then for any `x : X` we have that
 
    > `ap f (η x)` and `ε (f x)`
 
-are two identifications of
+are two identifications of type
 
    > `f (g (f x)) ≡ f x`.
 
