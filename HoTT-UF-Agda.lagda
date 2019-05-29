@@ -3057,10 +3057,8 @@ formulations in MLTT, are those of [singleton
 type](HoTT-UF-Agda.html#hlevel) (or contractible type),
 [hlevel](HoTT-UF-Agda.html#hlevel) (including the notions of
 subsingleton and set), and of type equivalence, which we define now.
-For that purpose, we need to define the notion of fiber of a function
-first.
 
-But we begin with a discussion of the notion of *invertible function*,
+We begin with a discussion of the notion of *invertible function*,
 whose only difference with the notion of equivalence is that it is
 data rather than property:
 
