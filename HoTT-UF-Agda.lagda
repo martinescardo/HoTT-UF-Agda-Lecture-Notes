@@ -3797,7 +3797,7 @@ ap₂ f (refl x) (refl y) = refl (f x y)
 ### <a id="unicharac"></a> A characterization of univalence
 
 We begin with two general results, which will be placed in a more
-general context [later](HoTT-UF-Agda#yoneda).
+general context [later](HoTT-UF-Agda.html#yoneda).
 
 \begin{code}
 equiv-subsingleton-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
@@ -4766,11 +4766,11 @@ of the [Yoneda embedding](https://ncatlab.org/nlab/show/Yoneda+embedding):
 𝓨 {𝓤} {X} = Id X
 \end{code}
 
-By our definition of [`Nat`](HoTT-UF-Agda#Nat), for any `A : X → 𝓥 ̇ ` and `x : X` we have
+By our definition of [`Nat`](HoTT-UF-Agda.html#Nat), for any `A : X → 𝓥 ̇ ` and `x : X` we have
 
    > `Nat (𝓨 x) A = (y : X) → x ≡ y → A y`,
 
-and, by [`Nats-are-natural`](HoTT-UF-Agda#Nats-are-natural), we have
+and, by [`Nats-are-natural`](HoTT-UF-Agda.html#Nats-are-natural), we have
 that `Nat (𝓨 x) A` is the type of natural transformations from the
 presheaf `𝓨 x` to the presheaf `A`.
 
