@@ -4755,7 +4755,7 @@ With this view, the identity type former `Id X : X → X → 𝓤` plays the rol
 of the [Yoneda embedding](https://ncatlab.org/nlab/show/Yoneda+embedding):
 
 \begin{code}
-𝓨 : {X : 𝓤 ̇ } → X → (X → 𝓤 ̇)
+𝓨 : {X : 𝓤 ̇ } → X → (X → 𝓤 ̇ )
 𝓨 {𝓤} {X} = Id X
 \end{code}
 
@@ -4973,7 +4973,7 @@ being-representable-is-a-subsingleton fe {X} A r₀ r₁ = γ
   γ : r₀ ≡ r₁
   γ = singletons-are-subsingletons (is-representable A) v r₀ r₁
 
-𝓨-embedding : Univalence → (X : 𝓤 ̇) → is-embedding (𝓨 {𝓤} {X})
+𝓨-embedding : Univalence → (X : 𝓤 ̇ ) → is-embedding (𝓨 {𝓤} {X})
 𝓨-embedding {𝓤} ua X A = γ
  where
   hfe : global-hfunext
@@ -5322,7 +5322,7 @@ invertibles-are-haes↓ : is-univalent (𝓤 ⊔ 𝓥)
 invertibles-are-haes↓ {𝓤} {𝓥} ua = J↓-invertible {𝓤} {𝓥} ua (λ X Y f → is-hae f) lower-is-hae
 
 Id-to-Eq-is-hae : is-univalent 𝓤 → is-univalent (𝓤 ⁺)
-                → (X Y : 𝓤 ̇) → is-hae (Id-to-Eq X Y)
+                → (X Y : 𝓤 ̇ ) → is-hae (Id-to-Eq X Y)
 Id-to-Eq-is-hae ua ua⁺ X Y = invertibles-are-haes↓ ua⁺ (X ≡ Y) (X ≃ Y) (Id-to-Eq X Y)
                                (equivs-are-invertible (Id-to-Eq X Y) (ua X Y))
 \end{code}
@@ -5550,7 +5550,7 @@ this purpose, we first characterize transport of magma structure:
  structure-of : (M : Magma 𝓤) → magma-structure ⟨ M ⟩
  structure-of (X , s) = s
 
- transport-of-magma-structure : (X Y : 𝓤 ̇)
+ transport-of-magma-structure : (X Y : 𝓤 ̇ )
                                 (s : magma-structure X) (t : magma-structure Y)
                                 (p : X ≡ Y)
                               → (transport magma-structure p s ≡ t)
