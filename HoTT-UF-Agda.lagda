@@ -350,6 +350,7 @@ to practice univalent mathematics should consult the above references.
      1. [Half adjoint equivalences](HoTT-UF-Agda.html#haes)
      1. [Function extensionality from univalence](HoTT-UF-Agda.html#funextfromua)
      1. [Variations of function extensionality and their logical equivalence](HoTT-UF-Agda.html#hfunext)
+     1. [Universes are map classifiers](HoTT-UF-Agda.html#typeclassifier)
      1. [The univalence axiom is a (sub)singleton type](HoTT-UF-Agda.html#univalencesubsingleton)
      1. [`hfunext` and `vvfunext` are subsingletons](HoTT-UF-Agda.html#hfunextsubsingleton)
      1. [More applications of function extensionality](HoTT-UF-Agda.html#morefunextuses)
@@ -3973,6 +3974,35 @@ induction, but the following version is perhaps more natural.
 This particular proof works only because inversion [is involutive on
 the nose](HoTT-UF-Agda.html#inversion-involutive).
 
+As another example we have the following:
+\begin{code}
+transport-map-along-≡ : {X Y Z : 𝓤 ̇ } (p : X ≡ Y) (g : X → Z)
+                      → transport (λ - → - → Z) p g
+                      ≡ g ∘ Id-to-fun (p ⁻¹)
+transport-map-along-≡ (refl X) = refl
+
+transport-map-along-≃ : (ua : is-univalent 𝓤) {X Y Z : 𝓤 ̇ } (e : X ≃ Y) (g : X → Z)
+                      → transport (λ - → - → Z) (Eq-to-Id ua X Y e) g
+                      ≡ g ∘ Eq-to-fun (≃-sym e)
+transport-map-along-≃ {𝓤} ua {X} {Y} {Z} = J-≃ ua A a X Y
+ where
+  A : (X Y : 𝓤 ̇) → X ≃ Y → 𝓤 ̇
+  A X Y e = (g : X → Z) → transport (λ - → - → Z) (Eq-to-Id ua X Y e) g
+                        ≡ g ∘ Eq-to-fun (≃-sym e)
+  a : (X : 𝓤 ̇ ) → A X X (≃-refl X)
+  a X g = transport (λ - → - → Z) (Eq-to-Id ua X X (≃-refl X)) g ≡⟨ q ⟩
+          transport (λ - → - → Z) (refl X) g                     ≡⟨ refl _ ⟩
+          g                                                      ∎
+    where
+     p : Eq-to-Id ua X X (≃-refl X) ≡ refl X
+     p = inverse-is-retraction (Id-to-Eq X X) (ua X X) (refl X)
+     q = ap (λ - → transport (λ - → - → Z) - g ) p
+\end{code}
+
+An annoying feature of the use of `J` (rather than pattern matching on
+`refl`) or `J-≃` is that we have to repeat what we want to prove, as
+in the above example.
+
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="haes"></a> Half adjoint equivalences
 
@@ -4311,6 +4341,88 @@ univalence-gives-hfunext ua = univalence-gives-hfunext' ua ua
 univalence-gives-dfunext ua = univalence-gives-dfunext' ua ua
 
 univalence-gives-vvfunext ua = univalence-gives-vvfunext' ua ua
+\end{code}
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="typeclassifier"></a> Universes are map classifiers
+
+Under univalence, a universe `𝓤` becomes a map classifier, in the
+sense that maps from a type in `𝓤` into a type `Y : 𝓤` are in
+canonical bijection with functions `Y → 𝓤`. Using the following
+notation, this amounts to a bijection between `𝓤 / Y` and `Y → 𝓤`:
+
+\begin{code}
+_/_ : (𝓤 : Universe) → 𝓤 ̇ → 𝓤 ⁺ ̇
+𝓤 / Y = Σ \(X : 𝓤 ̇ ) → X → Y
+\end{code}
+
+We need the following lemma, which has other uses:
+\begin{code}
+total-fiber-is-domain : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                      → Σ (fiber f) ≃ X
+total-fiber-is-domain {𝓤} {𝓥} {X} {Y} f = invertibility-gives-≃ g (h , η , ε)
+ where
+  g : (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) → X
+  g (y , x , p) = x
+  h : X → Σ \(y : Y) → Σ \(x : X) → f x ≡ y
+  h x = (f x , x , refl (f x))
+  η : ∀ t → h (g t) ≡ t
+  η (_ , x , refl _) = refl (f x , x , refl _)
+  ε : (x : X) → g (h x) ≡ x
+  ε = refl
+\end{code}
+
+We define the desired canonical bijection in a submodule with
+assumptions:
+
+\begin{code}
+module map-classifier
+        (𝓤 : Universe)
+        (ua : is-univalent 𝓤)
+        (fe : dfunext 𝓤 (𝓤 ⁺))
+        (Y : 𝓤 ̇)
+       where
+
+ χ : 𝓤 / Y  → (Y → 𝓤 ̇ )
+ χ (X , f) = fiber f
+
+ T : (Y → 𝓤 ̇ ) → 𝓤 / Y
+ T A = Σ A , pr₁
+
+ χη : (σ : 𝓤 / Y) → T (χ σ) ≡ σ
+ χη (X , f) = r
+  where
+   e : Σ (fiber f) ≃ X
+   e = total-fiber-is-domain f
+   p : Σ (fiber f) ≡ X
+   p = Eq-to-Id ua (Σ (fiber f)) X e
+   observation : Eq-to-fun (≃-sym e) ≡ (λ x → f x , x , refl (f x))
+   observation = refl _
+   q = transport (λ - → - → Y) p pr₁ ≡⟨ transport-map-along-≃ ua e pr₁ ⟩
+       pr₁ ∘ Eq-to-fun (≃-sym e)     ≡⟨ refl _ ⟩
+       f                             ∎
+   r : (Σ (fiber f) , pr₁) ≡ (X , f)
+   r = to-Σ-≡ (p , q)
+
+ χε : (A : Y → 𝓤 ̇ ) → χ (T A) ≡ A
+ χε A = fe γ
+  where
+   f : ∀ y → fiber pr₁ y → A y
+   f y ((y , a) , refl p) = a
+   g : ∀ y → A y → fiber pr₁ y
+   g y a = (y , a) , refl y
+   η : ∀ y σ → g y (f y σ) ≡ σ
+   η y ((y , a) , refl p) = refl ((y , a) , refl p)
+   ε : ∀ y a → f y (g y a) ≡ a
+   ε y a = refl a
+   γ : ∀ y → fiber pr₁ y ≡ A y
+   γ y = Eq-to-Id ua (fiber pr₁ y) (A y) (invertibility-gives-≃ (f y) (g y , η y , ε y))
+
+ χ-is-equiv : is-equiv χ
+ χ-is-equiv = invertibles-are-equivs χ (T , χη , χε)
+
+ canonical-bijection : 𝓤 / Y ≃ (Y → 𝓤 ̇)
+ canonical-bijection = χ , χ-is-equiv
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -5736,17 +5848,13 @@ image' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)⁺ ̇
 image' f = Σ \(y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
 \end{code}
 
-*Exercise.* An attempt to define the image of `f` without the
-inhabitation predicate would be to take it to be
-`Σ \(y : codomain f) → Σ \(x : domain f) → f x ≡ y`. Show that this
-type is equivalent to `X`:
+An attempt to define the image of `f` without the inhabitation
+predicate would be to take it to be
 
-\begin{code}
-graph-is-domain : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                → (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) ≃ X
-\end{code}
+   > `Σ \(y : codomain f) → Σ \(x : domain f) → f x ≡ y`.
 
-This is similar to what happens in set
+But we [already know](HoTT-UF-Agda.html#total-fiber-is-domain) that
+this is equivalent to `X`.  This is similar to what happens in set
 theory: the graph of any function is in bijection with its domain.
 
 
@@ -6160,17 +6268,6 @@ This completes the exercise on the order relation on the natural numbers.
 For the moment we leave the following solutions unexplained.
 
 \begin{code}
-graph-is-domain {𝓤} {𝓥} {X} {Y} f = invertibility-gives-≃ g (h , η , ε)
- where
-  g : (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) → X
-  g (y , x , p) = x
-  h : X → Σ \(y : Y) → Σ \(x : X) → f x ≡ y
-  h x = (f x , x , refl (f x))
-  η : ∀ t → h (g t) ≡ t
-  η (_ , x , refl _) = refl (f x , x , refl _)
-  ε : (x : X) → g (h x) ≡ x
-  ε = refl
-
 has-section-charac f = ΠΣ-distr-≃
 
 succ-no-fixed-point : (n : ℕ) → succ n ≢ n
