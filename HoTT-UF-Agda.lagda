@@ -3246,6 +3246,10 @@ Eq-to-fun (f , i) = f
 
 Eq-to-fun-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X ≃ Y) → is-equiv (Eq-to-fun e)
 Eq-to-fun-is-equiv (f , i) = i
+
+invertibility-gives-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                      → invertible f → X ≃ Y
+invertibility-gives-≃ f i = f , invertibles-are-equivs f i
 \end{code}
 
 Identity and composition of equivalences:
@@ -3288,8 +3292,7 @@ Here is the promised characterization of equality in `Σ` types:
 \begin{code}
 Σ-≡-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ τ : Σ A)
       → (σ ≡ τ) ≃ (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
-Σ-≡-≃ {𝓤} {𝓥} {X} {A}  σ τ = from-Σ-≡ ,
-                             invertibles-are-equivs from-Σ-≡ (to-Σ-≡ , ε , η)
+Σ-≡-≃ {𝓤} {𝓥} {X} {A}  σ τ = invertibility-gives-≃ from-Σ-≡ (to-Σ-≡ , ε , η)
  where
   η : (w : Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ) → from-Σ-≡ (to-Σ-≡ w) ≡ w
   η (refl p , refl q) = refl (refl p , refl q)
@@ -3302,8 +3305,7 @@ The following are often useful:
 \begin{code}
 Σ-cong : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
        → ((x : X) → A x ≃ B x) → Σ A ≃ Σ B
-Σ-cong {𝓤} {𝓥} {𝓦} {X} {A} {B} φ =
-  (NatΣ f , invertibles-are-equivs (NatΣ f) (NatΣ g , NatΣ-η , NatΣ-ε))
+Σ-cong {𝓤} {𝓥} {𝓦} {X} {A} {B} φ = invertibility-gives-≃ (NatΣ f) (NatΣ g , NatΣ-η , NatΣ-ε)
  where
   f : (x : X) → A x → B x
   f x = Eq-to-fun (φ x)
@@ -3668,8 +3670,7 @@ joyal-equivs-are-equivs f j = invertibles-are-equivs f (joyal-equivs-are-inverti
 
 invertibles-are-joyal-equivs f (g , gf , fg) = ((g , fg) , (g , gf))
 
-equivs-are-joyal-equivs f e = invertibles-are-joyal-equivs f
-                                (equivs-are-invertible f e)
+equivs-are-joyal-equivs f e = invertibles-are-joyal-equivs f (equivs-are-invertible f e)
 
 equivs-closed-under-∼ f g e h =
  joyal-equivs-are-equivs g
@@ -3702,11 +3703,10 @@ pr₁-equiv X A s = invertibles-are-equivs pr₁ (g , η , ε)
   η : (σ : Σ A) → g (pr₁ σ) ≡ σ
   η (x , a) = to-Σ-≡ (ε x , singletons-are-subsingletons (A x) (s x) _ a)
 
-ΠΣ-distr-≃ {𝓤} {𝓥} {𝓦} {X} {A} {P} = φ , invertibles-are-equivs φ (γ , η , ε)
+ΠΣ-distr-≃ {𝓤} {𝓥} {𝓦} {X} {A} {P} = invertibility-gives-≃ φ (γ , η , ε)
  where
   φ : (Π \(x : X) → Σ \(a : A x) → P x a) → Σ \(f : Π A) → Π \(x : X) → P x (f x)
   φ g = ((λ x → pr₁ (g x)) , λ x → pr₂ (g x))
-
   γ : (Σ \(f : Π A) → Π \(x : X) → P x (f x)) → Π \(x : X) → Σ \(a : A x) → P x a
   γ (f , φ) x = f x , φ x
   η : γ ∘ φ ∼ id
@@ -3714,7 +3714,7 @@ pr₁-equiv X A s = invertibles-are-equivs pr₁ (g , η , ε)
   ε : φ ∘ γ ∼ id
   ε = refl
 
-Σ-assoc {𝓤} {𝓥} {𝓦} {X} {Y} {Z} = f , invertibles-are-equivs f (g , refl , refl)
+Σ-assoc {𝓤} {𝓥} {𝓦} {X} {Y} {Z} = invertibility-gives-≃ f (g , refl , refl)
  where
   f : Σ Z → Σ \x → Σ \y → Z (x , y)
   f ((x , y) , z) = (x , (y , z))
@@ -3722,14 +3722,14 @@ pr₁-equiv X A s = invertibles-are-equivs pr₁ (g , η , ε)
   g (x , (y , z)) = ((x , y) , z)
 
 ⁻¹-is-equiv : {X : 𝓤 ̇ } (x y : X)
-             → is-equiv (λ (p : x ≡ y) → p ⁻¹)
+            → is-equiv (λ (p : x ≡ y) → p ⁻¹)
 ⁻¹-is-equiv x y = invertibles-are-equivs _⁻¹ (_⁻¹ , ⁻¹-involutive , ⁻¹-involutive)
 
 ⁻¹-≃ x y = (_⁻¹ , ⁻¹-is-equiv x y)
 
 singleton-types-≃ x = Σ-cong (λ y → ⁻¹-≃ x y)
 
-singletons-≃ {𝓤} {𝓥} {X} {Y} i j = f , invertibles-are-equivs f (g , η , ε)
+singletons-≃ {𝓤} {𝓥} {X} {Y} i j = invertibility-gives-≃ f (g , η , ε)
  where
   f : X → Y
   f x = center Y j
@@ -3750,9 +3750,9 @@ maps-of-singletons-are-equivs {𝓤} {𝓥} {X} {Y} f i j = invertibles-are-equi
   ε y = singletons-are-subsingletons Y j (f (g y)) y
 
 logically-equivalent-subsingletons-are-equivalent X Y i j (f , g) =
-  f , invertibles-are-equivs f (g , (λ x → i (g (f x)) x) , (λ y → j (f (g y)) y))
+  invertibility-gives-≃ f (g , (λ x → i (g (f x)) x) , (λ y → j (f (g y)) y))
 
-NatΣ-fiber-equiv A B φ x b = (f , invertibles-are-equivs f (g , ε , η))
+NatΣ-fiber-equiv A B φ x b = invertibility-gives-≃ f (g , ε , η)
  where
   f : fiber (φ x) b → fiber (NatΣ φ) (x , b)
   f (a , refl _) = ((x , a) , refl (x , φ x a))
@@ -4510,7 +4510,7 @@ closed under equivalence first.)
 Π-cong : dfunext 𝓤 𝓥 → dfunext 𝓤 𝓦
        → (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) (Y' : X → 𝓦 ̇ )
        → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
-Π-cong fe fe' X Y Y' φ = F , invertibles-are-equivs F (G , GF , FG)
+Π-cong fe fe' X Y Y' φ = invertibility-gives-≃ F (G , GF , FG)
  where
   f : (x : X) → Y x → Y' x
   f x = Eq-to-fun (φ x)
@@ -4595,16 +4595,14 @@ We then transfer the above to equivalence types:
 ≃-Sym : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
       → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
       → (X ≃ Y) ≃ (Y ≃ X)
-≃-Sym fe₀ fe₁ fe₂ = ≃-sym ,
-                    invertibles-are-equivs
-                      ≃-sym
-                      ( ≃-sym , ≃-sym-involutive fe₀ fe₂ , ≃-sym-involutive fe₁ fe₂)
+≃-Sym fe₀ fe₁ fe₂ = invertibility-gives-≃ ≃-sym
+                     ( ≃-sym , ≃-sym-involutive fe₀ fe₂ , ≃-sym-involutive fe₁ fe₂)
 
 ≃-Comp : dfunext 𝓦 (𝓥 ⊔ 𝓦) → dfunext (𝓥 ⊔ 𝓦) (𝓥 ⊔ 𝓦 ) → dfunext 𝓥 𝓥 → dfunext 𝓦 (𝓤 ⊔ 𝓦)
        → dfunext (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓦 ) → dfunext 𝓤 𝓤
        → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (Z : 𝓦 ̇ )
        → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
-≃-Comp fe₀ fe₁ fe₂ fe₃ fe₄ fe₅ Z α = (α ●_) , invertibles-are-equivs (α ●_) ((≃-sym α ●_) , p , q)
+≃-Comp fe₀ fe₁ fe₂ fe₃ fe₄ fe₅ Z α = invertibility-gives-≃ (α ●_) ((≃-sym α ●_) , p , q)
  where
   p = λ β → ≃-sym α ● (α ● β) ≡⟨ ●-assoc fe₀ fe₁ (≃-sym α) α β ⟩
             (≃-sym α ● α) ● β ≡⟨ ap (_● β) (≃-sym-left-inverse fe₂ α) ⟩
@@ -4751,7 +4749,7 @@ As we [have seen](HoTT-UF-Agda.html#identitytypeuf), a type `X` can be
 seen as an `∞`-groupoid and hence as an `∞`-category, with
 identifications as the arrows. Likewise
 a universe `𝓤` can be seen as the ∞-generalization of the category of
-sets, with functions as the arrows.  composition. Hence a type family
+sets, with functions as the arrows. Hence a type family
 
    > `A : X → 𝓤`
 
@@ -5051,10 +5049,10 @@ lift-lower : {X : 𝓤 ̇ } (l : Lift 𝓥 X) → lift (lower l) ≡ l
 lift-lower = refl
 
 Lift-≃ : (X : 𝓤 ̇ ) → Lift 𝓥 X ≃ X
-Lift-≃ {𝓤} {𝓥} X = lower , invertibles-are-equivs lower (lift , lift-lower , lower-lift {𝓤} {𝓥})
+Lift-≃ {𝓤} {𝓥} X = invertibility-gives-≃ lower (lift , lift-lower , lower-lift {𝓤} {𝓥})
 
 ≃-Lift : (X : 𝓤 ̇ ) → X ≃ Lift 𝓥 X
-≃-Lift {𝓤} {𝓥} X = lift , invertibles-are-equivs lift (lower , lower-lift {𝓤} {𝓥} , lift-lower)
+≃-Lift {𝓤} {𝓥} X = invertibility-gives-≃ lift (lower , lower-lift {𝓤} {𝓥} , lift-lower)
 \end{code}
 
 With universe lifting, we can generalize equivalence induction as
@@ -6161,7 +6159,7 @@ This completes the exercise on the order relation on the natural numbers.
 For the moment we leave the following solutions unexplained.
 
 \begin{code}
-graph-is-domain {𝓤} {𝓥} {X} {Y} f = g , invertibles-are-equivs g (h , η , ε)
+graph-is-domain {𝓤} {𝓥} {X} {Y} f = invertibility-gives-≃ g (h , η , ε)
  where
   g : (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) → X
   g (y , x , p) = x
@@ -6205,8 +6203,7 @@ cantors-diagonal (e , γ) = c
   c : 𝟘
   c = φ (pr₁ b) (pr₂ b)
 
-𝟚-has-𝟚-automorphisms fe =
- (f , invertibles-are-equivs f (g , η , ε))
+𝟚-has-𝟚-automorphisms fe = invertibility-gives-≃ f (g , η , ε)
  where
   f : (𝟚 ≃ 𝟚) → 𝟚
   f (h , e) = h ₀
