@@ -1220,7 +1220,8 @@ NatΣ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (φ
                  → (x : X) (b : B x) → fiber (φ x) b ≃ fiber (NatΣ φ) (x , b)
 
 NatΣ-equiv-gives-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } (φ : Nat A B)
-                                 → is-equiv (NatΣ φ) → ((x : X) → is-equiv (φ x))
+                                 → is-equiv (NatΣ φ)
+                                 → ((x : X) → is-equiv (φ x))
 
 Σ-is-subsingleton : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                   → is-subsingleton X
