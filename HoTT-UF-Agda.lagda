@@ -5716,8 +5716,8 @@ corollary {𝓤} ua Y = equiv-to-singleton (equiv-classification ua Y) i
                 (univalence-gives-dfunext (ua 𝓤)))
 \end{code}
 
-*Exercise*. (1) Show that the sections of `Y` are classified by the type `Σ \(A : 𝓤) → A` of pointed types.
-(2) After we have defined [propositional truncations](HoTT-UF-Agda.html#truncation) and surjections, show that the surjections into `Y` are classified by the type `Σ \(A : 𝓤), ∥ A ∥` of inhabited types.
+*Exercise*. (1) Show that the sections of `Y` are classified by the type `Σ \(A : 𝓤 ̇ ) → A` of pointed types.
+(2) After we have defined [propositional truncations](HoTT-UF-Agda.html#truncation) and surjections, show that the surjections into `Y` are classified by the type `Σ \(A : 𝓤 ̇ ) → ∥ A ∥` of inhabited types.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="magmaequivalences"></a> Magma equivalences
