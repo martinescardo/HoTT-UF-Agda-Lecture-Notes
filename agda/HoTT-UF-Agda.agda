@@ -2614,10 +2614,8 @@ module blue-map-classifier
   (𝓤 /[ blue ] Y)                             ■)
 
 Ω-is-subtype-classifier : Univalence → (Y : 𝓤 ̇ ) → subtypes-of Y ≃ (Y → Ω 𝓤)
-Ω-is-subtype-classifier {𝓤} ua Y = blue-map-classifier.bijection
-                                     𝓤 𝓤 (ua 𝓤) (ua (𝓤 ⁺))
-                                     (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
-                                     Y is-subsingleton
+Ω-is-subtype-classifier {𝓤} ua Y = blue-map-classifier.bijection 𝓤 𝓤 (ua 𝓤) (ua (𝓤 ⁺))
+                                     (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺))) Y is-subsingleton
 
 𝓢 : (𝓤 : Universe) → 𝓤 ⁺ ̇
 𝓢 𝓤 = Σ \(S : 𝓤 ̇ ) → is-singleton S
@@ -2638,7 +2636,7 @@ the-singletons-form-a-singleton {𝓤} pe fe = c , φ
    where
     p : Lift 𝓤 𝟙 ≡ S
     p = pe (singletons-are-subsingletons (Lift 𝓤 𝟙) i) (singletons-are-subsingletons S s)
-           (λ _ → center S s) λ _ → center (Lift 𝓤 𝟙) i
+           (λ _ → center S s) (λ _ → center (Lift 𝓤 𝟙) i)
 
 corollary : Univalence → (Y : 𝓤 ̇) → is-singleton (Σ \(X : 𝓤 ̇ ) → X ≃ Y)
 corollary {𝓤} ua Y = equiv-to-singleton (equiv-classification ua Y) i

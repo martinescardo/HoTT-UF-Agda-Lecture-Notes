@@ -267,6 +267,10 @@ Regarding the genesis of the subject:
    - [A very short note on homotopy λ-calculus](http://math.ucr.edu/home/baez/Voevodsky_note.ps).
    - [Notes on homotopy λ-calculus](https://github.com/vladimirias/2006_03_Homotopy_lambda_calculus/blob/master/homotopy_lambda_calculus_Mar_5_2006.pdf).
 
+An important foundational reference, by Steve Awodey, Michael A. Warren, is
+
+   - [Homotopy theoretic models of identity types](https://arxiv.org/abs/0709.0248).
+
 Additional expository material:
 
    - [An introduction to univalent foundations for mathematicians](https://www.ams.org/journals/bull/2018-55-04/S0273-0979-2018-01616-9/), a paper at the [Bulletin of the
@@ -278,6 +282,8 @@ by [Dan Grayson](https://faculty.math.illinois.edu/~dan/).
   - [15-819 Homotopy Type Theory](https://www.cs.cmu.edu/~rwh/courses/hott/), Bob Harper.
   - [Homotopy type theory: the logic of space](https://arxiv.org/abs/1703.03007), Mike Shulman.
   - [Logic in univalent type theory](https://www.newton.ac.uk/seminar/20170711100011001), Martin Escardo.
+
+More references as clickable links are given in the course of the notes.
 
 We also have an [Agda development](http://www.cs.bham.ac.uk/~mhe/agda-new/)
 of [univalent
@@ -712,7 +718,7 @@ is-empty X = X → 𝟘
 
 This says that a type is empty precisely when we have a function to
 the empty type. Assuming [univalence](HoTT-UF-Agda.html#univalence),
-once we have defined the equality type former
+once we have defined the identity type former
 [`_≡_`](HoTT-UF-Agda.html#identitytype), we will be able to prove that
 `(is-empty X) ≡ (X ≃ 𝟘)`, where `X ≃ 𝟘` is the type of bijections, or
 [equivalences](HoTT-UF-Agda.html#fibersandequivalences), from `X` to
@@ -726,7 +732,7 @@ will instead have that `𝟚 + 𝟚 ≡ 𝟜` is a type with `4!` elements, whic
 is [number of permutations](https://en.wikipedia.org/wiki/Factorial)
 of a set with four elements, rather than a truth value `𝟘` or `𝟙`, as
 a consequence of the univalence axiom. That is, we will have `(𝟚 + 𝟚 ≡
-𝟜) ≃ (𝟜 + 𝟜 + 𝟜 + 𝟜 + 𝟜 + 𝟜)`, so that the type equality `𝟚 + 𝟚 ≡ 𝟜`
+𝟜) ≃ (𝟜 + 𝟜 + 𝟜 + 𝟜 + 𝟜 + 𝟜)`, so that the type identity `𝟚 + 𝟚 ≡ 𝟜`
 holds in [many more ways](https://arxiv.org/abs/math/9802029) than the
 numerical equation `2 + 2 ≡ 4`.
 
@@ -748,7 +754,7 @@ The definition is similar but not quite the same as the one via
 [Peano Axioms](https://en.wikipedia.org/wiki/Peano_axioms).
 
 We stipulate an element `zero : ℕ` and a successor function `succ : ℕ → ℕ`,
-and then define induction. Once we have defined equality `_≡_`, we
+and then define induction. Once we have defined the identity type former `_≡_`, we
 will [*prove*](HoTT-UF-Agda.html#naturalsset) the other peano axioms.
 
 \begin{code}
@@ -2054,7 +2060,7 @@ axiom.
 ### <a id="magmasandmonoids"></a> The types of magmas and monoids
 
 A [magma](https://en.wikipedia.org/wiki/Magma_(algebra)) is a *set* equipped with a binary operation subject to no laws
-([Bourbaki](https://books.google.co.uk/books?id=STS9aZ6F204C&pg=PA1&redir_esc=y#v=onepage&q&f=false)).  We can define the type of magmas in a universe `𝓤` as follows:
+[[Bourbaki](https://books.google.co.uk/books?id=STS9aZ6F204C&pg=PA1&redir_esc=y#v=onepage&q&f=false)].  We can define the type of magmas in a universe `𝓤` as follows:
 
 \begin{code}
 Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
@@ -2138,7 +2144,7 @@ _≅ₘ_ : Magma 𝓤 → Magma 𝓤 → 𝓤 ̇
 M ≅ₘ N = Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-magma-iso M N f
 \end{code}
 
-The following function [will be](HoTT-UF-Agda.html#sip) a bijection in the presence of
+The following function [will be](HoTT-UF-Agda.html#magmaequivalences) a bijection in the presence of
 univalence, so that the identifications of magmas are in one-to-one
 correspondence with the magma isomorphisms:
 
@@ -3267,7 +3273,7 @@ _●_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ≃ Y → Y ≃ Z →
 ≃-sym (f , e) = inverse f e , inverse-is-equiv f e
 \end{code}
 
-We can use the following for equational reasoning with equivalences:
+We can use the following notation for equational reasoning with equivalences:
 
 \begin{code}
 _≃⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ≃ Y → Y ≃ Z → X ≃ Z
@@ -3277,7 +3283,7 @@ _■ : (X : 𝓤 ̇ ) → X ≃ X
 _■ = ≃-refl
 \end{code}
 
-We conclude this section with some examples.
+We conclude this section with some important examples.
 The function `transport A p` is an equivalence.
 
 \begin{code}
@@ -3470,7 +3476,7 @@ If the universe `𝓤₀` were a set, then the identifications `p₀` and
     q = s 𝟚 𝟚 p₀ p₁
 \end{code}
 
-For more examples, see [Kraus and Sattler](https://arxiv.org/abs/1311.4002).
+For more examples, see [[Kraus and Sattler](https://arxiv.org/abs/1311.4002)].
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="lefttothereader"></a> Exercises
@@ -4363,7 +4369,7 @@ univalence-gives-vvfunext ua = univalence-gives-vvfunext' ua ua
 Under univalence, a universe `𝓤` becomes a map classifier, in the
 sense that maps from a type in `𝓤` into a type `Y : 𝓤` are in
 canonical bijection with functions `Y → 𝓤`. Using the following
-notation, this amounts to a bijection between `𝓤 / Y` and `Y → 𝓤`:
+*slice* notation, this amounts to a bijection between `𝓤 / Y` and `Y → 𝓤`:
 
 \begin{code}
 _/_ : (𝓤 : Universe) → 𝓤 ̇ → 𝓤 ⁺ ̇
@@ -4396,13 +4402,25 @@ module map-classifier
         (fe : dfunext 𝓤 (𝓤 ⁺))
         (Y : 𝓤 ̇ )
        where
+\end{code}
 
+The function `χ` gives the *characteristic function* of a map into `Y`:
+
+\begin{code}
  χ : 𝓤 / Y  → (Y → 𝓤 ̇ )
  χ (X , f) = fiber f
+\end{code}
 
+Any `Y → 𝓤` is the characteristic map of some map into `Y`:
+
+\begin{code}
  T : (Y → 𝓤 ̇ ) → 𝓤 / Y
  T A = Σ A , pr₁
+\end{code}
 
+And these constructions are mutually inverse:
+
+\begin{code}
  χη : (σ : 𝓤 / Y) → T (χ σ) ≡ σ
  χη (X , f) = r
   where
@@ -4772,7 +4790,7 @@ Eq-Eq-cong fe = Eq-Eq-cong' fe fe fe fe fe fe fe fe fe fe fe fe
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="embeddings"></a> Type embeddings
 
-A function is called an embedding it its fibers are all
+A function is called an embedding if its fibers are all
 subsingletons. In particular, equivalences are embeddings. However,
 sections of types more general than sets [don't need to be
 embeddings](https://lmcs.episciences.org/2027).
@@ -5081,7 +5099,7 @@ fiberwise-◁-gives-≃ X A x ρ = γ
 \end{code}
 
 To prove that [`𝓨 {𝓤} {X}` is an embedding](https://arxiv.org/abs/1903.01211) of `X` into `X → 𝓤` for any
-type `X : 𝓤`, we need the following two lemmas.
+type `X : 𝓤`, we need the following two lemmas, which are interesting on their own right:
 
 \begin{code}
 being-fiberwise-equiv-is-a-subsingleton : global-dfunext
@@ -5114,7 +5132,11 @@ being-representable-is-a-subsingleton fe {X} A r₀ r₁ = γ
   v = equiv-to-singleton δ u
   γ : r₀ ≡ r₁
   γ = singletons-are-subsingletons (is-representable A) v r₀ r₁
+\end{code}
 
+With this it is almost immediate that the Yoneda map is an embedding:
+
+\begin{code}
 𝓨-embedding : Univalence → (X : 𝓤 ̇ ) → is-embedding (𝓨 {𝓤} {X})
 𝓨-embedding {𝓤} ua X A = γ
  where
@@ -5165,8 +5187,8 @@ Lift-recursion 𝓥 {X} {B} = Lift-induction 𝓥 X (λ _ → B)
 
 This gives an equivalence `lift : X → Lift 𝓥 X` and hence an embedding
 `Lift 𝓥 : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇`. The following two constructions can be
-performed with induction, but actually hold on the nose by the η rule
-for records:
+performed with induction, but actually hold on the nose by the [η rule
+for records](https://agda.readthedocs.io/en/latest/language/record-types.html#eta-expansion):
 
 \begin{code}
 lower-lift : {X : 𝓤 ̇ } (x : X) → lower {𝓤} {𝓥} (lift x) ≡ x
@@ -5410,7 +5432,7 @@ equivs-are-haes↑ : is-univalent (𝓤 ⊔ 𝓥)
 equivs-are-haes↑ {𝓤} {𝓥} ua {X} {Y} = J↑-equiv {𝓤} {𝓥} ua (λ X Y f → is-hae f) lift-is-hae X Y
 \end{code}
 
-We have a similar development with the universes going down, where we
+We have a dual development with the universes going down, where we
 consider `lower` in place of `lift`:
 
 \begin{code}
@@ -5575,14 +5597,14 @@ _↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ↪ Y = Σ \(f : X → Y) → is-embedding f
 \end{code}
 
-A subtype of a type `Y` is a type `X` together with an embedding of `X` into `Y`:
+A subtype of a type `Y` is a type `X` *together* with an embedding of `X` into `Y`:
 
 \begin{code}
 subtypes-of : 𝓤 ̇ → 𝓤 ⁺ ̇
 subtypes-of {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↪ Y
 \end{code}
 
-We then define the type of subsingletons in a given universe, which lives in the next universe:
+We then define the type `Ω 𝓤` of subsingletons in a given universe `𝓤`, which lives in the next universe:
 
 \begin{code}
 Ω : (𝓤 : Universe) → 𝓤 ⁺ ̇
@@ -5598,13 +5620,12 @@ for any type `Y : 𝓤`.
 
 *Exercise* (Not easy.) Assume univalence. (0) show
  that `Ω 𝓤` is a set. (1) Conclude that the type `Y → Ω
- 𝓤` is a set (even if `Y` is not), which justifies the name powerset for it, and the notation `𝓟 Y`. (2) For `A : 𝓟 Y` and `y : Y` write `y ∈ A` to mean `pr₁(A y)`. Define `A ⊆ B` to mean `(y : Y) → y ∈ A → y ∈ B`. Show that both `∈` and `⊆` are subsingleton-valued relations. (3) Show that `(A ≡ B)` and `(A ⊆ B) × (B ⊆ A)` are logically equivalent propositions. Thus, univalence gives extensionality for the powerset.
+ 𝓤` is a set (even if `Y` is not), which justifies the name powerset for it, and the notation `𝓟 Y`. (2) For `A : 𝓟 Y` and `y : Y` write `y ∈ A` to mean `pr₁(A y)`. Define `A ⊆ B` to mean `(y : Y) → y ∈ A → y ∈ B`. Show that both `∈` and `⊆` are subsingleton-valued relations. (3) Show that `A ≡ B` and `(A ⊆ B) × (B ⊆ A)` are logically equivalent propositions. Thus, univalence gives extensionality for the powerset.
 
 We will derive the claim `subtypes-of Y ≃ (Y → Ω 𝓤)` from something
 more general.  We defined embeddings to be maps whose fibers are
 all subsingletons. We can replace `is-subsingleton` by an arbitrary
-property of, or even structure on types, which we will call `blue` in
-the following development.
+property of — or even structure on — types, which we will name `blue`.
 The following generalizes the notion of embedding (when `blue`
 means `is-subsingleton`) and equivalence (when `blue` means
 `is-singleton`):
@@ -5667,10 +5688,8 @@ classifier:
 
 \begin{code}
 Ω-is-subtype-classifier : Univalence → (Y : 𝓤 ̇ ) → subtypes-of Y ≃ (Y → Ω 𝓤)
-Ω-is-subtype-classifier {𝓤} ua Y = blue-map-classifier.bijection
-                                     𝓤 𝓤 (ua 𝓤) (ua (𝓤 ⁺))
-                                     (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
-                                     Y is-subsingleton
+Ω-is-subtype-classifier {𝓤} ua Y = blue-map-classifier.bijection 𝓤 𝓤 (ua 𝓤) (ua (𝓤 ⁺))
+                                     (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺))) Y is-subsingleton
 \end{code}
 
 We now consider `blue = is-singleton` and the type of singletons:
@@ -5700,7 +5719,7 @@ the-singletons-form-a-singleton {𝓤} pe fe = c , φ
    where
     p : Lift 𝓤 𝟙 ≡ S
     p = pe (singletons-are-subsingletons (Lift 𝓤 𝟙) i) (singletons-are-subsingletons S s)
-           (λ _ → center S s) λ _ → center (Lift 𝓤 𝟙) i
+           (λ _ → center S s) (λ _ → center (Lift 𝓤 𝟙) i)
 \end{code}
 
 What we already knew is this:
@@ -5723,7 +5742,7 @@ corollary {𝓤} ua Y = equiv-to-singleton (equiv-classification ua Y) i
 ### <a id="magmaequivalences"></a> Magma equivalences
 
 We now define magma equivalences and show that the type of magma
-equivalences is equal to the type of magma isomorphisms, assuming
+equivalences is identified with the type of magma isomorphisms, assuming
 univalence. For simplicity, we assume global univalence, from which we
 get global function extensionality.
 
@@ -6063,7 +6082,7 @@ In particular, it is not possible to show that the map `X →
 is-inhabited X` is a surjection, or that `X → Y` gives `is-inhabited X
 → is-inhabited Y` for `X` and `Y` in arbitrary universes.
 
-There are two proposed ways to solve this:
+There are two proposed ways to solve this kind of problem:
 
   * Voevodsky works with certain [resizing
     rules](http://www.math.ias.edu/vladimir/files/2011_Bergen.pdf) for
