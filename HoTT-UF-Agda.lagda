@@ -359,6 +359,7 @@ to practice univalent mathematics should consult the above references.
      1. [Type embeddings](HoTT-UF-Agda.html#embeddings)
      1. [The Yoneda Lemma for types](HoTT-UF-Agda.html#yoneda)
      1. [Universe lifting](HoTT-UF-Agda.html#universelifting)
+     1. [The subtype classifier and other classifiers](HoTT-UF-Agda.html#subtypeclassifier)
      1. [Magma equivalences](HoTT-UF-Agda.html#magmaequivalences)
      1. [Structure identity principle](HoTT-UF-Agda.html#sip)
      1. [Subsingleton truncation](HoTT-UF-Agda.html#truncation)
@@ -3596,6 +3597,11 @@ logically-equivalent-subsingletons-are-equivalent : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ 
                                                   → X ⇔ Y
                                                   → X ≃ Y
 
+singletons-are-equivalent : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+                          → is-singleton X
+                          → is-singleton Y
+                          → X ≃ Y
+
 NatΣ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (φ : Nat A B)
                  → (x : X) (b : B x) → fiber (φ x) b ≃ fiber (NatΣ φ) (x , b)
 
@@ -3753,6 +3759,9 @@ maps-of-singletons-are-equivs {𝓤} {𝓥} {X} {Y} f i j = invertibles-are-equi
 
 logically-equivalent-subsingletons-are-equivalent X Y i j (f , g) =
   invertibility-gives-≃ f (g , (λ x → i (g (f x)) x) , (λ y → j (f (g y)) y))
+
+singletons-are-equivalent X Y i j =
+  invertibility-gives-≃ (λ _ → center Y j) ((λ _ → center X i) , centrality X i , centrality Y j)
 
 NatΣ-fiber-equiv A B φ x b = invertibility-gives-≃ f (g , ε , η)
  where
@@ -4661,14 +4670,14 @@ two logically equivalent propositions are equal:
 
 \begin{code}
 propext : ∀ 𝓤  → 𝓤 ⁺ ̇
-propext 𝓤 = (P Q : 𝓤 ̇ ) → is-prop P → is-prop Q → (P → Q) → (Q → P) → P ≡ Q
+propext 𝓤 = {P Q : 𝓤 ̇ } → is-prop P → is-prop Q → (P → Q) → (Q → P) → P ≡ Q
 \end{code}
 
 This is directly implied by univalence:
 
 \begin{code}
 univalence-gives-propext : is-univalent 𝓤 → propext 𝓤
-univalence-gives-propext ua P Q i j f g =
+univalence-gives-propext ua {P} {Q} i j f g =
  Eq-to-Id ua P Q (logically-equivalent-subsingletons-are-equivalent P Q i j (f , g))
 \end{code}
 
@@ -5557,6 +5566,160 @@ global-≃-ap ua = global-≃-ap' ua id
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="subtypeclassifier"></a> The subtype classifier and other classifiers
+
+We first define the type of embeddings of a type `X` into a type `Y`:
+
+\begin{code}
+_↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+X ↪ Y = Σ \(f : X → Y) → is-embedding f
+\end{code}
+
+A subtype of a type `Y` is a type `X` together with an embedding of `X` into `Y`:
+
+\begin{code}
+subtypes-of : 𝓤 ̇ → 𝓤 ⁺ ̇
+subtypes-of {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↪ Y
+\end{code}
+
+We then define the type of subsingletons in a given universe, which lives in the next universe:
+
+\begin{code}
+Ω : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Ω 𝓤 = Σ \(P : 𝓤 ̇ ) → is-subsingleton P
+\end{code}
+
+This type is the subtype classifier of types in `𝓤`, in the sense that
+we have a canonical equivalence
+
+   > `subtypes-of Y ≃ (Y → Ω 𝓤)`
+
+for any type `Y : 𝓤`.
+
+*Exercise* (Not easy.) Assume univalence. (0) show
+ that `Ω 𝓤` is a set. (1) Conclude that the type `Y → Ω
+ 𝓤` is a set (even if `Y` is not), which justifies the name powerset for it, and the notation `𝓟 Y`. (2) For `A : 𝓟 Y` and `y : Y` write `y ∈ A` to mean `pr₁(A y)`. Define `A ⊆ B` to mean `(y : Y) → y ∈ A → y ∈ B`. Show that both `∈` and `⊆` are subsingleton-valued relations. (3) Show that `(A ≡ B)` and `(A ⊆ B) × (B ⊆ A)` are logically equivalent propositions. Thus, univalence gives extensionality for the powerset.
+
+We will derive the claim `subtypes-of Y ≃ (Y → Ω 𝓤)` from something
+more general.  We defined embeddings to be maps whose fibers are
+all subsingletons. We can replace `is-subsingleton` by an arbitrary
+property of, or even structure on types, which we will call `blue` in
+the following development.
+The following generalizes the notion of embedding (when `blue`
+means `is-subsingleton`) and equivalence (when `blue` means
+`is-singleton`):
+
+\begin{code}
+_has_fibers : {X Y : 𝓤 ̇ } → (X → Y) → (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+f has blue fibers = ∀ y → blue (fiber f y)
+\end{code}
+
+The following generalizes the [slice constructor](HoTT-UF-Agda.html#typeclassifier) `_/_`:
+
+\begin{code}
+_/[_]_ : (𝓤 : Universe) → (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
+𝓤 /[ blue ] Y = Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → f has blue fibers
+\end{code}
+
+We now work with a submodule with hypotheses to generalize the fact
+that the [universe is the map
+classifier](HoTT-UF-Agda.html#typeclassifier) (when `blue = λ _ → 𝟙`),
+using the fact that it is the map classifier in order to perform the
+generalization:
+
+\begin{code}
+module blue-map-classifier
+        (𝓤 𝓥 : Universe)
+        (ua : is-univalent 𝓤)
+        (ua⁺ : is-univalent (𝓤 ⁺))
+        (fe : dfunext 𝓤 (𝓤 ⁺))
+        (Y : 𝓤 ̇ )
+        (blue : 𝓤 ̇ → 𝓥 ̇ )
+       where
+
+ open map-classifier 𝓤 ua fe Y
+
+ χ-is-hae : is-hae χ
+ χ-is-hae = equivs-are-haes ua⁺ χ χ-is-equiv
+\end{code}
+
+We collect the `blue` types in a type `Blue`:
+
+\begin{code}
+ Blue : 𝓤 ⁺ ⊔ 𝓥 ̇
+ Blue = Σ blue
+\end{code}
+
+Then `Blue` is the classifier of maps with `blue` fibers:
+
+\begin{code}
+ bijection : 𝓤 /[ blue ] Y ≃ (Y → Blue)
+ bijection = ≃-sym (
+  (Y → Blue)                                  ≃⟨ ΠΣ-distr-≃ ⟩
+  (Σ \(A : Y → 𝓤 ̇ ) → (y : Y) → blue (A y))   ≃⟨ Σ-change-of-variables-hae (λ A → Π (blue ∘ A)) χ χ-is-hae ⟩
+  (Σ \(σ : 𝓤 / Y) → (y : Y) → blue (χ σ y))   ≃⟨ Σ-assoc ⟩
+  (𝓤 /[ blue ] Y)                             ■)
+\end{code}
+
+This concludes the submodule. In particular, considering `blue =
+is-subsingleton`, we get the promised fact that `Ω` is the subtype
+classifier:
+
+\begin{code}
+Ω-is-subtype-classifier : Univalence → (Y : 𝓤 ̇ ) → subtypes-of Y ≃ (Y → Ω 𝓤)
+Ω-is-subtype-classifier {𝓤} ua Y = blue-map-classifier.bijection
+                                     𝓤 𝓤 (ua 𝓤) (ua (𝓤 ⁺))
+                                     (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
+                                     Y is-subsingleton
+\end{code}
+
+We now consider `blue = is-singleton` and the type of singletons:
+
+\begin{code}
+𝓢 : (𝓤 : Universe) → 𝓤 ⁺ ̇
+𝓢 𝓤 = Σ \(S : 𝓤 ̇ ) → is-singleton S
+
+equiv-classification : Univalence → (Y : 𝓤 ̇ ) → (Σ \(X : 𝓤 ̇ ) → X ≃ Y) ≃ (Y → 𝓢 𝓤)
+equiv-classification {𝓤} ua Y = blue-map-classifier.bijection 𝓤 𝓤 (ua 𝓤) (ua (𝓤 ⁺))
+                                  (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺))) Y is-singleton
+\end{code}
+
+With this we can derive a [fact we already know](HoTT-UF-Agda.html#unicharac), as follows.
+First the type of singletons (in a universe) is itself a singleton (in the next universe):
+
+\begin{code}
+the-singletons-form-a-singleton : propext 𝓤 → dfunext 𝓤 𝓤 → is-singleton (𝓢 𝓤)
+the-singletons-form-a-singleton {𝓤} pe fe = c , φ
+ where
+  i : is-singleton (Lift 𝓤 𝟙)
+  i = equiv-to-singleton (Lift-≃ 𝟙) 𝟙-is-singleton
+  c : 𝓢 𝓤
+  c = Lift 𝓤 𝟙 , i
+  φ : (x : 𝓢 𝓤) → c ≡ x
+  φ (S , s) = to-Σ-≡ (p , being-singleton-is-a-subsingleton fe _ _)
+   where
+    p : Lift 𝓤 𝟙 ≡ S
+    p = pe (singletons-are-subsingletons (Lift 𝓤 𝟙) i) (singletons-are-subsingletons S s)
+           (λ _ → center S s) λ _ → center (Lift 𝓤 𝟙) i
+\end{code}
+
+What we already knew is this:
+
+\begin{code}
+corollary : Univalence → (Y : 𝓤 ̇) → is-singleton (Σ \(X : 𝓤 ̇ ) → X ≃ Y)
+corollary {𝓤} ua Y = equiv-to-singleton (equiv-classification ua Y) i
+ where
+  i : is-singleton (Y → 𝓢 𝓤)
+  i = univalence-gives-vvfunext' (ua 𝓤) (ua (𝓤 ⁺))
+        (λ y → the-singletons-form-a-singleton
+                (univalence-gives-propext (ua 𝓤))
+                (univalence-gives-dfunext (ua 𝓤)))
+\end{code}
+
+*Exercise*. (1) Show that the sections of `Y` are classified by the type `Σ \(A : 𝓤) → A` of pointed types.
+(2) After we have defined [propositional truncations](HoTT-UF-Agda.html#truncation) and surjections, show that the surjections into `Y` are classified by the type `Σ \(A : 𝓤), ∥ A ∥` of inhabited types.
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="magmaequivalences"></a> Magma equivalences
 
 We now define magma equivalences and show that the type of magma
@@ -6262,8 +6425,7 @@ proposition valued:
     r = ℕ-is-set (x ∔ z') y (transport (λ - → x ∔ - ≡ y) q p) p'
 
   ≤-charac : propext 𝓤₀ → (x y : ℕ) → (x ≤ y) ≡ (x ≼ y)
-  ≤-charac pe x y = pe (x ≤ y) (x ≼ y)
-                       (≤-prop-valued x y) (≼-prop-valued x y)
+  ≤-charac pe x y = pe (≤-prop-valued x y) (≼-prop-valued x y)
                        (≤-gives-≼ x y) (≼-gives-≤ x y)
 \end{code}
 

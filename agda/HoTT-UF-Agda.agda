@@ -1216,6 +1216,11 @@ logically-equivalent-subsingletons-are-equivalent : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ 
                                                   → X ⇔ Y
                                                   → X ≃ Y
 
+singletons-are-equivalent : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+                          → is-singleton X
+                          → is-singleton Y
+                          → X ≃ Y
+
 NatΣ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (φ : Nat A B)
                  → (x : X) (b : B x) → fiber (φ x) b ≃ fiber (NatΣ φ) (x , b)
 
@@ -1368,6 +1373,9 @@ maps-of-singletons-are-equivs {𝓤} {𝓥} {X} {Y} f i j = invertibles-are-equi
 
 logically-equivalent-subsingletons-are-equivalent X Y i j (f , g) =
   invertibility-gives-≃ f (g , (λ x → i (g (f x)) x) , (λ y → j (f (g y)) y))
+
+singletons-are-equivalent X Y i j =
+  invertibility-gives-≃ (λ _ → center Y j) ((λ _ → center X i) , centrality X i , centrality Y j)
 
 NatΣ-fiber-equiv A B φ x b = invertibility-gives-≃ f (g , ε , η)
  where
@@ -1982,10 +1990,10 @@ hlevel-relation-is-a-subsingleton fe (succ n) X =
   GF φ = fe (λ x → gf x (φ x))
 
 propext : ∀ 𝓤  → 𝓤 ⁺ ̇
-propext 𝓤 = (P Q : 𝓤 ̇ ) → is-prop P → is-prop Q → (P → Q) → (Q → P) → P ≡ Q
+propext 𝓤 = {P Q : 𝓤 ̇ } → is-prop P → is-prop Q → (P → Q) → (Q → P) → P ≡ Q
 
 univalence-gives-propext : is-univalent 𝓤 → propext 𝓤
-univalence-gives-propext ua P Q i j f g =
+univalence-gives-propext ua {P} {Q} i j f g =
  Eq-to-Id ua P Q (logically-equivalent-subsingletons-are-equivalent P Q i j (f , g))
 
 ≃-refl-left : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
@@ -2566,6 +2574,81 @@ global-≃-ap' {𝓤} {𝓥} ua F A φ X Y e =
 
 global-≃-ap ua = global-≃-ap' ua id
 
+_↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+X ↪ Y = Σ \(f : X → Y) → is-embedding f
+
+subtypes-of : 𝓤 ̇ → 𝓤 ⁺ ̇
+subtypes-of {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↪ Y
+
+Ω : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Ω 𝓤 = Σ \(P : 𝓤 ̇ ) → is-subsingleton P
+
+_has_fibers : {X Y : 𝓤 ̇ } → (X → Y) → (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+f has blue fibers = ∀ y → blue (fiber f y)
+
+_/[_]_ : (𝓤 : Universe) → (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
+𝓤 /[ blue ] Y = Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → f has blue fibers
+
+module blue-map-classifier
+        (𝓤 𝓥 : Universe)
+        (ua : is-univalent 𝓤)
+        (ua⁺ : is-univalent (𝓤 ⁺))
+        (fe : dfunext 𝓤 (𝓤 ⁺))
+        (Y : 𝓤 ̇ )
+        (blue : 𝓤 ̇ → 𝓥 ̇ )
+       where
+
+ open map-classifier 𝓤 ua fe Y
+
+ χ-is-hae : is-hae χ
+ χ-is-hae = equivs-are-haes ua⁺ χ χ-is-equiv
+
+ Blue : 𝓤 ⁺ ⊔ 𝓥 ̇
+ Blue = Σ blue
+
+ bijection : 𝓤 /[ blue ] Y ≃ (Y → Blue)
+ bijection = ≃-sym (
+  (Y → Blue)                                  ≃⟨ ΠΣ-distr-≃ ⟩
+  (Σ \(A : Y → 𝓤 ̇ ) → (y : Y) → blue (A y))   ≃⟨ Σ-change-of-variables-hae (λ A → Π (blue ∘ A)) χ χ-is-hae ⟩
+  (Σ \(σ : 𝓤 / Y) → (y : Y) → blue (χ σ y))   ≃⟨ Σ-assoc ⟩
+  (𝓤 /[ blue ] Y)                             ■)
+
+Ω-is-subtype-classifier : Univalence → (Y : 𝓤 ̇ ) → subtypes-of Y ≃ (Y → Ω 𝓤)
+Ω-is-subtype-classifier {𝓤} ua Y = blue-map-classifier.bijection
+                                     𝓤 𝓤 (ua 𝓤) (ua (𝓤 ⁺))
+                                     (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
+                                     Y is-subsingleton
+
+𝓢 : (𝓤 : Universe) → 𝓤 ⁺ ̇
+𝓢 𝓤 = Σ \(S : 𝓤 ̇ ) → is-singleton S
+
+equiv-classification : Univalence → (Y : 𝓤 ̇ ) → (Σ \(X : 𝓤 ̇ ) → X ≃ Y) ≃ (Y → 𝓢 𝓤)
+equiv-classification {𝓤} ua Y = blue-map-classifier.bijection 𝓤 𝓤 (ua 𝓤) (ua (𝓤 ⁺))
+                                  (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺))) Y is-singleton
+
+the-singletons-form-a-singleton : propext 𝓤 → dfunext 𝓤 𝓤 → is-singleton (𝓢 𝓤)
+the-singletons-form-a-singleton {𝓤} pe fe = c , φ
+ where
+  i : is-singleton (Lift 𝓤 𝟙)
+  i = equiv-to-singleton (Lift-≃ 𝟙) 𝟙-is-singleton
+  c : 𝓢 𝓤
+  c = Lift 𝓤 𝟙 , i
+  φ : (x : 𝓢 𝓤) → c ≡ x
+  φ (S , s) = to-Σ-≡ (p , being-singleton-is-a-subsingleton fe _ _)
+   where
+    p : Lift 𝓤 𝟙 ≡ S
+    p = pe (singletons-are-subsingletons (Lift 𝓤 𝟙) i) (singletons-are-subsingletons S s)
+           (λ _ → center S s) λ _ → center (Lift 𝓤 𝟙) i
+
+corollary : Univalence → (Y : 𝓤 ̇) → is-singleton (Σ \(X : 𝓤 ̇ ) → X ≃ Y)
+corollary {𝓤} ua Y = equiv-to-singleton (equiv-classification ua Y) i
+ where
+  i : is-singleton (Y → 𝓢 𝓤)
+  i = univalence-gives-vvfunext' (ua 𝓤) (ua (𝓤 ⁺))
+        (λ y → the-singletons-form-a-singleton
+                (univalence-gives-propext (ua 𝓤))
+                (univalence-gives-dfunext (ua 𝓤)))
+
 module magma-equivalences (ua : Univalence) where
 
  dfe : global-dfunext
@@ -2977,8 +3060,7 @@ module ℕ-more where
     r = ℕ-is-set (x ∔ z') y (transport (λ - → x ∔ - ≡ y) q p) p'
 
   ≤-charac : propext 𝓤₀ → (x y : ℕ) → (x ≤ y) ≡ (x ≼ y)
-  ≤-charac pe x y = pe (x ≤ y) (x ≼ y)
-                       (≤-prop-valued x y) (≼-prop-valued x y)
+  ≤-charac pe x y = pe (≤-prop-valued x y) (≼-prop-valued x y)
                        (≤-gives-≼ x y) (≼-gives-≤ x y)
 
 has-section-charac f = ΠΣ-distr-≃
