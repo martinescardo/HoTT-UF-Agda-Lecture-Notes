@@ -1540,7 +1540,7 @@ transport-map-along-≃ : (ua : is-univalent 𝓤) {X Y Z : 𝓤 ̇ } (e : X ≃
                       ≡ g ∘ Eq-to-fun (≃-sym e)
 transport-map-along-≃ {𝓤} ua {X} {Y} {Z} = J-≃ ua A a X Y
  where
-  A : (X Y : 𝓤 ̇) → X ≃ Y → 𝓤 ̇
+  A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓤 ̇
   A X Y e = (g : X → Z) → transport (λ - → - → Z) (Eq-to-Id ua X Y e) g
                         ≡ g ∘ Eq-to-fun (≃-sym e)
   a : (X : 𝓤 ̇ ) → A X X (≃-refl X)
@@ -1565,10 +1565,15 @@ haes-are-invertible f (g , η , ε , τ) = g , η , ε
 id-is-hae : (X : 𝓤 ̇ ) → is-hae (𝑖𝑑 X)
 id-is-hae X = 𝑖𝑑 X , refl , refl , (λ x → refl (refl x))
 
+equivs-are-haes : is-univalent 𝓤
+                → {X Y : 𝓤 ̇ } (f : X → Y)
+                → is-equiv f → is-hae f
+equivs-are-haes ua {X} {Y} = J-equiv ua (λ X Y f → is-hae f) id-is-hae X Y
+
 invertibles-are-haes : is-univalent 𝓤
-                     → (X Y : 𝓤 ̇ ) (f : X → Y)
+                     → {X Y : 𝓤 ̇ } (f : X → Y)
                      → invertible f → is-hae f
-invertibles-are-haes ua = J-invertible ua (λ X Y f → is-hae f) id-is-hae
+invertibles-are-haes ua f i = equivs-are-haes ua f (invertibles-are-equivs f i)
 
 Σ-change-of-variables-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
                           → is-hae f → Σ A ≃ Σ (A ∘ f)
@@ -1783,7 +1788,7 @@ module map-classifier
         (𝓤 : Universe)
         (ua : is-univalent 𝓤)
         (fe : dfunext 𝓤 (𝓤 ⁺))
-        (Y : 𝓤 ̇)
+        (Y : 𝓤 ̇ )
        where
 
  χ : 𝓤 / Y  → (Y → 𝓤 ̇ )
@@ -1801,7 +1806,6 @@ module map-classifier
    p = Eq-to-Id ua (Σ (fiber f)) X e
    observation : Eq-to-fun (≃-sym e) ≡ (λ x → f x , x , refl (f x))
    observation = refl _
-   q : transport (λ - → - → Y) p pr₁ ≡ f
    q = transport (λ - → - → Y) p pr₁ ≡⟨ transport-map-along-≃ ua e pr₁ ⟩
        pr₁ ∘ Eq-to-fun (≃-sym e)     ≡⟨ refl _ ⟩
        f                             ∎
@@ -1825,7 +1829,7 @@ module map-classifier
  χ-is-equiv : is-equiv χ
  χ-is-equiv = invertibles-are-equivs χ (T , χη , χε)
 
- canonical-bijection : 𝓤 / Y ≃ (Y → 𝓤 ̇)
+ canonical-bijection : 𝓤 / Y ≃ (Y → 𝓤 ̇ )
  canonical-bijection = χ , χ-is-equiv
 
 Π-is-subsingleton : dfunext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
@@ -2467,10 +2471,10 @@ J↑-invertible ua A φ X Y f i = J↑-equiv ua A φ X Y f (invertibles-are-equi
 lift-is-hae : (X : 𝓤 ̇ ) → is-hae {𝓤} {𝓤 ⊔ 𝓥} {X} {Lift 𝓥 X} (lift {𝓤} {𝓥})
 lift-is-hae {𝓤} {𝓥} X = lower , lower-lift {𝓤} {𝓥} , lift-lower , λ x → refl (refl (lift x))
 
-invertibles-are-haes↑ : is-univalent (𝓤 ⊔ 𝓥)
-                      → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y)
-                      → invertible f → is-hae f
-invertibles-are-haes↑ {𝓤} {𝓥} ua = J↑-invertible {𝓤} {𝓥} ua (λ X Y f → is-hae f) lift-is-hae
+equivs-are-haes↑ : is-univalent (𝓤 ⊔ 𝓥)
+                 → {X : 𝓤 ̇ } {Y : 𝓤 ⊔ 𝓥 ̇ } (f : X → Y)
+                 → is-equiv f → is-hae f
+equivs-are-haes↑ {𝓤} {𝓥} ua {X} {Y} = J↑-equiv {𝓤} {𝓥} ua (λ X Y f → is-hae f) lift-is-hae X Y
 
 H↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
      → (Y : 𝓤 ̇ ) (A : (X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
@@ -2519,15 +2523,14 @@ J↓-invertible ua A φ X Y f i = J↓-equiv ua A φ X Y f (invertibles-are-equi
 lower-is-hae : (X : 𝓤 ̇ ) → is-hae (lower {𝓤} {𝓥} {X})
 lower-is-hae {𝓤} {𝓥} X = lift , lift-lower , lower-lift {𝓤} {𝓥} , (λ x → refl (refl (lower x)))
 
-invertibles-are-haes↓ : is-univalent (𝓤 ⊔ 𝓥)
-                      → (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) (f : X → Y)
-                      → invertible f → is-hae f
-invertibles-are-haes↓ {𝓤} {𝓥} ua = J↓-invertible {𝓤} {𝓥} ua (λ X Y f → is-hae f) lower-is-hae
+equivs-are-haes↓ : is-univalent (𝓤 ⊔ 𝓥)
+                 → {X : 𝓤 ⊔ 𝓥 ̇ } {Y : 𝓤 ̇ } (f : X → Y)
+                 → is-equiv f → is-hae f
+equivs-are-haes↓ {𝓤} {𝓥} ua {X} {Y} = J↓-equiv {𝓤} {𝓥} ua (λ X Y f → is-hae f) lower-is-hae X Y
 
 Id-to-Eq-is-hae : is-univalent 𝓤 → is-univalent (𝓤 ⁺)
-                → (X Y : 𝓤 ̇ ) → is-hae (Id-to-Eq X Y)
-Id-to-Eq-is-hae ua ua⁺ X Y = invertibles-are-haes↓ ua⁺ (X ≡ Y) (X ≃ Y) (Id-to-Eq X Y)
-                               (equivs-are-invertible (Id-to-Eq X Y) (ua X Y))
+                → {X Y : 𝓤 ̇ } → is-hae (Id-to-Eq X Y)
+Id-to-Eq-is-hae ua ua⁺ {X} {Y} = equivs-are-haes↓ ua⁺ (Id-to-Eq X Y) (ua X Y)
 
 global-property-of-types : 𝓤ω
 global-property-of-types = {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
@@ -2702,7 +2705,7 @@ module magma-equivalences (ua : Univalence) where
    c = ≃-sym (Σ-change-of-variables-hae
                 (λ e → is-magma-hom M N (Eq-to-fun e))
                 (Id-to-Eq ⟨ M ⟩ ⟨ N ⟩)
-                (Id-to-Eq-is-hae (ua 𝓤) (ua (𝓤 ⁺)) ⟨ M ⟩ ⟨ N ⟩))
+                (Id-to-Eq-is-hae (ua 𝓤) (ua (𝓤 ⁺))))
 
  magma-identity-is-isomorphism : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≅ₘ N)
  magma-identity-is-isomorphism M N =

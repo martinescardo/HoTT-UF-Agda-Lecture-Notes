@@ -3986,7 +3986,7 @@ transport-map-along-≃ : (ua : is-univalent 𝓤) {X Y Z : 𝓤 ̇ } (e : X ≃
                       ≡ g ∘ Eq-to-fun (≃-sym e)
 transport-map-along-≃ {𝓤} ua {X} {Y} {Z} = J-≃ ua A a X Y
  where
-  A : (X Y : 𝓤 ̇) → X ≃ Y → 𝓤 ̇
+  A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓤 ̇
   A X Y e = (g : X → Z) → transport (λ - → - → Z) (Eq-to-Id ua X Y e) g
                         ≡ g ∘ Eq-to-fun (≃-sym e)
   a : (X : 𝓤 ̇ ) → A X X (≃-refl X)
@@ -4048,10 +4048,15 @@ enough to give the constraint for identity maps:
 id-is-hae : (X : 𝓤 ̇ ) → is-hae (𝑖𝑑 X)
 id-is-hae X = 𝑖𝑑 X , refl , refl , (λ x → refl (refl x))
 
+equivs-are-haes : is-univalent 𝓤
+                → {X Y : 𝓤 ̇ } (f : X → Y)
+                → is-equiv f → is-hae f
+equivs-are-haes ua {X} {Y} = J-equiv ua (λ X Y f → is-hae f) id-is-hae X Y
+
 invertibles-are-haes : is-univalent 𝓤
-                     → (X Y : 𝓤 ̇ ) (f : X → Y)
+                     → {X Y : 𝓤 ̇ } (f : X → Y)
                      → invertible f → is-hae f
-invertibles-are-haes ua = J-invertible ua (λ X Y f → is-hae f) id-is-hae
+invertibles-are-haes ua f i = equivs-are-haes ua f (invertibles-are-equivs f i)
 \end{code}
 
 The above can be proved without univalence, as is done in the HoTT
@@ -4380,7 +4385,7 @@ module map-classifier
         (𝓤 : Universe)
         (ua : is-univalent 𝓤)
         (fe : dfunext 𝓤 (𝓤 ⁺))
-        (Y : 𝓤 ̇)
+        (Y : 𝓤 ̇ )
        where
 
  χ : 𝓤 / Y  → (Y → 𝓤 ̇ )
@@ -4421,7 +4426,7 @@ module map-classifier
  χ-is-equiv : is-equiv χ
  χ-is-equiv = invertibles-are-equivs χ (T , χη , χε)
 
- canonical-bijection : 𝓤 / Y ≃ (Y → 𝓤 ̇)
+ canonical-bijection : 𝓤 / Y ≃ (Y → 𝓤 ̇ )
  canonical-bijection = χ , χ-is-equiv
 \end{code}
 
@@ -5390,10 +5395,10 @@ Hence all invertible maps going up universe levels are half adjoint
 equivalences:
 
 \begin{code}
-invertibles-are-haes↑ : is-univalent (𝓤 ⊔ 𝓥)
-                      → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y)
-                      → invertible f → is-hae f
-invertibles-are-haes↑ {𝓤} {𝓥} ua = J↑-invertible {𝓤} {𝓥} ua (λ X Y f → is-hae f) lift-is-hae
+equivs-are-haes↑ : is-univalent (𝓤 ⊔ 𝓥)
+                 → {X : 𝓤 ̇ } {Y : 𝓤 ⊔ 𝓥 ̇ } (f : X → Y)
+                 → is-equiv f → is-hae f
+equivs-are-haes↑ {𝓤} {𝓥} ua {X} {Y} = J↑-equiv {𝓤} {𝓥} ua (λ X Y f → is-hae f) lift-is-hae X Y
 \end{code}
 
 We have a similar development with the universes going down, where we
@@ -5460,10 +5465,10 @@ And we have similar examples:
 lower-is-hae : (X : 𝓤 ̇ ) → is-hae (lower {𝓤} {𝓥} {X})
 lower-is-hae {𝓤} {𝓥} X = lift , lift-lower , lower-lift {𝓤} {𝓥} , (λ x → refl (refl (lower x)))
 
-invertibles-are-haes↓ : is-univalent (𝓤 ⊔ 𝓥)
-                      → (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) (f : X → Y)
-                      → invertible f → is-hae f
-invertibles-are-haes↓ {𝓤} {𝓥} ua = J↓-invertible {𝓤} {𝓥} ua (λ X Y f → is-hae f) lower-is-hae
+equivs-are-haes↓ : is-univalent (𝓤 ⊔ 𝓥)
+                 → {X : 𝓤 ⊔ 𝓥 ̇ } {Y : 𝓤 ̇ } (f : X → Y)
+                 → is-equiv f → is-hae f
+equivs-are-haes↓ {𝓤} {𝓥} ua {X} {Y} = J↓-equiv {𝓤} {𝓥} ua (λ X Y f → is-hae f) lower-is-hae X Y
 \end{code}
 
 A crucial example of an equivalence "going down one universe" is
@@ -5475,9 +5480,8 @@ conclude that it is a half adjoint equivalence:
 
 \begin{code}
 Id-to-Eq-is-hae : is-univalent 𝓤 → is-univalent (𝓤 ⁺)
-                → (X Y : 𝓤 ̇ ) → is-hae (Id-to-Eq X Y)
-Id-to-Eq-is-hae ua ua⁺ X Y = invertibles-are-haes↓ ua⁺ (X ≡ Y) (X ≃ Y) (Id-to-Eq X Y)
-                               (equivs-are-invertible (Id-to-Eq X Y) (ua X Y))
+                → {X Y : 𝓤 ̇ } → is-hae (Id-to-Eq X Y)
+Id-to-Eq-is-hae ua ua⁺ {X} {Y} = equivs-are-haes↓ ua⁺ (Id-to-Eq X Y) (ua X Y)
 \end{code}
 
 We apply the fact that `Id-to-Eq X Y` is a half adjoint equivalence to
@@ -5743,7 +5747,7 @@ Magma identity is equivalent to magma equivalence, and hence to magma isomorphis
    c = ≃-sym (Σ-change-of-variables-hae
                 (λ e → is-magma-hom M N (Eq-to-fun e))
                 (Id-to-Eq ⟨ M ⟩ ⟨ N ⟩)
-                (Id-to-Eq-is-hae (ua 𝓤) (ua (𝓤 ⁺)) ⟨ M ⟩ ⟨ N ⟩))
+                (Id-to-Eq-is-hae (ua 𝓤) (ua (𝓤 ⁺))))
 
  magma-identity-is-isomorphism : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≅ₘ N)
  magma-identity-is-isomorphism M N =
