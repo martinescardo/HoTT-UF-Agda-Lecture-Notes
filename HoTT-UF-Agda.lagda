@@ -2518,7 +2518,7 @@ Voevodsky](HoTT-UF-Agda.html#fibersandequivalences).
 Once we have defined this notion `_≃_` of type equivalence, this
 characterization will become an equivalence
 
-   > `(σ ≡ τ) ≃ Σ \(p : pr₁ σ ≡ pr₁ τ) → pr₂ σ ≡[ p / A ] pr₂ τ`.
+   > `(σ ≡ τ) ≃ Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p pr₂ σ ≡ pr₂ τ`.
 
 But even this is not sufficiently precise, because in general there are
 many equivalences between two types. For example, there are precisely
