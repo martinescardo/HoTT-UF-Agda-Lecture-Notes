@@ -1570,6 +1570,10 @@ haes-are-invertible : {X Y : 𝓤 ̇ } (f : X → Y)
                     → is-hae f → invertible f
 haes-are-invertible f (g , η , ε , τ) = g , η , ε
 
+haes-are-equivs : {X Y : 𝓤 ̇ } (f : X → Y)
+                → is-hae f → is-equiv f
+haes-are-equivs f i = invertibles-are-equivs f (haes-are-invertible f i)
+
 id-is-hae : (X : 𝓤 ̇ ) → is-hae (𝑖𝑑 X)
 id-is-hae X = 𝑖𝑑 X , refl , refl , (λ x → refl (refl x))
 
@@ -2008,8 +2012,7 @@ pre-comp-invertible fe fe' {X} {Y} {Z} f (g , η , ε) = (g' , η' , ε')
   ε' k = fe' (λ x → ap k (η x))
 
 retraction-has-at-most-one-section : dfunext 𝓥 𝓤 → hfunext 𝓥 𝓥
-                                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                                   → (f : X → Y)
+                                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                    → has-retraction f
                                    → is-subsingleton (has-section f)
 retraction-has-at-most-one-section {𝓥} {𝓤} fe hfe {X} {Y} f (g , gf) (h , fh) = d
@@ -2035,8 +2038,9 @@ retraction-has-at-most-one-section {𝓥} {𝓤} fe hfe {X} {Y} f (g , gf) (h , 
   d = singletons-are-subsingletons (has-section f) c (h , fh)
 
 section-has-at-most-one-retraction : hfunext 𝓤 𝓤 → dfunext 𝓥 𝓤
-                                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                                   → (f : X → Y) → has-section f → is-subsingleton (has-retraction f)
+                                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                   → has-section f
+                                   → is-subsingleton (has-retraction f)
 section-has-at-most-one-retraction {𝓤} {𝓥} hfe fe' {X} {Y} f (g , fg) (h , hf) = d
  where
   fe : dfunext 𝓤 𝓤
@@ -2716,7 +2720,7 @@ the-singletons-form-a-singleton {𝓤} pe fe = c , φ
     p = pe (singletons-are-subsingletons (Lift 𝓤 𝟙) i) (singletons-are-subsingletons S s)
            (λ _ → center S s) (λ _ → center (Lift 𝓤 𝟙) i)
 
-corollary : Univalence → (Y : 𝓤 ̇) → is-singleton (Σ \(X : 𝓤 ̇ ) → X ≃ Y)
+corollary : Univalence → (Y : 𝓤 ̇ ) → is-singleton (Σ \(X : 𝓤 ̇ ) → X ≃ Y)
 corollary {𝓤} ua Y = equiv-to-singleton (equiv-classification ua Y) i
  where
   i : is-singleton (Y → 𝓢 𝓤)

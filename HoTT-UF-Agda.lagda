@@ -359,7 +359,7 @@ to practice univalent mathematics should consult the above references.
      1. [Universes are map classifiers](HoTT-UF-Agda.html#typeclassifier)
      1. [The univalence axiom is a (sub)singleton type](HoTT-UF-Agda.html#univalencesubsingleton)
      1. [`hfunext` and `vvfunext` are subsingletons](HoTT-UF-Agda.html#hfunextsubsingleton)
-     1. [More applications of function extensionality](HoTT-UF-Agda.html#morefunextuses)
+     1. [More consequences of function extensionality](HoTT-UF-Agda.html#morefunextuses)
      1. [Propositional extensionality](HoTT-UF-Agda.html#propositionalextensionality)
      1. [Some constructions with types of equivalences](HoTT-UF-Agda.html#equivconstructions)
      1. [Type embeddings](HoTT-UF-Agda.html#embeddings)
@@ -4582,7 +4582,7 @@ versions with the arguments explicit, and establish an equivalence
 between the new version and the original version.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="morefunextuses"></a> More applications of function extensionality
+### <a id="morefunextuses"></a> More consequences of function extensionality
 
 \begin{code}
 being-subsingleton-is-a-subsingleton : {X : 𝓤 ̇ } → dfunext 𝓤 𝓤
@@ -4709,8 +4709,7 @@ at most one retraction.
 
 \begin{code}
 retraction-has-at-most-one-section : dfunext 𝓥 𝓤 → hfunext 𝓥 𝓥
-                                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                                   → (f : X → Y)
+                                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                    → has-retraction f
                                    → is-subsingleton (has-section f)
 retraction-has-at-most-one-section {𝓥} {𝓤} fe hfe {X} {Y} f (g , gf) (h , fh) = d
@@ -4736,8 +4735,9 @@ retraction-has-at-most-one-section {𝓥} {𝓤} fe hfe {X} {Y} f (g , gf) (h , 
   d = singletons-are-subsingletons (has-section f) c (h , fh)
 
 section-has-at-most-one-retraction : hfunext 𝓤 𝓤 → dfunext 𝓥 𝓤
-                                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                                   → (f : X → Y) → has-section f → is-subsingleton (has-retraction f)
+                                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                   → has-section f
+                                   → is-subsingleton (has-retraction f)
 section-has-at-most-one-retraction {𝓤} {𝓥} hfe fe' {X} {Y} f (g , fg) (h , hf) = d
  where
   fe : dfunext 𝓤 𝓤
