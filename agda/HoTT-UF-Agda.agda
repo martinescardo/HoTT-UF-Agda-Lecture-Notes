@@ -1682,10 +1682,10 @@ dfunext-gives-vvfunext fe {X} {A} i = f , c
   c : (g : Π A) → f ≡ g
   c g = fe (λ (x : X) → centrality (A x) (i x) (g x))
 
-post-comp-is-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
-                        → funext 𝓦 𝓤 → funext 𝓦 𝓥
-                        → (f : X → Y) → invertible f → invertible (λ (h : A → X) → f ∘ h)
-post-comp-is-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η' , ε')
+post-comp-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
+                     → funext 𝓦 𝓤 → funext 𝓦 𝓥
+                     → (f : X → Y) → invertible f → invertible (λ (h : A → X) → f ∘ h)
+post-comp-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η' , ε')
  where
   f' : (A → X) → (A → Y)
   f' h = f ∘ h
@@ -1701,7 +1701,7 @@ post-comp-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } → funext �
 post-comp-is-equiv fe fe' f e =
  invertibles-are-equivs
   (λ h → f ∘ h)
-  (post-comp-is-invertible fe fe' f (equivs-are-invertible f e))
+  (post-comp-invertible fe fe' f (equivs-are-invertible f e))
 
 vvfunext-gives-hfunext : vvfunext 𝓤 𝓥 → hfunext 𝓤 𝓥
 vvfunext-gives-hfunext vfe {X} {Y} f = γ
@@ -1746,6 +1746,7 @@ funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
   γ = retract-of-singleton (r , s , rs) i
 
 funext-gives-hfunext       : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → hfunext 𝓤 𝓥
+dfunext-gives-hfunext      : dfunext 𝓤 𝓥 → hfunext 𝓤 𝓥
 funext-gives-dfunext       : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → dfunext 𝓤 𝓥
 univalence-gives-dfunext'  : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
 univalence-gives-hfunext'  : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → hfunext 𝓤 𝓥
@@ -1757,6 +1758,8 @@ univalence-gives-vvfunext  : is-univalent 𝓤 → vvfunext 𝓤 𝓤
 funext-gives-hfunext fe fe' = vvfunext-gives-hfunext (funext-gives-vvfunext fe fe')
 
 funext-gives-dfunext fe fe' = hfunext-gives-dfunext (funext-gives-hfunext fe fe')
+
+dfunext-gives-hfunext fe = vvfunext-gives-hfunext (dfunext-gives-vvfunext fe)
 
 univalence-gives-dfunext' ua ua' = funext-gives-dfunext
                                     (univalence-gives-funext ua')
@@ -1988,6 +1991,81 @@ hlevel-relation-is-a-subsingleton fe (succ n) X =
   FG γ = fe' (λ x → fg x (γ x))
   GF : (φ : ((x : X) → Y x)) → G(F φ) ≡ φ
   GF φ = fe (λ x → gf x (φ x))
+
+pre-comp-invertible : dfunext 𝓥 𝓦 → dfunext 𝓤 𝓦
+                    → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y)
+                    → invertible f
+                    → invertible (λ (h : Y → Z) → h ∘ f)
+pre-comp-invertible fe fe' {X} {Y} {Z} f (g , η , ε) = (g' , η' , ε')
+ where
+  f' : (Y → Z) → (X → Z)
+  f' h = h ∘ f
+  g' : (X → Z) → (Y → Z)
+  g' k = k ∘ g
+  η' : (h : Y → Z) → g' (f' h) ≡ h
+  η' h = fe (λ y → ap h (ε y))
+  ε' : (k : X → Z) → f' (g' k) ≡ k
+  ε' k = fe' (λ x → ap k (η x))
+
+retraction-has-at-most-one-section : dfunext 𝓥 𝓤 → hfunext 𝓥 𝓥
+                                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                   → (f : X → Y)
+                                   → has-retraction f
+                                   → is-subsingleton (has-section f)
+retraction-has-at-most-one-section {𝓥} {𝓤} fe hfe {X} {Y} f (g , gf) (h , fh) = d
+ where
+  fe' : dfunext 𝓥 𝓥
+  fe' = hfunext-gives-dfunext hfe
+  a : invertible f
+  a = joyal-equivs-are-invertible f (((h , fh) , g , gf))
+  b : is-singleton (fiber (λ h →  f ∘ h) id)
+  b = invertibles-are-equivs (λ h → f ∘ h) (post-comp-invertible fe fe' f a) id
+  r : fiber (λ h →  f ∘ h) id → has-section f
+  r (h , p) = (h , happly (f ∘ h) id p)
+  s : has-section f → fiber (λ h → f ∘ h) id
+  s (h , η) = (h , fe' η)
+  rs : (σ : has-section f) → r (s σ) ≡ σ
+  rs (h , η) = ap (λ - → (h , -)) q
+   where
+    q : happly (f ∘ h) id (inverse (happly (f ∘ h) id) (hfe (f ∘ h) id) η) ≡ η
+    q = inverse-is-section (happly (f ∘ h) id) (hfe (f ∘ h) id) η
+  c : is-singleton (has-section f)
+  c = retract-of-singleton (r , s , rs) b
+  d : (σ : has-section f) → h , fh ≡ σ
+  d = singletons-are-subsingletons (has-section f) c (h , fh)
+
+section-has-at-most-one-retraction : hfunext 𝓤 𝓤 → dfunext 𝓥 𝓤
+                                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                   → (f : X → Y) → has-section f → is-subsingleton (has-retraction f)
+section-has-at-most-one-retraction {𝓤} {𝓥} hfe fe' {X} {Y} f (g , fg) (h , hf) = d
+ where
+  fe : dfunext 𝓤 𝓤
+  fe = hfunext-gives-dfunext hfe
+  a : invertible f
+  a = joyal-equivs-are-invertible f ((g , fg) , (h , hf))
+  b : is-singleton (fiber (λ h →  h ∘ f) id)
+  b = invertibles-are-equivs (λ h → h ∘ f) (pre-comp-invertible fe' fe f a) id
+  r : fiber (λ h →  h ∘ f) id → has-retraction f
+  r (h , p) = (h , happly (h ∘ f) id p)
+  s : has-retraction f → fiber (λ h →  h ∘ f) id
+  s (h , η) = (h , fe η)
+  rs : (σ : has-retraction f) → r (s σ) ≡ σ
+  rs (h , η) = ap (λ - → (h , -)) q
+   where
+    q : happly (h ∘ f) id (inverse (happly (h ∘ f) id) (hfe (h ∘ f) id) η) ≡ η
+    q = inverse-is-section (happly (h ∘ f) id) (hfe (h ∘ f) id) η
+  c : is-singleton (has-retraction f)
+  c = retract-of-singleton (r , s , rs) b
+  d : (ρ : has-retraction f) → h , hf ≡ ρ
+  d = singletons-are-subsingletons (has-retraction f) c (h , hf)
+
+being-joyal-equiv-is-a-subsingleton : hfunext 𝓤 𝓤 → hfunext 𝓥 𝓥 → dfunext 𝓥 𝓤
+                                    → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                    → (f : X → Y) → is-subsingleton (is-joyal-equiv f)
+
+being-joyal-equiv-is-a-subsingleton fe₀ fe₁ fe₂ f = ×-is-subsingleton'
+                                                      (retraction-has-at-most-one-section fe₂ fe₁ f ,
+                                                       section-has-at-most-one-retraction fe₀ fe₂ f)
 
 propext : ∀ 𝓤  → 𝓤 ⁺ ̇
 propext 𝓤 = {P Q : 𝓤 ̇ } → is-prop P → is-prop Q → (P → Q) → (Q → P) → P ≡ Q
