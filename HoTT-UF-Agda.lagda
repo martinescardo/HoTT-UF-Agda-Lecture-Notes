@@ -4054,6 +4054,10 @@ The following just forgets the constraint `τ`:
 haes-are-invertible : {X Y : 𝓤 ̇ } (f : X → Y)
                     → is-hae f → invertible f
 haes-are-invertible f (g , η , ε , τ) = g , η , ε
+
+haes-are-equivs : {X Y : 𝓤 ̇ } (f : X → Y)
+                → is-hae f → is-equiv f
+haes-are-equivs f i = invertibles-are-equivs f (haes-are-invertible f i)
 \end{code}
 
 To recover the constraint for all invertible maps, under univalence, it is
@@ -5812,7 +5816,7 @@ the-singletons-form-a-singleton {𝓤} pe fe = c , φ
 What we already knew is this:
 
 \begin{code}
-corollary : Univalence → (Y : 𝓤 ̇) → is-singleton (Σ \(X : 𝓤 ̇ ) → X ≃ Y)
+corollary : Univalence → (Y : 𝓤 ̇ ) → is-singleton (Σ \(X : 𝓤 ̇ ) → X ≃ Y)
 corollary {𝓤} ua Y = equiv-to-singleton (equiv-classification ua Y) i
  where
   i : is-singleton (Y → 𝓢 𝓤)
