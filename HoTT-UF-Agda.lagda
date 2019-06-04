@@ -6651,10 +6651,10 @@ lifttwo ua₀ ua₁ = Eq-to-Id ua₁ (𝟚 ≡ 𝟚) (Lift 𝓤₁ 𝟚) e
 the-subsingletons-are-the-subtypes-of-𝟙' : (X : 𝓤 ̇ ) → is-subsingleton X ⇔ (X ↪ 𝟙)
 the-subsingletons-are-the-subtypes-of-𝟙' X = φ , ψ
  where
-  j : is-subsingleton X → is-embedding (!𝟙' X)
-  j s ⋆ (x , refl ⋆) (y , refl ⋆) = ap (λ - → - , refl ⋆) (s x y)
+  i : is-subsingleton X → is-embedding (!𝟙' X)
+  i s ⋆ (x , refl ⋆) (y , refl ⋆) = ap (λ - → - , refl ⋆) (s x y)
   φ : is-subsingleton X → X ↪ 𝟙
-  φ s = !𝟙 , j s
+  φ s = !𝟙 , i s
   ψ : X ↪ 𝟙 → is-subsingleton X
   ψ (f , e) x y = d
    where
@@ -6673,11 +6673,11 @@ the-subsingletons-are-the-subtypes-of-𝟙 pe fe X = γ
  where
   a : is-subsingleton X ⇔ (X ↪ 𝟙)
   a = the-subsingletons-are-the-subtypes-of-𝟙' X
-  i : is-subsingleton (X ↪ 𝟙)
-  i (f , e) (f' , e') = to-Σ-≡ (fe (λ x → 𝟙-is-subsingleton (f x) (f' x)) ,
+  b : is-subsingleton (X ↪ 𝟙)
+  b (f , e) (f' , e') = to-Σ-≡ (fe (λ x → 𝟙-is-subsingleton (f x) (f' x)) ,
                                 being-embedding-is-a-subsingleton fe f' _ e')
   γ : is-subsingleton X ≡ (X ↪ 𝟙)
-  γ = pe (being-subsingleton-is-a-subsingleton fe) i (pr₁ a) (pr₂ a)
+  γ = pe (being-subsingleton-is-a-subsingleton fe) b (pr₁ a) (pr₂ a)
 
 neg-is-subsingleton fe X f g = fe (λ x → !𝟘 (f x ≡ g x) (f x))
 
