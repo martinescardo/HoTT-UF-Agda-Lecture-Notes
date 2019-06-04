@@ -1886,7 +1886,7 @@ Notice that the proofs `refl _` should be read as "by definition" or
 definitions and silently expands them when necessary, but we are
 writing them here for the sake of clarity. Elsewhere in these notes,
 we do occasionally rely on silent expansions of definitions. Here is
-the version with the silent expansion of definitional equalities, for the sake of
+the version with the silent expansion of definitions, for the sake of
 illustration (the author of these notes can write, but not read it):
 
 \begin{code}
