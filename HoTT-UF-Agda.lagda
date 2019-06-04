@@ -1141,7 +1141,7 @@ We have the following uses of `Σ`.
     statement "`A` and `B`" is codified as `A × B`. This is because to prove
     "`A` and `B`", we have to provide a pair `(a , b)` of proofs `a : A` and `b : B`.
 
-    So notice that in type theory, proofs are mathematical objects,
+    So notice that in type theory proofs are mathematical objects,
     rather than meta-mathematical entities like in set theory. They are
     just elements of types.
 
