@@ -383,6 +383,10 @@ module BasicArithmetic where
     IH : (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
     IH = +-assoc x y z
 
+  +-assoc' : (x y z : ℕ) → (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
+  +-assoc' x y zero     = refl _
+  +-assoc' x y (succ z) = ap succ (+-assoc' x y z)
+
   +-base-on-first : (x : ℕ) → 0 ∔ x ≡ x
   +-base-on-first 0        = refl 0
   +-base-on-first (succ x) = 0 ∔ succ x   ≡⟨ refl _ ⟩
@@ -2207,6 +2211,9 @@ embedding-criterion-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 embedding-criterion-converse f e x' x = ≃-sym (ap f {x'} {x} ,
                                                embedding-gives-ap-is-equiv f e x' x)
 
+_↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+X ↪ Y = Σ \(f : X → Y) → is-embedding f
+
 𝓨 : {X : 𝓤 ̇ } → X → (X → 𝓤 ̇ )
 𝓨 {𝓤} {X} = Id X
 
@@ -2656,11 +2663,8 @@ global-≃-ap' {𝓤} {𝓥} ua F A φ X Y e =
 
 global-≃-ap ua = global-≃-ap' ua id
 
-_↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-X ↪ Y = Σ \(f : X → Y) → is-embedding f
-
-subtypes-of : 𝓤 ̇ → 𝓤 ⁺ ̇
-subtypes-of {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↪ Y
+subtype-of : 𝓤 ̇ → 𝓤 ⁺ ̇
+subtype-of {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↪ Y
 
 Ω : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Ω 𝓤 = Σ \(P : 𝓤 ̇ ) → is-subsingleton P
@@ -2695,7 +2699,7 @@ module blue-map-classifier
   (Σ \(σ : 𝓤 / Y) → (y : Y) → blue (χ σ y))   ≃⟨ Σ-assoc ⟩
   (𝓤 /[ blue ] Y)                             ■)
 
-Ω-is-subtype-classifier : Univalence → (Y : 𝓤 ̇ ) → subtypes-of Y ≃ (Y → Ω 𝓤)
+Ω-is-subtype-classifier : Univalence → (Y : 𝓤 ̇ ) → subtype-of Y ≃ (Y → Ω 𝓤)
 Ω-is-subtype-classifier {𝓤} ua Y = blue-map-classifier.bijection 𝓤 𝓤 (ua 𝓤) (ua (𝓤 ⁺))
                                      (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺))) Y is-subsingleton
 
@@ -3226,6 +3230,37 @@ lifttwo ua₀ ua₁ = Eq-to-Id ua₁ (𝟚 ≡ 𝟚) (Lift 𝓤₁ 𝟚) e
       (𝟚 ≃ 𝟚)   ≃⟨ 𝟚-has-𝟚-automorphisms (univalence-gives-dfunext ua₀) ⟩
       𝟚         ≃⟨ ≃-sym (Lift-≃ 𝟚) ⟩
       Lift 𝓤₁ 𝟚 ■
+
+the-subsingletons-are-the-subtypes-of-𝟙' : (X : 𝓤 ̇ ) → is-subsingleton X ⇔ (X ↪ 𝟙)
+the-subsingletons-are-the-subtypes-of-𝟙' X = φ , ψ
+ where
+  j : is-subsingleton X → is-embedding (!𝟙' X)
+  j s ⋆ (x , refl ⋆) (y , refl ⋆) = ap (λ - → - , refl ⋆) (s x y)
+  φ : is-subsingleton X → X ↪ 𝟙
+  φ s = !𝟙 , j s
+  ψ : X ↪ 𝟙 → is-subsingleton X
+  ψ (f , e) x y = d
+   where
+    a : x ≡ y → f x ≡ f y
+    a = ap f {x} {y}
+    b : is-equiv a
+    b = embedding-gives-ap-is-equiv f e x y
+    c : f x ≡ f y
+    c = 𝟙-is-subsingleton (f x) (f y)
+    d : x ≡ y
+    d = inverse a b c
+
+the-subsingletons-are-the-subtypes-of-𝟙 : propext 𝓤 → global-dfunext
+                                        → (X : 𝓤 ̇ ) → is-subsingleton X ≡ (X ↪ 𝟙)
+the-subsingletons-are-the-subtypes-of-𝟙 pe fe X = γ
+ where
+  a : is-subsingleton X ⇔ (X ↪ 𝟙)
+  a = the-subsingletons-are-the-subtypes-of-𝟙' X
+  i : is-subsingleton (X ↪ 𝟙)
+  i (f , e) (f' , e') = to-Σ-≡ (fe (λ x → 𝟙-is-subsingleton (f x) (f' x)) ,
+                                being-embedding-is-a-subsingleton fe f' _ e')
+  γ : is-subsingleton X ≡ (X ↪ 𝟙)
+  γ = pe (being-subsingleton-is-a-subsingleton fe) i (pr₁ a) (pr₂ a)
 
 neg-is-subsingleton fe X f g = fe (λ x → !𝟘 (f x ≡ g x) (f x))
 

@@ -1887,7 +1887,8 @@ definitions and silently expands them when necessary, but we are
 writing them here for the sake of clarity. Elsewhere in these notes,
 we do occasionally rely on silent expansions of definitions. Here is
 the version with the silent expansion of definitions, for the sake of
-illustration (the author of these notes can write, but not read it):
+illustration (the author of these notes can write, but not read it the
+absence of the above verbose version):
 
 \begin{code}
   +-assoc' : (x y z : ℕ) → (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
@@ -2026,7 +2027,7 @@ Agda](https://homotopytypetheory.org/2018/12/06/cubical-agda/).
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="subsingletonsandsets"></a> Subsingletons (or propositions or truth values) and sets
 
-A type is a subsingleton (or a proposition or a truth value) if it has
+A type is a subsingleton (or a truth value or a proposition) if it has
 at most one element, that is, any two of its elements are equal, or identified.
 
 \begin{code}
@@ -4991,6 +4992,19 @@ converse fails in general.
 
 *Exercise.* Left cancellable maps into *sets* are always embeddings.
 
+The type of embeddings is defined as follows:
+
+\begin{code}
+_↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+X ↪ Y = Σ \(f : X → Y) → is-embedding f
+\end{code}
+
+*Exercise.* Show that the subsingletons are the subtypes of `𝟙`, in
+the sense that `is-subsingleton X ⇔ (X ↪ 𝟙)`. Assuming propositional
+and functional extensionality, conclude that
+`is-subsingleton X ≡ (X ↪ 𝟙)`
+
+
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="yoneda"></a> The Yoneda Lemma for types
 
@@ -5694,18 +5708,11 @@ global-≃-ap ua = global-≃-ap' ua id
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="subtypeclassifier"></a> The subtype classifier and other classifiers
 
-We first define the type of embeddings of a type `X` into a type `Y`:
-
-\begin{code}
-_↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-X ↪ Y = Σ \(f : X → Y) → is-embedding f
-\end{code}
-
 A subtype of a type `Y` is a type `X` *together* with an embedding of `X` into `Y`:
 
 \begin{code}
-subtypes-of : 𝓤 ̇ → 𝓤 ⁺ ̇
-subtypes-of {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↪ Y
+subtype-of : 𝓤 ̇ → 𝓤 ⁺ ̇
+subtype-of {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↪ Y
 \end{code}
 
 We then define the type `Ω 𝓤` of subsingletons in a given universe `𝓤`, which lives in the next universe:
@@ -5718,7 +5725,7 @@ We then define the type `Ω 𝓤` of subsingletons in a given universe `𝓤`, w
 This type is the subtype classifier of types in `𝓤`, in the sense that
 we have a canonical equivalence
 
-   > `subtypes-of Y ≃ (Y → Ω 𝓤)`
+   > `subtype-of Y ≃ (Y → Ω 𝓤)`
 
 for any type `Y : 𝓤`.
 
@@ -5726,7 +5733,7 @@ for any type `Y : 𝓤`.
  that `Ω 𝓤` is a set. (1) Conclude that the type `Y → Ω
  𝓤` is a set (even if `Y` is not), which justifies the name powerset for it, and the notation `𝓟 Y`. (2) For `A : 𝓟 Y` and `y : Y` write `y ∈ A` to mean `pr₁(A y)`. Define `A ⊆ B` to mean `(y : Y) → y ∈ A → y ∈ B`. Show that both `∈` and `⊆` are subsingleton-valued relations. (3) Show that `A ≡ B` and `(A ⊆ B) × (B ⊆ A)` are logically equivalent propositions. Thus, univalence gives extensionality for the powerset.
 
-We will derive the claim `subtypes-of Y ≃ (Y → Ω 𝓤)` from something
+We will derive the claim `subtype-of Y ≃ (Y → Ω 𝓤)` from something
 more general.  We defined embeddings to be maps whose fibers are
 all subsingletons. We can replace `is-subsingleton` by an arbitrary
 property of — or even structure on — types, which we will name `blue`.
@@ -5791,7 +5798,7 @@ is-subsingleton`, we get the promised fact that `Ω` is the subtype
 classifier:
 
 \begin{code}
-Ω-is-subtype-classifier : Univalence → (Y : 𝓤 ̇ ) → subtypes-of Y ≃ (Y → Ω 𝓤)
+Ω-is-subtype-classifier : Univalence → (Y : 𝓤 ̇ ) → subtype-of Y ≃ (Y → Ω 𝓤)
 Ω-is-subtype-classifier {𝓤} ua Y = blue-map-classifier.bijection 𝓤 𝓤 (ua 𝓤) (ua (𝓤 ⁺))
                                      (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺))) Y is-subsingleton
 \end{code}
@@ -6634,13 +6641,43 @@ cantors-diagonal (e , γ) = c
   ε ₀ = refl ₀
   ε ₁ = refl ₁
 
-
 lifttwo ua₀ ua₁ = Eq-to-Id ua₁ (𝟚 ≡ 𝟚) (Lift 𝓤₁ 𝟚) e
  where
   e = (𝟚 ≡ 𝟚)   ≃⟨ Id-to-Eq 𝟚 𝟚 , ua₀ 𝟚 𝟚 ⟩
       (𝟚 ≃ 𝟚)   ≃⟨ 𝟚-has-𝟚-automorphisms (univalence-gives-dfunext ua₀) ⟩
       𝟚         ≃⟨ ≃-sym (Lift-≃ 𝟚) ⟩
       Lift 𝓤₁ 𝟚 ■
+
+the-subsingletons-are-the-subtypes-of-𝟙' : (X : 𝓤 ̇ ) → is-subsingleton X ⇔ (X ↪ 𝟙)
+the-subsingletons-are-the-subtypes-of-𝟙' X = φ , ψ
+ where
+  j : is-subsingleton X → is-embedding (!𝟙' X)
+  j s ⋆ (x , refl ⋆) (y , refl ⋆) = ap (λ - → - , refl ⋆) (s x y)
+  φ : is-subsingleton X → X ↪ 𝟙
+  φ s = !𝟙 , j s
+  ψ : X ↪ 𝟙 → is-subsingleton X
+  ψ (f , e) x y = d
+   where
+    a : x ≡ y → f x ≡ f y
+    a = ap f {x} {y}
+    b : is-equiv a
+    b = embedding-gives-ap-is-equiv f e x y
+    c : f x ≡ f y
+    c = 𝟙-is-subsingleton (f x) (f y)
+    d : x ≡ y
+    d = inverse a b c
+
+the-subsingletons-are-the-subtypes-of-𝟙 : propext 𝓤 → global-dfunext
+                                        → (X : 𝓤 ̇ ) → is-subsingleton X ≡ (X ↪ 𝟙)
+the-subsingletons-are-the-subtypes-of-𝟙 pe fe X = γ
+ where
+  a : is-subsingleton X ⇔ (X ↪ 𝟙)
+  a = the-subsingletons-are-the-subtypes-of-𝟙' X
+  i : is-subsingleton (X ↪ 𝟙)
+  i (f , e) (f' , e') = to-Σ-≡ (fe (λ x → 𝟙-is-subsingleton (f x) (f' x)) ,
+                                being-embedding-is-a-subsingleton fe f' _ e')
+  γ : is-subsingleton X ≡ (X ↪ 𝟙)
+  γ = pe (being-subsingleton-is-a-subsingleton fe) i (pr₁ a) (pr₂ a)
 
 neg-is-subsingleton fe X f g = fe (λ x → !𝟘 (f x ≡ g x) (f x))
 
