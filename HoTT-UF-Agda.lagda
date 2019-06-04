@@ -2009,8 +2009,9 @@ But, as discussed above, rather than postulating univalence and truncation, we w
 use them as explicit assumptions each time they are needed.
 
 We emphasize that there are univalent type theories in which
-univalence is a theorem, for example cubical type theory, which has a
-version available in Agda, called [cubical
+univalence and existence of truncations are theorems, for example
+cubical type theory, which has a version available in Agda, called
+[cubical
 Agda](https://homotopytypetheory.org/2018/12/06/cubical-agda/).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
