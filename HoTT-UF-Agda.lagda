@@ -143,7 +143,7 @@ fair amount of univalent mathematics before we formulate or assume the
 univalence axiom.
 
 All of (4)-(6) crucially rely on Martin-Löf's identity
-type. Initially, Voevodsky thought that a new concept would be needed
+type. [Initially](https://faculty.math.illinois.edu/~dan/Papers/ITP-talk.pdf), Voevodsky thought that a new concept would be needed
 in the type theory to achieve (4)-(6) and hence (1) and (3) above. But
 he eventually discovered that Martin-Löf's identity type is precisely
 what he needed.
@@ -267,7 +267,7 @@ Regarding the genesis of the subject:
    - [A very short note on homotopy λ-calculus](http://math.ucr.edu/home/baez/Voevodsky_note.ps).
    - [Notes on homotopy λ-calculus](https://github.com/vladimirias/2006_03_Homotopy_lambda_calculus/blob/master/homotopy_lambda_calculus_Mar_5_2006.pdf).
 
-An important foundational reference, by Steve Awodey, Michael A. Warren, is
+An important foundational reference, by Steve Awodey and Michael A. Warren, is
 
    - [Homotopy theoretic models of identity types](https://arxiv.org/abs/0709.0248).
 
@@ -276,12 +276,14 @@ Additional expository material:
    - [An introduction to univalent foundations for mathematicians](https://www.ams.org/journals/bull/2018-55-04/S0273-0979-2018-01616-9/), a paper at the [Bulletin of the
 AMS](https://www.ams.org/publications/journals/journalsframework/bull)
 by [Dan Grayson](https://faculty.math.illinois.edu/~dan/).
-   - [Univalent foundations - an introduction](https://benediktahrens.net/talks/6WFT.pdf), Benedikt Ahrens.
-   - [Introduction to Homotopy Type Theory](https://github.com/EgbertRijke/HoTT-Intro), Egbert Rijke.
-   - [A course on homotopy (type) theory](http://math.andrej.com/2019/05/08/a-course-on-homotopy-type-theory/), Andrej Bauer and Jaka Smrekar.
-  - [15-819 Homotopy Type Theory](https://www.cs.cmu.edu/~rwh/courses/hott/), Bob Harper.
-  - [Homotopy type theory: the logic of space](https://arxiv.org/abs/1703.03007), Mike Shulman.
-  - [Logic in univalent type theory](https://www.newton.ac.uk/seminar/20170711100011001), Martin Escardo.
+   - [Voevodsky's Memorial talk](https://faculty.math.illinois.edu/~dan/Talks/Voevodsky-memorial-talk.pdf)
+by [Dan Grayson](https://faculty.math.illinois.edu/~dan/).
+   - [Univalent foundations - an introduction](https://benediktahrens.net/talks/6WFT.pdf) by Benedikt Ahrens.
+   - [Introduction to Homotopy Type Theory](https://github.com/EgbertRijke/HoTT-Intro) by Egbert Rijke.
+   - [A course on homotopy (type) theory](http://math.andrej.com/2019/05/08/a-course-on-homotopy-type-theory/) by Andrej Bauer and Jaka Smrekar.
+  - [15-819 Homotopy Type Theory](https://www.cs.cmu.edu/~rwh/courses/hott/) by Bob Harper.
+  - [Homotopy type theory: the logic of space](https://arxiv.org/abs/1703.03007) by Mike Shulman.
+  - [Logic in univalent type theory](https://www.newton.ac.uk/seminar/20170711100011001) by Martin Escardo.
 
 More references as clickable links are given in the course of the notes.
 
@@ -1313,7 +1315,7 @@ general, in that we can't prove or disprove that it has at most one
 element.
 
 There are two opposing ways to resolve the ambiguity or
-underspecification of the identity types: (1) We can consider the `K`
+under-specification of the identity types: (1) We can consider the `K`
 axiom, which postulates that all types are sets, or (2) we can
 consider the univalence axiom, arriving at univalent mathematics,
 which gives rise to types that are more general than sets, the
@@ -2001,9 +2003,10 @@ In both cases, we proceed by induction on both arguments.
 
   * Spartan MLTT [as above](HoTT-UF-Agda.html#spartanmltt).
   * Univalence axiom as [below](HoTT-UF-Agda.html#univalence).
+  * Subsingleton (or truth-value or propositional) truncations as [below](HoTT-UF-Agda.html#truncation).
 
-But, as discussed above, rather than postulating univalence we will
-use it as an explicit assumption each time it is needed.
+But, as discussed above, rather than postulating univalence and truncation, we will
+use them as explicit assumptions each time they are needed.
 
 We emphasize that there are univalent type theories in which
 univalence is a theorem, for example cubical type theory, which has a
@@ -2645,7 +2648,7 @@ but we stress that the method of proof is essentially the same.
 We first define a notion of constant map:
 
 \begin{code}
-wconstant : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (f : X → Y) → 𝓤 ⊔ 𝓥 ̇
+wconstant : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 wconstant f = (x x' : domain f) → f x ≡ f x'
 \end{code}
 

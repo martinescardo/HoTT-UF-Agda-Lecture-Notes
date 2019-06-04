@@ -664,7 +664,7 @@ EM'-gives-EM em' X s = γ (em' X s)
   γ (inl i) = inl (center X i)
   γ (inr x) = inr x
 
-wconstant : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (f : X → Y) → 𝓤 ⊔ 𝓥 ̇
+wconstant : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 wconstant f = (x x' : domain f) → f x ≡ f x'
 
 collapsible : 𝓤 ̇ → 𝓤 ̇
