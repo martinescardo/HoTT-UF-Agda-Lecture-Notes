@@ -1156,7 +1156,7 @@ We have the following uses of `Σ`.
     which will be obtained by a sort of quotient of `Σ (x : X), A x`,
     written `∥ Σ (x : X), A x ∥` that identifies all the elements of
     the type `Σ (x : X), A x` in a single equivalence class, called
-    its propositional or subsingleton
+    its subsingleton (or truth value or propositional)
     [truncation](HoTT-UF-Agda.html#truncation).
 
   * Another reading of `Σ (x : X), A x` is as "the type of `x : X`
