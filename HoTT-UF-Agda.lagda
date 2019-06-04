@@ -679,10 +679,9 @@ data 𝟘 : 𝓤₀ ̇  where
 
 That's the complete definition. This has a dual interpretation,
 mathematically as the empty set (we can actually prove that this type
-is a set, once we know the definition of set), and
-logically as the truth value *false*. To prove that a property of
-elements of the empty type holds for all elements of the empty type we
-have to do nothing.
+is a set, once we know the definition of set), and logically as the
+truth value *false*. To prove that a property of elements of the empty
+type holds for all elements of the empty type, we have to do nothing.
 
 \begin{code}
 𝟘-induction : (A : 𝟘 → 𝓤 ̇ )
@@ -848,7 +847,7 @@ definitions are not globally visible, as we want to have the symbols
 `+` and `×` free for type operations of MLTT to be defined soon. The
 things in the module are indented and are visible outside the module
 only if we [`open`](https://agda.readthedocs.io/en/latest/language/module-system.html#) the module or if we write them as
-e.g. `Arithmetic.+` in the following example.
+e.g. `Arithmetic._+_` in the following example.
 
 \begin{code}
 module Arithmetic where
@@ -932,7 +931,8 @@ types that are subsingletons.
 
 If we are doing applied mathematics and want to actually compute, we
 can define a type for binary notation for the sake of efficiency, and
-of course people have done that. Here we are not concerned with
+of course people have done [that](http://www.cs.bham.ac.uk/~mhe/agda-new/BinaryNaturals.html).
+Here we are not concerned with
 efficiency but only with understanding how to codify mathematics in
 (univalent) type theory and in Agda.
 
