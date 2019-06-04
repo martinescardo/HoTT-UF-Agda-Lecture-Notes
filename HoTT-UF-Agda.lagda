@@ -1361,7 +1361,7 @@ However, we will not always use this induction principle, because we
 can instead work with the instances we need by pattern matching on
 `refl` (which is just what we did to define the principle itself) and
 there is a [theorem by Jesper
-Cockx](https://dl.acm.org/citation.cfm?id=2628139) which says that
+Cockx](https://dl.acm.org/citation.cfm?id=2628139) that says that
 with the Agda option `without-K`, pattern matching on `refl` can
 define/prove precisely what `J` can.
 
@@ -1865,7 +1865,8 @@ module BasicArithmetic where
   open Arithmetic renaming (_+_ to _∔_)
 \end{code}
 
-We can show that addition is associative as follows, by induction on `z`:
+We can show that addition is associative as follows, by induction on
+`z`, where `IH` stands for "induction hypothesis":
 
 \begin{code}
   +-assoc : (x y z : ℕ) → (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
@@ -1883,8 +1884,16 @@ We can show that addition is associative as follows, by induction on `z`:
 Notice that the proofs `refl _` should be read as "by definition" or
 "by construction". They are not necessary, because Agda knows the
 definitions and silently expands them when necessary, but we are
-writing them here for the sake of clarity. Elsewhere in these notes, we
-do occasionally rely on silent expansions of definitions.
+writing them here for the sake of clarity. Elsewhere in these notes,
+we do occasionally rely on silent expansions of definitions. Here is
+the version with the silent expansion of definitional equalities, for the sake of
+illustration (the author of these notes can write, but not read it):
+
+\begin{code}
+  +-assoc' : (x y z : ℕ) → (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
+  +-assoc' x y zero     = refl _
+  +-assoc' x y (succ z) = ap succ (+-assoc' x y z)
+\end{code}
 
 We defined addition by induction on the second argument. Next we show
 that the base case and induction step of a definition by induction on
