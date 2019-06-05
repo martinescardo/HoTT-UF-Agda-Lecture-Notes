@@ -6646,9 +6646,7 @@ problem is that the type `𝟚 ≡ 𝟚` lives in `𝓤₁` whereas `𝟚` lives
 But we do have that
 
 \begin{code}
-lifttwo : is-univalent 𝓤₀
-        → is-univalent 𝓤₁
-        → (𝟚 ≡ 𝟚) ≡ Lift 𝓤₁ 𝟚
+lifttwo : is-univalent 𝓤₀ → is-univalent 𝓤₁ → (𝟚 ≡ 𝟚) ≡ Lift 𝓤₁ 𝟚
 \end{code}
 
 We now discuss alternative formulations of the principle of excluded middle.
@@ -6659,7 +6657,8 @@ DNE 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → ¬¬ P → P
 
 neg-is-subsingleton : dfunext 𝓤 𝓤₀ → (X : 𝓤 ̇ ) → is-subsingleton (¬ X)
 
-emsanity : dfunext 𝓤 𝓤₀ → (P : 𝓤 ̇ ) → is-subsingleton P → is-subsingleton (P + ¬ P)
+emsanity : dfunext 𝓤 𝓤₀ → (P : 𝓤 ̇ )
+         → is-subsingleton P → is-subsingleton (P + ¬ P)
 
 ne : (X : 𝓤 ̇ ) → ¬¬(X + ¬ X)
 
@@ -6732,7 +6731,7 @@ holds-is-subsingleton : (p : Ω 𝓤) → is-subsingleton (p holds)
 holds-is-subsingleton = pr₂
 
 Ω-ext : dfunext 𝓤 𝓤 → propext 𝓤 → {p q : Ω 𝓤}
-        → (p holds → q holds) → (q holds → p holds) → p ≡ q
+      → (p holds → q holds) → (q holds → p holds) → p ≡ q
 Ω-ext {𝓤} fe pe {p} {q} f g =
  to-Σ-≡ (pe (holds-is-subsingleton p) (holds-is-subsingleton q) f g ,
          being-subsingleton-is-a-subsingleton fe _ _)
@@ -6782,7 +6781,7 @@ A ⊆ B = ∀ x → x ∈ A → x ∈ B
 
 ⊆-refl-consequence : {X : 𝓤 ̇ } (A B : powerset X)
                    → A ≡ B → (A ⊆ B) × (B ⊆ A)
-⊆-refl-consequence {X} A .A (refl A) = ⊆-refl A , ⊆-refl A
+⊆-refl-consequence {X} A A (refl A) = ⊆-refl A , ⊆-refl A
 
 subset-extensionality : propext 𝓤 → dfunext 𝓤 𝓤 → dfunext 𝓤 (𝓤 ⁺)
                       → {X : 𝓤 ̇ } (A B : powerset X)
@@ -6797,8 +6796,8 @@ subset-extensionality pe fe fe' {X} A B h k = fe' φ
                    (holds-is-subsingleton _))
 
 subset-extensionality' : Univalence
-                      → {X : 𝓤 ̇ } (A B : powerset X)
-                      → A ⊆ B → B ⊆ A → A ≡ B
+                       → {X : 𝓤 ̇ } (A B : powerset X)
+                       → A ⊆ B → B ⊆ A → A ≡ B
 subset-extensionality' {𝓤} ua = subset-extensionality
                                   (univalence-gives-propext (ua 𝓤))
                                   (univalence-gives-dfunext (ua 𝓤))
@@ -6852,7 +6851,8 @@ module surjection-classifier
   surjection-classifier : Univalence
                         → (Y : 𝓤 ̇ )
                         → surjections-into Y ≃ (Y → inhabited-types 𝓤)
-  surjection-classifier {𝓤} ua Y = blue-map-classifier.bijection 𝓤 𝓤 (ua 𝓤) (ua (𝓤 ⁺)) fe Y ∥_∥
+  surjection-classifier {𝓤} ua Y = blue-map-classifier.bijection 𝓤 𝓤
+                                    (ua 𝓤) (ua (𝓤 ⁺)) fe Y ∥_∥
 
 succ-no-fixed-point : (n : ℕ) → succ n ≢ n
 succ-no-fixed-point 0        = positive-not-zero 0
@@ -6863,78 +6863,89 @@ succ-no-fixed-point (succ n) = γ
   γ : succ (succ n) ≢ succ n
   γ p = IH (succ-lc p)
 
-positive-cantors-diagonal e = (α , φ)
+positive-cantors-diagonal = sol
  where
-  α : ℕ → ℕ
-  α n = succ(e n n)
-  φ : (n : ℕ) → α ≢ e n
-  φ n p = succ-no-fixed-point (e n n) q
+  sol : (e : ℕ → (ℕ → ℕ)) → Σ \(α : ℕ → ℕ) → (n : ℕ) → α ≢ e n
+  sol e = (α , φ)
    where
-    q = succ (e n n)  ≡⟨ refl (α n) ⟩
-        α n           ≡⟨ ap (λ - → - n) p ⟩
-        e n n         ∎
+    α : ℕ → ℕ
+    α n = succ(e n n)
+    φ : (n : ℕ) → α ≢ e n
+    φ n p = succ-no-fixed-point (e n n) q
+     where
+      q = succ (e n n)  ≡⟨ refl (α n) ⟩
+          α n           ≡⟨ ap (λ - → - n) p ⟩
+          e n n         ∎
 
-cantors-diagonal (e , γ) = c
+cantors-diagonal = sol
  where
-  α : ℕ → ℕ
-  α = pr₁ (positive-cantors-diagonal e)
-  φ : (n : ℕ) → α ≢ e n
-  φ = pr₂ (positive-cantors-diagonal e)
-  b : Σ \(n : ℕ) → α ≡ e n
-  b = γ α
-  c : 𝟘
-  c = φ (pr₁ b) (pr₂ b)
-
-𝟚-has-𝟚-automorphisms fe = invertibility-gives-≃ f (g , η , ε)
- where
-  f : (𝟚 ≃ 𝟚) → 𝟚
-  f (h , e) = h ₀
-  g : 𝟚 → (𝟚 ≃ 𝟚)
-  g ₀ = id , id-is-equiv 𝟚
-  g ₁ = swap₂ , swap₂-is-equiv
-  η : (e : 𝟚 ≃ 𝟚) → g (f e) ≡ e
-  η (h , e) = γ (h ₀) (h ₁) (refl (h ₀)) (refl (h ₁))
+  sol : ¬(Σ \(e : ℕ → (ℕ → ℕ)) → (α : ℕ → ℕ) → Σ \(n : ℕ) → α ≡ e n)
+  sol (e , γ) = c
    where
-    γ : (m n : 𝟚) → h ₀ ≡ m → h ₁ ≡ n → g (h ₀) ≡ (h , e)
-    γ ₀ ₀ p q = !𝟘 (g (h ₀) ≡ (h , e))
-                   (₁-is-not-₀ (equivs-are-lc h e (h ₁ ≡⟨ q ⟩
-                                                   ₀   ≡⟨ p ⁻¹ ⟩
-                                                   h ₀ ∎)))
-    γ ₀ ₁ p q = to-Σ-≡ (fe (𝟚-induction (λ n → pr₁ (g (h ₀)) n ≡ h n)
-                             (pr₁ (g (h ₀)) ₀ ≡⟨ ap (λ - → pr₁ (g -) ₀) p ⟩
-                              pr₁ (g ₀) ₀     ≡⟨ refl ₀ ⟩
-                              ₀               ≡⟨ p ⁻¹ ⟩
-                              h ₀             ∎)
-                             (pr₁ (g (h ₀)) ₁ ≡⟨ ap (λ - → pr₁ (g -) ₁) p ⟩
-                              pr₁ (g ₀) ₁     ≡⟨ refl ₁ ⟩
-                              ₁               ≡⟨ q ⁻¹ ⟩
-                              h ₁             ∎)),
-                       being-equiv-is-a-subsingleton fe fe _ _ e)
-    γ ₁ ₀ p q = to-Σ-≡ (fe (𝟚-induction (λ n → pr₁ (g (h ₀)) n ≡ h n)
-                             (pr₁ (g (h ₀)) ₀ ≡⟨ ap (λ - → pr₁ (g -) ₀) p ⟩
-                              pr₁ (g ₁) ₀     ≡⟨ refl ₁ ⟩
-                              ₁               ≡⟨ p ⁻¹ ⟩
-                              h ₀             ∎)
-                             (pr₁ (g (h ₀)) ₁ ≡⟨ ap (λ - → pr₁ (g -) ₁) p ⟩
-                              pr₁ (g ₁) ₁     ≡⟨ refl ₀ ⟩
-                              ₀               ≡⟨ q ⁻¹ ⟩
-                              h ₁             ∎)),
-                       being-equiv-is-a-subsingleton fe fe _ _ e)
-    γ ₁ ₁ p q = !𝟘 (g (h ₀) ≡ (h , e))
-                   (₁-is-not-₀ (equivs-are-lc h e (h ₁ ≡⟨ q ⟩
-                                                   ₁   ≡⟨ p ⁻¹ ⟩
-                                                   h ₀ ∎)))
+    α : ℕ → ℕ
+    α = pr₁ (positive-cantors-diagonal e)
+    φ : (n : ℕ) → α ≢ e n
+    φ = pr₂ (positive-cantors-diagonal e)
+    b : Σ \(n : ℕ) → α ≡ e n
+    b = γ α
+    c : 𝟘
+    c = φ (pr₁ b) (pr₂ b)
 
-  ε : (n : 𝟚) → f (g n) ≡ n
-  ε ₀ = refl ₀
-  ε ₁ = refl ₁
-
-lifttwo ua₀ ua₁ = Eq-to-Id ua₁ (𝟚 ≡ 𝟚) (Lift 𝓤₁ 𝟚) e
+𝟚-has-𝟚-automorphisms = sol
  where
-  e = (𝟚 ≡ 𝟚)   ≃⟨ Id-to-Eq 𝟚 𝟚 , ua₀ 𝟚 𝟚 ⟩
-      (𝟚 ≃ 𝟚)   ≃⟨ 𝟚-has-𝟚-automorphisms (univalence-gives-dfunext ua₀) ⟩
-      𝟚         ≃⟨ ≃-sym (Lift-≃ 𝟚) ⟩
-      Lift 𝓤₁ 𝟚 ■
+  sol : dfunext 𝓤₀ 𝓤₀ → (𝟚 ≃ 𝟚) ≃ 𝟚
+  sol fe = invertibility-gives-≃ f (g , η , ε)
+   where
+    f : (𝟚 ≃ 𝟚) → 𝟚
+    f (h , e) = h ₀
+    g : 𝟚 → (𝟚 ≃ 𝟚)
+    g ₀ = id , id-is-equiv 𝟚
+    g ₁ = swap₂ , swap₂-is-equiv
+    η : (e : 𝟚 ≃ 𝟚) → g (f e) ≡ e
+    η (h , e) = γ (h ₀) (h ₁) (refl (h ₀)) (refl (h ₁))
+     where
+      γ : (m n : 𝟚) → h ₀ ≡ m → h ₁ ≡ n → g (h ₀) ≡ (h , e)
+      γ ₀ ₀ p q = !𝟘 (g (h ₀) ≡ (h , e))
+                     (₁-is-not-₀ (equivs-are-lc h e (h ₁ ≡⟨ q ⟩
+                                                     ₀   ≡⟨ p ⁻¹ ⟩
+                                                     h ₀ ∎)))
+      γ ₀ ₁ p q = to-Σ-≡ (fe (𝟚-induction (λ n → pr₁ (g (h ₀)) n ≡ h n)
+                               (pr₁ (g (h ₀)) ₀ ≡⟨ ap (λ - → pr₁ (g -) ₀) p ⟩
+                                pr₁ (g ₀) ₀     ≡⟨ refl ₀ ⟩
+                                ₀               ≡⟨ p ⁻¹ ⟩
+                                h ₀             ∎)
+                               (pr₁ (g (h ₀)) ₁ ≡⟨ ap (λ - → pr₁ (g -) ₁) p ⟩
+                                pr₁ (g ₀) ₁     ≡⟨ refl ₁ ⟩
+                                ₁               ≡⟨ q ⁻¹ ⟩
+                                h ₁             ∎)),
+                         being-equiv-is-a-subsingleton fe fe _ _ e)
+      γ ₁ ₀ p q = to-Σ-≡ (fe (𝟚-induction (λ n → pr₁ (g (h ₀)) n ≡ h n)
+                               (pr₁ (g (h ₀)) ₀ ≡⟨ ap (λ - → pr₁ (g -) ₀) p ⟩
+                                pr₁ (g ₁) ₀     ≡⟨ refl ₁ ⟩
+                                ₁               ≡⟨ p ⁻¹ ⟩
+                                h ₀             ∎)
+                               (pr₁ (g (h ₀)) ₁ ≡⟨ ap (λ - → pr₁ (g -) ₁) p ⟩
+                                pr₁ (g ₁) ₁     ≡⟨ refl ₀ ⟩
+                                ₀               ≡⟨ q ⁻¹ ⟩
+                                h ₁             ∎)),
+                         being-equiv-is-a-subsingleton fe fe _ _ e)
+      γ ₁ ₁ p q = !𝟘 (g (h ₀) ≡ (h , e))
+                     (₁-is-not-₀ (equivs-are-lc h e (h ₁ ≡⟨ q ⟩
+                                                     ₁   ≡⟨ p ⁻¹ ⟩
+                                                     h ₀ ∎)))
+    ε : (n : 𝟚) → f (g n) ≡ n
+    ε ₀ = refl ₀
+    ε ₁ = refl ₁
+
+lifttwo = sol
+ where
+  sol : is-univalent 𝓤₀ → is-univalent 𝓤₁ → (𝟚 ≡ 𝟚) ≡ Lift 𝓤₁ 𝟚
+  sol ua₀ ua₁ = Eq-to-Id ua₁ (𝟚 ≡ 𝟚) (Lift 𝓤₁ 𝟚) e
+   where
+    e = (𝟚 ≡ 𝟚)   ≃⟨ Id-to-Eq 𝟚 𝟚 , ua₀ 𝟚 𝟚 ⟩
+        (𝟚 ≃ 𝟚)   ≃⟨ 𝟚-has-𝟚-automorphisms (univalence-gives-dfunext ua₀) ⟩
+        𝟚         ≃⟨ ≃-sym (Lift-≃ 𝟚) ⟩
+        Lift 𝓤₁ 𝟚 ■
 
 the-subsingletons-are-the-subtypes-of-𝟙' : (X : 𝓤 ̇ )
                                          → is-subsingleton X ⇔ (X ↪ 𝟙)
@@ -6968,39 +6979,61 @@ the-subsingletons-are-the-subtypes-of-𝟙 pe fe X = γ
   γ : is-subsingleton X ≡ (X ↪ 𝟙)
   γ = pe (being-subsingleton-is-a-subsingleton fe) b (pr₁ a) (pr₂ a)
 
-neg-is-subsingleton fe X f g = fe (λ x → !𝟘 (f x ≡ g x) (f x))
-
-emsanity fe P i (inl p) (inl q) = ap inl (i p q)
-emsanity fe P i (inl p) (inr n) = !𝟘 (inl p ≡ inr n) (n p)
-emsanity fe P i (inr m) (inl q) = !𝟘 (inr m ≡ inl q) (m q)
-emsanity fe P i (inr m) (inr n) = ap inr (neg-is-subsingleton fe P m n)
-
-ne X = λ (f : ¬(X + ¬ X)) → f (inr (λ (x : X) → f (inl x)))
-
-DNE-gives-EM fe dne P i = dne (P + ¬ P) (emsanity fe P i) (ne P)
-
-EM-gives-DNE em P i = γ (em P i)
+neg-is-subsingleton = sol
  where
-  γ : P + ¬ P → ¬¬ P → P
-  γ (inl p) φ = p
-  γ (inr n) φ = !𝟘 P (φ n)
+  sol : dfunext 𝓤 𝓤₀ → (X : 𝓤 ̇ ) → is-subsingleton (¬ X)
+  sol fe X f g = fe (λ x → !𝟘 (f x ≡ g x) (f x))
 
-SN-gives-DNE {𝓤} sn P i = h
+emsanity = sol
  where
-  X : 𝓤 ̇
-  X = pr₁ (sn P i)
-  f : P → ¬ X
-  f = pr₁ (pr₂ (sn P i))
-  g : ¬ X → P
-  g = pr₂ (pr₂ (sn P i))
-  f' : ¬¬ P → ¬(¬¬ X)
-  f' = contrapositive (contrapositive f)
-  h : ¬¬ P → P
-  h = g ∘ tno X ∘ f'
-  h' : ¬¬ P → P
-  h' φ = g (λ (x : X) → φ (λ (p : P) → f p x))
+  sol : dfunext 𝓤 𝓤₀ → (P : 𝓤 ̇ )
+      → is-subsingleton P → is-subsingleton (P + ¬ P)
+  sol fe P i (inl p) (inl q) = ap inl (i p q)
+  sol fe P i (inl p) (inr n) = !𝟘 (inl p ≡ inr n) (n p)
+  sol fe P i (inr m) (inl q) = !𝟘 (inr m ≡ inl q) (m q)
+  sol fe P i (inr m) (inr n) = ap inr (neg-is-subsingleton fe P m n)
 
-DNE-gives-SN dne P i = (¬ P) , dni P , dne P i
+ne = sol
+ where
+  sol : (X : 𝓤 ̇ ) → ¬¬(X + ¬ X)
+  sol X = λ (f : ¬(X + ¬ X)) → f (inr (λ (x : X) → f (inl x)))
+
+DNE-gives-EM = sol
+ where
+  sol : dfunext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
+  sol fe dne P i = dne (P + ¬ P) (emsanity fe P i) (ne P)
+
+EM-gives-DNE = sol
+ where
+  sol : EM 𝓤 → DNE 𝓤
+  sol em P i = γ (em P i)
+   where
+    γ : P + ¬ P → ¬¬ P → P
+    γ (inl p) φ = p
+    γ (inr n) φ = !𝟘 P (φ n)
+
+SN-gives-DNE = sol
+ where
+  sol : SN 𝓤 → DNE 𝓤
+  sol {𝓤} sn P i = h
+   where
+    X : 𝓤 ̇
+    X = pr₁ (sn P i)
+    f : P → ¬ X
+    f = pr₁ (pr₂ (sn P i))
+    g : ¬ X → P
+    g = pr₂ (pr₂ (sn P i))
+    f' : ¬¬ P → ¬(¬¬ X)
+    f' = contrapositive (contrapositive f)
+    h : ¬¬ P → P
+    h = g ∘ tno X ∘ f'
+    h' : ¬¬ P → P
+    h' φ = g (λ (x : X) → φ (λ (p : P) → f p x))
+
+DNE-gives-SN = sol
+ where
+  sol : DNE 𝓤 → SN 𝓤
+  sol dne P i = (¬ P) , dni P , dne P i
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
