@@ -6614,6 +6614,42 @@ powersets-are-sets : hfunext 𝓤 (𝓥 ⁺) → dfunext 𝓥 𝓥 → propext �
                    → {X : 𝓤 ̇ } → is-set (X → Ω 𝓥)
 powersets-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-a-set fe' pe)
 
+powerset : 𝓤 ̇ → 𝓤 ⁺ ̇
+powerset {𝓤} X = X → Ω 𝓤
+
+_∈_ : {X : 𝓤 ̇ } → X → powerset X → 𝓤 ̇
+x ∈ A = A x holds
+
+_⊆_ : {X : 𝓤 ̇ } → powerset X → powerset X → 𝓤 ̇
+A ⊆ B = ∀ x → x ∈ A → x ∈ B
+
+⊆-refl : {X : 𝓤 ̇ } (A : powerset X) → A ⊆ A
+⊆-refl A x = id
+
+⊆-refl-consequence : {X : 𝓤 ̇ } (A B : powerset X)
+                   → A ≡ B → (A ⊆ B) × (B ⊆ A)
+⊆-refl-consequence {X} A .A (refl A) = ⊆-refl A , ⊆-refl A
+
+subset-extensionality : propext 𝓤 → dfunext 𝓤 𝓤 → dfunext 𝓤 (𝓤 ⁺)
+                      → {X : 𝓤 ̇ } (A B : powerset X)
+                      → A ⊆ B → B ⊆ A → A ≡ B
+subset-extensionality pe fe fe' {X} A B h k = fe' φ
+ where
+  φ : (x : X) → A x ≡ B x
+  φ x = to-Σ-≡ (pe (holds-is-subsingleton (A x))
+                   (holds-is-subsingleton (B x)) (h x) (k x) ,
+                being-subsingleton-is-a-subsingleton fe
+                   (holds-is-subsingleton _)
+                   (holds-is-subsingleton _))
+
+subset-extensionality' : Univalence
+                      → {X : 𝓤 ̇ } (A B : powerset X)
+                      → A ⊆ B → B ⊆ A → A ≡ B
+subset-extensionality' {𝓤} ua = subset-extensionality
+                                  (univalence-gives-propext (ua 𝓤))
+                                  (univalence-gives-dfunext (ua 𝓤))
+                                  (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
+
 has-section-charac f = ΠΣ-distr-≃
 
 retractions-into : 𝓤 ̇ → 𝓤 ⁺ ̇
@@ -6638,12 +6674,13 @@ retraction-classifier {𝓤} ua Y = retractions-into Y    ≃⟨ ≃-sym b ⟩
       (Σ \(X : 𝓤 ̇ ) → Y ◁ X)
           ■
 
-module _ (pt : subsingleton-truncations-exist)
+module surjection-classifier
+         (pt : subsingleton-truncations-exist)
          (ua : Univalence)
        where
 
   fe : global-dfunext
-  fe = (univalence-gives-global-dfunext ua)
+  fe = univalence-gives-global-dfunext ua
 
   open basic-truncation-development pt fe public
 
