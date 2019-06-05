@@ -1,15 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
     <title>{{ page.title }} </title>
     <link rel="stylesheet" type="text/css" href="css/Agda.css">
-    <style>
+  </head>
+  <body>
+	<style>
+	body, html {
+        width: 800px;
+        margin:0 auto;
+	}
 	code {
 	color: MidnightBlue;
 	}
-    </style>
-  </head>
-  <body>
+	</style>
     <div class="container">
       {{ content }}
     </div><!-- /.container -->

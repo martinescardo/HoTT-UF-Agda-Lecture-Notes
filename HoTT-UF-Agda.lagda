@@ -56,12 +56,9 @@ html web page is generated automatically from it using Agda and other
 tools. [Github](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes)
 pull requests by students to fix typos or mistakes and clarify
 ambiguities are welcome.
-
 There is also a [pdf
 version](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.pdf)
 automatically generated from the [html version](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/index.html).
-(NB. The pdf version of these notes at ResearchGate is usually out of date.)
-
 These notes were originally developed for the
 [Midlands Graduate School 2019](http://events.cs.bham.ac.uk/mgs2019/). They will evolve for a while.
 
@@ -2206,11 +2203,11 @@ three laws:
 \begin{code}
 Monoid : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Monoid 𝓤 = Σ \(X : 𝓤 ̇ ) → is-set X
-                         × Σ \(_·_ : X → X → X)
-                         → Σ \(e : X)
-                         → left-neutral e _·_
-                         × right-neutral e _·_
-                         × associative _·_
+                        × Σ \(_·_ : X → X → X)
+                        → Σ \(e : X)
+                        → left-neutral e _·_
+                        × right-neutral e _·_
+                        × associative _·_
 \end{code}
 
 *Remark.* People are more likely to use
@@ -6005,88 +6002,52 @@ for any type `Y : 𝓤`.
 We will derive the claim `subtypes-of Y ≃ (Y → Ω 𝓤)` from something
 more general.  We defined embeddings to be maps whose fibers are
 all subsingletons. We can replace `is-subsingleton` by an arbitrary
-property of — or even structure on — types, which we will name `blue`.
-The following generalizes the notion of embedding (when `blue`
-means `is-subsingleton`) and equivalence (when `blue` means
-`is-singleton`):
-
-\begin{code}
-_has_fibers : {X Y : 𝓤 ̇ } → (X → Y) → (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-f has blue fibers = ∀ y → blue (fiber f y)
-\end{code}
+property `P` of — or even structure on — types.
 
 The following generalizes the [slice
 constructor](HoTT-UF-Agda.html#typeclassifier) `_/_`:
 
 \begin{code}
 _/[_]_ : (𝓤 : Universe) → (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
-𝓤 /[ blue ] Y = Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → f has blue fibers
+𝓤 /[ P ] Y = Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → (y : Y) → P (fiber f y)
 \end{code}
 
-We now work with a submodule with hypotheses to generalize the fact
-that the [universe is the map
-classifier](HoTT-UF-Agda.html#typeclassifier) (when `blue = λ _ → 𝟙`),
-using the fact that it is the map classifier in order to perform the
-generalization:
+Then `Σ P` is the classifier of maps with `P` fibers:
 
 \begin{code}
-module blue-map-classifier
-        (𝓤 𝓥 : Universe)
-        (ua : is-univalent 𝓤)
-        (ua⁺ : is-univalent (𝓤 ⁺))
-        (fe : dfunext 𝓤 (𝓤 ⁺))
-        (Y : 𝓤 ̇ )
-        (blue : 𝓤 ̇ → 𝓥 ̇ )
-       where
-
- open map-classifier 𝓤 ua fe Y
-
- χ-is-hae : is-hae χ
- χ-is-hae = equivs-are-haes ua⁺ χ χ-is-equiv
+special-map-classifier : is-univalent 𝓤 → is-univalent (𝓤 ⁺)
+                       → (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ )
+                       → 𝓤 /[ P ] Y ≃ (Y → Σ P)
+special-map-classifier {𝓤} ua ua⁺ P Y = ≃-sym γ
+ where
+  open map-classifier 𝓤 ua (univalence-gives-dfunext' ua ua⁺) Y
+  χ-is-hae : is-hae χ
+  χ-is-hae = equivs-are-haes ua⁺ χ χ-is-equiv
+  γ = (Y → Σ P)                                ≃⟨ ΠΣ-distr-≃ ⟩
+      (Σ \(A : Y → 𝓤 ̇ ) → (y : Y) → P (A y))   ≃⟨ Σ-change-of-variables-hae
+                                                   (λ A → Π (P ∘ A)) χ χ-is-hae ⟩
+      (Σ \(σ : 𝓤 / Y) → (y : Y) → P (χ σ y))   ≃⟨ Σ-assoc ⟩
+      (𝓤 /[ P ] Y)                             ■
 \end{code}
 
-We collect the `blue` types in a type `Blue`:
-
-\begin{code}
- Blue : 𝓤 ⁺ ⊔ 𝓥 ̇
- Blue = Σ blue
-\end{code}
-
-Then `Blue` is the classifier of maps with `blue` fibers:
-
-\begin{code}
- bijection : 𝓤 /[ blue ] Y ≃ (Y → Blue)
- bijection = ≃-sym (
-  (Y → Blue)                                  ≃⟨ ΠΣ-distr-≃ ⟩
-  (Σ \(A : Y → 𝓤 ̇ ) → (y : Y) → blue (A y))   ≃⟨ Σ-change-of-variables-hae
-                                                   (λ A → Π (blue ∘ A)) χ χ-is-hae ⟩
-  (Σ \(σ : 𝓤 / Y) → (y : Y) → blue (χ σ y))   ≃⟨ Σ-assoc ⟩
-  (𝓤 /[ blue ] Y)                             ■)
-\end{code}
-
-This concludes the submodule. In particular, considering `blue =
+This concludes the submodule. In particular, considering `P =
 is-subsingleton`, we get the promised fact that `Ω` is the subtype
 classifier:
 
 \begin{code}
 Ω-is-subtype-classifier : Univalence → (Y : 𝓤 ̇ ) → subtypes-of Y ≃ (Y → Ω 𝓤)
-Ω-is-subtype-classifier {𝓤} ua Y = blue-map-classifier.bijection 𝓤 𝓤
-                                     (ua 𝓤) (ua (𝓤 ⁺))
-                                     (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
-                                     Y is-subsingleton
+Ω-is-subtype-classifier {𝓤} ua = special-map-classifier (ua 𝓤) (ua (𝓤 ⁺))
+                                  is-subsingleton
 \end{code}
 
-We now consider `blue = is-singleton` and the type of singletons:
+We now consider `P = is-singleton` and the type of singletons:
 
 \begin{code}
 𝓢 : (𝓤 : Universe) → 𝓤 ⁺ ̇
 𝓢 𝓤 = Σ \(S : 𝓤 ̇ ) → is-singleton S
 
 equiv-classification : Univalence → (Y : 𝓤 ̇ ) → (Σ \(X : 𝓤 ̇ ) → X ≃ Y) ≃ (Y → 𝓢 𝓤)
-equiv-classification {𝓤} ua Y = blue-map-classifier.bijection 𝓤 𝓤
-                                  (ua 𝓤) (ua (𝓤 ⁺))
-                                  (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
-                                  Y is-singleton
+equiv-classification {𝓤} ua = special-map-classifier (ua 𝓤) (ua (𝓤 ⁺)) is-singleton
 \end{code}
 
 With this we can derive a [fact we already
@@ -6949,8 +6910,7 @@ retraction-classifier {𝓤} ua Y = retractions-into Y    ≃⟨ ≃-sym b ⟩
                                  ((𝓤 /[ id ] Y))       ≃⟨ a ⟩
                                  (Y → pointed-types 𝓤) ■
  where
-  a = blue-map-classifier.bijection 𝓤 𝓤 (ua 𝓤) (ua (𝓤 ⁺))
-       (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺))) Y id
+  a = special-map-classifier (ua 𝓤) (ua (𝓤 ⁺)) id Y
   remark : (𝓤 /[ id ] Y)
          ≡ (Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → (y : Y) → Σ \(x : X) → f x ≡ y)
   remark = refl _
@@ -6981,8 +6941,7 @@ module surjection-classifier
   surjection-classifier : Univalence
                         → (Y : 𝓤 ̇ )
                         → surjections-into Y ≃ (Y → inhabited-types 𝓤)
-  surjection-classifier {𝓤} ua Y = blue-map-classifier.bijection 𝓤 𝓤
-                                    (ua 𝓤) (ua (𝓤 ⁺)) fe Y ∥_∥
+  surjection-classifier {𝓤} ua = special-map-classifier (ua 𝓤) (ua (𝓤 ⁺)) ∥_∥
 
 succ-no-fixed-point : (n : ℕ) → succ n ≢ n
 succ-no-fixed-point 0        = positive-not-zero 0
