@@ -3306,53 +3306,6 @@ module basic-truncation-development
     γ : ∃ \(f : Π A) → (x : X) → R x (f x)
     γ = ∥∥-functor h a
 
-infix  4  _∼_
-infixr 4 _,_
-infixr 2 _×_
-infixr 1 _+_
-infixl 5 _∘_
-infix  0 _≡_
-infixl 2 _∙_
-infixr 0 _≡⟨_⟩_
-infix  1 _∎
-infix  3  _⁻¹
-infix  0 _◁_
-infix  1 _◀
-infixr 0 _◁⟨_⟩_
-infix  0 _≃_
-infixl 2 _●_
-infixr 0 _≃⟨_⟩_
-infix  1 _■
-
-positive-cantors-diagonal : (e : ℕ → (ℕ → ℕ)) → Σ \(α : ℕ → ℕ) → (n : ℕ) → α ≢ e n
-
-cantors-diagonal : ¬(Σ \(e : ℕ → (ℕ → ℕ)) → (α : ℕ → ℕ) → Σ \(n : ℕ) → α ≡ e n)
-
-𝟚-has-𝟚-automorphisms : dfunext 𝓤₀ 𝓤₀ → (𝟚 ≃ 𝟚) ≃ 𝟚
-
-lifttwo : is-univalent 𝓤₀ → is-univalent 𝓤₁ → (𝟚 ≡ 𝟚) ≡ Lift 𝓤₁ 𝟚
-
-DNE : ∀ 𝓤 → 𝓤 ⁺ ̇
-DNE 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → ¬¬ P → P
-
-neg-is-subsingleton : dfunext 𝓤 𝓤₀ → (X : 𝓤 ̇ ) → is-subsingleton (¬ X)
-
-emsanity : dfunext 𝓤 𝓤₀ → (P : 𝓤 ̇ )
-         → is-subsingleton P → is-subsingleton (P + ¬ P)
-
-ne : (X : 𝓤 ̇ ) → ¬¬(X + ¬ X)
-
-DNE-gives-EM : dfunext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
-
-EM-gives-DNE : EM 𝓤 → DNE 𝓤
-
-SN : ∀ 𝓤 → 𝓤 ⁺ ̇
-SN 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → Σ \(X : 𝓤 ̇ ) → P ⇔ ¬ X
-
-SN-gives-DNE : SN 𝓤 → DNE 𝓤
-
-DNE-gives-SN : DNE 𝓤 → SN 𝓤
-
 module ℕ-more where
 
   open ℕ-order
@@ -3412,10 +3365,10 @@ holds-is-subsingleton = pr₂
   h p q (u , v) = Ω-ext fe pe u v
   f : (p q : Ω 𝓤) → p ≡ q → p ≡ q
   f p q e = h p q (g p q e)
-  constant-f : (p q : Ω 𝓤) (d e : p ≡ q) → f p q d ≡ f p q e
-  constant-f p q d e = ap (h p q) (i p q (g p q d) (g p q e))
+  k : (p q : Ω 𝓤) (d e : p ≡ q) → f p q d ≡ f p q e
+  k p q d e = ap (h p q) (i p q (g p q d) (g p q e))
   w : (p q : Ω 𝓤) → Σ \(f : p ≡ q → p ≡ q) → wconstant f
-  w p q = (f p q , constant-f p q)
+  w p q = (f p q , k p q)
 
 powersets-are-sets : hfunext 𝓤 (𝓥 ⁺) → dfunext 𝓥 𝓥 → propext 𝓥
                    → {X : 𝓤 ̇ } → is-set (X → Ω 𝓥)
@@ -3505,6 +3458,35 @@ module surjection-classifier
                         → (Y : 𝓤 ̇ )
                         → surjections-into Y ≃ (Y → inhabited-types 𝓤)
   surjection-classifier {𝓤} ua = special-map-classifier (ua 𝓤) (ua (𝓤 ⁺)) ∥_∥
+
+positive-cantors-diagonal : (e : ℕ → (ℕ → ℕ)) → Σ \(α : ℕ → ℕ) → (n : ℕ) → α ≢ e n
+
+cantors-diagonal : ¬(Σ \(e : ℕ → (ℕ → ℕ)) → (α : ℕ → ℕ) → Σ \(n : ℕ) → α ≡ e n)
+
+𝟚-has-𝟚-automorphisms : dfunext 𝓤₀ 𝓤₀ → (𝟚 ≃ 𝟚) ≃ 𝟚
+
+lifttwo : is-univalent 𝓤₀ → is-univalent 𝓤₁ → (𝟚 ≡ 𝟚) ≡ Lift 𝓤₁ 𝟚
+
+DNE : ∀ 𝓤 → 𝓤 ⁺ ̇
+DNE 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → ¬¬ P → P
+
+neg-is-subsingleton : dfunext 𝓤 𝓤₀ → (X : 𝓤 ̇ ) → is-subsingleton (¬ X)
+
+emsanity : dfunext 𝓤 𝓤₀ → (P : 𝓤 ̇ )
+         → is-subsingleton P → is-subsingleton (P + ¬ P)
+
+ne : (X : 𝓤 ̇ ) → ¬¬(X + ¬ X)
+
+DNE-gives-EM : dfunext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
+
+EM-gives-DNE : EM 𝓤 → DNE 𝓤
+
+SN : ∀ 𝓤 → 𝓤 ⁺ ̇
+SN 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → Σ \(X : 𝓤 ̇ ) → P ⇔ ¬ X
+
+SN-gives-DNE : SN 𝓤 → DNE 𝓤
+
+DNE-gives-SN : DNE 𝓤 → SN 𝓤
 
 succ-no-fixed-point : (n : ℕ) → succ n ≢ n
 succ-no-fixed-point 0        = positive-not-zero 0
@@ -3686,4 +3668,22 @@ DNE-gives-SN = sol
  where
   sol : DNE 𝓤 → SN 𝓤
   sol dne P i = (¬ P) , dni P , dne P i
+
+infix  4  _∼_
+infixr 4 _,_
+infixr 2 _×_
+infixr 1 _+_
+infixl 5 _∘_
+infix  0 _≡_
+infixl 2 _∙_
+infixr 0 _≡⟨_⟩_
+infix  1 _∎
+infix  3  _⁻¹
+infix  0 _◁_
+infix  1 _◀
+infixr 0 _◁⟨_⟩_
+infix  0 _≃_
+infixl 2 _●_
+infixr 0 _≃⟨_⟩_
+infix  1 _■
 

@@ -373,9 +373,10 @@ to practice univalent mathematics should consult the above references.
      1. [Subsingleton truncation](HoTT-UF-Agda.html#truncation)
      1. [The univalent axiom of choice](HoTT-UF-Agda.html#choice)
   1. [Appendix](HoTT-UF-Agda.html#appendix)
-     1. [Operator fixities and precedences](HoTT-UF-Agda.html#infixop)
+     1. [Solutions to some exercises](HoTT-UF-Agda.html#someexercisessol)
      1. [Additional exercises](HoTT-UF-Agda.html#moreexercises)
-     1. [Solutions](HoTT-UF-Agda.html#mlttexercisessol)
+     1. [Solutions to additional exercises](HoTT-UF-Agda.html#additionalexercisessol)
+     1. [Operator fixities and precedences](HoTT-UF-Agda.html#infixop)
      1. [Agda files automatically extracted from these notes](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes/tree/master/agda)
      1. [The sources for these notes](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes)
      1. [License](LICENSE)
@@ -921,7 +922,7 @@ module ℕ-order where
 
 Later, after learning
 [univalence](HoTT-UF-Agda.html#univalence) prove that in this case
-[this implies](HoTT-UF-Agda.html#mlttexercisessol)
+[this implies](HoTT-UF-Agda.html#additionalexercisessol)
 
    > `(x ≤ y) ≡ Σ \(z : ℕ) → x + z ≡ y`.
 
@@ -2006,7 +2007,7 @@ In both cases, we proceed by induction on both arguments.
     IH = ≼-gives-≤ x y (z , succ-lc q)
 \end{code}
 
-[Later](HoTT-UF-Agda.html#mlttexercisessol) we will show that `(x ≤ y) ≡ Σ \(z : ℕ) → x + z ≡ y`.
+[Later](HoTT-UF-Agda.html#additionalexercisessol) we will show that `(x ≤ y) ≡ Σ \(z : ℕ) → x + z ≡ y`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ## <a id="uminagda"></a> Univalent Mathematics in Agda
@@ -6676,106 +6677,9 @@ excluded middle.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ## <a id="appendix"></a> Appendix
 
-### <a id="infixop"></a> Operator fixities and precedences
-
-
-Without the following list of operator precedences and
-associativities (left or right), this agda file doesn't parse and is
-rejected by Agda.
-
-
-\begin{code}
-
-infix  4  _∼_
-infixr 4 _,_
-infixr 2 _×_
-infixr 1 _+_
-infixl 5 _∘_
-infix  0 _≡_
-infixl 2 _∙_
-infixr 0 _≡⟨_⟩_
-infix  1 _∎
-infix  3  _⁻¹
-infix  0 _◁_
-infix  1 _◀
-infixr 0 _◁⟨_⟩_
-infix  0 _≃_
-infixl 2 _●_
-infixr 0 _≃⟨_⟩_
-infix  1 _■
-
-\end{code}
-
-[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="moreexercises"></a> Additional exercises
-
-Solutions are available [at the end](#mlttexercisessol).
-
-*Exercise.* A sequence of elements of a type `X` is just a function `ℕ
- → X`. Use [Cantor's diagonal
- argument](https://en.wikipedia.org/wiki/Cantor%27s_diagonal_argument)
- to show in Agda that the type of sequences of natural numbers is
- uncountable. Prove a positive version and then derive a negative
- version from it:
-
-\begin{code}
-positive-cantors-diagonal : (e : ℕ → (ℕ → ℕ)) → Σ \(α : ℕ → ℕ) → (n : ℕ) → α ≢ e n
-
-cantors-diagonal : ¬(Σ \(e : ℕ → (ℕ → ℕ)) → (α : ℕ → ℕ) → Σ \(n : ℕ) → α ≡ e n)
-\end{code}
-
-*Hint.* It may be helpful to prove that the function `succ` has no
- fixed points, first.
-
-\begin{code}
-𝟚-has-𝟚-automorphisms : dfunext 𝓤₀ 𝓤₀ → (𝟚 ≃ 𝟚) ≃ 𝟚
-\end{code}
-
-Now we would like to have `(𝟚 ≡ 𝟚) ≡ 𝟚` with univalence, but the
-problem is that the type `𝟚 ≡ 𝟚` lives in `𝓤₁` whereas `𝟚` lives in
-`𝓤₀` and so, having different types, can't be compared for equality.
-But we do have that
-
-\begin{code}
-lifttwo : is-univalent 𝓤₀ → is-univalent 𝓤₁ → (𝟚 ≡ 𝟚) ≡ Lift 𝓤₁ 𝟚
-\end{code}
-
-We now discuss alternative formulations of the principle of excluded middle.
-
-\begin{code}
-DNE : ∀ 𝓤 → 𝓤 ⁺ ̇
-DNE 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → ¬¬ P → P
-
-neg-is-subsingleton : dfunext 𝓤 𝓤₀ → (X : 𝓤 ̇ ) → is-subsingleton (¬ X)
-
-emsanity : dfunext 𝓤 𝓤₀ → (P : 𝓤 ̇ )
-         → is-subsingleton P → is-subsingleton (P + ¬ P)
-
-ne : (X : 𝓤 ̇ ) → ¬¬(X + ¬ X)
-
-DNE-gives-EM : dfunext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
-
-EM-gives-DNE : EM 𝓤 → DNE 𝓤
-\end{code}
-
-The following says that excluded middle holds if and only if every
-subsingleton is the negation of some type.
-
-\begin{code}
-SN : ∀ 𝓤 → 𝓤 ⁺ ̇
-SN 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → Σ \(X : 𝓤 ̇ ) → P ⇔ ¬ X
-
-SN-gives-DNE : SN 𝓤 → DNE 𝓤
-
-DNE-gives-SN : DNE 𝓤 → SN 𝓤
-\end{code}
-
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 
-### <a id="mlttexercisessol"></a> Solutions
-
-In our first solution, we apply propositional extensionality to
-show that `(x ≤ y) ≡ Σ \(z : ℕ) → x + z ≡ y`.
+### <a id="someexercisessol"></a> Solutions to some exercises
 
 \begin{code}
 module ℕ-more where
@@ -6783,13 +6687,7 @@ module ℕ-more where
   open ℕ-order
   open Arithmetic renaming (_+_ to _∔_)
   open BasicArithmetic
-\end{code}
 
-[Recall](HoTT-UF-Agda.html#basicarithmetic) that we defined `x ≼ y` to
-mean `Σ \(z : ℕ) → x + z ≡ y`.  First we show that both relations are
-proposition valued:
-
-\begin{code}
   ≤-prop-valued : (x y : ℕ) → is-prop (x ≤ y)
   ≤-prop-valued 0 y               = 𝟙-is-subsingleton
   ≤-prop-valued (succ x) zero     = 𝟘-is-subsingleton
@@ -6808,13 +6706,7 @@ proposition valued:
   ≤-charac : propext 𝓤₀ → (x y : ℕ) → (x ≤ y) ≡ (x ≼ y)
   ≤-charac pe x y = pe (≤-prop-valued x y) (≼-prop-valued x y)
                        (≤-gives-≼ x y) (≼-gives-≤ x y)
-\end{code}
 
-This completes the exercise on the order relation on the natural numbers.
-
-For the moment we leave the following solutions unexplained.
-
-\begin{code}
 _holds : Ω 𝓤 → 𝓤 ̇
 _holds = pr₁
 
@@ -6849,10 +6741,10 @@ holds-is-subsingleton = pr₂
   h p q (u , v) = Ω-ext fe pe u v
   f : (p q : Ω 𝓤) → p ≡ q → p ≡ q
   f p q e = h p q (g p q e)
-  constant-f : (p q : Ω 𝓤) (d e : p ≡ q) → f p q d ≡ f p q e
-  constant-f p q d e = ap (h p q) (i p q (g p q d) (g p q e))
+  k : (p q : Ω 𝓤) (d e : p ≡ q) → f p q d ≡ f p q e
+  k p q d e = ap (h p q) (i p q (g p q d) (g p q e))
   w : (p q : Ω 𝓤) → Σ \(f : p ≡ q → p ≡ q) → wconstant f
-  w p q = (f p q , constant-f p q)
+  w p q = (f p q , k p q)
 
 powersets-are-sets : hfunext 𝓤 (𝓥 ⁺) → dfunext 𝓥 𝓥 → propext 𝓥
                    → {X : 𝓤 ̇ } → is-set (X → Ω 𝓥)
@@ -6942,7 +6834,76 @@ module surjection-classifier
                         → (Y : 𝓤 ̇ )
                         → surjections-into Y ≃ (Y → inhabited-types 𝓤)
   surjection-classifier {𝓤} ua = special-map-classifier (ua 𝓤) (ua (𝓤 ⁺)) ∥_∥
+\end{code}
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="moreexercises"></a> Additional exercises
+
+Solutions are available [at the end](#additionalexercisessol).
+
+*Exercise.* A sequence of elements of a type `X` is just a function `ℕ → X`.
+ Use [Cantor's diagonal
+ argument](https://en.wikipedia.org/wiki/Cantor%27s_diagonal_argument)
+ to show in Agda that the type of sequences of natural numbers is
+ uncountable. Prove a positive version and then derive a negative
+ version from it:
+
+\begin{code}
+positive-cantors-diagonal : (e : ℕ → (ℕ → ℕ)) → Σ \(α : ℕ → ℕ) → (n : ℕ) → α ≢ e n
+
+cantors-diagonal : ¬(Σ \(e : ℕ → (ℕ → ℕ)) → (α : ℕ → ℕ) → Σ \(n : ℕ) → α ≡ e n)
+\end{code}
+
+*Hint.* It may be helpful to prove that the function `succ` has no
+ fixed points, first.
+
+\begin{code}
+𝟚-has-𝟚-automorphisms : dfunext 𝓤₀ 𝓤₀ → (𝟚 ≃ 𝟚) ≃ 𝟚
+\end{code}
+
+Now we would like to have `(𝟚 ≡ 𝟚) ≡ 𝟚` with univalence, but the
+problem is that the type `𝟚 ≡ 𝟚` lives in `𝓤₁` whereas `𝟚` lives in
+`𝓤₀` and so, having different types, can't be compared for equality.
+But we do have that
+
+\begin{code}
+lifttwo : is-univalent 𝓤₀ → is-univalent 𝓤₁ → (𝟚 ≡ 𝟚) ≡ Lift 𝓤₁ 𝟚
+\end{code}
+
+We now discuss alternative formulations of the principle of excluded middle.
+
+\begin{code}
+DNE : ∀ 𝓤 → 𝓤 ⁺ ̇
+DNE 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → ¬¬ P → P
+
+neg-is-subsingleton : dfunext 𝓤 𝓤₀ → (X : 𝓤 ̇ ) → is-subsingleton (¬ X)
+
+emsanity : dfunext 𝓤 𝓤₀ → (P : 𝓤 ̇ )
+         → is-subsingleton P → is-subsingleton (P + ¬ P)
+
+ne : (X : 𝓤 ̇ ) → ¬¬(X + ¬ X)
+
+DNE-gives-EM : dfunext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
+
+EM-gives-DNE : EM 𝓤 → DNE 𝓤
+\end{code}
+
+The following says that excluded middle holds if and only if every
+subsingleton is the negation of some type.
+
+\begin{code}
+SN : ∀ 𝓤 → 𝓤 ⁺ ̇
+SN 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → Σ \(X : 𝓤 ̇ ) → P ⇔ ¬ X
+
+SN-gives-DNE : SN 𝓤 → DNE 𝓤
+
+DNE-gives-SN : DNE 𝓤 → SN 𝓤
+\end{code}
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="additionalexercisessol"></a> Solutions to additional exercises
+
+\begin{code}
 succ-no-fixed-point : (n : ℕ) → succ n ≢ n
 succ-no-fixed-point 0        = positive-not-zero 0
 succ-no-fixed-point (succ n) = γ
@@ -7123,6 +7084,35 @@ DNE-gives-SN = sol
  where
   sol : DNE 𝓤 → SN 𝓤
   sol dne P i = (¬ P) , dni P , dne P i
+\end{code}
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="infixop"></a> Operator fixities and precedences
+
+Without the following list of operator precedences and
+associativities (left or right), this agda file doesn't parse and is
+rejected by Agda.
+
+\begin{code}
+
+infix  4  _∼_
+infixr 4 _,_
+infixr 2 _×_
+infixr 1 _+_
+infixl 5 _∘_
+infix  0 _≡_
+infixl 2 _∙_
+infixr 0 _≡⟨_⟩_
+infix  1 _∎
+infix  3  _⁻¹
+infix  0 _◁_
+infix  1 _◀
+infixr 0 _◁⟨_⟩_
+infix  0 _≃_
+infixl 2 _●_
+infixr 0 _≃⟨_⟩_
+infix  1 _■
+
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
