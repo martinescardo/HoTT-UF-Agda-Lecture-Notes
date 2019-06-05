@@ -3309,7 +3309,7 @@ holds-is-subsingleton = pr₂
          being-subsingleton-is-a-subsingleton fe _ _)
 
 Ω-is-a-set : dfunext 𝓤 𝓤 → propext 𝓤 → is-set (Ω 𝓤)
-Ω-is-a-set {𝓤} fe pe = Id-collapsibles-are-sets (Ω 𝓤) pc
+Ω-is-a-set {𝓤} fe pe = Id-collapsibles-are-sets (Ω 𝓤) γ
  where
   A : (p q : Ω 𝓤) → 𝓤 ̇
   A p q = (p holds → q holds) × (q holds → p holds)
@@ -3332,8 +3332,8 @@ holds-is-subsingleton = pr₂
   f p q e = h p q (g p q e)
   constant-f : (p q : Ω 𝓤) (d e : p ≡ q) → f p q d ≡ f p q e
   constant-f p q d e = ap (h p q) (A-is-subsingleton p q (g p q d) (g p q e))
-  pc : (p q : Ω 𝓤) → Σ \(f : p ≡ q → p ≡ q) → wconstant f
-  pc p q = (f p q , constant-f p q)
+  γ : (p q : Ω 𝓤) → Σ \(f : p ≡ q → p ≡ q) → wconstant f
+  γ p q = (f p q , constant-f p q)
 
 powersets-are-sets : hfunext 𝓤 (𝓥 ⁺) → dfunext 𝓥 𝓥 → propext 𝓥
                    → {X : 𝓤 ̇ } → is-set (X → Ω 𝓥)
