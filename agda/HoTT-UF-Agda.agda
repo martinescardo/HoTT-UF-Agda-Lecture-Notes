@@ -3147,6 +3147,49 @@ module ℕ-more where
   ≤-charac pe x y = pe (≤-prop-valued x y) (≼-prop-valued x y)
                        (≤-gives-≼ x y) (≼-gives-≤ x y)
 
+_holds : Ω 𝓤 → 𝓤 ̇
+_holds = pr₁
+
+holds-is-subsingleton : (p : Ω 𝓤) → is-subsingleton (p holds)
+holds-is-subsingleton = pr₂
+
+Ω-ext : dfunext 𝓤 𝓤 → propext 𝓤 → {p q : Ω 𝓤}
+        → (p holds → q holds) → (q holds → p holds) → p ≡ q
+Ω-ext {𝓤} fe pe {p} {q} f g =
+ to-Σ-≡ (pe (holds-is-subsingleton p) (holds-is-subsingleton q) f g ,
+         being-subsingleton-is-a-subsingleton fe _ _)
+
+Ω-is-a-set : dfunext 𝓤 𝓤 → propext 𝓤 → is-set (Ω 𝓤)
+Ω-is-a-set {𝓤} fe pe = Id-collapsibles-are-sets (Ω 𝓤) pc
+ where
+  A : (p q : Ω 𝓤) → 𝓤 ̇
+  A p q = (p holds → q holds) × (q holds → p holds)
+  A-is-subsingleton : (p q : Ω 𝓤) → is-subsingleton(A p q)
+  A-is-subsingleton p q = Σ-is-subsingleton (Π-is-subsingleton fe
+                                   (λ _ → holds-is-subsingleton q))
+                                   (λ _ → Π-is-subsingleton fe (λ _ → holds-is-subsingleton p))
+  g : (p q : Ω 𝓤) → p ≡ q → A p q
+  g p q e = (b , c)
+   where
+    a : p holds ≡ q holds
+    a = ap _holds e
+    b : p holds → q holds
+    b = transport (λ X → X) a
+    c : q holds → p holds
+    c = transport (λ X → X) (a ⁻¹)
+  h  : (p q : Ω 𝓤) → A p q → p ≡ q
+  h p q (u , v) = Ω-ext fe pe u v
+  f  : (p q : Ω 𝓤) → p ≡ q → p ≡ q
+  f p q e = h p q (g p q e)
+  constant-f : (p q : Ω 𝓤) (d e : p ≡ q) → f p q d ≡ f p q e
+  constant-f p q d e = ap (h p q) (A-is-subsingleton p q (g p q d) (g p q e))
+  pc : (p q : Ω 𝓤) → Σ \(f : p ≡ q → p ≡ q) → wconstant f
+  pc p q = (f p q , constant-f p q)
+
+powersets-are-sets : hfunext 𝓤 (𝓥 ⁺) → dfunext 𝓥 𝓥 → propext 𝓥
+                   → {X : 𝓤 ̇ } → is-set (X → Ω 𝓥)
+powersets-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-a-set fe' pe)
+
 has-section-charac f = ΠΣ-distr-≃
 
 retractions-into : 𝓤 ̇ → 𝓤 ⁺ ̇
@@ -3155,11 +3198,11 @@ retractions-into {𝓤} Y = Σ \(X : 𝓤 ̇ ) → Y ◁ X
 pointed-types : (𝓤 : Universe) → 𝓤 ⁺ ̇
 pointed-types 𝓤 = Σ \(X : 𝓤 ̇ ) → X
 
-section-classifier : Univalence
-                   → (Y : 𝓤 ̇ ) → retractions-into Y ≃ (Y → pointed-types 𝓤)
-section-classifier {𝓤} ua Y = retractions-into Y    ≃⟨ ≃-sym b ⟩
-                              ((𝓤 /[ id ] Y))       ≃⟨ a ⟩
-                              (Y → pointed-types 𝓤) ■
+retraction-classifier : Univalence
+                      → (Y : 𝓤 ̇ ) → retractions-into Y ≃ (Y → pointed-types 𝓤)
+retraction-classifier {𝓤} ua Y = retractions-into Y    ≃⟨ ≃-sym b ⟩
+                                 ((𝓤 /[ id ] Y))       ≃⟨ a ⟩
+                                 (Y → pointed-types 𝓤) ■
  where
   a = blue-map-classifier.bijection 𝓤 𝓤 (ua 𝓤) (ua (𝓤 ⁺))
        (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺))) Y id
@@ -3275,7 +3318,8 @@ lifttwo ua₀ ua₁ = Eq-to-Id ua₁ (𝟚 ≡ 𝟚) (Lift 𝓤₁ 𝟚) e
       𝟚         ≃⟨ ≃-sym (Lift-≃ 𝟚) ⟩
       Lift 𝓤₁ 𝟚 ■
 
-the-subsingletons-are-the-subtypes-of-𝟙' : (X : 𝓤 ̇ ) → is-subsingleton X ⇔ (X ↪ 𝟙)
+the-subsingletons-are-the-subtypes-of-𝟙' : (X : 𝓤 ̇ )
+                                         → is-subsingleton X ⇔ (X ↪ 𝟙)
 the-subsingletons-are-the-subtypes-of-𝟙' X = φ , ψ
  where
   i : is-subsingleton X → is-embedding (!𝟙' X)
