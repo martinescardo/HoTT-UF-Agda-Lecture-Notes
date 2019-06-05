@@ -56,6 +56,7 @@ html web page is generated automatically from it using Agda and other
 tools. [Github](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes)
 pull requests by students to fix typos or mistakes and clarify
 ambiguities are welcome.
+
 There is also a [pdf
 version](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.pdf)
 automatically generated from the [html version](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/index.html).
@@ -5849,8 +5850,11 @@ corollary {𝓤} ua Y = equiv-to-singleton (equiv-classification ua Y) i
                 (univalence-gives-dfunext (ua 𝓤)))
 \end{code}
 
-*Exercise*. (1) Show that the sections of `Y` are classified by the type `Σ \(A : 𝓤 ̇ ) → A` of pointed types.
-(2) After we have defined [propositional truncations](HoTT-UF-Agda.html#truncation) and surjections, show that the surjections into `Y` are classified by the type `Σ \(A : 𝓤 ̇ ) → ∥ A ∥` of inhabited types.
+*Exercise*. (1) Show that the retractions into `Y` are classified by
+the type `Σ \(A : 𝓤 ̇ ) → A` of pointed types.  (2) After we have
+defined [propositional truncations](HoTT-UF-Agda.html#truncation) and
+surjections, show that the surjections into `Y` are classified by the
+type `Σ \(A : 𝓤 ̇ ) → ∥ A ∥` of inhabited types.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="magmaequivalences"></a> Magma equivalences
@@ -6569,15 +6573,15 @@ For the moment we leave the following solutions unexplained.
 \begin{code}
 has-section-charac f = ΠΣ-distr-≃
 
-sections-of : 𝓤 ̇ → 𝓤 ⁺ ̇
-sections-of {𝓤} Y = Σ \(X : 𝓤 ̇ ) → Y ◁ X
+retractions-into : 𝓤 ̇ → 𝓤 ⁺ ̇
+retractions-into {𝓤} Y = Σ \(X : 𝓤 ̇ ) → Y ◁ X
 
 pointed-types : (𝓤 : Universe) → 𝓤 ⁺ ̇
 pointed-types 𝓤 = Σ \(X : 𝓤 ̇ ) → X
 
 section-classifier : Univalence
-                   → (Y : 𝓤 ̇ ) → sections-of Y ≃ (Y → pointed-types 𝓤)
-section-classifier {𝓤} ua Y = sections-of Y         ≃⟨ ≃-sym b ⟩
+                   → (Y : 𝓤 ̇ ) → retractions-into Y ≃ (Y → pointed-types 𝓤)
+section-classifier {𝓤} ua Y = retractions-into Y    ≃⟨ ≃-sym b ⟩
                               ((𝓤 /[ id ] Y))       ≃⟨ a ⟩
                               (Y → pointed-types 𝓤) ■
  where
@@ -6590,6 +6594,28 @@ section-classifier {𝓤} ua Y = sections-of Y         ≃⟨ ≃-sym b ⟩
           ≃⟨ Σ-cong (λ X → Σ-cong (λ f → ΠΣ-distr-≃)) ⟩
       (Σ \(X : 𝓤 ̇ ) → Y ◁ X)
           ■
+
+module _ (pt : subsingleton-truncations-exist)
+         (ua : Univalence)
+       where
+
+  fe : global-dfunext
+  fe = (univalence-gives-global-dfunext ua)
+
+  open basic-truncation-development pt fe public
+
+  _↠_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+  X ↠ Y = Σ \(f : X → Y) → is-surjection f
+
+  surjections-into : 𝓤 ̇ → 𝓤 ⁺ ̇
+  surjections-into {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↠ Y
+
+  inhabited-types : (𝓤 : Universe) → 𝓤 ⁺ ̇
+  inhabited-types 𝓤 = Σ \(X : 𝓤 ̇ ) → ∥ X ∥
+
+  surjection-classifier : Univalence
+                        → (Y : 𝓤 ̇ ) → surjections-into Y ≃ (Y → inhabited-types 𝓤)
+  surjection-classifier {𝓤} ua Y = blue-map-classifier.bijection 𝓤 𝓤 (ua 𝓤) (ua (𝓤 ⁺)) fe Y ∥_∥
 
 succ-no-fixed-point : (n : ℕ) → succ n ≢ n
 succ-no-fixed-point 0        = positive-not-zero 0

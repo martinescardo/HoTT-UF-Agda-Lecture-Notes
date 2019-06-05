@@ -3149,15 +3149,15 @@ module ℕ-more where
 
 has-section-charac f = ΠΣ-distr-≃
 
-sections-of : 𝓤 ̇ → 𝓤 ⁺ ̇
-sections-of {𝓤} Y = Σ \(X : 𝓤 ̇ ) → Y ◁ X
+retractions-into : 𝓤 ̇ → 𝓤 ⁺ ̇
+retractions-into {𝓤} Y = Σ \(X : 𝓤 ̇ ) → Y ◁ X
 
 pointed-types : (𝓤 : Universe) → 𝓤 ⁺ ̇
 pointed-types 𝓤 = Σ \(X : 𝓤 ̇ ) → X
 
 section-classifier : Univalence
-                   → (Y : 𝓤 ̇ ) → sections-of Y ≃ (Y → pointed-types 𝓤)
-section-classifier {𝓤} ua Y = sections-of Y         ≃⟨ ≃-sym b ⟩
+                   → (Y : 𝓤 ̇ ) → retractions-into Y ≃ (Y → pointed-types 𝓤)
+section-classifier {𝓤} ua Y = retractions-into Y    ≃⟨ ≃-sym b ⟩
                               ((𝓤 /[ id ] Y))       ≃⟨ a ⟩
                               (Y → pointed-types 𝓤) ■
  where
@@ -3170,6 +3170,28 @@ section-classifier {𝓤} ua Y = sections-of Y         ≃⟨ ≃-sym b ⟩
           ≃⟨ Σ-cong (λ X → Σ-cong (λ f → ΠΣ-distr-≃)) ⟩
       (Σ \(X : 𝓤 ̇ ) → Y ◁ X)
           ■
+
+module _ (pt : subsingleton-truncations-exist)
+         (ua : Univalence)
+       where
+
+  fe : global-dfunext
+  fe = (univalence-gives-global-dfunext ua)
+
+  open basic-truncation-development pt fe public
+
+  _↠_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+  X ↠ Y = Σ \(f : X → Y) → is-surjection f
+
+  surjections-into : 𝓤 ̇ → 𝓤 ⁺ ̇
+  surjections-into {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↠ Y
+
+  inhabited-types : (𝓤 : Universe) → 𝓤 ⁺ ̇
+  inhabited-types 𝓤 = Σ \(X : 𝓤 ̇ ) → ∥ X ∥
+
+  surjection-classifier : Univalence
+                        → (Y : 𝓤 ̇ ) → surjections-into Y ≃ (Y → inhabited-types 𝓤)
+  surjection-classifier {𝓤} ua Y = blue-map-classifier.bijection 𝓤 𝓤 (ua 𝓤) (ua (𝓤 ⁺)) fe Y ∥_∥
 
 succ-no-fixed-point : (n : ℕ) → succ n ≢ n
 succ-no-fixed-point 0        = positive-not-zero 0
