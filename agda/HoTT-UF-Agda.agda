@@ -2663,8 +2663,8 @@ global-≃-ap' {𝓤} {𝓥} ua F A φ X Y e =
 
 global-≃-ap ua = global-≃-ap' ua id
 
-subtype-of : 𝓤 ̇ → 𝓤 ⁺ ̇
-subtype-of {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↪ Y
+subtypes-of : 𝓤 ̇ → 𝓤 ⁺ ̇
+subtypes-of {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↪ Y
 
 Ω : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Ω 𝓤 = Σ \(P : 𝓤 ̇ ) → is-subsingleton P
@@ -2699,7 +2699,7 @@ module blue-map-classifier
   (Σ \(σ : 𝓤 / Y) → (y : Y) → blue (χ σ y))   ≃⟨ Σ-assoc ⟩
   (𝓤 /[ blue ] Y)                             ■)
 
-Ω-is-subtype-classifier : Univalence → (Y : 𝓤 ̇ ) → subtype-of Y ≃ (Y → Ω 𝓤)
+Ω-is-subtype-classifier : Univalence → (Y : 𝓤 ̇ ) → subtypes-of Y ≃ (Y → Ω 𝓤)
 Ω-is-subtype-classifier {𝓤} ua Y = blue-map-classifier.bijection 𝓤 𝓤 (ua 𝓤) (ua (𝓤 ⁺))
                                      (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺))) Y is-subsingleton
 
@@ -3149,6 +3149,28 @@ module ℕ-more where
 
 has-section-charac f = ΠΣ-distr-≃
 
+sections-of : 𝓤 ̇ → 𝓤 ⁺ ̇
+sections-of {𝓤} Y = Σ \(X : 𝓤 ̇ ) → Y ◁ X
+
+pointed-types : (𝓤 : Universe) → 𝓤 ⁺ ̇
+pointed-types 𝓤 = Σ \(X : 𝓤 ̇ ) → X
+
+section-classifier : Univalence
+                   → (Y : 𝓤 ̇ ) → sections-of Y ≃ (Y → pointed-types 𝓤)
+section-classifier {𝓤} ua Y = sections-of Y         ≃⟨ ≃-sym b ⟩
+                              ((𝓤 /[ id ] Y))       ≃⟨ a ⟩
+                              (Y → pointed-types 𝓤) ■
+ where
+  a = blue-map-classifier.bijection 𝓤 𝓤 (ua 𝓤) (ua (𝓤 ⁺))
+       (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺))) Y id
+  remark : (𝓤 /[ id ] Y)
+         ≡ (Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → (y : Y) → Σ \(x : X) → f x ≡ y)
+  remark = refl _
+  b = (Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → (y : Y) → Σ \(x : X) → f x ≡ y)
+          ≃⟨ Σ-cong (λ X → Σ-cong (λ f → ΠΣ-distr-≃)) ⟩
+      (Σ \(X : 𝓤 ̇ ) → Y ◁ X)
+          ■
+
 succ-no-fixed-point : (n : ℕ) → succ n ≢ n
 succ-no-fixed-point 0        = positive-not-zero 0
 succ-no-fixed-point (succ n) = γ
@@ -3234,10 +3256,10 @@ lifttwo ua₀ ua₁ = Eq-to-Id ua₁ (𝟚 ≡ 𝟚) (Lift 𝓤₁ 𝟚) e
 the-subsingletons-are-the-subtypes-of-𝟙' : (X : 𝓤 ̇ ) → is-subsingleton X ⇔ (X ↪ 𝟙)
 the-subsingletons-are-the-subtypes-of-𝟙' X = φ , ψ
  where
-  j : is-subsingleton X → is-embedding (!𝟙' X)
-  j s ⋆ (x , refl ⋆) (y , refl ⋆) = ap (λ - → - , refl ⋆) (s x y)
+  i : is-subsingleton X → is-embedding (!𝟙' X)
+  i s ⋆ (x , refl ⋆) (y , refl ⋆) = ap (λ - → - , refl ⋆) (s x y)
   φ : is-subsingleton X → X ↪ 𝟙
-  φ s = !𝟙 , j s
+  φ s = !𝟙 , i s
   ψ : X ↪ 𝟙 → is-subsingleton X
   ψ (f , e) x y = d
    where
@@ -3256,11 +3278,11 @@ the-subsingletons-are-the-subtypes-of-𝟙 pe fe X = γ
  where
   a : is-subsingleton X ⇔ (X ↪ 𝟙)
   a = the-subsingletons-are-the-subtypes-of-𝟙' X
-  i : is-subsingleton (X ↪ 𝟙)
-  i (f , e) (f' , e') = to-Σ-≡ (fe (λ x → 𝟙-is-subsingleton (f x) (f' x)) ,
+  b : is-subsingleton (X ↪ 𝟙)
+  b (f , e) (f' , e') = to-Σ-≡ (fe (λ x → 𝟙-is-subsingleton (f x) (f' x)) ,
                                 being-embedding-is-a-subsingleton fe f' _ e')
   γ : is-subsingleton X ≡ (X ↪ 𝟙)
-  γ = pe (being-subsingleton-is-a-subsingleton fe) i (pr₁ a) (pr₂ a)
+  γ = pe (being-subsingleton-is-a-subsingleton fe) b (pr₁ a) (pr₂ a)
 
 neg-is-subsingleton fe X f g = fe (λ x → !𝟘 (f x ≡ g x) (f x))
 

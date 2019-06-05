@@ -59,6 +59,8 @@ ambiguities are welcome.
 There is also a [pdf
 version](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.pdf)
 automatically generated from the [html version](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/index.html).
+(NB. The pdf version of these notes at ResearchGate is usually out of date.)
+
 These notes were originally developed for the
 [Midlands Graduate School 2019](http://events.cs.bham.ac.uk/mgs2019/). They will evolve for a while.
 
@@ -310,7 +312,7 @@ to practice univalent mathematics should consult the above references.
 ### <a id="contents"></a> Table of contents
 
   1. [Front matter](HoTT-UF-Agda.html#lecturenotes)
-     1. [First page](HoTT-UF-Agda.html#lecturenotes)
+     1. [Title, abstract, keywords and about](HoTT-UF-Agda.html#lecturenotes)
      1. [Introduction](HoTT-UF-Agda.html#introduction)
      1. [Homotopy type theory](HoTT-UF-Agda.html#homotopytypetheory)
      1. [General references](HoTT-UF-Agda.html#generalreferences)
@@ -5711,21 +5713,22 @@ global-≃-ap ua = global-≃-ap' ua id
 A subtype of a type `Y` is a type `X` *together* with an embedding of `X` into `Y`:
 
 \begin{code}
-subtype-of : 𝓤 ̇ → 𝓤 ⁺ ̇
-subtype-of {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↪ Y
+subtypes-of : 𝓤 ̇ → 𝓤 ⁺ ̇
+subtypes-of {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↪ Y
 \end{code}
 
-We then define the type `Ω 𝓤` of subsingletons in a given universe `𝓤`, which lives in the next universe:
+We denote by `Ω 𝓤` the type of subsingletons in a given universe `𝓤`,
+which lives in the next universe:
 
 \begin{code}
 Ω : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Ω 𝓤 = Σ \(P : 𝓤 ̇ ) → is-subsingleton P
 \end{code}
 
-This type is the subtype classifier of types in `𝓤`, in the sense that
+This is the subtype classifier of types in `𝓤`, in the sense that
 we have a canonical equivalence
 
-   > `subtype-of Y ≃ (Y → Ω 𝓤)`
+   > `subtypes-of Y ≃ (Y → Ω 𝓤)`
 
 for any type `Y : 𝓤`.
 
@@ -5733,7 +5736,7 @@ for any type `Y : 𝓤`.
  that `Ω 𝓤` is a set. (1) Conclude that the type `Y → Ω
  𝓤` is a set (even if `Y` is not), which justifies the name powerset for it, and the notation `𝓟 Y`. (2) For `A : 𝓟 Y` and `y : Y` write `y ∈ A` to mean `pr₁(A y)`. Define `A ⊆ B` to mean `(y : Y) → y ∈ A → y ∈ B`. Show that both `∈` and `⊆` are subsingleton-valued relations. (3) Show that `A ≡ B` and `(A ⊆ B) × (B ⊆ A)` are logically equivalent propositions. Thus, univalence gives extensionality for the powerset.
 
-We will derive the claim `subtype-of Y ≃ (Y → Ω 𝓤)` from something
+We will derive the claim `subtypes-of Y ≃ (Y → Ω 𝓤)` from something
 more general.  We defined embeddings to be maps whose fibers are
 all subsingletons. We can replace `is-subsingleton` by an arbitrary
 property of — or even structure on — types, which we will name `blue`.
@@ -5798,7 +5801,7 @@ is-subsingleton`, we get the promised fact that `Ω` is the subtype
 classifier:
 
 \begin{code}
-Ω-is-subtype-classifier : Univalence → (Y : 𝓤 ̇ ) → subtype-of Y ≃ (Y → Ω 𝓤)
+Ω-is-subtype-classifier : Univalence → (Y : 𝓤 ̇ ) → subtypes-of Y ≃ (Y → Ω 𝓤)
 Ω-is-subtype-classifier {𝓤} ua Y = blue-map-classifier.bijection 𝓤 𝓤 (ua 𝓤) (ua (𝓤 ⁺))
                                      (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺))) Y is-subsingleton
 \end{code}
@@ -6565,6 +6568,28 @@ For the moment we leave the following solutions unexplained.
 
 \begin{code}
 has-section-charac f = ΠΣ-distr-≃
+
+sections-of : 𝓤 ̇ → 𝓤 ⁺ ̇
+sections-of {𝓤} Y = Σ \(X : 𝓤 ̇ ) → Y ◁ X
+
+pointed-types : (𝓤 : Universe) → 𝓤 ⁺ ̇
+pointed-types 𝓤 = Σ \(X : 𝓤 ̇ ) → X
+
+section-classifier : Univalence
+                   → (Y : 𝓤 ̇ ) → sections-of Y ≃ (Y → pointed-types 𝓤)
+section-classifier {𝓤} ua Y = sections-of Y         ≃⟨ ≃-sym b ⟩
+                              ((𝓤 /[ id ] Y))       ≃⟨ a ⟩
+                              (Y → pointed-types 𝓤) ■
+ where
+  a = blue-map-classifier.bijection 𝓤 𝓤 (ua 𝓤) (ua (𝓤 ⁺))
+       (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺))) Y id
+  remark : (𝓤 /[ id ] Y)
+         ≡ (Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → (y : Y) → Σ \(x : X) → f x ≡ y)
+  remark = refl _
+  b = (Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → (y : Y) → Σ \(x : X) → f x ≡ y)
+          ≃⟨ Σ-cong (λ X → Σ-cong (λ f → ΠΣ-distr-≃)) ⟩
+      (Σ \(X : 𝓤 ̇ ) → Y ◁ X)
+          ■
 
 succ-no-fixed-point : (n : ℕ) → succ n ≢ n
 succ-no-fixed-point 0        = positive-not-zero 0
