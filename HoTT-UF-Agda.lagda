@@ -901,8 +901,8 @@ nested induction, on the first argument and then the second, but we
 use pattern
 matching for the sake of readability.
 
-*Exercise.* Write it using `ℕ-induction`, recursion or iteration, as
-appropriate.
+*Exercise.* [Write it]((HoTT-UF-Agda.html#someexercisessol) using
+`ℕ-induction`, recursion or iteration, as appropriate.
 
 \begin{code}
 module ℕ-order where
@@ -916,7 +916,7 @@ module ℕ-order where
 \end{code}
 
 *Exercise.* After learning [`Σ`](HoTT-UF-Agda.html#sigmatypes)
- and [`_≡_`](HoTT-UF-Agda.html#identitytype) explained below, prove that
+ and [`_≡_`](HoTT-UF-Agda.html#identitytype) explained below, prove [that](HoTT-UF-Agda.html#BasicArithmetic))
 
    > `x ≤ y` if and only if `Σ \(z : ℕ) → x + z ≡ y`.
 
@@ -928,7 +928,7 @@ Later, after learning
 
 That [bi-implication can be turned into
 equality](HoTT-UF-Agda.html#univalence-gives-propext) only holds for
-types that are subsingletons.
+types that are subsingletons (and this is called [propositional extensionality](HoTT-UF-Agda.html#propext)).
 
 If we are doing applied mathematics and want to actually compute, we
 can define a type for binary notation for the sake of efficiency, and
@@ -1390,8 +1390,7 @@ Js-agreement X A f x x (refl x) = refl (f x)
 
 Similarly define `H'` from `J` without using pattern matching on `refl`
 and show that it coincides with `H` (possibly using pattern matching
-on `refl`). This is
-[harder](http://www.cse.chalmers.se/~coquand/singl.pdf).
+on `refl`). This is [harder](http://www.cse.chalmers.se/~coquand/singl.pdf).
 
 **Notational remark.** The symbols "`=`" and "`≡`" are swapped with
   respect to the [HoTT book](https://homotopytypetheory.org/book/)
@@ -5232,7 +5231,8 @@ _↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ↪ Y = Σ \(f : X → Y) → is-embedding f
 \end{code}
 
-*Exercise.* Show that the subsingletons are the subtypes of `𝟙`, in
+*Exercise.* Show [that](HoTT-UF-Agda.html#the-subsingletons-are-the-subtypes-of-a-singleton)
+the subsingletons are the subtypes of `𝟙`, in
 the sense that `is-subsingleton X ⇔ (X ↪ 𝟙)`. Assuming propositional
 and functional extensionality, conclude that
 `is-subsingleton X ≡ (X ↪ 𝟙)`
@@ -5990,15 +5990,19 @@ we have a canonical equivalence
 
 for any type `Y : 𝓤`.
 
-*Exercise* (Not easy.) Assume univalence. (0) show that `Ω 𝓤` is a
- set. (1) Conclude that the type `Y → Ω 𝓤` is a set (even if `Y` is
- not), which justifies the name powerset for it, and the notation
-`𝓟 Y`. (2) For `A : 𝓟 Y` and `y : Y` write `y ∈ A` to mean
-`pr₁(A y)`. Define `A ⊆ B` to mean `(y : Y) → y ∈ A → y ∈ B`. Show
- that both `∈` and `⊆` are subsingleton-valued
- relations. [(3)](HoTT-UF-Agda.htnml#subset-extensionality) Show that
- `A ≡ B` and `(A ⊆ B) × (B ⊆ A)` are logically equivalent
- propositions. Thus, univalence gives extensionality for the powerset.
+*Exercise* (Not easy.) Assume univalence or function extensionality or
+propositional extensionality for each part, as
+appropriate. [(0)](HoTT-UF-Agda.html#someexercisessol) show that `Ω 𝓤`
+is a set.
+[(1)](HoTT-UF-Agda.html#powersets-are-sets) Conclude that the
+type `Y → Ω 𝓤` is a set (even if `Y` is not), which justifies the name
+powerset for it, and the notation `𝓟 Y`.
+[(2)](HoTT-UF-Agda.html#someexercisessol) For `A : 𝓟 Y` and `y :
+Y` write `y ∈ A` to mean `pr₁(A y)`. Define `A ⊆ B` to mean `(y : Y) →
+y ∈ A → y ∈ B`. Show that both `∈` and `⊆` are subsingleton-valued
+relations. [(3)](HoTT-UF-Agda.htnml#subset-extensionality) Show that
+`A ≡ B` and `(A ⊆ B) × (B ⊆ A)` are logically equivalent
+propositions. Thus, univalence gives extensionality for the powerset.
 
 We will derive the claim `subtypes-of Y ≃ (Y → Ω 𝓤)` from something
 more general.  We defined embeddings to be maps whose fibers are
@@ -6428,10 +6432,10 @@ is-surjection' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)
 is-surjection' f = (y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
 \end{code}
 
-[*Exercise.*](HoTT-UF-Agda.html#has-section-charac) The type `(y :
- codomain f) → Σ \(x : domain f) → f x ≡ y` is equivalent to the type
- `has-section f`, which is stronger than saying that `f` is a
- surjection.
+*Exercise.*(HoTT-UF-Agda.html#has-section-charac) The type
+`(y : codomain f) → Σ \(x : domain f) → f x ≡ y` [is equivalent
+ to](HoTT-UF-Agda.html#has-section-charac) the type `has-section f`,
+ which is stronger than saying that `f` is a surjection.
 
 There are two problems with this definition of inhabitation:
 
@@ -6681,6 +6685,18 @@ excluded middle.
 ### <a id="someexercisessol"></a> Solutions to some exercises
 
 \begin{code}
+module ℕ-order-exercise-solution where
+
+  _≤'_ : ℕ → ℕ → 𝓤₀ ̇
+  _≤'_ = ℕ-iteration (ℕ → 𝓤₀ ̇) (λ y → 𝟙)
+          (λ f → ℕ-recursion (𝓤₀ ̇) 𝟘 (λ y P → f y))
+  open ℕ-order
+
+  ≤-and-≤'-coincide : (x y : ℕ) → (x ≤ y) ≡ (x ≤' y)
+  ≤-and-≤'-coincide 0 y = refl _
+  ≤-and-≤'-coincide (succ x) 0 = refl _
+  ≤-and-≤'-coincide (succ x) (succ y) = ≤-and-≤'-coincide x y
+
 module ℕ-more where
 
   open ℕ-order
@@ -6834,9 +6850,9 @@ module surjection-classifier
                         → surjections-into Y ≃ (Y → inhabited-types 𝓤)
   surjection-classifier {𝓤} ua = special-map-classifier (ua 𝓤) (ua (𝓤 ⁺)) ∥_∥
 
-the-subsingletons-are-the-subtypes-of-𝟙' : (X : 𝓤 ̇ )
-                                         → is-subsingleton X ⇔ (X ↪ 𝟙)
-the-subsingletons-are-the-subtypes-of-𝟙' X = φ , ψ
+the-subsingletons-are-the-subtypes-of-a-singleton : (X : 𝓤 ̇ )
+                                                  → is-subsingleton X ⇔ (X ↪ 𝟙)
+the-subsingletons-are-the-subtypes-of-a-singleton X = φ , ψ
  where
   i : is-subsingleton X → is-embedding (!𝟙' X)
   i s ⋆ (x , refl ⋆) (y , refl ⋆) = ap (λ - → - , refl ⋆) (s x y)
@@ -6854,12 +6870,13 @@ the-subsingletons-are-the-subtypes-of-𝟙' X = φ , ψ
     d : x ≡ y
     d = inverse a b c
 
-the-subsingletons-are-the-subtypes-of-𝟙 : propext 𝓤 → global-dfunext
-                                        → (X : 𝓤 ̇ ) → is-subsingleton X ≡ (X ↪ 𝟙)
-the-subsingletons-are-the-subtypes-of-𝟙 pe fe X = γ
+the-subsingletons-are-the-subtypes-of-a-singleton' : propext 𝓤 → global-dfunext
+                                                   → (X : 𝓤 ̇ )
+                                                   → is-subsingleton X ≡ (X ↪ 𝟙)
+the-subsingletons-are-the-subtypes-of-a-singleton' pe fe X = γ
  where
   a : is-subsingleton X ⇔ (X ↪ 𝟙)
-  a = the-subsingletons-are-the-subtypes-of-𝟙' X
+  a = the-subsingletons-are-the-subtypes-of-a-singleton X
   b : is-subsingleton (X ↪ 𝟙)
   b (f , e) (f' , e') = to-Σ-≡ (fe (λ x → 𝟙-is-subsingleton (f x) (f' x)) ,
                                 being-embedding-is-a-subsingleton fe f' _ e')

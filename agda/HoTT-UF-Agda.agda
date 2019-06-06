@@ -3306,6 +3306,18 @@ module basic-truncation-development
     γ : ∃ \(f : Π A) → (x : X) → R x (f x)
     γ = ∥∥-functor h a
 
+module ℕ-order-exercise-solution where
+
+  _≤'_ : ℕ → ℕ → 𝓤₀ ̇
+  _≤'_ = ℕ-iteration (ℕ → 𝓤₀ ̇) (λ y → 𝟙)
+          (λ f → ℕ-recursion (𝓤₀ ̇) 𝟘 (λ y P → f y))
+  open ℕ-order
+
+  ≤-and-≤'-coincide : (x y : ℕ) → (x ≤ y) ≡ (x ≤' y)
+  ≤-and-≤'-coincide 0 y = refl _
+  ≤-and-≤'-coincide (succ x) 0 = refl _
+  ≤-and-≤'-coincide (succ x) (succ y) = ≤-and-≤'-coincide x y
+
 module ℕ-more where
 
   open ℕ-order
@@ -3459,9 +3471,9 @@ module surjection-classifier
                         → surjections-into Y ≃ (Y → inhabited-types 𝓤)
   surjection-classifier {𝓤} ua = special-map-classifier (ua 𝓤) (ua (𝓤 ⁺)) ∥_∥
 
-the-subsingletons-are-the-subtypes-of-𝟙' : (X : 𝓤 ̇ )
-                                         → is-subsingleton X ⇔ (X ↪ 𝟙)
-the-subsingletons-are-the-subtypes-of-𝟙' X = φ , ψ
+the-subsingletons-are-the-subtypes-of-a-singleton : (X : 𝓤 ̇ )
+                                                  → is-subsingleton X ⇔ (X ↪ 𝟙)
+the-subsingletons-are-the-subtypes-of-a-singleton X = φ , ψ
  where
   i : is-subsingleton X → is-embedding (!𝟙' X)
   i s ⋆ (x , refl ⋆) (y , refl ⋆) = ap (λ - → - , refl ⋆) (s x y)
@@ -3479,12 +3491,13 @@ the-subsingletons-are-the-subtypes-of-𝟙' X = φ , ψ
     d : x ≡ y
     d = inverse a b c
 
-the-subsingletons-are-the-subtypes-of-𝟙 : propext 𝓤 → global-dfunext
-                                        → (X : 𝓤 ̇ ) → is-subsingleton X ≡ (X ↪ 𝟙)
-the-subsingletons-are-the-subtypes-of-𝟙 pe fe X = γ
+the-subsingletons-are-the-subtypes-of-a-singleton' : propext 𝓤 → global-dfunext
+                                                   → (X : 𝓤 ̇ )
+                                                   → is-subsingleton X ≡ (X ↪ 𝟙)
+the-subsingletons-are-the-subtypes-of-a-singleton' pe fe X = γ
  where
   a : is-subsingleton X ⇔ (X ↪ 𝟙)
-  a = the-subsingletons-are-the-subtypes-of-𝟙' X
+  a = the-subsingletons-are-the-subtypes-of-a-singleton X
   b : is-subsingleton (X ↪ 𝟙)
   b (f , e) (f' , e') = to-Σ-≡ (fe (λ x → 𝟙-is-subsingleton (f x) (f' x)) ,
                                 being-embedding-is-a-subsingleton fe f' _ e')
