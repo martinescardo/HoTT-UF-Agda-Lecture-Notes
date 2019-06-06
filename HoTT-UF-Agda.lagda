@@ -6432,7 +6432,7 @@ is-surjection' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)
 is-surjection' f = (y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
 \end{code}
 
-*Exercise.*(HoTT-UF-Agda.html#has-section-charac) The type
+*Exercise.* The type
 `(y : codomain f) → Σ \(x : domain f) → f x ≡ y` [is equivalent
  to](HoTT-UF-Agda.html#has-section-charac) the type `has-section f`,
  which is stronger than saying that `f` is a surjection.
