@@ -1297,7 +1297,7 @@ subsingleton-criterion = sol
 lc-maps-reflect-subsingletons = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-    → left-cancellable f → is-subsingleton Y → is-subsingleton X
+      → left-cancellable f → is-subsingleton Y → is-subsingleton X
   sol f l s x x' = l (s (f x) (f x'))
 
 sections-are-lc = sol

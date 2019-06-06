@@ -3698,8 +3698,8 @@ ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x x' :
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="solutions"></a> Solutions
 
-We re-state the formulations of the exercises in the type of `sol` in
-a `where` clause for each exercise.
+For the sake of readability, we re-state the formulations of the
+exercises in the type of `sol` in a `where` clause for each exercise.
 
 \begin{code}
 subsingleton-criterion = sol
@@ -3710,7 +3710,7 @@ subsingleton-criterion = sol
 lc-maps-reflect-subsingletons = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-    → left-cancellable f → is-subsingleton Y → is-subsingleton X
+      → left-cancellable f → is-subsingleton Y → is-subsingleton X
   sol f l s x x' = l (s (f x) (f x'))
 
 sections-are-lc = sol
