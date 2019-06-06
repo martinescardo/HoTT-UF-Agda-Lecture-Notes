@@ -6690,6 +6690,7 @@ module ℕ-order-exercise-solution where
   _≤'_ : ℕ → ℕ → 𝓤₀ ̇
   _≤'_ = ℕ-iteration (ℕ → 𝓤₀ ̇) (λ y → 𝟙)
           (λ f → ℕ-recursion (𝓤₀ ̇) 𝟘 (λ y P → f y))
+
   open ℕ-order
 
   ≤-and-≤'-coincide : (x y : ℕ) → (x ≤ y) ≡ (x ≤' y)
@@ -6735,31 +6736,32 @@ holds-is-subsingleton = pr₂
          being-subsingleton-is-a-subsingleton fe _ _)
 
 Ω-is-a-set : dfunext 𝓤 𝓤 → propext 𝓤 → is-set (Ω 𝓤)
-Ω-is-a-set {𝓤} fe pe = Id-collapsibles-are-sets (Ω 𝓤) w
+Ω-is-a-set {𝓤} fe pe = Id-collapsibles-are-sets (Ω 𝓤) c
  where
   A : (p q : Ω 𝓤) → 𝓤 ̇
   A p q = (p holds → q holds) × (q holds → p holds)
   i : (p q : Ω 𝓤) → is-subsingleton(A p q)
-  i p q = Σ-is-subsingleton (Π-is-subsingleton fe
-           (λ _ → holds-is-subsingleton q))
-           (λ _ → Π-is-subsingleton fe (λ _ → holds-is-subsingleton p))
+  i p q = Σ-is-subsingleton
+           (Π-is-subsingleton fe
+             (λ _ → holds-is-subsingleton q))
+             (λ _ → Π-is-subsingleton fe (λ _ → holds-is-subsingleton p))
   g : (p q : Ω 𝓤) → p ≡ q → A p q
-  g p q e = (b , c)
+  g p q e = (u , v)
    where
     a : p holds ≡ q holds
     a = ap _holds e
-    b : p holds → q holds
-    b = transport (λ X → X) a
-    c : q holds → p holds
-    c = transport (λ X → X) (a ⁻¹)
+    u : p holds → q holds
+    u = Id-to-fun a
+    v : q holds → p holds
+    v = Id-to-fun (a ⁻¹)
   h : (p q : Ω 𝓤) → A p q → p ≡ q
   h p q (u , v) = Ω-ext fe pe u v
   f : (p q : Ω 𝓤) → p ≡ q → p ≡ q
   f p q e = h p q (g p q e)
   k : (p q : Ω 𝓤) (d e : p ≡ q) → f p q d ≡ f p q e
   k p q d e = ap (h p q) (i p q (g p q d) (g p q e))
-  w : (p q : Ω 𝓤) → Σ \(f : p ≡ q → p ≡ q) → wconstant f
-  w p q = (f p q , k p q)
+  c : (p q : Ω 𝓤) → Σ \(f : p ≡ q → p ≡ q) → wconstant f
+  c p q = (f p q , k p q)
 
 powersets-are-sets : hfunext 𝓤 (𝓥 ⁺) → dfunext 𝓥 𝓥 → propext 𝓥
                    → {X : 𝓤 ̇ } → is-set (X → Ω 𝓥)
@@ -7111,7 +7113,7 @@ rejected by Agda.
 
 \begin{code}
 
-infix  4  _∼_
+infix  4 _∼_
 infixr 4 _,_
 infixr 2 _×_
 infixr 1 _+_
@@ -7120,7 +7122,7 @@ infix  0 _≡_
 infixl 2 _∙_
 infixr 0 _≡⟨_⟩_
 infix  1 _∎
-infix  3  _⁻¹
+infix  3 _⁻¹
 infix  0 _◁_
 infix  1 _◀
 infixr 0 _◁⟨_⟩_
