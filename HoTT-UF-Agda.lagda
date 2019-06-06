@@ -267,6 +267,11 @@ Regarding the genesis of the subject:
    - [A very short note on homotopy λ-calculus](http://math.ucr.edu/home/baez/Voevodsky_note.ps).
    - [Notes on homotopy λ-calculus](https://github.com/vladimirias/2006_03_Homotopy_lambda_calculus/blob/master/homotopy_lambda_calculus_Mar_5_2006.pdf).
 
+Voevodsky [says](https://www.math.ias.edu/vladimir/sites/math.ias.edu.vladimir/files/2014_04_22_slides.pdf)
+that he was influenced by [Makkai](http://www.math.mcgill.ca/makkai/)'s thinking:
+
+   - [The theory of abstract sets based on first-order logic with dependent types](http://www.math.mcgill.ca/makkai/Various/MateFest2013.pdf).
+
 An important foundational reference, by Steve Awodey and Michael A. Warren, is
 
    - [Homotopy theoretic models of identity types](https://arxiv.org/abs/0709.0248).
