@@ -3466,56 +3466,55 @@ swap₂-is-equiv = invertibles-are-equivs
                   (swap₂ , swap₂-involutive , swap₂-involutive)
 \end{code}
 
-Hence we have two distinct equivalences:
+We now use a local module to assume univalence of the first universe
+in the construction of our example:
 
 \begin{code}
-e₀ e₁ : 𝟚 ≃ 𝟚
-e₀ = ≃-refl 𝟚
-e₁ = swap₂ , swap₂-is-equiv
-
-e₀-is-not-e₁ : e₀ ≢ e₁
-e₀-is-not-e₁ p = ₁-is-not-₀ r
- where
-  q : id ≡ swap₂
-  q = ap Eq-to-fun p
-  r : ₁ ≡ ₀
-  r = ap (λ - → - ₁) q
+module example-of-a-nonset (ua : is-univalent 𝓤₀) where
 \end{code}
 
-We now use an [anonymous
-module](https://agda.readthedocs.io/en/latest/language/module-system.html#anonymous-modules)
-to assume univalence in the next few constructions:
+The above gives two distinct equivalences:
 
 \begin{code}
-module _ (ua : is-univalent 𝓤₀) where
+ e₀ e₁ : 𝟚 ≃ 𝟚
+ e₀ = ≃-refl 𝟚
+ e₁ = swap₂ , swap₂-is-equiv
+
+ e₀-is-not-e₁ : e₀ ≢ e₁
+ e₀-is-not-e₁ p = ₁-is-not-₀ r
+  where
+   q : id ≡ swap₂
+   q = ap Eq-to-fun p
+   r : ₁ ≡ ₀
+   r = ap (λ - → - ₁) q
 \end{code}
 
-With this assumption, we get two different identifications of the type
+Using univalence, we get two different identifications of the type
 `𝟚` with itself:
 
 \begin{code}
-  p₀ p₁ : 𝟚 ≡ 𝟚
-  p₀ = Eq-to-Id ua 𝟚 𝟚 e₀
-  p₁ = Eq-to-Id ua 𝟚 𝟚 e₁
+ p₀ p₁ : 𝟚 ≡ 𝟚
+ p₀ = Eq-to-Id ua 𝟚 𝟚 e₀
+ p₁ = Eq-to-Id ua 𝟚 𝟚 e₁
 
-  p₀-is-not-p₁ : p₀ ≢ p₁
-  p₀-is-not-p₁ q = e₀-is-not-e₁ r
-   where
-    r = e₀              ≡⟨ (inverse-is-section (Id-to-Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₀)⁻¹ ⟩
-        Id-to-Eq 𝟚 𝟚 p₀ ≡⟨ ap (Id-to-Eq 𝟚 𝟚) q ⟩
-        Id-to-Eq 𝟚 𝟚 p₁ ≡⟨ inverse-is-section (Id-to-Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₁ ⟩
-        e₁              ∎
+ p₀-is-not-p₁ : p₀ ≢ p₁
+ p₀-is-not-p₁ q = e₀-is-not-e₁ r
+  where
+   r = e₀              ≡⟨ (inverse-is-section (Id-to-Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₀)⁻¹ ⟩
+       Id-to-Eq 𝟚 𝟚 p₀ ≡⟨ ap (Id-to-Eq 𝟚 𝟚) q ⟩
+       Id-to-Eq 𝟚 𝟚 p₁ ≡⟨ inverse-is-section (Id-to-Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₁ ⟩
+       e₁              ∎
 \end{code}
 
 If the universe `𝓤₀` were a set, then the identifications `p₀` and
 `p₁` defined above would be equal, and therefore it is not a set.
 
 \begin{code}
-  𝓤₀-is-not-a-set : ¬(is-set (𝓤₀ ̇ ))
-  𝓤₀-is-not-a-set s = p₀-is-not-p₁ q
-   where
-    q : p₀ ≡ p₁
-    q = s 𝟚 𝟚 p₀ p₁
+ 𝓤₀-is-not-a-set : ¬(is-set (𝓤₀ ̇ ))
+ 𝓤₀-is-not-a-set s = p₀-is-not-p₁ q
+  where
+   q : p₀ ≡ p₁
+   q = s 𝟚 𝟚 p₀ p₁
 \end{code}
 
 For more examples, see [[Kraus and Sattler](https://arxiv.org/abs/1311.4002)].
@@ -5633,7 +5632,11 @@ Thirdly, we have a generalization of `univalence→`
 from a single universe to a pair of universes. We work with two
 symmetrical versions, where the second is derived from the first. Here
 an anonymous module is used to provide the same hypotheses to both
-versions:
+versions.
+
+We use an [anonymous
+module](https://agda.readthedocs.io/en/latest/language/module-system.html#anonymous-modules)
+to assume univalence in the following couple of construction:
 
 \begin{code}
 module _ {𝓤 𝓥 : Universe}

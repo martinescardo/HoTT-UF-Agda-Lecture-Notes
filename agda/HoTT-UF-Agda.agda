@@ -1104,37 +1104,37 @@ swap₂-is-equiv = invertibles-are-equivs
                   swap₂
                   (swap₂ , swap₂-involutive , swap₂-involutive)
 
-e₀ e₁ : 𝟚 ≃ 𝟚
-e₀ = ≃-refl 𝟚
-e₁ = swap₂ , swap₂-is-equiv
+module example-of-a-nonset (ua : is-univalent 𝓤₀) where
 
-e₀-is-not-e₁ : e₀ ≢ e₁
-e₀-is-not-e₁ p = ₁-is-not-₀ r
- where
-  q : id ≡ swap₂
-  q = ap Eq-to-fun p
-  r : ₁ ≡ ₀
-  r = ap (λ - → - ₁) q
+ e₀ e₁ : 𝟚 ≃ 𝟚
+ e₀ = ≃-refl 𝟚
+ e₁ = swap₂ , swap₂-is-equiv
 
-module _ (ua : is-univalent 𝓤₀) where
+ e₀-is-not-e₁ : e₀ ≢ e₁
+ e₀-is-not-e₁ p = ₁-is-not-₀ r
+  where
+   q : id ≡ swap₂
+   q = ap Eq-to-fun p
+   r : ₁ ≡ ₀
+   r = ap (λ - → - ₁) q
 
-  p₀ p₁ : 𝟚 ≡ 𝟚
-  p₀ = Eq-to-Id ua 𝟚 𝟚 e₀
-  p₁ = Eq-to-Id ua 𝟚 𝟚 e₁
+ p₀ p₁ : 𝟚 ≡ 𝟚
+ p₀ = Eq-to-Id ua 𝟚 𝟚 e₀
+ p₁ = Eq-to-Id ua 𝟚 𝟚 e₁
 
-  p₀-is-not-p₁ : p₀ ≢ p₁
-  p₀-is-not-p₁ q = e₀-is-not-e₁ r
-   where
-    r = e₀              ≡⟨ (inverse-is-section (Id-to-Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₀)⁻¹ ⟩
-        Id-to-Eq 𝟚 𝟚 p₀ ≡⟨ ap (Id-to-Eq 𝟚 𝟚) q ⟩
-        Id-to-Eq 𝟚 𝟚 p₁ ≡⟨ inverse-is-section (Id-to-Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₁ ⟩
-        e₁              ∎
+ p₀-is-not-p₁ : p₀ ≢ p₁
+ p₀-is-not-p₁ q = e₀-is-not-e₁ r
+  where
+   r = e₀              ≡⟨ (inverse-is-section (Id-to-Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₀)⁻¹ ⟩
+       Id-to-Eq 𝟚 𝟚 p₀ ≡⟨ ap (Id-to-Eq 𝟚 𝟚) q ⟩
+       Id-to-Eq 𝟚 𝟚 p₁ ≡⟨ inverse-is-section (Id-to-Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₁ ⟩
+       e₁              ∎
 
-  𝓤₀-is-not-a-set : ¬(is-set (𝓤₀ ̇ ))
-  𝓤₀-is-not-a-set s = p₀-is-not-p₁ q
-   where
-    q : p₀ ≡ p₁
-    q = s 𝟚 𝟚 p₀ p₁
+ 𝓤₀-is-not-a-set : ¬(is-set (𝓤₀ ̇ ))
+ 𝓤₀-is-not-a-set s = p₀-is-not-p₁ q
+  where
+   q : p₀ ≡ p₁
+   q = s 𝟚 𝟚 p₀ p₁
 
 subsingleton-criterion : {X : 𝓤 ̇ }
                        → (X → is-singleton X)
