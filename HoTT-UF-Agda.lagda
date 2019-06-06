@@ -6031,9 +6031,8 @@ special-map-classifier {𝓤} ua ua⁺ P Y = ≃-sym γ
       (𝓤 /[ P ] Y)                             ■
 \end{code}
 
-This concludes the submodule. In particular, considering `P =
-is-subsingleton`, we get the promised fact that `Ω` is the subtype
-classifier:
+In particular, considering `P = is-subsingleton`, we get the promised
+fact that `Ω` is the subtype classifier:
 
 \begin{code}
 Ω-is-subtype-classifier : Univalence → (Y : 𝓤 ̇ ) → subtypes-of Y ≃ (Y → Ω 𝓤)
