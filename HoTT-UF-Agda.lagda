@@ -4639,7 +4639,7 @@ The function `χ` gives the *characteristic function* of a map into `Y`:
  χ (X , f) = fiber f
 \end{code}
 
-Any `Y → 𝓤` is the characteristic map of some map into `Y`:
+Any `Y → 𝓤` is the characteristic function of some map into `Y`:
 
 \begin{code}
  T : (Y → 𝓤 ̇ ) → 𝓤 / Y
