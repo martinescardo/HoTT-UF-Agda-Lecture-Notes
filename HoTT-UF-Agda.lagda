@@ -6915,6 +6915,8 @@ cantors-diagonal : ¬(Σ \(e : ℕ → (ℕ → ℕ)) → (α : ℕ → ℕ) →
 *Hint.* It may be helpful to prove that the function `succ` has no
  fixed points, first.
 
+*Exercise.*
+
 \begin{code}
 𝟚-has-𝟚-automorphisms : dfunext 𝓤₀ 𝓤₀ → (𝟚 ≃ 𝟚) ≃ 𝟚
 \end{code}
@@ -6928,7 +6930,7 @@ But we do have that
 lifttwo : is-univalent 𝓤₀ → is-univalent 𝓤₁ → (𝟚 ≡ 𝟚) ≡ Lift 𝓤₁ 𝟚
 \end{code}
 
-We now discuss alternative formulations of the principle of excluded middle.
+*Exercise*. We now discuss alternative formulations of the principle of excluded middle.
 
 \begin{code}
 DNE : ∀ 𝓤 → 𝓤 ⁺ ̇
