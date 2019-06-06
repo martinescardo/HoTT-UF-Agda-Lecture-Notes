@@ -6093,7 +6093,7 @@ corollary {𝓤} ua Y = equiv-to-singleton (equiv-classification ua Y) i
 [(1)](HoTT-UF-Agda.html#pointed-types)
 Show that the retractions into `Y` are classified by
 the type `Σ \(A : 𝓤 ̇ ) → A` of pointed types.
-[(2)](HoTT-UF-Agda.html#surjections-into] After we have
+[(2)](HoTT-UF-Agda.html#surjections-into) After we have
 defined [propositional truncations](HoTT-UF-Agda.html#truncation) and
 surjections, show that the surjections into `Y` are classified by the
 type `Σ \(A : 𝓤 ̇ ) → ∥ A ∥` of inhabited types.
