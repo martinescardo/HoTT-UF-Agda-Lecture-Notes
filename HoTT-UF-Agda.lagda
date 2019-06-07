@@ -4303,10 +4303,10 @@ ua-invertibles-are-haes ua f i = equivs-are-haes ua f (invertibles-are-equivs f 
 
 The above can be proved without univalence as follows, with a more
 complicated argument coming from [category
-theory](https://ncatlab.org/nlab/show/adjoint+equivalence), which also
-allows us to have `X` and `Y` in different universes (an example of an
-equivalence of types in different universes is `Id-to-Eq`, as stated
-by univalence).
+theory](https://ncatlab.org/nlab/show/adjoint+equivalence). This
+argument also allows us to have `X` and `Y` in different universes (an
+example of an equivalence of types in different universes is
+`Id-to-Eq`, as stated by univalence).
 
 We first need some naturality lemmas:
 
