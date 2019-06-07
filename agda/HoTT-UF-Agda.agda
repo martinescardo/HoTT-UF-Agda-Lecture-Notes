@@ -1810,40 +1810,38 @@ invertibles-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → invertible f → is-hae f
 invertibles-are-haes {𝓤} {𝓥} {X} {Y} f (g , η , ε) = g , η , ε' , τ
  where
-  ε' : f ∘ g ∼ id
-  ε' y = f (g y)         ≡⟨ (ε (f (g y)))⁻¹ ⟩
-         f (g (f (g y))) ≡⟨ ap f (η (g y)) ⟩
-         f (g y)         ≡⟨ ε y ⟩
-         y               ∎
+  ε' = λ y → f (g y)         ≡⟨ (ε (f (g y)))⁻¹ ⟩
+             f (g (f (g y))) ≡⟨ ap f (η (g y)) ⟩
+             f (g y)         ≡⟨ ε y ⟩
+             y               ∎
 
-  a : (x : X) → η (g (f x)) ≡ ap g (ap f (η x))
-  a x = η (g (f x))      ≡⟨ ~-id-naturality (g ∘ f) η  ⟩
-        ap (g ∘ f) (η x)  ≡⟨ ap-∘ f g (η x) ⟩
-        ap g (ap f (η x)) ∎
+  module _ (x : X) where
 
-  b : (x : X) → ap f (η (g (f x))) ∙ ε (f x) ≡ ε (f (g (f x))) ∙ ap f (η x)
-  b x = ap f (η (g (f x))) ∙ ε (f x)         ≡⟨ i ⟩
-        ap f (ap g (ap f (η x))) ∙ ε (f x)   ≡⟨ ii ⟩
-        ap (f ∘ g) (ap f (η x)) ∙ ε (f x)    ≡⟨ iii ⟩
-        ε (f (g (f x))) ∙ ap id (ap f (η x)) ≡⟨ iv ⟩
-        ε (f (g (f x))) ∙ ap f (η x)         ∎
-   where
-    i   = ap (λ - → - ∙ ε (f x)) (ap (ap f) (a x))
-    ii  = ap (λ - → - ∙ ε (f x)) ((ap-∘ g f (ap f (η x)))⁻¹)
-    iii = (~-naturality (f ∘ g) id ε {f (g (f x))} {f x} {ap f (η x)})⁻¹
-    iv  = ap (λ - → ε (f (g (f x))) ∙ -) ((ap-∘ f id (η x))⁻¹)
+   p = η (g (f x))       ≡⟨ ~-id-naturality (g ∘ f) η  ⟩
+       ap (g ∘ f) (η x)  ≡⟨ ap-∘ f g (η x) ⟩
+       ap g (ap f (η x)) ∎
 
-  τ : (x : X) → ap f (η x) ≡ ε' (f x)
-  τ x = ap f (η x)                                           ≡⟨ refl-left ⁻¹ ⟩
-        refl (f (g (f x))) ∙ ap f (η x)                      ≡⟨ i ⟩
-        (ε (f (g (f x))))⁻¹ ∙ ε (f (g (f x))) ∙ ap f (η x)   ≡⟨ ii ⟩
-        (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ iii ⟩
-        (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ≡⟨ refl _ ⟩
-        ε' (f x)                                             ∎
-   where
-    i   = ap (λ - → - ∙ ap f (η x)) ((⁻¹-left∙ (ε (f (g (f x)))))⁻¹)
-    ii  = ∙assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η x))
-    iii = ap (λ - → (ε (f (g (f x))))⁻¹ ∙ -) (b x)⁻¹
+   q = ap f (η (g (f x))) ∙ ε (f x)         ≡⟨ i ⟩
+       ap f (ap g (ap f (η x))) ∙ ε (f x)   ≡⟨ ii ⟩
+       ap (f ∘ g) (ap f (η x)) ∙ ε (f x)    ≡⟨ iii ⟩
+       ε (f (g (f x))) ∙ ap id (ap f (η x)) ≡⟨ iv ⟩
+       ε (f (g (f x))) ∙ ap f (η x)         ∎
+    where
+     i   = ap (λ - → - ∙ ε (f x)) (ap (ap f) p)
+     ii  = ap (λ - → - ∙ ε (f x)) ((ap-∘ g f (ap f (η x)))⁻¹)
+     iii = (~-naturality (f ∘ g) id ε {f (g (f x))} {f x} {ap f (η x)})⁻¹
+     iv  = ap (λ - → ε (f (g (f x))) ∙ -) ((ap-∘ f id (η x))⁻¹)
+
+   τ = ap f (η x)                                           ≡⟨ refl-left ⁻¹ ⟩
+       refl (f (g (f x))) ∙ ap f (η x)                      ≡⟨ i ⟩
+       (ε (f (g (f x))))⁻¹ ∙ ε (f (g (f x))) ∙ ap f (η x)   ≡⟨ ii ⟩
+       (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ iii ⟩
+       (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ≡⟨ refl _ ⟩
+       ε' (f x)                                             ∎
+    where
+     i   = ap (λ - → - ∙ ap f (η x)) ((⁻¹-left∙ (ε (f (g (f x)))))⁻¹)
+     ii  = ∙assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η x))
+     iii = ap (λ - → (ε (f (g (f x))))⁻¹ ∙ -) (q ⁻¹)
 
 Σ-change-of-variables-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
                           → is-hae f → Σ A ≃ Σ (A ∘ f)
