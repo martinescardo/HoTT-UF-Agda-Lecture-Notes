@@ -585,6 +585,10 @@ ap-∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x y z : X} (p : x ≡ y) (
      → ap f (p ∙ q) ≡ ap f p ∙ ap f q
 ap-∙ f p (refl y) = refl (ap f p)
 
+ap⁻¹ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x y : X} (p : x ≡ y)
+     → (ap f p)⁻¹ ≡ ap f (p ⁻¹)
+ap⁻¹ f (refl x) = refl (refl (f x))
+
 ap-id : {X : 𝓤 ̇ } {x y : X} (p : x ≡ y)
       → ap id p ≡ p
 ap-id (refl x) = refl (refl x)
@@ -1773,10 +1777,73 @@ equivs-are-haes : is-univalent 𝓤
                 → is-equiv f → is-hae f
 equivs-are-haes ua {X} {Y} = J-equiv ua (λ X Y f → is-hae f) id-is-hae X Y
 
-invertibles-are-haes : is-univalent 𝓤
-                     → {X Y : 𝓤 ̇ } (f : X → Y)
+ua-invertibles-are-haes : is-univalent 𝓤
+                        → {X Y : 𝓤 ̇ } (f : X → Y)
+                        → invertible f → is-hae f
+ua-invertibles-are-haes ua f i = equivs-are-haes ua f (invertibles-are-equivs f i)
+
+~-naturality : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (f g : X → A) (H : f ∼ g) {x y : X} {p : x ≡ y}
+             → H x ∙ ap g p ≡ ap f p ∙ H y
+~-naturality f g H {x} {_} {refl a} = refl-left ⁻¹
+
+~-naturality' : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
+                (f g : X → A) (H : f ∼ g) {x y : X} {p : x ≡ y}
+              → H x ∙ ap g p ∙ (H y)⁻¹ ≡ ap f p
+~-naturality' f g H {x} {x} {refl x} = ⁻¹-right∙ (H x)
+
+~-id-naturality : {X : 𝓤 ̇ } (h : X → X) (η : h ∼ id) {x : X}
+                → η (h x) ≡ ap h (η x)
+~-id-naturality h η {x} =
+   η (h x)                         ≡⟨ refl _ ⟩
+   η (h x) ∙ refl (h x)            ≡⟨ i ⟩
+   η (h x) ∙ (η x ∙ (η x)⁻¹)       ≡⟨ ii ⟩
+   η (h x) ∙ η x ∙ (η x)⁻¹         ≡⟨ iii ⟩
+   η (h x) ∙ ap id (η x) ∙ (η x)⁻¹ ≡⟨ iv ⟩
+   ap h (η x)                      ∎
+ where
+  i   = ap (λ - → η(h x) ∙ -) ((⁻¹-right∙ (η x))⁻¹)
+  ii  = (∙assoc (η (h x)) (η x) (η x ⁻¹))⁻¹
+  iii = ap (λ - → η (h x) ∙ - ∙ η x ⁻¹) ((ap-id (η x))⁻¹)
+  iv  = ~-naturality' h id η {h x} {x} {η x}
+
+invertibles-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → invertible f → is-hae f
-invertibles-are-haes ua f i = equivs-are-haes ua f (invertibles-are-equivs f i)
+invertibles-are-haes {𝓤} {𝓥} {X} {Y} f (g , η , ε) = g , η , ε' , τ
+ where
+  ε' : f ∘ g ∼ id
+  ε' y = f (g y)         ≡⟨ (ε (f (g y)))⁻¹ ⟩
+         f (g (f (g y))) ≡⟨ ap f (η (g y)) ⟩
+         f (g y)         ≡⟨ ε y ⟩
+         y               ∎
+
+  a : (x : X) → η (g (f x)) ≡ ap g (ap f (η x))
+  a x = η (g (f x))      ≡⟨ ~-id-naturality (g ∘ f) η  ⟩
+        ap (g ∘ f) (η x)  ≡⟨ ap-∘ f g (η x) ⟩
+        ap g (ap f (η x)) ∎
+
+  b : (x : X) → ap f (η (g (f x))) ∙ ε (f x) ≡ ε (f (g (f x))) ∙ ap f (η x)
+  b x = ap f (η (g (f x))) ∙ ε (f x)         ≡⟨ i ⟩
+        ap f (ap g (ap f (η x))) ∙ ε (f x)   ≡⟨ ii ⟩
+        ap (f ∘ g) (ap f (η x)) ∙ ε (f x)    ≡⟨ iii ⟩
+        ε (f (g (f x))) ∙ ap id (ap f (η x)) ≡⟨ iv ⟩
+        ε (f (g (f x))) ∙ ap f (η x)         ∎
+   where
+    i   = ap (λ - → - ∙ ε (f x)) (ap (ap f) (a x))
+    ii  = ap (λ - → - ∙ ε (f x)) ((ap-∘ g f (ap f (η x)))⁻¹)
+    iii = (~-naturality (f ∘ g) id ε {f (g (f x))} {f x} {ap f (η x)})⁻¹
+    iv  = ap (λ - → ε (f (g (f x))) ∙ -) ((ap-∘ f id (η x))⁻¹)
+
+  τ : (x : X) → ap f (η x) ≡ ε' (f x)
+  τ x = ap f (η x)                                           ≡⟨ refl-left ⁻¹ ⟩
+        refl (f (g (f x))) ∙ ap f (η x)                      ≡⟨ i ⟩
+        (ε (f (g (f x))))⁻¹ ∙ ε (f (g (f x))) ∙ ap f (η x)   ≡⟨ ii ⟩
+        (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ iii ⟩
+        (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ≡⟨ refl _ ⟩
+        ε' (f x)                                             ∎
+   where
+    i   = ap (λ - → - ∙ ap f (η x)) ((⁻¹-left∙ (ε (f (g (f x)))))⁻¹)
+    ii  = ∙assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η x))
+    iii = ap (λ - → (ε (f (g (f x))))⁻¹ ∙ -) (b x)⁻¹
 
 Σ-change-of-variables-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
                           → is-hae f → Σ A ≃ Σ (A ∘ f)
