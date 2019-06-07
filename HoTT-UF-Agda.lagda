@@ -4311,7 +4311,8 @@ example of an equivalence of types in different universes is
 We first need some naturality lemmas:
 
 \begin{code}
-~-naturality : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (f g : X → A) (H : f ∼ g) {x y : X} {p : x ≡ y}
+~-naturality : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
+               (f g : X → A) (H : f ∼ g) {x y : X} {p : x ≡ y}
              → H x ∙ ap g p ≡ ap f p ∙ H y
 ~-naturality f g H {x} {_} {refl a} = refl-left ⁻¹
 
@@ -4320,7 +4321,8 @@ We first need some naturality lemmas:
               → H x ∙ ap g p ∙ (H y)⁻¹ ≡ ap f p
 ~-naturality' f g H {x} {x} {refl x} = ⁻¹-right∙ (H x)
 
-~-id-naturality : {X : 𝓤 ̇ } (h : X → X) (η : h ∼ id) {x : X}
+~-id-naturality : {X : 𝓤 ̇ }
+                  (h : X → X) (η : h ∼ id) {x : X}
                 → η (h x) ≡ ap h (η x)
 ~-id-naturality h η {x} =
    η (h x)                         ≡⟨ refl _ ⟩

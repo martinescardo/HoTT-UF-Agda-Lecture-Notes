@@ -1782,7 +1782,8 @@ ua-invertibles-are-haes : is-univalent 𝓤
                         → invertible f → is-hae f
 ua-invertibles-are-haes ua f i = equivs-are-haes ua f (invertibles-are-equivs f i)
 
-~-naturality : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (f g : X → A) (H : f ∼ g) {x y : X} {p : x ≡ y}
+~-naturality : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
+               (f g : X → A) (H : f ∼ g) {x y : X} {p : x ≡ y}
              → H x ∙ ap g p ≡ ap f p ∙ H y
 ~-naturality f g H {x} {_} {refl a} = refl-left ⁻¹
 
@@ -1791,7 +1792,8 @@ ua-invertibles-are-haes ua f i = equivs-are-haes ua f (invertibles-are-equivs f 
               → H x ∙ ap g p ∙ (H y)⁻¹ ≡ ap f p
 ~-naturality' f g H {x} {x} {refl x} = ⁻¹-right∙ (H x)
 
-~-id-naturality : {X : 𝓤 ̇ } (h : X → X) (η : h ∼ id) {x : X}
+~-id-naturality : {X : 𝓤 ̇ }
+                  (h : X → X) (η : h ∼ id) {x : X}
                 → η (h x) ≡ ap h (η x)
 ~-id-naturality h η {x} =
    η (h x)                         ≡⟨ refl _ ⟩
@@ -1808,14 +1810,14 @@ ua-invertibles-are-haes ua f i = equivs-are-haes ua f (invertibles-are-equivs f 
 
 invertibles-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → invertible f → is-hae f
-invertibles-are-haes {𝓤} {𝓥} {X} {Y} f (g , η , ε) = g , η , ε' , τ
+invertibles-are-haes f (g , η , ε) = g , η , ε' , τ
  where
   ε' = λ y → f (g y)         ≡⟨ (ε (f (g y)))⁻¹ ⟩
              f (g (f (g y))) ≡⟨ ap f (η (g y)) ⟩
              f (g y)         ≡⟨ ε y ⟩
              y               ∎
 
-  module _ (x : X) where
+  module _ (x : domain f) where
 
    p = η (g (f x))       ≡⟨ ~-id-naturality (g ∘ f) η  ⟩
        ap (g ∘ f) (η x)  ≡⟨ ap-∘ f g (η x) ⟩
