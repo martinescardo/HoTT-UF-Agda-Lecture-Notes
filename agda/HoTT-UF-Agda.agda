@@ -3532,13 +3532,12 @@ EM-gives-PR {𝓤} {𝓥} em P i = Q (em P i) , e
    e = logically-equivalent-subsingletons-are-equivalent
         P (Q (em P i)) i (j (em P i))  (f (em P i) , g (em P i))
 
-has-size-is-a-subsingleton : Univalence →
-                             (X : 𝓤 ̇ ) (𝓥 :  Universe)
+has-size-is-a-subsingleton : Univalence
+                           → (X : 𝓤 ̇ ) (𝓥 :  Universe)
                            → is-subsingleton (X has-size 𝓥)
 has-size-is-a-subsingleton {𝓤} ua X 𝓥 = univalence→' (ua 𝓥) (ua (𝓤 ⊔ 𝓥)) X
 
-PR-is-a-subsingleton : Univalence
-                    → is-subsingleton (propositional-resizing 𝓤 𝓥)
+PR-is-a-subsingleton : Univalence → is-subsingleton (propositional-resizing 𝓤 𝓥)
 PR-is-a-subsingleton {𝓤} {𝓥} ua =
  Π-is-subsingleton (univalence-gives-global-dfunext ua)
   (λ P → Π-is-subsingleton (univalence-gives-global-dfunext ua)

@@ -375,7 +375,6 @@ to practice univalent mathematics should consult the above references.
      1. [Universe lifting](HoTT-UF-Agda.html#universelifting)
      1. [The subtype classifier and other classifiers](HoTT-UF-Agda.html#subtypeclassifier)
      1. [Magma equivalences](HoTT-UF-Agda.html#magmaequivalences)
-     1. [Structure identity principle](HoTT-UF-Agda.html#sip)
      1. [Subsingleton truncation, disjunction and existence](HoTT-UF-Agda.html#truncation)
      1. [The univalent axiom of choice](HoTT-UF-Agda.html#choice)
      1. [Propositional resizing](HoTT-UF-Agda.html#resizing)
@@ -6513,11 +6512,11 @@ Magma identity is equivalent to magma equivalence, and hence to magma isomorphis
    (M ≅ₘ N) ■
 \end{code}
 
-[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="sip"></a> Structure identity principle
-
-For the moment, see
-[this](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-StructureIdentityPrinciple.html).
+This characterization of the identity type of Magmas
+[generalizes](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-StructureIdentityPrinciple.html)
+to identity types of monoids, metric spaces, topological spaces and
+more, via a structure identity principle (see the HoTT book for more
+information).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="truncation"></a> Subsingleton truncation, disjunction and existence
