@@ -1172,6 +1172,11 @@ equiv-to-subsingleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                       → is-subsingleton Y
                       → is-subsingleton X
 
+equiv-to-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+             → X ≃ Y
+             → is-set Y
+             → is-set X
+
 sections-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
                         → has-retraction f
                         → g ∼ f
@@ -1332,6 +1337,13 @@ equiv-to-subsingleton = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → is-subsingleton Y → is-subsingleton X
   sol (f , i) = lc-maps-reflect-subsingletons f (equivs-are-lc f i)
+
+equiv-to-set = sol
+ where
+  sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → is-set Y → is-set X
+  sol e = subtypes-of-sets-are-sets
+            (Eq-to-fun e)
+            (equivs-are-lc (Eq-to-fun e) (Eq-to-fun-is-equiv e))
 
 sections-closed-under-∼ = sol
  where
@@ -2351,6 +2363,9 @@ being-joyal-equiv-is-a-subsingleton fe₀ fe₁ fe₂ f =
 propext : ∀ 𝓤  → 𝓤 ⁺ ̇
 propext 𝓤 = {P Q : 𝓤 ̇ } → is-prop P → is-prop Q → (P → Q) → (Q → P) → P ≡ Q
 
+global-propext : 𝓤ω
+global-propext = ∀ {𝓤} → propext 𝓤
+
 univalence-gives-propext : is-univalent 𝓤 → propext 𝓤
 univalence-gives-propext ua {P} {Q} i j f g =
  Eq-to-Id ua P Q
@@ -2406,6 +2421,49 @@ subsingleton-univalence-≃ : propext 𝓤 → dfunext 𝓤 𝓤
                           → (X P : 𝓤 ̇ ) → is-subsingleton P → (P ≡ X) ≃ (P ≃ X)
 subsingleton-univalence-≃ pe fe X P i = Id-to-Eq P X ,
                                         subsingleton-univalence pe fe P i X
+
+Ω : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Ω 𝓤 = Σ \(P : 𝓤 ̇ ) → is-subsingleton P
+
+_holds : Ω 𝓤 → 𝓤 ̇
+_holds = pr₁
+
+holds-is-subsingleton : (p : Ω 𝓤) → is-subsingleton (p holds)
+holds-is-subsingleton = pr₂
+
+Ω-ext : dfunext 𝓤 𝓤 → propext 𝓤 → {p q : Ω 𝓤}
+      → (p holds → q holds) → (q holds → p holds) → p ≡ q
+Ω-ext {𝓤} fe pe {p} {q} f g =
+ to-Σ-≡ (pe (holds-is-subsingleton p) (holds-is-subsingleton q) f g ,
+         being-subsingleton-is-a-subsingleton fe _ _)
+
+Ω-is-a-set : dfunext 𝓤 𝓤 → propext 𝓤 → is-set (Ω 𝓤)
+Ω-is-a-set {𝓤} fe pe = Id-collapsibles-are-sets (Ω 𝓤) c
+ where
+  A : (p q : Ω 𝓤) → 𝓤 ̇
+  A p q = (p holds → q holds) × (q holds → p holds)
+  i : (p q : Ω 𝓤) → is-subsingleton(A p q)
+  i p q = Σ-is-subsingleton
+           (Π-is-subsingleton fe
+             (λ _ → holds-is-subsingleton q))
+             (λ _ → Π-is-subsingleton fe (λ _ → holds-is-subsingleton p))
+  g : (p q : Ω 𝓤) → p ≡ q → A p q
+  g p q e = (u , v)
+   where
+    a : p holds ≡ q holds
+    a = ap _holds e
+    u : p holds → q holds
+    u = Id-to-fun a
+    v : q holds → p holds
+    v = Id-to-fun (a ⁻¹)
+  h : (p q : Ω 𝓤) → A p q → p ≡ q
+  h p q (u , v) = Ω-ext fe pe u v
+  f : (p q : Ω 𝓤) → p ≡ q → p ≡ q
+  f p q e = h p q (g p q e)
+  k : (p q : Ω 𝓤) (d e : p ≡ q) → f p q d ≡ f p q e
+  k p q d e = ap (h p q) (i p q (g p q d) (g p q e))
+  c : (p q : Ω 𝓤) → Σ \(f : p ≡ q → p ≡ q) → wconstant f
+  c p q = (f p q , k p q)
 
 ≃-refl-left : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
             → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
@@ -3025,9 +3083,6 @@ global-≃-ap ua = global-≃-ap' ua id
 subtypes-of : 𝓤 ̇ → 𝓤 ⁺ ̇
 subtypes-of {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↪ Y
 
-Ω : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Ω 𝓤 = Σ \(P : 𝓤 ̇ ) → is-subsingleton P
-
 _/[_]_ : (𝓤 : Universe) → (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
 𝓤 /[ P ] Y = Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → (y : Y) → P (fiber f y)
 
@@ -3333,14 +3388,14 @@ module basic-truncation-development
   ∥∥-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → ∥ X ∥ → ∥ Y ∥
   ∥∥-functor f = ∥∥-recursion ∥∥-is-a-subsingleton (λ x → ∣ f x ∣)
 
+  _∨_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+  A ∨ B = ∥ A + B ∥
+
   ∃ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
   ∃ A = ∥ Σ A ∥
 
   ∃! : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
   ∃! A = is-singleton (Σ A)
-
-  _∨_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-  A ∨ B = ∥ A + B ∥
 
   ∥∥-agrees-with-inhabitation : (X : 𝓤 ̇ ) → ∥ X ∥ ⇔ is-inhabited X
   ∥∥-agrees-with-inhabitation X = a , b
@@ -3424,6 +3479,186 @@ module basic-truncation-development
     γ : ∃ \(f : Π A) → (x : X) → R x (f x)
     γ = ∥∥-functor h a
 
+_has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
+X has-size 𝓥 = Σ \(Y : 𝓥 ̇ ) → X ≃ Y
+
+propositional-resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+propositional-resizing 𝓤 𝓥 = (P : 𝓤 ̇ ) → is-subsingleton P → P has-size 𝓥
+
+resize-up : (X : 𝓤 ̇ ) → X has-size (𝓤 ⊔ 𝓥)
+resize-up {𝓤} {𝓥} X = (Lift 𝓥 X , ≃-Lift X)
+
+resize-up-subsingleton : propositional-resizing 𝓤 (𝓤 ⊔ 𝓥)
+resize-up-subsingleton {𝓤} {𝓥} P i = resize-up {𝓤} {𝓥} P
+
+resize : propositional-resizing 𝓤 𝓥
+       → (P : 𝓤 ̇ ) (i : is-subsingleton P) → 𝓥 ̇
+resize ρ P i = pr₁ (ρ P i)
+
+resize-is-a-subsingleton : (ρ : propositional-resizing 𝓤 𝓥)
+                           (P : 𝓤 ̇ ) (i : is-subsingleton P)
+                         → is-subsingleton (resize ρ P i)
+resize-is-a-subsingleton ρ P i = equiv-to-subsingleton (≃-sym (pr₂ (ρ P i))) i
+
+to-resize : (ρ : propositional-resizing 𝓤 𝓥)
+            (P : 𝓤 ̇ ) (i : is-subsingleton P)
+          → P → resize ρ P i
+to-resize ρ P i = Eq-to-fun (pr₂ (ρ P i))
+
+from-resize : (ρ : propositional-resizing 𝓤 𝓥)
+              (P : 𝓤 ̇ ) (i : is-subsingleton P)
+            → resize ρ P i → P
+from-resize ρ P i = Eq-to-fun (≃-sym(pr₂ (ρ P i)))
+
+Propositional-resizing : 𝓤ω
+Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
+
+EM-gives-PR : EM 𝓤 → propositional-resizing 𝓤 𝓥
+EM-gives-PR {𝓤} {𝓥} em P i = Q (em P i) , e
+ where
+   Q : P + ¬ P → 𝓥 ̇
+   Q (inl p) = Lift 𝓥 𝟙
+   Q (inr n) = Lift 𝓥 𝟘
+   j : (d : P + ¬ P) → is-subsingleton (Q d)
+   j (inl p) = equiv-to-subsingleton (Lift-≃ 𝟙) 𝟙-is-subsingleton
+   j (inr n) = equiv-to-subsingleton (Lift-≃ 𝟘) 𝟘-is-subsingleton
+   f : (d : P + ¬ P) → P → Q d
+   f (inl p) p' = lift ⋆
+   f (inr n) p  = !𝟘 (Lift 𝓥 𝟘) (n p)
+   g : (d : P + ¬ P) → Q d → P
+   g (inl p) q = p
+   g (inr n) q = !𝟘 P (lower q)
+   e : P ≃ Q (em P i)
+   e = logically-equivalent-subsingletons-are-equivalent
+        P (Q (em P i)) i (j (em P i))  (f (em P i) , g (em P i))
+
+has-size-is-a-subsingleton : Univalence →
+                             (X : 𝓤 ̇ ) (𝓥 :  Universe)
+                           → is-subsingleton (X has-size 𝓥)
+has-size-is-a-subsingleton {𝓤} ua X 𝓥 = univalence→' (ua 𝓥) (ua (𝓤 ⊔ 𝓥)) X
+
+PR-is-a-subsingleton : Univalence
+                    → is-subsingleton (propositional-resizing 𝓤 𝓥)
+PR-is-a-subsingleton {𝓤} {𝓥} ua =
+ Π-is-subsingleton (univalence-gives-global-dfunext ua)
+  (λ P → Π-is-subsingleton (univalence-gives-global-dfunext ua)
+          (λ i → has-size-is-a-subsingleton ua P 𝓥))
+
+Impredicativity : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
+Impredicativity 𝓤 𝓥 = (Ω 𝓤) has-size 𝓥
+
+impredicativity : (𝓤 : Universe) → 𝓤 ⁺ ̇
+impredicativity 𝓤 = Impredicativity 𝓤 𝓤
+
+PR-gives-Impredicativity⁺ : global-propext
+                          → global-dfunext
+                          → Propositional-resizing
+                          → Impredicativity 𝓤 (𝓥 ⁺)
+PR-gives-Impredicativity⁺ {𝓤} {𝓥} pe fe ρ = γ
+ where
+  φ : Ω 𝓥 → Ω 𝓤
+  φ (Q , j) = resize ρ Q j , resize-is-a-subsingleton ρ Q j
+  ψ : Ω 𝓤 → Ω 𝓥
+  ψ (P , i) = resize ρ P i , resize-is-a-subsingleton ρ P i
+  η : (p : Ω 𝓤) → φ (ψ p) ≡ p
+  η (P , i) = Ω-ext fe pe a b
+   where
+    a : resize ρ (resize ρ P i) (resize-is-a-subsingleton ρ P i) → P
+    a = from-resize ρ P i
+      ∘ from-resize ρ (resize ρ P i) (resize-is-a-subsingleton ρ P i)
+    b : P → resize ρ (resize ρ P i) (resize-is-a-subsingleton ρ P i)
+    b = to-resize ρ (resize ρ P i) (resize-is-a-subsingleton ρ P i)
+      ∘ to-resize ρ P i
+  ε : (q : Ω 𝓥) → ψ (φ q) ≡ q
+  ε (Q , j) = Ω-ext fe pe a b
+   where
+    a : resize ρ (resize ρ Q j) (resize-is-a-subsingleton ρ Q j) → Q
+    a = from-resize ρ Q j
+      ∘ from-resize ρ (resize ρ Q j) (resize-is-a-subsingleton ρ Q j)
+    b : Q → resize ρ (resize ρ Q j) (resize-is-a-subsingleton ρ Q j)
+    b = to-resize ρ (resize ρ Q j) (resize-is-a-subsingleton ρ Q j)
+      ∘ to-resize ρ Q j
+  γ : (Ω 𝓤) has-size (𝓥 ⁺)
+  γ = Ω 𝓥 , invertibility-gives-≃ ψ (φ , η , ε)
+
+PR-gives-impredicativity⁺ : global-propext
+                          → global-dfunext
+                          → Propositional-resizing
+                          → impredicativity (𝓤 ⁺)
+PR-gives-impredicativity⁺ = PR-gives-Impredicativity⁺
+
+PR-gives-impredicativity₁ : global-propext
+                          → global-dfunext
+                          → Propositional-resizing
+                          → Impredicativity 𝓤 𝓤₁
+PR-gives-impredicativity₁ = PR-gives-Impredicativity⁺
+
+Impredicativity-gives-PR : propext 𝓤
+                         → dfunext 𝓤 𝓤
+                         → Impredicativity 𝓤 𝓥
+                         → propositional-resizing 𝓤 𝓥
+Impredicativity-gives-PR {𝓤} {𝓥} pe fe (O , e) P i = Q , ε
+ where
+  𝟙' : 𝓤 ̇
+  𝟙' = Lift 𝓤 𝟙
+  k : is-subsingleton 𝟙'
+  k (lift ⋆) (lift ⋆) = refl (lift ⋆)
+  down : Ω 𝓤 → O
+  down = Eq-to-fun e
+  O-is-set : is-set O
+  O-is-set = equiv-to-set (≃-sym e) (Ω-is-a-set fe pe)
+  Q : 𝓥 ̇
+  Q = down (𝟙' , k) ≡ down (P , i)
+  j : is-subsingleton Q
+  j = O-is-set (down (Lift 𝓤 𝟙 , k)) (down (P , i))
+  φ : Q → P
+  φ q = Id-to-fun
+         (ap _holds (equivs-are-lc down (Eq-to-fun-is-equiv e) q))
+         (lift ⋆)
+  γ : P → Q
+  γ p = ap down (to-Σ-≡ (pe k i (λ _ → p) (λ _ → lift ⋆) ,
+                         being-subsingleton-is-a-subsingleton fe _ _))
+  ε : P ≃ Q
+  ε = logically-equivalent-subsingletons-are-equivalent P Q i j (γ , φ)
+
+PR-gives-existence-of-truncations : global-dfunext
+                                  → Propositional-resizing
+                                  → subsingleton-truncations-exist
+PR-gives-existence-of-truncations fe R =
+ record
+ {
+   ∥_∥ =
+
+    λ {𝓤} X → resize R
+               (is-inhabited X)
+               (inhabitation-is-a-subsingleton fe X) ;
+
+   ∥∥-is-a-subsingleton =
+
+    λ {𝓤} {X} → resize-is-a-subsingleton R
+                 (is-inhabited X)
+                 (inhabitation-is-a-subsingleton fe X) ;
+
+   ∣_∣ =
+
+    λ {𝓤} {X} x → to-resize R
+                   (is-inhabited X)
+                   (inhabitation-is-a-subsingleton fe X)
+                   (pointed-is-inhabited x) ;
+
+   ∥∥-recursion =
+
+    λ {𝓤} {𝓥} {X} {P} i u s → from-resize R P i
+                                (inhabited-recursion X
+                                  (resize R P i)
+                                  (resize-is-a-subsingleton R P i)
+                                  (to-resize R P i ∘ u)
+                                  (from-resize R
+                                    (is-inhabited X)
+                                    (inhabitation-is-a-subsingleton fe X) s))
+
+ }
+
 module ℕ-order-exercise-solution where
 
   _≤'_ : ℕ → ℕ → 𝓤₀ ̇
@@ -3461,46 +3696,6 @@ module ℕ-more where
   ≤-charac : propext 𝓤₀ → (x y : ℕ) → (x ≤ y) ≡ (x ≼ y)
   ≤-charac pe x y = pe (≤-prop-valued x y) (≼-prop-valued x y)
                        (≤-gives-≼ x y) (≼-gives-≤ x y)
-
-_holds : Ω 𝓤 → 𝓤 ̇
-_holds = pr₁
-
-holds-is-subsingleton : (p : Ω 𝓤) → is-subsingleton (p holds)
-holds-is-subsingleton = pr₂
-
-Ω-ext : dfunext 𝓤 𝓤 → propext 𝓤 → {p q : Ω 𝓤}
-      → (p holds → q holds) → (q holds → p holds) → p ≡ q
-Ω-ext {𝓤} fe pe {p} {q} f g =
- to-Σ-≡ (pe (holds-is-subsingleton p) (holds-is-subsingleton q) f g ,
-         being-subsingleton-is-a-subsingleton fe _ _)
-
-Ω-is-a-set : dfunext 𝓤 𝓤 → propext 𝓤 → is-set (Ω 𝓤)
-Ω-is-a-set {𝓤} fe pe = Id-collapsibles-are-sets (Ω 𝓤) c
- where
-  A : (p q : Ω 𝓤) → 𝓤 ̇
-  A p q = (p holds → q holds) × (q holds → p holds)
-  i : (p q : Ω 𝓤) → is-subsingleton(A p q)
-  i p q = Σ-is-subsingleton
-           (Π-is-subsingleton fe
-             (λ _ → holds-is-subsingleton q))
-             (λ _ → Π-is-subsingleton fe (λ _ → holds-is-subsingleton p))
-  g : (p q : Ω 𝓤) → p ≡ q → A p q
-  g p q e = (u , v)
-   where
-    a : p holds ≡ q holds
-    a = ap _holds e
-    u : p holds → q holds
-    u = Id-to-fun a
-    v : q holds → p holds
-    v = Id-to-fun (a ⁻¹)
-  h : (p q : Ω 𝓤) → A p q → p ≡ q
-  h p q (u , v) = Ω-ext fe pe u v
-  f : (p q : Ω 𝓤) → p ≡ q → p ≡ q
-  f p q e = h p q (g p q e)
-  k : (p q : Ω 𝓤) (d e : p ≡ q) → f p q d ≡ f p q e
-  k p q d e = ap (h p q) (i p q (g p q d) (g p q e))
-  c : (p q : Ω 𝓤) → Σ \(f : p ≡ q → p ≡ q) → wconstant f
-  c p q = (f p q , k p q)
 
 powersets-are-sets : hfunext 𝓤 (𝓥 ⁺) → dfunext 𝓥 𝓥 → propext 𝓥
                    → {X : 𝓤 ̇ } → is-set (X → Ω 𝓥)
