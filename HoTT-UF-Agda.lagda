@@ -270,6 +270,7 @@ Regarding the genesis of the subject:
 Voevodsky [says](https://www.math.ias.edu/vladimir/sites/math.ias.edu.vladimir/files/2014_04_22_slides.pdf)
 that he was influenced by [Makkai](http://www.math.mcgill.ca/makkai/)'s thinking:
 
+   - [FOLDS](http://www.math.mcgill.ca/makkai/folds/foldsinpdf/FOLDS.pdf).
    - [The theory of abstract sets based on first-order logic with dependent types](http://www.math.mcgill.ca/makkai/Various/MateFest2013.pdf).
 
 An important foundational reference, by Steve Awodey and Michael A. Warren, is
