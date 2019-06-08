@@ -6736,7 +6736,7 @@ Unique existence of `x : X` with `A x` in univalent mathematics
 requires that not only the `x : X` but also the `a : A x` is
 unique. More precisely, we require that there is a unique *pair* `(x ,
 a) : Σ A`. This is particularly important in the formulation of
-universal of types that are not sets, and generalizes the categorical
+universal properties of types that are not sets, and generalizes the categorical
 notion of uniqueness up to unique isomorphism.
 
 \begin{code}
