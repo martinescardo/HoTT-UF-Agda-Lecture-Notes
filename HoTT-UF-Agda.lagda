@@ -6912,7 +6912,7 @@ excluded middle.
 ### <a id="resizing"></a> Propositional resizing
 
 Voevodsky [considered resizing
-rules]((https://www.math.ias.edu/vladimir/sites/math.ias.edu.vladimir/files/2011_Bergen.pdf)
+rules](https://www.math.ias.edu/vladimir/sites/math.ias.edu.vladimir/files/2011_Bergen.pdf)
 for a type theory for univalent foundations. These rules govern the
 syntax of the formal system, and hence are of a meta-mathematical
 nature.
@@ -6921,17 +6921,17 @@ Here we instead formulate, in our type theory without such rules, a
 mathematical resizing principle. This principle is provable in the
 system with Voevodsky's rules.
 
-The (relative) consistency of the resizing *rules* is an open problem
+The consistency of the resizing *rules* is an open problem
 at the time of writing, but the resizing *principle* is consistent
 relative to ZFC with Grothendieck universes, because it follows from
 excluded middle, which is known to be validated by the simplicial-set
-model (assuming classical logic in its development).
+model.
 
 We say that a type `X` has size `𝓥` if it is equivalent to a type in the
 universe `𝓥`:
 
 \begin{code}
-_has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
+_has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
 X has-size 𝓥 = Σ \(Y : 𝓥 ̇ ) → X ≃ Y
 \end{code}
 
@@ -7022,7 +7022,7 @@ PR-is-a-subsingleton {𝓤} {𝓥} ua =
 
 *Exercise.* [It is
 possible](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-Resizing.html) to
-show that the axiom of propositional resizing is itself a proposition
+show that the propositional resizing principle is a proposition
 using propositional and functional extensionality instead of
 univalence.
 
@@ -7084,7 +7084,6 @@ propositions of any universe 𝓤 are equivalent to Ω 𝓤₀, which lives in
 the second universe 𝓤₁:
 
 \begin{code}
-
 PR-gives-impredicativity₁ : global-propext
                           → global-dfunext
                           → Propositional-resizing
@@ -7095,7 +7094,7 @@ PR-gives-impredicativity₁ = PR-gives-Impredicativity⁺
 *Exercise.* Excluded middle gives the impredicativity of the first
 universe, and of all other universes.
 
-We also have that moving Ω around universes moves propositions around
+We also have that moving `Ω` around universes moves propositions around
 universes:
 
 \begin{code}
@@ -7136,7 +7135,6 @@ Using Voevodsky's construction and propositional resizing, we get that
 function extensionality implies that subsingleton truncations exist:
 
 \begin{code}
-
 PR-gives-existence-of-truncations : global-dfunext
                                   → Propositional-resizing
                                   → subsingleton-truncations-exist
