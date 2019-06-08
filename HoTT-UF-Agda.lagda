@@ -6912,19 +6912,21 @@ excluded middle.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="resizing"></a> Propositional resizing
 
-Voevodsky [Types'2011](https://www.math.ias.edu/vladimir/sites/math.ias.edu.vladimir/files/2011_Bergen.pdf)  considered resizing rules for a type theory
-for univalent foundations. These rules govern the syntax of the formal
-system, and hence are of a meta-mathematical nature.
+Voevodsky [considered resizing
+rules]((https://www.math.ias.edu/vladimir/sites/math.ias.edu.vladimir/files/2011_Bergen.pdf)
+for a type theory for univalent foundations. These rules govern the
+syntax of the formal system, and hence are of a meta-mathematical
+nature.
 
 Here we instead formulate, in our type theory without such rules, a
 mathematical resizing principle. This principle is provable in the
 system with Voevodsky's rules.
 
-The consistency of the resizing rules is an open problem at the time
-of writing, but the resizing principle is
-consistent relative to ZFC with Grothendieck universes, because it
-follows from excluded middle, which is known to be validated by the
-simplicial-set model (assuming classical logic in its development).
+The (relative) consistency of the resizing *rules* is an open problem
+at the time of writing, but the resizing *principle* is consistent
+relative to ZFC with Grothendieck universes, because it follows from
+excluded middle, which is known to be validated by the simplicial-set
+model (assuming classical logic in its development).
 
 We say that a type `X` has size `𝓥` if it is equivalent to a type in the
 universe `𝓥`:
@@ -7007,20 +7009,19 @@ To show that the propositional resizing principle is a subsingleton,
 we use univalence here.
 
 \begin{code}
-has-size-is-a-subsingleton : Univalence →
-                             (X : 𝓤 ̇ ) (𝓥 :  Universe)
+has-size-is-a-subsingleton : Univalence
+                           → (X : 𝓤 ̇ ) (𝓥 :  Universe)
                            → is-subsingleton (X has-size 𝓥)
 has-size-is-a-subsingleton {𝓤} ua X 𝓥 = univalence→' (ua 𝓥) (ua (𝓤 ⊔ 𝓥)) X
 
-PR-is-a-subsingleton : Univalence
-                    → is-subsingleton (propositional-resizing 𝓤 𝓥)
+PR-is-a-subsingleton : Univalence → is-subsingleton (propositional-resizing 𝓤 𝓥)
 PR-is-a-subsingleton {𝓤} {𝓥} ua =
  Π-is-subsingleton (univalence-gives-global-dfunext ua)
   (λ P → Π-is-subsingleton (univalence-gives-global-dfunext ua)
           (λ i → has-size-is-a-subsingleton ua P 𝓥))
 \end{code}
 
-*Exercise* [It is
+*Exercise.* [It is
 possible](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-Resizing.html) to
 show that the axiom of propositional resizing is itself a proposition
 using propositional and functional extensionality instead of
@@ -7092,7 +7093,7 @@ PR-gives-impredicativity₁ : global-propext
 PR-gives-impredicativity₁ = PR-gives-Impredicativity⁺
 \end{code}
 
-*Exercise* Excluded middle gives the impredicativity of the first
+*Exercise.* Excluded middle gives the impredicativity of the first
 universe, and of all other universes.
 
 We also have that moving Ω around universes moves propositions around
@@ -7175,6 +7176,12 @@ PR-gives-existence-of-truncations fe R =
 
  }
 \end{code}
+
+We have now covered the main foundational aspects of univalent
+mathematics. A major omission in these lecture notes is a discussion
+of higher-inductive types. On the other hand, we have completely
+covered the foundational principles behind
+[UniMath](https://github.com/UniMath/UniMath/blob/master/README.md).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ## <a id="appendix"></a> Appendix
