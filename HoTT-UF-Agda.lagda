@@ -5113,6 +5113,61 @@ univalence-gives-propext ua {P} {Q} i j f g =
   (logically-equivalent-subsingletons-are-equivalent P Q i j (f , g))
 \end{code}
 
+Under the additional hypothesis of function extensionality, the converse of the above holds. We need a lemmas for that.
+
+\begin{code}
+Id-from-subsingleton : propext 𝓤 → dfunext 𝓤 𝓤
+                     → (P : 𝓤 ̇ )
+                     → is-subsingleton P
+                     → (X : 𝓤 ̇) → is-subsingleton (P ≡ X)
+Id-from-subsingleton {𝓤} pe fe P i = Hedberg P (λ X → h X , k X)
+ where
+  module _ (X : 𝓤 ̇) where
+   f : P ≡ X → is-subsingleton X × (P ⇔ X)
+   f p = transport is-subsingleton p i , Id-to-fun p , (Id-to-fun (p ⁻¹))
+   g : is-subsingleton X × (P ⇔ X) → P ≡ X
+   g (l , φ , ψ) = pe i l φ ψ
+   h : P ≡ X → P ≡ X
+   h = g ∘ f
+   j : is-subsingleton (is-subsingleton X × (P ⇔ X))
+   j = ×-is-subsingleton'
+        ((λ (_ : P ⇔ X) → being-subsingleton-is-a-subsingleton fe) ,
+        (λ (l : is-subsingleton X) → ×-is-subsingleton
+                                      (Π-is-subsingleton fe (λ p → l))
+                                      (Π-is-subsingleton fe (λ x → i))))
+   k : wconstant h
+   k p q = ap g (j (f p) (f q))
+
+subsingleton-univalence : propext 𝓤 → dfunext 𝓤 𝓤
+                        → (P : 𝓤 ̇ )
+                        → is-subsingleton P
+                        → (X : 𝓤 ̇ ) → is-equiv (Id-to-Eq P X)
+subsingleton-univalence {𝓤} pe fe P i X = γ
+ where
+  l : P ≃ X → is-subsingleton X
+  l e = equiv-to-subsingleton (≃-sym e) i
+  eqtoid : P ≃ X → P ≡ X
+  eqtoid e = pe i (equiv-to-subsingleton (≃-sym e) i)
+                (Eq-to-fun e) (Eq-to-fun (≃-sym e))
+  m : is-subsingleton (P ≃ X)
+  m (f , k) (f' , k') = to-Σ-≡ (fe (λ x → j (f x) (f' x)) ,
+                                being-equiv-is-a-subsingleton fe fe f' _ k')
+    where
+     j : is-subsingleton X
+     j = equiv-to-subsingleton (≃-sym (f , k)) i
+  ε : (e : P ≃ X) → Id-to-Eq P X (eqtoid e) ≡ e
+  ε e = m (Id-to-Eq P X (eqtoid e)) e
+  η : (q : P ≡ X) → eqtoid (Id-to-Eq P X q) ≡ q
+  η q = Id-from-subsingleton pe fe P i X (eqtoid (Id-to-Eq P X q)) q
+  γ : is-equiv (Id-to-Eq P X)
+  γ = invertibles-are-equivs (Id-to-Eq P X) (eqtoid , η , ε)
+
+subsingleton-univalence-≃ : propext 𝓤 → dfunext 𝓤 𝓤
+                          → (X P : 𝓤 ̇ ) → is-subsingleton P → (P ≡ X) ≃ (P ≃ X)
+subsingleton-univalence-≃ pe fe X P i = Id-to-Eq P X ,
+                                        subsingleton-univalence pe fe P i X
+\end{code}
+
 For set-level mathematics, function extensionality and propositional
 extensionality are often the only consequences of univalence that are
 needed. An exception is the theorem that the type of ordinals in a
