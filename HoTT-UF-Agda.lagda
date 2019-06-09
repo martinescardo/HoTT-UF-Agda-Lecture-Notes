@@ -7,14 +7,14 @@ date : 2019-03-04
 
 4th March 2019, version of {{ "now" | date: "%d %B %Y, %H:%M" }}.
 
-[Martín Hötzel Escardó](http://www.cs.bham.ac.uk/~mhe/),
+[Martín Hötzel Escardó](https://www.cs.bham.ac.uk/~mhe/),
 [School of Computer Science](https://www.cs.bham.ac.uk/),
 [University of Birmingham](http://www.bham.ac.uk/),
 UK.
 
 [<sub>Table of contents ⇓</sub>](HoTT-UF-Agda.html#contents)
 
-**Abstract.** We introduce [Voevodsky](http://www.math.ias.edu/Voevodsky/)'s [univalent foundations](http://www.ams.org/journals/bull/2018-55-04/S0273-0979-2018-01616-9/) and
+**Abstract.** We introduce [Voevodsky](https://www.math.ias.edu/Voevodsky/)'s [univalent foundations](https://www.ams.org/journals/bull/2018-55-04/S0273-0979-2018-01616-9/) and
 [univalent mathematics](https://github.com/UniMath/UniMath/blob/master/README.md), and explain how to develop them with the
 computer system [Agda](https://wiki.portal.chalmers.se/agda/pmwiki.php), which is based on [Martin-Löf type theory](https://github.com/michaelt/martin-lof).
 Agda allows us to write mathematical definitions, constructions,
@@ -66,7 +66,7 @@ These notes were originally developed for the
 ### <a id="introduction"></a> Introduction
 
 A univalent type theory is the underlying formal system for a
-foundation of univalent mathematics as conceived by [Voevodsky](http://www.math.ias.edu/Voevodsky/).
+foundation of univalent mathematics as conceived by [Voevodsky](https://www.math.ias.edu/Voevodsky/).
 
 In the same way as there isn't just one set theory (we have e.g. [ZFC](https://en.wikipedia.org/wiki/Zermelo%E2%80%93Fraenkel_set_theory)
 and [NBG](https://en.wikipedia.org/wiki/Von_Neumann%E2%80%93Bernays%E2%80%93G%C3%B6del_set_theory) among others), there isn't just one univalent type theory (we
@@ -259,7 +259,7 @@ starting points:
    - [Dependent types at work](http://www.cse.chalmers.se/~peterd/papers/DependentTypesAtWork.pdf) by Ana Bove and Peter Dybjer.
    - [Agda reference manual](https://agda.readthedocs.io/en/latest/getting-started/index.html).
    - [Agda further references](https://wiki.portal.chalmers.se/agda/pmwiki.php?n=Main.Documentation).
-   - [Cubical Agda blog post](https://homotopytypetheory.org/2018/12/06/cubical-agda/).
+   - [Cubical Agda blog post](https://homotopytypetheory.org/2018/12/06/cubical-agda/) by Anders Mörtberg.
    - [Cubical Agda documentation](https://agda.readthedocs.io/en/latest/language/cubical.html#cubical).
 
 Regarding the genesis of the subject:
@@ -268,10 +268,10 @@ Regarding the genesis of the subject:
    - [Notes on homotopy λ-calculus](https://github.com/vladimirias/2006_03_Homotopy_lambda_calculus/blob/master/homotopy_lambda_calculus_Mar_5_2006.pdf).
 
 Voevodsky [says](https://www.math.ias.edu/vladimir/sites/math.ias.edu.vladimir/files/2014_04_22_slides.pdf)
-that he was influenced by [Makkai](http://www.math.mcgill.ca/makkai/)'s thinking:
+that he was influenced by [Makkai](https://www.math.mcgill.ca/makkai/)'s thinking:
 
-   - [FOLDS](http://www.math.mcgill.ca/makkai/folds/foldsinpdf/FOLDS.pdf).
-   - [The theory of abstract sets based on first-order logic with dependent types](http://www.math.mcgill.ca/makkai/Various/MateFest2013.pdf).
+   - [FOLDS](https://www.math.mcgill.ca/makkai/folds/foldsinpdf/FOLDS.pdf).
+   - [The theory of abstract sets based on first-order logic with dependent types](https://www.math.mcgill.ca/makkai/Various/MateFest2013.pdf).
 
 An important foundational reference, by Steve Awodey and Michael A. Warren, is
 
@@ -293,16 +293,16 @@ by [Dan Grayson](https://faculty.math.illinois.edu/~dan/).
 
 More references as clickable links are given in the course of the notes.
 
-We also have an [Agda development](http://www.cs.bham.ac.uk/~mhe/agda-new/)
+We also have an [Agda development](https://www.cs.bham.ac.uk/~mhe/agda-new/)
 of [univalent
-foundations](http://www.cs.bham.ac.uk/~mhe/agda-new/UF.html) which is
+foundations](https://www.cs.bham.ac.uk/~mhe/agda-new/UF.html) which is
 applied to work on [injective
-types](http://www.cs.bham.ac.uk/~mhe/agda-new/InjectiveTypes-article.html),
+types](https://www.cs.bham.ac.uk/~mhe/agda-new/InjectiveTypes-article.html),
 [compact (or searchable)
-types](http://www.cs.bham.ac.uk/~mhe/agda-new/Compactness.html),
+types](https://www.cs.bham.ac.uk/~mhe/agda-new/Compactness.html),
 [compact
-ordinals](http://www.cs.bham.ac.uk/~mhe/agda-new/Ordinals.html) and
-[more](http://www.cs.bham.ac.uk/~mhe/agda-new/SafeModulesIndex.html).
+ordinals](https://www.cs.bham.ac.uk/~mhe/agda-new/Ordinals.html) and
+[more](https://www.cs.bham.ac.uk/~mhe/agda-new/SafeModulesIndex.html).
 
 [<sub>Table of contents ⇓</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="plan"></a> Choice of material
@@ -368,7 +368,7 @@ to practice univalent mathematics should consult the above references.
      1. [The univalence axiom is a (sub)singleton type](HoTT-UF-Agda.html#univalencesubsingleton)
      1. [`hfunext` and `vvfunext` are subsingletons](HoTT-UF-Agda.html#hfunextsubsingleton)
      1. [More consequences of function extensionality](HoTT-UF-Agda.html#morefunextuses)
-     1. [Propositional extensionality](HoTT-UF-Agda.html#propositionalextensionality)
+     1. [Propositional extensionality and the powerset](HoTT-UF-Agda.html#propositionalextensionality)
      1. [Some constructions with types of equivalences](HoTT-UF-Agda.html#equivconstructions)
      1. [Type embeddings](HoTT-UF-Agda.html#embeddings)
      1. [The Yoneda Lemma for types](HoTT-UF-Agda.html#yoneda)
@@ -378,6 +378,7 @@ to practice univalent mathematics should consult the above references.
      1. [Subsingleton truncation, disjunction and existence](HoTT-UF-Agda.html#truncation)
      1. [The univalent axiom of choice](HoTT-UF-Agda.html#choice)
      1. [Propositional resizing](HoTT-UF-Agda.html#resizing)
+     1. [Summary of consistent axioms for univalent mathematics](HoTT-UF-Agda.html#summary)
   1. [Appendix](HoTT-UF-Agda.html#appendix)
      1. [Solutions to some exercises](HoTT-UF-Agda.html#someexercisessol)
      1. [Additional exercises](HoTT-UF-Agda.html#moreexercises)
@@ -938,7 +939,7 @@ types that are subsingletons (and this is called [propositional extensionality](
 
 If we are doing applied mathematics and want to actually compute, we
 can define a type for binary notation for the sake of efficiency, and
-of course people have done [that](http://www.cs.bham.ac.uk/~mhe/agda-new/BinaryNaturals.html).
+of course people have done [that](https://www.cs.bham.ac.uk/~mhe/agda-new/BinaryNaturals.html).
 Here we are not concerned with
 efficiency but only with understanding how to codify mathematics in
 (univalent) type theory and in Agda.
@@ -1348,7 +1349,7 @@ J : (X : 𝓤 ̇ ) (A : (x y : X) → x ≡ y → 𝓥 ̇ )
 J X A f x x (refl x) = f x
 \end{code}
 
-This is [related](http://www.cs.bham.ac.uk/~mhe/yoneda/yoneda.html) to the [Yoneda
+This is [related](https://www.cs.bham.ac.uk/~mhe/yoneda/yoneda.html) to the [Yoneda
 Lemma](https://en.wikipedia.org/wiki/Yoneda_lemma) in category theory,
 for readers familiar with the subject, which says that certain natural
 transformations are *uniquely determined* by their *action on the
@@ -4447,7 +4448,7 @@ equivalence.
 then so is the function `(-) ∘ f : (Y → Z) → (X → Z)`.
 
 The crucial step in [Voevodsky's
-proof](http://www.math.uwo.ca/faculty/kapulkin/notes/ua_implies_fe.pdf)
+proof](https://www.math.uwo.ca/faculty/kapulkin/notes/ua_implies_fe.pdf)
 that univalence implies `funext` is to establish the conclusion of the
 above exercise assuming univalence instead. We prove this by
 [equivalence induction](HoTT-UF-Agda.html#equivalenceinduction) on
@@ -4721,69 +4722,56 @@ total-fiber-is-domain {𝓤} {𝓥} {X} {Y} f = invertibility-gives-≃ g (h , �
   ε = refl
 \end{code}
 
-We define the desired canonical bijection in a submodule with
-assumptions:
-
-\begin{code}
-module map-classifier
-        (𝓤 : Universe)
-        (ua : is-univalent 𝓤)
-        (fe : dfunext 𝓤 (𝓤 ⁺))
-        (Y : 𝓤 ̇ )
-       where
-\end{code}
-
 The function `χ` gives the *characteristic function* of a map into `Y`:
 
 \begin{code}
- χ : 𝓤 / Y  → (Y → 𝓤 ̇ )
- χ (X , f) = fiber f
+χ : (Y : 𝓤 ̇ ) → 𝓤 / Y  → (Y → 𝓤 ̇ )
+χ Y (X , f) = fiber f
 \end{code}
 
-Any `Y → 𝓤` is the characteristic function of some map into `Y`:
+Any `Y → 𝓤` is the characteristic function of some map into `Y` by
+taking its total space and the first projection:
 
 \begin{code}
- T : (Y → 𝓤 ̇ ) → 𝓤 / Y
- T A = Σ A , pr₁
-\end{code}
+T : (Y : 𝓤 ̇ ) → (Y → 𝓤 ̇ ) → 𝓤 / Y
+T Y A = Σ A , pr₁
 
-And these constructions are mutually inverse:
+χη : is-univalent 𝓤
+   → (Y : 𝓤 ̇ ) → (σ : 𝓤 / Y) → T Y (χ Y σ) ≡ σ
+χη ua Y (X , f) = r
+ where
+  e : Σ (fiber f) ≃ X
+  e = total-fiber-is-domain f
+  p : Σ (fiber f) ≡ X
+  p = Eq-to-Id ua (Σ (fiber f)) X e
+  observation : Eq-to-fun (≃-sym e) ≡ (λ x → f x , x , refl (f x))
+  observation = refl _
+  q = transport (λ - → - → Y) p pr₁ ≡⟨ transport-map-along-≃ ua e pr₁ ⟩
+      pr₁ ∘ Eq-to-fun (≃-sym e)     ≡⟨ refl _ ⟩
+      f                             ∎
+  r : (Σ (fiber f) , pr₁) ≡ (X , f)
+  r = to-Σ-≡ (p , q)
 
-\begin{code}
- χη : (σ : 𝓤 / Y) → T (χ σ) ≡ σ
- χη (X , f) = r
-  where
-   e : Σ (fiber f) ≃ X
-   e = total-fiber-is-domain f
-   p : Σ (fiber f) ≡ X
-   p = Eq-to-Id ua (Σ (fiber f)) X e
-   observation : Eq-to-fun (≃-sym e) ≡ (λ x → f x , x , refl (f x))
-   observation = refl _
-   q = transport (λ - → - → Y) p pr₁ ≡⟨ transport-map-along-≃ ua e pr₁ ⟩
-       pr₁ ∘ Eq-to-fun (≃-sym e)     ≡⟨ refl _ ⟩
-       f                             ∎
-   r : (Σ (fiber f) , pr₁) ≡ (X , f)
-   r = to-Σ-≡ (p , q)
+χε : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
+  → (Y : 𝓤 ̇ ) (A : Y → 𝓤 ̇ ) → χ Y (T Y A) ≡ A
+χε ua fe Y A = fe γ
+ where
+  f : ∀ y → fiber pr₁ y → A y
+  f y ((y , a) , refl p) = a
+  g : ∀ y → A y → fiber pr₁ y
+  g y a = (y , a) , refl y
+  η : ∀ y σ → g y (f y σ) ≡ σ
+  η y ((y , a) , refl p) = refl ((y , a) , refl p)
+  ε : ∀ y a → f y (g y a) ≡ a
+  ε y a = refl a
+  γ : ∀ y → fiber pr₁ y ≡ A y
+  γ y = Eq-to-Id ua _ _ (invertibility-gives-≃ (f y) (g y , η y , ε y))
 
- χε : (A : Y → 𝓤 ̇ ) → χ (T A) ≡ A
- χε A = fe γ
-  where
-   f : ∀ y → fiber pr₁ y → A y
-   f y ((y , a) , refl p) = a
-   g : ∀ y → A y → fiber pr₁ y
-   g y a = (y , a) , refl y
-   η : ∀ y σ → g y (f y σ) ≡ σ
-   η y ((y , a) , refl p) = refl ((y , a) , refl p)
-   ε : ∀ y a → f y (g y a) ≡ a
-   ε y a = refl a
-   γ : ∀ y → fiber pr₁ y ≡ A y
-   γ y = Eq-to-Id ua _ _ (invertibility-gives-≃ (f y) (g y , η y , ε y))
+χ-is-equiv : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺) → (Y : 𝓤 ̇ ) → is-equiv (χ Y)
+χ-is-equiv ua fe Y = invertibles-are-equivs (χ Y) (T Y , χη ua Y , χε ua fe Y)
 
- χ-is-equiv : is-equiv χ
- χ-is-equiv = invertibles-are-equivs χ (T , χη , χε)
-
- canonical-bijection : 𝓤 / Y ≃ (Y → 𝓤 ̇ )
- canonical-bijection = χ , χ-is-equiv
+χ-≃ : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺) → (Y : 𝓤 ̇ ) → 𝓤 / Y ≃ (Y → 𝓤 ̇ )
+χ-≃ ua fe Y = χ Y , χ-is-equiv ua fe Y
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -5040,11 +5028,11 @@ it has at most one section, and that if it has a section then it has
 at most one retraction.
 
 \begin{code}
-retraction-has-at-most-one-section : dfunext 𝓥 𝓤 → hfunext 𝓥 𝓥
-                                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                   → has-retraction f
-                                   → is-subsingleton (has-section f)
-retraction-has-at-most-one-section {𝓥} {𝓤} fe hfe {X} {Y} f (g , gf) (h , fh) = d
+at-most-one-section : dfunext 𝓥 𝓤 → hfunext 𝓥 𝓥
+                    → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                    → has-retraction f
+                    → is-subsingleton (has-section f)
+at-most-one-section {𝓥} {𝓤} fe hfe {X} {Y} f (g , gf) (h , fh) = d
  where
   fe' : dfunext 𝓥 𝓥
   fe' = hfunext-gives-dfunext hfe
@@ -5066,11 +5054,11 @@ retraction-has-at-most-one-section {𝓥} {𝓤} fe hfe {X} {Y} f (g , gf) (h , 
   d : (σ : has-section f) → h , fh ≡ σ
   d = singletons-are-subsingletons (has-section f) c (h , fh)
 
-section-has-at-most-one-retraction : hfunext 𝓤 𝓤 → dfunext 𝓥 𝓤
-                                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                   → has-section f
-                                   → is-subsingleton (has-retraction f)
-section-has-at-most-one-retraction {𝓤} {𝓥} hfe fe' {X} {Y} f (g , fg) (h , hf) = d
+at-most-one-retraction : hfunext 𝓤 𝓤 → dfunext 𝓥 𝓤
+                       → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                       → has-section f
+                       → is-subsingleton (has-retraction f)
+at-most-one-retraction {𝓤} {𝓥} hfe fe' {X} {Y} f (g , fg) (h , hf) = d
  where
   fe : dfunext 𝓤 𝓤
   fe = hfunext-gives-dfunext hfe
@@ -5099,12 +5087,12 @@ being-joyal-equiv-is-a-subsingleton : hfunext 𝓤 𝓤 → hfunext 𝓥 𝓥 �
 
 being-joyal-equiv-is-a-subsingleton fe₀ fe₁ fe₂ f =
  ×-is-subsingleton'
-  (retraction-has-at-most-one-section fe₂ fe₁ f ,
-   section-has-at-most-one-retraction fe₀ fe₂ f)
+  (at-most-one-section fe₂ fe₁ f ,
+   at-most-one-retraction fe₀ fe₂ f)
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="propositionalextensionality"></a> Propositional extensionality
+### <a id="propositionalextensionality"></a> Propositional extensionality and the powerset
 
 We have been using the mathematical terminology "subsingleton", but
 tradition in the formulation of the next notion demands the logical
@@ -5128,16 +5116,16 @@ univalence-gives-propext ua {P} {Q} i j f g =
   (logically-equivalent-subsingletons-are-equivalent P Q i j (f , g))
 \end{code}
 
-Under the additional hypothesis of function extensionality, the converse of the above holds. We need a lemmas for that.
+Under the additional hypothesis of function extensionality, the converse of the above holds. We need a lemma for that.
 
 \begin{code}
 Id-from-subsingleton : propext 𝓤 → dfunext 𝓤 𝓤
                      → (P : 𝓤 ̇ )
                      → is-subsingleton P
-                     → (X : 𝓤 ̇) → is-subsingleton (P ≡ X)
+                     → (X : 𝓤 ̇ ) → is-subsingleton (P ≡ X)
 Id-from-subsingleton {𝓤} pe fe P i = Hedberg P (λ X → h X , k X)
  where
-  module _ (X : 𝓤 ̇) where
+  module _ (X : 𝓤 ̇ ) where
    f : P ≡ X → is-subsingleton X × (P ⇔ X)
    f p = transport is-subsingleton p i , Id-to-fun p , (Id-to-fun (p ⁻¹))
    g : is-subsingleton X × (P ⇔ X) → P ≡ X
@@ -5192,10 +5180,10 @@ which lives in the next universe:
 Ω 𝓤 = Σ \(P : 𝓤 ̇ ) → is-subsingleton P
 
 _holds : Ω 𝓤 → 𝓤 ̇
-_holds = pr₁
+_holds (P , i) = P
 
 holds-is-subsingleton : (p : Ω 𝓤) → is-subsingleton (p holds)
-holds-is-subsingleton = pr₂
+holds-is-subsingleton (P , i) = i
 
 Ω-ext : dfunext 𝓤 𝓤 → propext 𝓤 → {p q : Ω 𝓤}
       → (p holds → q holds) → (q holds → p holds) → p ≡ q
@@ -5204,7 +5192,7 @@ holds-is-subsingleton = pr₂
          being-subsingleton-is-a-subsingleton fe _ _)
 \end{code}
 
-With this and Hedberg, we can show that `Ω` is a set:
+With this and Hedberg, we get that `Ω` is a set:
 
 \begin{code}
 Ω-is-a-set : dfunext 𝓤 𝓤 → propext 𝓤 → is-set (Ω 𝓤)
@@ -5236,11 +5224,81 @@ With this and Hedberg, we can show that `Ω` is a set:
   c p q = (f p q , k p q)
 \end{code}
 
+Hence powersets, even of types that are not sets, are always sets.
+
+\begin{code}
+powersets-are-sets : hfunext 𝓤 (𝓥 ⁺) → dfunext 𝓥 𝓥 → propext 𝓥
+                   → {X : 𝓤 ̇ } → is-set (X → Ω 𝓥)
+powersets-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-a-set fe' pe)
+\end{code}
+
+The above considers `X : 𝓤` and `Ω 𝓥`. When the two universes `𝓤` and `𝓥` are the same, we adopt the usual notation `𝓟 X` for the powerset `X → Ω 𝓤` of `X`:
+
+\begin{code}
+𝓟 : 𝓤 ̇ → 𝓤 ⁺ ̇
+𝓟 {𝓤} X = X → Ω 𝓤
+\end{code}
+
+Notice also that both `Ω` and the powerset live in the next universe. With
+[propositional resizing](HoTT-UF-Agda.html#resizing), we get
+equivalent copies in the same universe.
+
+Membership and containment for elements of the powerset are defined as follows:
+
+\begin{code}
+_∈_ : {X : 𝓤 ̇ } → X → 𝓟 X → 𝓤 ̇
+x ∈ A = A x holds
+
+_⊆_ : {X : 𝓤 ̇ } → 𝓟 X → 𝓟 X → 𝓤 ̇
+A ⊆ B = ∀ x → x ∈ A → x ∈ B
+
+⊆-refl : {X : 𝓤 ̇ } (A : 𝓟 X) → A ⊆ A
+⊆-refl A x = 𝑖𝑑 (x ∈ A)
+
+⊆-refl-consequence : {X : 𝓤 ̇ } (A B : 𝓟 X)
+                   → A ≡ B → (A ⊆ B) × (B ⊆ A)
+⊆-refl-consequence {X} A A (refl A) = ⊆-refl A , ⊆-refl A
+\end{code}
+
+Although `𝓟 X` is a set even if `X` is not, the total space
+`Σ \(x : X) → A x holds` of a member `A : 𝓟 X` of the powerset need not
+be a set. For instance, if `A x holds = 𝟙` for all `x : X`, then the total space is
+equivalent to `X`, which may not be a set.
+
+Propositional and functional extensionality give the usual extensionality condition for the powerset:
+
+\begin{code}
+subset-extensionality : propext 𝓤 → dfunext 𝓤 𝓤 → dfunext 𝓤 (𝓤 ⁺)
+                      → {X : 𝓤 ̇ } (A B : 𝓟 X)
+                      → A ⊆ B → B ⊆ A → A ≡ B
+subset-extensionality pe fe fe' {X} A B h k = fe' φ
+ where
+  φ : (x : X) → A x ≡ B x
+  φ x = to-Σ-≡ (pe (holds-is-subsingleton (A x))
+                   (holds-is-subsingleton (B x)) (h x) (k x) ,
+                being-subsingleton-is-a-subsingleton fe
+                   (holds-is-subsingleton _)
+                   (holds-is-subsingleton _))
+\end{code}
+
+And hence so does univalence:
+
+\begin{code}
+subset-extensionality' : Univalence
+                       → {X : 𝓤 ̇ } (A B : 𝓟 X)
+                       → A ⊆ B → B ⊆ A → A ≡ B
+subset-extensionality' {𝓤} ua = subset-extensionality
+                                 (univalence-gives-propext (ua 𝓤))
+                                 (univalence-gives-dfunext (ua 𝓤))
+                                 (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
+\end{code}
+
 For set-level mathematics, function extensionality and propositional
 extensionality are often the only consequences of univalence that are
-needed. An exception is the theorem that the type of ordinals in a
-universe is an ordinal in the next universe, which requires univalence
-for sets (see the HoTT Book).
+needed. A noteworthy exception is the theorem that the type of
+ordinals in a universe is an ordinal in the next universe, which
+requires univalence for sets (see the HoTT Book or
+[this](https://www.cs.bham.ac.uk/~mhe/agda-new/OrdinalOfOrdinals.html)).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="equivconstructions"></a> Some constructions with types of equivalences
@@ -5436,19 +5494,46 @@ converse fails in general.
 
 *Exercise.* Left cancellable maps into *sets* are always embeddings.
 
-The type of embeddings is defined as follows:
+We note in passing that the subsingletons are the subtypes of a
+singleton, which justifies the terminology "subsingleton":
 
 \begin{code}
 _↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ↪ Y = Σ \(f : X → Y) → is-embedding f
+
+the-subsingletons-are-the-subtypes-of-a-singleton : (X : 𝓤 ̇ )
+                                                  → is-subsingleton X ⇔ (X ↪ 𝟙)
+the-subsingletons-are-the-subtypes-of-a-singleton X = φ , ψ
+ where
+  i : is-subsingleton X → is-embedding (!𝟙' X)
+  i s ⋆ (x , refl ⋆) (y , refl ⋆) = ap (λ - → - , refl ⋆) (s x y)
+  φ : is-subsingleton X → X ↪ 𝟙
+  φ s = !𝟙 , i s
+  ψ : X ↪ 𝟙 → is-subsingleton X
+  ψ (f , e) x y = d
+   where
+    a : x ≡ y → f x ≡ f y
+    a = ap f {x} {y}
+    b : is-equiv a
+    b = embedding-gives-ap-is-equiv f e x y
+    c : f x ≡ f y
+    c = 𝟙-is-subsingleton (f x) (f y)
+    d : x ≡ y
+    d = inverse a b c
+
+the-subsingletons-are-the-subtypes-of-a-singleton' : propext 𝓤 → global-dfunext
+                                                   → (X : 𝓤 ̇ )
+                                                   → is-subsingleton X ≡ (X ↪ 𝟙)
+the-subsingletons-are-the-subtypes-of-a-singleton' pe fe X = γ
+ where
+  a : is-subsingleton X ⇔ (X ↪ 𝟙)
+  a = the-subsingletons-are-the-subtypes-of-a-singleton X
+  b : is-subsingleton (X ↪ 𝟙)
+  b (f , e) (f' , e') = to-Σ-≡ (fe (λ x → 𝟙-is-subsingleton (f x) (f' x)) ,
+                                being-embedding-is-a-subsingleton fe f' _ e')
+  γ : is-subsingleton X ≡ (X ↪ 𝟙)
+  γ = pe (being-subsingleton-is-a-subsingleton fe) b (pr₁ a) (pr₂ a)
 \end{code}
-
-*Exercise.* Show [that](HoTT-UF-Agda.html#the-subsingletons-are-the-subtypes-of-a-singleton)
-the subsingletons are the subtypes of `𝟙`, in
-the sense that `is-subsingleton X ⇔ (X ↪ 𝟙)`. Assuming propositional
-and functional extensionality, conclude that
-`is-subsingleton X ≡ (X ↪ 𝟙)`
-
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="yoneda"></a> The Yoneda Lemma for types
@@ -6197,23 +6282,7 @@ equivalence
 
    > `subtypes-of Y ≃ (Y → Ω 𝓤)`
 
-for any type `Y : 𝓤`.
-
-*Exercise* Assume univalence or function extensionality or
-propositional extensionality for each part, as
-appropriate. We have seen that `Ω 𝓤`
-is a set.
-[(1)](HoTT-UF-Agda.html#powersets-are-sets) Conclude that the
-type `Y → Ω 𝓤` is a set (even if `Y` is not), which justifies the name
-powerset for it, and the notation `𝓟 Y`.
-[(2)](HoTT-UF-Agda.html#someexercisessol) For `A : 𝓟 Y` and `y :
-Y` write `y ∈ A` to mean that `A y` holds. Define `A ⊆ B` to mean `(y : Y) →
-y ∈ A → y ∈ B`. Show that both `∈` and `⊆` are subsingleton-valued
-relations. [(3)](HoTT-UF-Agda.htnml#subset-extensionality) Show that
-`A ≡ B` and `(A ⊆ B) × (B ⊆ A)` are logically equivalent
-propositions. Thus, univalence gives extensionality for the powerset.
-
-We will derive the claim `subtypes-of Y ≃ (Y → Ω 𝓤)` from something
+for any type `Y : 𝓤`. We will derive this from something
 more general.  We defined embeddings to be maps whose fibers are
 all subsingletons. We can replace `is-subsingleton` by an arbitrary
 property `P` of — or even structure on — types.
@@ -6229,18 +6298,18 @@ _/[_]_ : (𝓤 : Universe) → (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ̇ → 𝓤 ⁺ �
 Then `Σ P` is the classifier of maps with `P` fibers:
 
 \begin{code}
-special-map-classifier : is-univalent 𝓤 → is-univalent (𝓤 ⁺)
+special-map-classifier : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
                        → (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ )
                        → 𝓤 /[ P ] Y ≃ (Y → Σ P)
-special-map-classifier {𝓤} ua ua⁺ P Y = ≃-sym γ
+special-map-classifier {𝓤} ua fe P Y = ≃-sym γ
  where
-  open map-classifier 𝓤 ua (univalence-gives-dfunext' ua ua⁺) Y
-  χ-is-hae : is-hae χ
-  χ-is-hae = equivs-are-haes ua⁺ χ χ-is-equiv
+  h : is-hae (χ Y)
+  h = invertibles-are-haes (χ Y) (T Y , χη ua Y , χε ua fe Y)
+
   γ = (Y → Σ P)                                ≃⟨ ΠΣ-distr-≃ ⟩
       (Σ \(A : Y → 𝓤 ̇ ) → (y : Y) → P (A y))   ≃⟨ Σ-change-of-variables-hae
-                                                   (λ A → Π (P ∘ A)) χ χ-is-hae ⟩
-      (Σ \(σ : 𝓤 / Y) → (y : Y) → P (χ σ y))   ≃⟨ Σ-assoc ⟩
+                                                   (λ A → Π (P ∘ A)) (χ Y) h ⟩
+      (Σ \(σ : 𝓤 / Y) → (y : Y) → P (χ Y σ y)) ≃⟨ Σ-assoc ⟩
       (𝓤 /[ P ] Y)                             ■
 \end{code}
 
@@ -6248,9 +6317,23 @@ In particular, considering `P = is-subsingleton`, we get the promised
 fact that `Ω` is the subtype classifier:
 
 \begin{code}
-Ω-is-subtype-classifier : Univalence → (Y : 𝓤 ̇ ) → subtypes-of Y ≃ (Y → Ω 𝓤)
-Ω-is-subtype-classifier {𝓤} ua = special-map-classifier (ua 𝓤) (ua (𝓤 ⁺))
+Ω-is-subtype-classifier : Univalence
+                        → (Y : 𝓤 ̇ ) → subtypes-of Y ≃ (Y → Ω 𝓤)
+Ω-is-subtype-classifier {𝓤} ua = special-map-classifier (ua 𝓤)
+                                  (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
                                   is-subsingleton
+\end{code}
+
+In particular, the type of subtypes of `Y` is always a set, even if `Y` is not a set:
+
+\begin{code}
+subtypes-form-set : Univalence → (Y : 𝓤 ̇ ) → is-set (subtypes-of Y)
+subtypes-form-set {𝓤} ua Y = equiv-to-set
+                              (Ω-is-subtype-classifier ua Y)
+                              (powersets-are-sets
+                                (univalence-gives-hfunext' (ua 𝓤) (ua (𝓤 ⁺)))
+                                (univalence-gives-dfunext (ua 𝓤))
+                                (univalence-gives-propext (ua 𝓤)))
 \end{code}
 
 We now consider `P = is-singleton` and the type of singletons:
@@ -6259,8 +6342,11 @@ We now consider `P = is-singleton` and the type of singletons:
 𝓢 : (𝓤 : Universe) → 𝓤 ⁺ ̇
 𝓢 𝓤 = Σ \(S : 𝓤 ̇ ) → is-singleton S
 
-equiv-classification : Univalence → (Y : 𝓤 ̇ ) → (Σ \(X : 𝓤 ̇ ) → X ≃ Y) ≃ (Y → 𝓢 𝓤)
-equiv-classification {𝓤} ua = special-map-classifier (ua 𝓤) (ua (𝓤 ⁺)) is-singleton
+equiv-classification : Univalence
+                     → (Y : 𝓤 ̇ ) → (Σ \(X : 𝓤 ̇ ) → X ≃ Y) ≃ (Y → 𝓢 𝓤)
+equiv-classification {𝓤} ua = special-map-classifier (ua 𝓤)
+                               (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
+                               is-singleton
 \end{code}
 
 With this we can derive a [fact we already
@@ -6285,11 +6371,12 @@ the-singletons-form-a-singleton {𝓤} pe fe = c , φ
            (λ _ → center S s) (λ _ → center (Lift 𝓤 𝟙) i)
 \end{code}
 
-What we already knew is this:
+What we [already knew](HoTT-UF-Agda.html#unicharac) is this:
 
 \begin{code}
-corollary : Univalence → (Y : 𝓤 ̇ ) → is-singleton (Σ \(X : 𝓤 ̇ ) → X ≃ Y)
-corollary {𝓤} ua Y = equiv-to-singleton (equiv-classification ua Y) i
+univalence-→-again : Univalence
+                   → (Y : 𝓤 ̇ ) → is-singleton (Σ \(X : 𝓤 ̇ ) → X ≃ Y)
+univalence-→-again {𝓤} ua Y = equiv-to-singleton (equiv-classification ua Y) i
  where
   i : is-singleton (Y → 𝓢 𝓤)
   i = univalence-gives-vvfunext' (ua 𝓤) (ua (𝓤 ⁺))
@@ -6513,7 +6600,7 @@ Magma identity is equivalent to magma equivalence, and hence to magma isomorphis
 \end{code}
 
 This characterization of the identity type of Magmas
-[generalizes](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-StructureIdentityPrinciple.html)
+[generalizes](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-StructureIdentityPrinciple.html)
 to identity types of monoids, metric spaces, topological spaces and
 more, via a structure identity principle (see the HoTT book for more
 information).
@@ -6686,7 +6773,7 @@ record subsingleton-truncations-exist : 𝓤ω where
 \end{code}
 
 This is the approach we adopt in our [personal Agda
-development](http://www.cs.bham.ac.uk/~mhe/agda-new/).
+development](https://www.cs.bham.ac.uk/~mhe/agda-new/).
 
 We now assume that subsingleton truncations exist in the next few
 constructions, and we `open` the assumption to make the above fields
@@ -6904,7 +6991,7 @@ extensionality):
 \end{code}
 
 For more information with Agda code, see
-[this](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-Choice.html), which
+[this](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Choice.html), which
 in particular has a proof that univalent choice implies univalent
 excluded middle.
 
@@ -7021,7 +7108,7 @@ PR-is-a-subsingleton {𝓤} {𝓥} ua =
 \end{code}
 
 *Exercise.* [It is
-possible](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-Resizing.html) to
+possible](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Resizing.html) to
 show that the propositional resizing principle is a proposition
 using propositional and functional extensionality instead of
 univalence.
@@ -7127,7 +7214,7 @@ Impredicativity-gives-PR {𝓤} {𝓥} pe fe (O , e) P i = Q , ε
   ε = logically-equivalent-subsingletons-are-equivalent P Q i j (γ , φ)
 \end{code}
 
-[*Exercise*](http://www.cs.bham.ac.uk/~mhe/agda-new/UF-Resizing.html). `propext`
+[*Exercise*](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Resizing.html). `propext`
 and `funext` and excluded middle together imply that `Ω 𝓤` has size
 `𝓤₀`.
 
@@ -7181,18 +7268,38 @@ covered the foundational principles behind
 [UniMath](https://github.com/UniMath/UniMath/blob/master/README.md).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+## <a id="summary"></a> Summary of consistent axioms for univalent mathematics
+
+The following axioms are together consistent by considering Voevodsky's [simplicial-set model](https://arxiv.org/abs/1211.2851):
+  1. [Function extensionality](HoTT-UF-Agda.html#hfunext).
+  1. [Propositional extensionality](HoTT-UF-Agda.html#propositionalextensionality).
+  1. [Univalence](HoTT-UF-Agda.html#univalence).
+  1. [Univalent excluded middle](HoTT-UF-Agda.html#em).
+  1. [Univalent choice](HoTT-UF-Agda.html#choice).
+  1. [Propositional resizing and impredicativity](HoTT-UF-Agda.html#resizing).
+
+We have that:
+
+  * The first three admit a constructive interpretation via [cubical
+    type theory](https://arxiv.org/abs/1611.02108) with an implementation in [cubical Agda](https://homotopytypetheory.org/2018/12/06/cubical-agda/).
+  * Univalence implies [function extensionality](HoTT-UF-Agda.html#funextfromua) and [propositional extensionality](HoTT-UF-Agda.html#propositionalextensionality).
+  * Choice implies excluded middle, as usual, and both are non-constructive.
+  * Excluded middle implies [propositional resizing and impredicativity](HoTT-UF-Agda.html#resizing).
+  * The constructive status of propositional resizing and impredicativity is open.
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ## <a id="appendix"></a> Appendix
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 
-### <a id="someexercisessol"></a> Solutions to some exercises
+### <a id="someexercisessol"></a>Solutions to some exercises
 
 \begin{code}
 module ℕ-order-exercise-solution where
 
   _≤'_ : ℕ → ℕ → 𝓤₀ ̇
-  _≤'_ = ℕ-iteration (ℕ → 𝓤₀ ̇) (λ y → 𝟙)
-          (λ f → ℕ-recursion (𝓤₀ ̇) 𝟘 (λ y P → f y))
+  _≤'_ = ℕ-iteration (ℕ → 𝓤₀ ̇ ) (λ y → 𝟙)
+          (λ f → ℕ-recursion (𝓤₀ ̇ ) 𝟘 (λ y P → f y))
 
   open ℕ-order
 
@@ -7226,46 +7333,6 @@ module ℕ-more where
   ≤-charac pe x y = pe (≤-prop-valued x y) (≼-prop-valued x y)
                        (≤-gives-≼ x y) (≼-gives-≤ x y)
 
-powersets-are-sets : hfunext 𝓤 (𝓥 ⁺) → dfunext 𝓥 𝓥 → propext 𝓥
-                   → {X : 𝓤 ̇ } → is-set (X → Ω 𝓥)
-powersets-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-a-set fe' pe)
-
-powerset : 𝓤 ̇ → 𝓤 ⁺ ̇
-powerset {𝓤} X = X → Ω 𝓤
-
-_∈_ : {X : 𝓤 ̇ } → X → powerset X → 𝓤 ̇
-x ∈ A = A x holds
-
-_⊆_ : {X : 𝓤 ̇ } → powerset X → powerset X → 𝓤 ̇
-A ⊆ B = ∀ x → x ∈ A → x ∈ B
-
-⊆-refl : {X : 𝓤 ̇ } (A : powerset X) → A ⊆ A
-⊆-refl A x = id
-
-⊆-refl-consequence : {X : 𝓤 ̇ } (A B : powerset X)
-                   → A ≡ B → (A ⊆ B) × (B ⊆ A)
-⊆-refl-consequence {X} A A (refl A) = ⊆-refl A , ⊆-refl A
-
-subset-extensionality : propext 𝓤 → dfunext 𝓤 𝓤 → dfunext 𝓤 (𝓤 ⁺)
-                      → {X : 𝓤 ̇ } (A B : powerset X)
-                      → A ⊆ B → B ⊆ A → A ≡ B
-subset-extensionality pe fe fe' {X} A B h k = fe' φ
- where
-  φ : (x : X) → A x ≡ B x
-  φ x = to-Σ-≡ (pe (holds-is-subsingleton (A x))
-                   (holds-is-subsingleton (B x)) (h x) (k x) ,
-                being-subsingleton-is-a-subsingleton fe
-                   (holds-is-subsingleton _)
-                   (holds-is-subsingleton _))
-
-subset-extensionality' : Univalence
-                       → {X : 𝓤 ̇ } (A B : powerset X)
-                       → A ⊆ B → B ⊆ A → A ≡ B
-subset-extensionality' {𝓤} ua = subset-extensionality
-                                  (univalence-gives-propext (ua 𝓤))
-                                  (univalence-gives-dfunext (ua 𝓤))
-                                  (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
-
 has-section-charac : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                    → ((y : Y) → Σ \(x : X) → f x ≡ y) ≃ has-section f
 has-section-charac f = ΠΣ-distr-≃
@@ -7278,18 +7345,16 @@ pointed-types 𝓤 = Σ \(X : 𝓤 ̇ ) → X
 
 retraction-classifier : Univalence
                       → (Y : 𝓤 ̇ ) → retractions-into Y ≃ (Y → pointed-types 𝓤)
-retraction-classifier {𝓤} ua Y = retractions-into Y    ≃⟨ ≃-sym b ⟩
-                                 ((𝓤 /[ id ] Y))       ≃⟨ a ⟩
-                                 (Y → pointed-types 𝓤) ■
+retraction-classifier {𝓤} ua Y =
+ retractions-into Y                                               ≃⟨ i ⟩
+ (Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → (y : Y) → Σ \(x : X) → f x ≡ y) ≃⟨ ≃-refl _ ⟩
+ ((𝓤 /[ id ] Y))                                                  ≃⟨ ii ⟩
+ (Y → pointed-types 𝓤)                                            ■
  where
-  a = special-map-classifier (ua 𝓤) (ua (𝓤 ⁺)) id Y
-  remark : (𝓤 /[ id ] Y)
-         ≡ (Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → (y : Y) → Σ \(x : X) → f x ≡ y)
-  remark = refl _
-  b = (Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → (y : Y) → Σ \(x : X) → f x ≡ y)
-          ≃⟨ Σ-cong (λ X → Σ-cong (λ f → ΠΣ-distr-≃)) ⟩
-      (Σ \(X : 𝓤 ̇ ) → Y ◁ X)
-          ■
+  i  = ≃-sym (Σ-cong (λ X → Σ-cong (λ f → ΠΣ-distr-≃)))
+  ii = special-map-classifier (ua 𝓤)
+        (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
+        id Y
 
 module surjection-classifier
          (pt : subsingleton-truncations-exist)
@@ -7313,40 +7378,9 @@ module surjection-classifier
   surjection-classifier : Univalence
                         → (Y : 𝓤 ̇ )
                         → surjections-into Y ≃ (Y → inhabited-types 𝓤)
-  surjection-classifier {𝓤} ua = special-map-classifier (ua 𝓤) (ua (𝓤 ⁺)) ∥_∥
-
-the-subsingletons-are-the-subtypes-of-a-singleton : (X : 𝓤 ̇ )
-                                                  → is-subsingleton X ⇔ (X ↪ 𝟙)
-the-subsingletons-are-the-subtypes-of-a-singleton X = φ , ψ
- where
-  i : is-subsingleton X → is-embedding (!𝟙' X)
-  i s ⋆ (x , refl ⋆) (y , refl ⋆) = ap (λ - → - , refl ⋆) (s x y)
-  φ : is-subsingleton X → X ↪ 𝟙
-  φ s = !𝟙 , i s
-  ψ : X ↪ 𝟙 → is-subsingleton X
-  ψ (f , e) x y = d
-   where
-    a : x ≡ y → f x ≡ f y
-    a = ap f {x} {y}
-    b : is-equiv a
-    b = embedding-gives-ap-is-equiv f e x y
-    c : f x ≡ f y
-    c = 𝟙-is-subsingleton (f x) (f y)
-    d : x ≡ y
-    d = inverse a b c
-
-the-subsingletons-are-the-subtypes-of-a-singleton' : propext 𝓤 → global-dfunext
-                                                   → (X : 𝓤 ̇ )
-                                                   → is-subsingleton X ≡ (X ↪ 𝟙)
-the-subsingletons-are-the-subtypes-of-a-singleton' pe fe X = γ
- where
-  a : is-subsingleton X ⇔ (X ↪ 𝟙)
-  a = the-subsingletons-are-the-subtypes-of-a-singleton X
-  b : is-subsingleton (X ↪ 𝟙)
-  b (f , e) (f' , e') = to-Σ-≡ (fe (λ x → 𝟙-is-subsingleton (f x) (f' x)) ,
-                                being-embedding-is-a-subsingleton fe f' _ e')
-  γ : is-subsingleton X ≡ (X ↪ 𝟙)
-  γ = pe (being-subsingleton-is-a-subsingleton fe) b (pr₁ a) (pr₂ a)
+  surjection-classifier {𝓤} ua = special-map-classifier (ua 𝓤)
+                                  (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
+                                  ∥_∥
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
