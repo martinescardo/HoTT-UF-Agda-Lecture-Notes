@@ -7293,6 +7293,11 @@ We have that:
   * The constructive status of propositional resizing and impredicativity is open.
   * Propositional resizing [implies](HoTT-UF-Agda.html#resizing) the existence of propositional truncations, and hence so does excluded middle.
 
+A major omission in these notes is a discussion of higher-inductive
+types.  On the other hand, these notes completely cover the
+foundational principles supported by UniMath, including excluded
+middle, choice and propositional resizing.
+
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ## <a id="appendix"></a> Appendix
 
