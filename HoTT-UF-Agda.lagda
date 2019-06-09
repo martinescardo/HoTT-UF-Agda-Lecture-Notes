@@ -7180,8 +7180,9 @@ PR-gives-impredicativity₁ : global-propext
 PR-gives-impredicativity₁ = PR-gives-Impredicativity⁺
 \end{code}
 
-*Exercise.* Excluded middle gives the impredicativity of the first
-universe, and of all other universes.
+*Exercise.* Excluded middle
+[gives](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Resizing.html) the
+impredicativity of the first universe, and of all other universes.
 
 We also have that moving `Ω` around universes moves propositions around
 universes:
@@ -7216,12 +7217,13 @@ Impredicativity-gives-PR {𝓤} {𝓥} pe fe (O , e) P i = Q , ε
   ε = logically-equivalent-subsingletons-are-equivalent P Q i j (γ , φ)
 \end{code}
 
-[*Exercise*](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Resizing.html). `propext`
-and `funext` and excluded middle together imply that `Ω 𝓤` has size
-`𝓤₀`.
+*Exercise*. `propext` and `funext` and excluded middle together imply
+[that](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Resizing.html) `Ω 𝓤`
+has size `𝓤₀`.
 
-Using Voevodsky's construction and propositional resizing, we get that
-function extensionality implies that subsingleton truncations exist:
+Using Voevodsky's [construction](HoTT-UF-Agda.html#truncation) and
+propositional resizing, we get that function extensionality implies
+that subsingleton truncations exist:
 
 \begin{code}
 PR-gives-existence-of-truncations : global-dfunext
@@ -7276,18 +7278,20 @@ The following axioms are together consistent by considering Voevodsky's [simplic
   1. [Function extensionality](HoTT-UF-Agda.html#hfunext).
   1. [Propositional extensionality](HoTT-UF-Agda.html#propositionalextensionality).
   1. [Univalence](HoTT-UF-Agda.html#univalence).
+  1. [Existence of propositional truncations](HoTT-UF-Agda.html#univalence).
   1. [Univalent excluded middle](HoTT-UF-Agda.html#em).
   1. [Univalent choice](HoTT-UF-Agda.html#choice).
   1. [Propositional resizing and impredicativity](HoTT-UF-Agda.html#resizing).
 
 We have that:
 
-  * The first three admit a constructive interpretation via [cubical
+  * The first four  admit a constructive interpretation via [cubical
     type theory](https://arxiv.org/abs/1611.02108) with an implementation in [cubical Agda](https://homotopytypetheory.org/2018/12/06/cubical-agda/).
   * Univalence implies [function extensionality](HoTT-UF-Agda.html#funextfromua) and [propositional extensionality](HoTT-UF-Agda.html#propositionalextensionality).
   * Choice implies excluded middle, as usual, and both are non-constructive.
   * Excluded middle implies [propositional resizing and impredicativity](HoTT-UF-Agda.html#resizing).
   * The constructive status of propositional resizing and impredicativity is open.
+  * Propositional resizing [implies](HoTT-UF-Agda.html#resizing) the existence of propositional truncations, and hence so does excluded middle.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ## <a id="appendix"></a> Appendix
