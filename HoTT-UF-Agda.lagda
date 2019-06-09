@@ -7290,7 +7290,7 @@ We have that:
   * Choice implies excluded middle, as usual, and both are non-constructive.
   * Excluded middle implies [propositional resizing and impredicativity](HoTT-UF-Agda.html#resizing).
   * The constructive status of propositional resizing and impredicativity is open.
-  * Propositional resizing [implies](HoTT-UF-Agda.html#resizing) the existence of propositional truncations, and hence so does excluded middle.
+  * Function extensionality and propositional resizing [imply](HoTT-UF-Agda.html#resizing) the existence of propositional truncations, and hence so do function extensionality and excluded middle.
 
 A major omission in these notes is a discussion of higher-inductive
 types.  On the other hand, these notes completely cover the
