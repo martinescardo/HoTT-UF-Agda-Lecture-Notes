@@ -7111,7 +7111,7 @@ PR-is-a-subsingleton {𝓤} {𝓥} ua =
 
 *Exercise.* [It is
 possible](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Resizing.html) to
-show that the propositional resizing principle is a proposition
+show that the propositional resizing principle is a subsingleton
 using propositional and functional extensionality instead of
 univalence.
 
