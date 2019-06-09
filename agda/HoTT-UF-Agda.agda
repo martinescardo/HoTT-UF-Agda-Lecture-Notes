@@ -3737,7 +3737,6 @@ PR-gives-existence-of-truncations fe R =
                                   (from-resize R
                                     (is-inhabited X)
                                     (inhabitation-is-a-subsingleton fe X) s))
-
  }
 
 module ℕ-order-exercise-solution where

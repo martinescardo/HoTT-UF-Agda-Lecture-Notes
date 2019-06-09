@@ -7025,7 +7025,7 @@ X has-size 𝓥 = Σ \(Y : 𝓥 ̇ ) → X ≃ Y
 \end{code}
 
 The propositional resizing principle from a universe `𝓤` to a universe
-`𝓥` says that every proposition in `𝓤` has size `𝓥`:
+`𝓥` says that every subsingleton in `𝓤` has size `𝓥`:
 
 \begin{code}
 propositional-resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
@@ -7169,7 +7169,7 @@ PR-gives-impredicativity⁺ = PR-gives-Impredicativity⁺
 \end{code}
 
 What we get with propositional resizing is that all types of
-propositions of any universe 𝓤 are equivalent to Ω 𝓤₀, which lives in
+subsingletons of any universe 𝓤 are equivalent to Ω 𝓤₀, which lives in
 the second universe 𝓤₁:
 
 \begin{code}
@@ -7184,7 +7184,7 @@ PR-gives-impredicativity₁ = PR-gives-Impredicativity⁺
 [gives](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Resizing.html) the
 impredicativity of the first universe, and of all other universes.
 
-We also have that moving `Ω` around universes moves propositions around
+We also have that moving `Ω` around universes moves subsingletons around
 universes:
 
 \begin{code}
@@ -7261,7 +7261,6 @@ PR-gives-existence-of-truncations fe R =
                                   (from-resize R
                                     (is-inhabited X)
                                     (inhabitation-is-a-subsingleton fe X) s))
-
  }
 \end{code}
 
