@@ -7008,11 +7008,13 @@ Here we instead formulate, in our type theory without such rules, a
 mathematical resizing principle. This principle is provable in the
 system with Voevodsky's rules.
 
-The consistency of the resizing *rules* is an open problem
-at the time of writing, but the resizing *principle* is consistent
-relative to ZFC with Grothendieck universes, because it follows from
-excluded middle, which is known to be validated by the simplicial-set
-model.
+The consistency of the resizing *rules* is an open problem at the time
+of writing, but the resizing *principle* is consistent relative to ZFC
+with Grothendieck universes, because it follows from excluded middle,
+which is known to be validated by the simplicial-set model.
+
+It is also an open problem whether the resizing principles discussed
+below have a computational interpretation.
 
 We say that a type `X` has size `𝓥` if it is equivalent to a type in the
 universe `𝓥`:
