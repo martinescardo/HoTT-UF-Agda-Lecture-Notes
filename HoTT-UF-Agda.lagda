@@ -3,6 +3,21 @@ layout: default
 title : Introduction to Homotopy Type Theory and Univalent Foundations (HoTT/UF) with Agda
 date : 2019-03-04
 ---
+<!--
+
+ * This file is not meant to be read by people.
+
+ * It is used to automatically generate
+
+   - https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html
+
+   - https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.pdf
+
+   - https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes/tree/master/agda
+
+The html file is better rendered and probably easier to read than the pdf file, but both have internal links, including to the Agda definitions.
+
+-->
 ## <a id="lecturenotes">Introduction to Univalent Foundations of Mathematics with Agda</a>
 
 4th March 2019, version of {{ "now" | date: "%d %B %Y, %H:%M" }}.
@@ -5494,46 +5509,20 @@ converse fails in general.
 
 *Exercise.* Left cancellable maps into *sets* are always embeddings.
 
-We note in passing that the subsingletons are the subtypes of a
-singleton, which justifies the terminology "subsingleton":
+We now introduce notation for the type of embeddings.
 
 \begin{code}
 _↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ↪ Y = Σ \(f : X → Y) → is-embedding f
-
-the-subsingletons-are-the-subtypes-of-a-singleton : (X : 𝓤 ̇ )
-                                                  → is-subsingleton X ⇔ (X ↪ 𝟙)
-the-subsingletons-are-the-subtypes-of-a-singleton X = φ , ψ
- where
-  i : is-subsingleton X → is-embedding (!𝟙' X)
-  i s ⋆ (x , refl ⋆) (y , refl ⋆) = ap (λ - → - , refl ⋆) (s x y)
-  φ : is-subsingleton X → X ↪ 𝟙
-  φ s = !𝟙 , i s
-  ψ : X ↪ 𝟙 → is-subsingleton X
-  ψ (f , e) x y = d
-   where
-    a : x ≡ y → f x ≡ f y
-    a = ap f {x} {y}
-    b : is-equiv a
-    b = embedding-gives-ap-is-equiv f e x y
-    c : f x ≡ f y
-    c = 𝟙-is-subsingleton (f x) (f y)
-    d : x ≡ y
-    d = inverse a b c
-
-the-subsingletons-are-the-subtypes-of-a-singleton' : propext 𝓤 → global-dfunext
-                                                   → (X : 𝓤 ̇ )
-                                                   → is-subsingleton X ≡ (X ↪ 𝟙)
-the-subsingletons-are-the-subtypes-of-a-singleton' pe fe X = γ
- where
-  a : is-subsingleton X ⇔ (X ↪ 𝟙)
-  a = the-subsingletons-are-the-subtypes-of-a-singleton X
-  b : is-subsingleton (X ↪ 𝟙)
-  b (f , e) (f' , e') = to-Σ-≡ (fe (λ x → 𝟙-is-subsingleton (f x) (f' x)) ,
-                                being-embedding-is-a-subsingleton fe f' _ e')
-  γ : is-subsingleton X ≡ (X ↪ 𝟙)
-  γ = pe (being-subsingleton-is-a-subsingleton fe) b (pr₁ a) (pr₂ a)
 \end{code}
+
+The following justifies the terminology "subsingleton":
+
+*Exercise*. [(1)](HoTT-UF-Agda.html#the-subsingletons-are-the-subtypes-of-a-singleton)
+ Show that `is-subsingleton X ⇔ (X ↪
+ 𝟙)`. [(2)](HoTT-UF-Agda.html#the-subsingletons-are-the-subtypes-of-a-singleton)
+ Hence assuming function extensionality and propositional
+ extensionality, conclude that `is-subsingleton X ⇔ (X ↪ 𝟙)`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="yoneda"></a> The Yoneda Lemma for types
@@ -7343,6 +7332,39 @@ module ℕ-more where
   ≤-charac : propext 𝓤₀ → (x y : ℕ) → (x ≤ y) ≡ (x ≼ y)
   ≤-charac pe x y = pe (≤-prop-valued x y) (≼-prop-valued x y)
                        (≤-gives-≼ x y) (≼-gives-≤ x y)
+
+the-subsingletons-are-the-subtypes-of-a-singleton : (X : 𝓤 ̇ )
+                                                  → is-subsingleton X ⇔ (X ↪ 𝟙)
+the-subsingletons-are-the-subtypes-of-a-singleton X = φ , ψ
+ where
+  i : is-subsingleton X → is-embedding (!𝟙' X)
+  i s ⋆ (x , refl ⋆) (y , refl ⋆) = ap (λ - → - , refl ⋆) (s x y)
+  φ : is-subsingleton X → X ↪ 𝟙
+  φ s = !𝟙 , i s
+  ψ : X ↪ 𝟙 → is-subsingleton X
+  ψ (f , e) x y = d
+   where
+    a : x ≡ y → f x ≡ f y
+    a = ap f {x} {y}
+    b : is-equiv a
+    b = embedding-gives-ap-is-equiv f e x y
+    c : f x ≡ f y
+    c = 𝟙-is-subsingleton (f x) (f y)
+    d : x ≡ y
+    d = inverse a b c
+
+the-subsingletons-are-the-subtypes-of-a-singleton' : propext 𝓤 → global-dfunext
+                                                   → (X : 𝓤 ̇ )
+                                                   → is-subsingleton X ≡ (X ↪ 𝟙)
+the-subsingletons-are-the-subtypes-of-a-singleton' pe fe X = γ
+ where
+  a : is-subsingleton X ⇔ (X ↪ 𝟙)
+  a = the-subsingletons-are-the-subtypes-of-a-singleton X
+  b : is-subsingleton (X ↪ 𝟙)
+  b (f , e) (f' , e') = to-Σ-≡ (fe (λ x → 𝟙-is-subsingleton (f x) (f' x)) ,
+                                being-embedding-is-a-subsingleton fe f' _ e')
+  γ : is-subsingleton X ≡ (X ↪ 𝟙)
+  γ = pe (being-subsingleton-is-a-subsingleton fe) b (pr₁ a) (pr₂ a)
 
 has-section-charac : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                    → ((y : Y) → Σ \(x : X) → f x ≡ y) ≃ has-section f

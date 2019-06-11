@@ -1,7 +1,8 @@
 # Introduction to univalent foundations of mathematics with Agda
 
 Sources and scripts to generate the lecture notes available at
-https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html
+
+   > https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html
 
 Agda [2.6.0](https://agda.readthedocs.io/en/v2.6.0/getting-started/installation.html) is required. Consult the [installation instructions](INSTALL.md) to help you set up Agda and Emacs for the Midlands Graduate School.
 

@@ -2644,39 +2644,6 @@ embedding-criterion-converse f e x' x = ≃-sym
 _↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ↪ Y = Σ \(f : X → Y) → is-embedding f
 
-the-subsingletons-are-the-subtypes-of-a-singleton : (X : 𝓤 ̇ )
-                                                  → is-subsingleton X ⇔ (X ↪ 𝟙)
-the-subsingletons-are-the-subtypes-of-a-singleton X = φ , ψ
- where
-  i : is-subsingleton X → is-embedding (!𝟙' X)
-  i s ⋆ (x , refl ⋆) (y , refl ⋆) = ap (λ - → - , refl ⋆) (s x y)
-  φ : is-subsingleton X → X ↪ 𝟙
-  φ s = !𝟙 , i s
-  ψ : X ↪ 𝟙 → is-subsingleton X
-  ψ (f , e) x y = d
-   where
-    a : x ≡ y → f x ≡ f y
-    a = ap f {x} {y}
-    b : is-equiv a
-    b = embedding-gives-ap-is-equiv f e x y
-    c : f x ≡ f y
-    c = 𝟙-is-subsingleton (f x) (f y)
-    d : x ≡ y
-    d = inverse a b c
-
-the-subsingletons-are-the-subtypes-of-a-singleton' : propext 𝓤 → global-dfunext
-                                                   → (X : 𝓤 ̇ )
-                                                   → is-subsingleton X ≡ (X ↪ 𝟙)
-the-subsingletons-are-the-subtypes-of-a-singleton' pe fe X = γ
- where
-  a : is-subsingleton X ⇔ (X ↪ 𝟙)
-  a = the-subsingletons-are-the-subtypes-of-a-singleton X
-  b : is-subsingleton (X ↪ 𝟙)
-  b (f , e) (f' , e') = to-Σ-≡ (fe (λ x → 𝟙-is-subsingleton (f x) (f' x)) ,
-                                being-embedding-is-a-subsingleton fe f' _ e')
-  γ : is-subsingleton X ≡ (X ↪ 𝟙)
-  γ = pe (being-subsingleton-is-a-subsingleton fe) b (pr₁ a) (pr₂ a)
-
 𝓨 : {X : 𝓤 ̇ } → X → (X → 𝓤 ̇ )
 𝓨 {𝓤} {X} = Id X
 
@@ -3776,6 +3743,39 @@ module ℕ-more where
   ≤-charac : propext 𝓤₀ → (x y : ℕ) → (x ≤ y) ≡ (x ≼ y)
   ≤-charac pe x y = pe (≤-prop-valued x y) (≼-prop-valued x y)
                        (≤-gives-≼ x y) (≼-gives-≤ x y)
+
+the-subsingletons-are-the-subtypes-of-a-singleton : (X : 𝓤 ̇ )
+                                                  → is-subsingleton X ⇔ (X ↪ 𝟙)
+the-subsingletons-are-the-subtypes-of-a-singleton X = φ , ψ
+ where
+  i : is-subsingleton X → is-embedding (!𝟙' X)
+  i s ⋆ (x , refl ⋆) (y , refl ⋆) = ap (λ - → - , refl ⋆) (s x y)
+  φ : is-subsingleton X → X ↪ 𝟙
+  φ s = !𝟙 , i s
+  ψ : X ↪ 𝟙 → is-subsingleton X
+  ψ (f , e) x y = d
+   where
+    a : x ≡ y → f x ≡ f y
+    a = ap f {x} {y}
+    b : is-equiv a
+    b = embedding-gives-ap-is-equiv f e x y
+    c : f x ≡ f y
+    c = 𝟙-is-subsingleton (f x) (f y)
+    d : x ≡ y
+    d = inverse a b c
+
+the-subsingletons-are-the-subtypes-of-a-singleton' : propext 𝓤 → global-dfunext
+                                                   → (X : 𝓤 ̇ )
+                                                   → is-subsingleton X ≡ (X ↪ 𝟙)
+the-subsingletons-are-the-subtypes-of-a-singleton' pe fe X = γ
+ where
+  a : is-subsingleton X ⇔ (X ↪ 𝟙)
+  a = the-subsingletons-are-the-subtypes-of-a-singleton X
+  b : is-subsingleton (X ↪ 𝟙)
+  b (f , e) (f' , e') = to-Σ-≡ (fe (λ x → 𝟙-is-subsingleton (f x) (f' x)) ,
+                                being-embedding-is-a-subsingleton fe f' _ e')
+  γ : is-subsingleton X ≡ (X ↪ 𝟙)
+  γ = pe (being-subsingleton-is-a-subsingleton fe) b (pr₁ a) (pr₂ a)
 
 has-section-charac : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                    → ((y : Y) → Σ \(x : X) → f x ≡ y) ≃ has-section f
