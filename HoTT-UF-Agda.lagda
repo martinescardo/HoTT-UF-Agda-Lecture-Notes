@@ -4,10 +4,10 @@ title : Introduction to Homotopy Type Theory and Univalent Foundations (HoTT/UF)
 date : 2019-03-04
 ---
 <!--
-
  * This file is not meant to be read by people.
 
- * It is used to automatically generate
+ * It is used to automatically generate the following files, which are
+   meant to be read by people:
 
    - https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html
 
@@ -18,7 +18,6 @@ date : 2019-03-04
 The html file is better rendered and probably easier to read than the
 pdf file, but both have internal links, including to the Agda
 definitions.
-
 -->
 ## <a id="lecturenotes">Introduction to Univalent Foundations of Mathematics with Agda</a>
 
