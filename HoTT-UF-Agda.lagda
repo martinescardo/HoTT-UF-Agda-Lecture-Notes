@@ -192,8 +192,8 @@ which are common place in current mathematical practice
 In summary, univalent mathematics is characterized by (1)-(8) and not
 by the univalence axiom alone. In fact, half of theses notes begin
 *without* the univalence axiom (as measured by the number of lines in
-the source code for these lecture notes until we formulate the
-univalence axiom and start to use it).
+these lecture notes until we formulate the univalence axiom and start
+to use it).
 
 Lastly, univalent type theories don't assume the axiom of choice or
 the principle of excluded middle, and so in some sense they are
@@ -6994,12 +6994,12 @@ for a type theory for univalent foundations. These rules govern the
 syntax of the formal system, and hence are of a meta-mathematical
 nature.
 
-Here we instead formulate, in our type theory without such rules, a
-mathematical resizing principle. This principle is provable in the
+Here we instead formulate, in our type theory without such rules,
+mathematical resizing principles. These principles are provable in the
 system with Voevodsky's rules.
 
 The consistency of the resizing *rules* is an open problem at the time
-of writing, but the resizing *principle* is consistent relative to ZFC
+of writing, but the resizing *principles* are consistent relative to ZFC
 with Grothendieck universes, because it follows from excluded middle,
 which is known to be validated by the simplicial-set model.
 
