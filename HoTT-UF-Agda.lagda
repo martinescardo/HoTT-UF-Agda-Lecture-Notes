@@ -15,7 +15,9 @@ date : 2019-03-04
 
    - https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes/tree/master/agda
 
-The html file is better rendered and probably easier to read than the pdf file, but both have internal links, including to the Agda definitions.
+The html file is better rendered and probably easier to read than the
+pdf file, but both have internal links, including to the Agda
+definitions.
 
 -->
 ## <a id="lecturenotes">Introduction to Univalent Foundations of Mathematics with Agda</a>
