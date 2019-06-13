@@ -924,7 +924,7 @@ nested induction, on the first argument and then the second, but we
 use pattern
 matching for the sake of readability.
 
-*Exercise.* [Write it]((HoTT-UF-Agda.html#someexercisessol) using
+*Exercise.* [Write it](HoTT-UF-Agda.html#someexercisessol) using
 `ℕ-induction`, recursion or iteration, as appropriate.
 
 \begin{code}
@@ -939,7 +939,7 @@ module ℕ-order where
 \end{code}
 
 *Exercise.* After learning [`Σ`](HoTT-UF-Agda.html#sigmatypes)
- and [`_≡_`](HoTT-UF-Agda.html#identitytype) explained below, prove [that](HoTT-UF-Agda.html#BasicArithmetic))
+ and [`_≡_`](HoTT-UF-Agda.html#identitytype) explained below, prove [that](HoTT-UF-Agda.html#BasicArithmetic)
 
    > `x ≤ y` if and only if `Σ \(z : ℕ) → x + z ≡ y`.
 
@@ -3194,7 +3194,7 @@ inverse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f → (Y → 
 inverse f e y = fiber-point (center (fiber f y) (e y))
 
 inverse-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
-                   → (y : Y) → f (inverse f e y) ≡ y
+                   → f ∘ inverse f e ∼ id
 inverse-is-section f e y = fiber-identification (center (fiber f y) (e y))
 
 inverse-centrality : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -3203,7 +3203,7 @@ inverse-centrality : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 inverse-centrality f e y = centrality (fiber f y) (e y)
 
 inverse-is-retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
-                      → (x : X) → inverse f e (f x) ≡ x
+                      → inverse f e ∘ f ∼ id
 inverse-is-retraction f e x = ap fiber-point p
  where
   p : inverse f e (f x) , inverse-is-section f e (f x) ≡ x , refl (f x)
@@ -3305,6 +3305,28 @@ checking of this module in the uses of `∘-is-equiv`:
    γ = invertibles-are-equivs (g ∘ f)
          (∘-invertible (equivs-are-invertible g i)
          (equivs-are-invertible f j))
+\end{code}
+
+Because we have made the above definition abstract, we don't have
+access to the given construction when proving things involving
+`∘-is-equiv`, such as the contravariance of inversion:
+
+\begin{code}
+inverse-of-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇}
+               (f : X → Y) (g : Y → Z)
+               (i : is-equiv f) (j : is-equiv g)
+             → inverse f i ∘ inverse g j ∼ inverse (g ∘ f) (∘-is-equiv j i)
+inverse-of-∘ f g i j z =
+  f' (g' z)             ≡⟨ (ap (f' ∘ g') (s z))⁻¹ ⟩
+  f' (g' (g (f (h z)))) ≡⟨ ap f' (inverse-is-retraction g j (f (h z))) ⟩
+  f' (f (h z))          ≡⟨ inverse-is-retraction f i (h z) ⟩
+  h z                   ∎
+ where
+  f' = inverse f i
+  g' = inverse g j
+  h = inverse (g ∘ f) (∘-is-equiv j i)
+  s : g ∘ f ∘ h ∼ id
+  s = inverse-is-section (g ∘ f) (∘-is-equiv j i)
 \end{code}
 
 The type of equivalences is defined as follows:
@@ -3591,6 +3613,14 @@ equiv-to-subsingleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                       → is-subsingleton Y
                       → is-subsingleton X
 
+comp-inverses : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                (f : X → Y) (g : Y → Z)
+                (i : is-equiv f) (j : is-equiv g)
+                (f' : Y → X) (g' : Z → Y)
+              → f' ∼ inverse f i
+              → g' ∼ inverse g j
+              → f' ∘ g' ∼ inverse (g ∘ f) (∘-is-equiv j i)
+
 equiv-to-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
              → X ≃ Y
              → is-set Y
@@ -3618,6 +3648,12 @@ is-joyal-equiv f = has-section f × has-retraction f
 Provide definitions for the following type declarations:
 
 \begin{code}
+one-inverse : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+              (f : X → Y) (r s : Y → X)
+            → (r ∘ f ∼ id)
+            → (f ∘ s ∼ id)
+            → r ∼ s
+
 joyal-equivs-are-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                             → is-joyal-equiv f → invertible f
 
@@ -3774,6 +3810,21 @@ equiv-to-subsingleton = sol
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → is-subsingleton Y → is-subsingleton X
   sol (f , i) = lc-maps-reflect-subsingletons f (equivs-are-lc f i)
 
+comp-inverses = sol
+ where
+  sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+        (f : X → Y) (g : Y → Z)
+        (i : is-equiv f) (j : is-equiv g)
+        (f' : Y → X) (g' : Z → Y)
+      → f' ∼ inverse f i
+      → g' ∼ inverse g j
+      → f' ∘ g' ∼ inverse (g ∘ f) (∘-is-equiv j i)
+  sol f g i j f' g' h k z =
+   f' (g' z)                          ≡⟨ h (g' z) ⟩
+   inverse f i (g' z)                 ≡⟨ ap (inverse f i) (k z) ⟩
+   inverse f i (inverse g j z)        ≡⟨ inverse-of-∘ f g i j z ⟩
+   inverse (g ∘ f) (∘-is-equiv j i) z ∎
+
 equiv-to-set = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → is-set Y → is-set X
@@ -3799,15 +3850,26 @@ retractions-closed-under-∼ = sol
                               f (s y) ≡⟨ fs y ⟩
                               y ∎)
 
+one-inverse = sol
+ where
+  sol : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+        (f : X → Y) (r s : Y → X)
+      → (r ∘ f ∼ id)
+      → (f ∘ s ∼ id)
+      → r ∼ s
+  sol X Y f r s h k y = r y         ≡⟨ ap r ((k y)⁻¹) ⟩
+                        r (f (s y)) ≡⟨ h (s y) ⟩
+                        s y         ∎
+
 joyal-equivs-are-invertible = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
       → is-joyal-equiv f → invertible f
-  sol f ((s , fs) , (r , rf)) = (s , sf , fs)
+  sol f ((s , ε) , (r , η)) = (s , sf , ε)
    where
-    sf = λ (x : domain f) → s(f x)       ≡⟨ (rf (s (f x)))⁻¹ ⟩
-                            r(f(s(f x))) ≡⟨ ap r (fs (f x)) ⟩
-                            r(f x)       ≡⟨ rf x ⟩
+    sf = λ (x : domain f) → s(f x)       ≡⟨ (η (s (f x)))⁻¹ ⟩
+                            r(f(s(f x))) ≡⟨ ap r (ε (f x)) ⟩
+                            r(f x)       ≡⟨ η x ⟩
                             x            ∎
 
 joyal-equivs-are-equivs = sol
@@ -3820,7 +3882,7 @@ invertibles-are-joyal-equivs = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
       → invertible f → is-joyal-equiv f
-  sol f (g , gf , fg) = ((g , fg) , (g , gf))
+  sol f (g , η , ε) = ((g , ε) , (g , η))
 
 equivs-are-joyal-equivs = sol
  where

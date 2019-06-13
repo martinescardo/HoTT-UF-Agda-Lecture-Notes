@@ -924,7 +924,7 @@ inverse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f → (Y → 
 inverse f e y = fiber-point (center (fiber f y) (e y))
 
 inverse-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
-                   → (y : Y) → f (inverse f e y) ≡ y
+                   → f ∘ inverse f e ∼ id
 inverse-is-section f e y = fiber-identification (center (fiber f y) (e y))
 
 inverse-centrality : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -933,7 +933,7 @@ inverse-centrality : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 inverse-centrality f e y = centrality (fiber f y) (e y)
 
 inverse-is-retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
-                      → (x : X) → inverse f e (f x) ≡ x
+                      → inverse f e ∘ f ∼ id
 inverse-is-retraction f e x = ap fiber-point p
  where
   p : inverse f e (f x) , inverse-is-section f e (f x) ≡ x , refl (f x)
@@ -1001,6 +1001,22 @@ id-is-equiv = singleton-types-are-singletons
    γ = invertibles-are-equivs (g ∘ f)
          (∘-invertible (equivs-are-invertible g i)
          (equivs-are-invertible f j))
+
+inverse-of-∘ : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (Z : 𝓦 ̇)
+               (f : X → Y) (g : Y → Z)
+               (i : is-equiv f) (j : is-equiv g)
+             → inverse f i ∘ inverse g j ∼ inverse (g ∘ f) (∘-is-equiv j i)
+inverse-of-∘ X Y Z f g i j z =
+  f' (g' z)             ≡⟨ (ap (f' ∘ g') (s z))⁻¹ ⟩
+  f' (g' (g (f (h z)))) ≡⟨ ap f' (inverse-is-retraction g j (f (h z))) ⟩
+  f' (f (h z))          ≡⟨ inverse-is-retraction f i (h z) ⟩
+  h z                   ∎
+ where
+  f' = inverse f i
+  g' = inverse g j
+  h = inverse (g ∘ f) (∘-is-equiv j i)
+  s : g ∘ f ∘ h ∼ id
+  s = inverse-is-section (g ∘ f) (∘-is-equiv j i)
 
 _≃_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ≃ Y = Σ \(f : X → Y) → is-equiv f
@@ -1190,6 +1206,12 @@ retractions-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
 is-joyal-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-joyal-equiv f = has-section f × has-retraction f
 
+one-inverse : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+              (f : X → Y) (r s : Y → X)
+            → (r ∘ f ∼ id)
+            → (f ∘ s ∼ id)
+            → r ∼ s
+
 joyal-equivs-are-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                             → is-joyal-equiv f → invertible f
 
@@ -1363,15 +1385,26 @@ retractions-closed-under-∼ = sol
                               f (s y) ≡⟨ fs y ⟩
                               y ∎)
 
+one-inverse = sol
+ where
+  sol : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+        (f : X → Y) (r s : Y → X)
+      → (r ∘ f ∼ id)
+      → (f ∘ s ∼ id)
+      → r ∼ s
+  sol X Y f r s h k y = r y         ≡⟨ ap r ((k y)⁻¹) ⟩
+                        r (f (s y)) ≡⟨ h (s y) ⟩
+                        s y         ∎
+
 joyal-equivs-are-invertible = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
       → is-joyal-equiv f → invertible f
-  sol f ((s , fs) , (r , rf)) = (s , sf , fs)
+  sol f ((s , ε) , (r , η)) = (s , sf , ε)
    where
-    sf = λ (x : domain f) → s(f x)       ≡⟨ (rf (s (f x)))⁻¹ ⟩
-                            r(f(s(f x))) ≡⟨ ap r (fs (f x)) ⟩
-                            r(f x)       ≡⟨ rf x ⟩
+    sf = λ (x : domain f) → s(f x)       ≡⟨ (η (s (f x)))⁻¹ ⟩
+                            r(f(s(f x))) ≡⟨ ap r (ε (f x)) ⟩
+                            r(f x)       ≡⟨ η x ⟩
                             x            ∎
 
 joyal-equivs-are-equivs = sol
@@ -1384,7 +1417,7 @@ invertibles-are-joyal-equivs = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
       → invertible f → is-joyal-equiv f
-  sol f (g , gf , fg) = ((g , fg) , (g , gf))
+  sol f (g , η , ε) = ((g , ε) , (g , η))
 
 equivs-are-joyal-equivs = sol
  where
