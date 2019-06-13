@@ -801,7 +801,7 @@ to be able to just write `5` as a shorthand:
 \end{code}
 
 Apart from this notational effect, the above declaration doesn't play any
-role in the Agda development of these lectures notes.
+role in the Agda development of these lecture notes.
 
 In the following, the type family `A` can be seen as playing the role
 of a property of elements of `ℕ`, except that it doesn't need to be
