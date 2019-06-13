@@ -1002,11 +1002,11 @@ id-is-equiv = singleton-types-are-singletons
          (∘-invertible (equivs-are-invertible g i)
          (equivs-are-invertible f j))
 
-inverse-of-∘ : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (Z : 𝓦 ̇)
+inverse-of-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇}
                (f : X → Y) (g : Y → Z)
                (i : is-equiv f) (j : is-equiv g)
              → inverse f i ∘ inverse g j ∼ inverse (g ∘ f) (∘-is-equiv j i)
-inverse-of-∘ X Y Z f g i j z =
+inverse-of-∘ f g i j z =
   f' (g' z)             ≡⟨ (ap (f' ∘ g') (s z))⁻¹ ⟩
   f' (g' (g (f (h z)))) ≡⟨ ap f' (inverse-is-retraction g j (f (h z))) ⟩
   f' (f (h z))          ≡⟨ inverse-is-retraction f i (h z) ⟩
@@ -1188,6 +1188,14 @@ equiv-to-subsingleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                       → is-subsingleton Y
                       → is-subsingleton X
 
+comp-inverses : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                (f : X → Y) (g : Y → Z)
+                (i : is-equiv f) (j : is-equiv g)
+                (f' : Y → X) (g' : Z → Y)
+              → f' ∼ inverse f i
+              → g' ∼ inverse g j
+              → f' ∘ g' ∼ inverse (g ∘ f) (∘-is-equiv j i)
+
 equiv-to-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
              → X ≃ Y
              → is-set Y
@@ -1359,6 +1367,21 @@ equiv-to-subsingleton = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → is-subsingleton Y → is-subsingleton X
   sol (f , i) = lc-maps-reflect-subsingletons f (equivs-are-lc f i)
+
+comp-inverses = sol
+ where
+  sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+        (f : X → Y) (g : Y → Z)
+        (i : is-equiv f) (j : is-equiv g)
+        (f' : Y → X) (g' : Z → Y)
+      → f' ∼ inverse f i
+      → g' ∼ inverse g j
+      → f' ∘ g' ∼ inverse (g ∘ f) (∘-is-equiv j i)
+  sol f g i j f' g' h k z =
+   f' (g' z)                          ≡⟨ h (g' z) ⟩
+   inverse f i (g' z)                 ≡⟨ ap (inverse f i) (k z) ⟩
+   inverse f i (inverse g j z)        ≡⟨ inverse-of-∘ f g i j z ⟩
+   inverse (g ∘ f) (∘-is-equiv j i) z ∎
 
 equiv-to-set = sol
  where
@@ -2114,6 +2137,9 @@ total-fiber-is-domain {𝓤} {𝓥} {X} {Y} f = invertibility-gives-≃ g (h , �
 χ : (Y : 𝓤 ̇ ) → 𝓤 / Y  → (Y → 𝓤 ̇ )
 χ Y (X , f) = fiber f
 
+is-map-classifier : (𝓤 : Universe) → 𝓤 ⁺ ̇
+is-map-classifier 𝓤 = (Y : 𝓤 ̇ ) → is-equiv (χ Y)
+
 T : (Y : 𝓤 ̇ ) → (Y → 𝓤 ̇ ) → 𝓤 / Y
 T Y A = Σ A , pr₁
 
@@ -2134,7 +2160,7 @@ T Y A = Σ A , pr₁
   r = to-Σ-≡ (p , q)
 
 χε : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
-  → (Y : 𝓤 ̇ ) (A : Y → 𝓤 ̇ ) → χ Y (T Y A) ≡ A
+   → (Y : 𝓤 ̇ ) (A : Y → 𝓤 ̇ ) → χ Y (T Y A) ≡ A
 χε ua fe Y A = fe γ
  where
   f : ∀ y → fiber pr₁ y → A y
@@ -2148,11 +2174,14 @@ T Y A = Σ A , pr₁
   γ : ∀ y → fiber pr₁ y ≡ A y
   γ y = Eq-to-Id ua _ _ (invertibility-gives-≃ (f y) (g y , η y , ε y))
 
-χ-is-equiv : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺) → (Y : 𝓤 ̇ ) → is-equiv (χ Y)
-χ-is-equiv ua fe Y = invertibles-are-equivs (χ Y) (T Y , χη ua Y , χε ua fe Y)
+universes-are-map-classifiers : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
+                              → is-map-classifier 𝓤
+universes-are-map-classifiers ua fe Y = invertibles-are-equivs (χ Y)
+                                         (T Y , χη ua Y , χε ua fe Y)
 
-χ-≃ : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺) → (Y : 𝓤 ̇ ) → 𝓤 / Y ≃ (Y → 𝓤 ̇ )
-χ-≃ ua fe Y = χ Y , χ-is-equiv ua fe Y
+map-classification : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
+                   → (Y : 𝓤 ̇ ) → 𝓤 / Y ≃ (Y → 𝓤 ̇ )
+map-classification ua fe Y = χ Y , universes-are-map-classifiers ua fe Y
 
 Π-is-subsingleton : dfunext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                   → ((x : X) → is-subsingleton (A x))
@@ -3154,19 +3183,39 @@ subtypes-of {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↪ Y
 _/[_]_ : (𝓤 : Universe) → (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
 𝓤 /[ P ] Y = Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → (y : Y) → P (fiber f y)
 
+χ-special : (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ ) → 𝓤 /[ P ] Y  → (Y → Σ P)
+χ-special P Y (X , f , φ) y = fiber f y , φ y
+
+is-special-map-classifier : (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ⁺ ⊔ 𝓥 ̇
+is-special-map-classifier {𝓤} P = (Y : 𝓤 ̇ ) → is-equiv (χ-special P Y)
+
+mc-gives-sc : is-map-classifier 𝓤
+            → (P : 𝓤 ̇ → 𝓥 ̇ ) → is-special-map-classifier P
+mc-gives-sc {𝓤} s P Y = γ
+ where
+  h : is-hae (χ Y)
+  h = invertibles-are-haes (χ Y) (equivs-are-invertible (χ Y) (s Y))
+
+  e = (𝓤 /[ P ] Y)                               ≃⟨ ≃-sym a ⟩
+      (Σ \(σ : 𝓤 / Y) → (y : Y) → P ((χ Y) σ y)) ≃⟨ ≃-sym b ⟩
+      (Σ \(A : Y → 𝓤 ̇ ) → (y : Y) → P (A y))     ≃⟨ ≃-sym c ⟩
+      (Y → Σ P)                                  ■
+   where
+    a = Σ-assoc
+    b = Σ-change-of-variables-hae (λ A → Π (P ∘ A)) (χ Y) h
+    c = ΠΣ-distr-≃
+
+  observation : χ-special P Y ≡ Eq-to-fun e
+  observation = refl _
+
+  γ : is-equiv (χ-special P Y)
+  γ = Eq-to-fun-is-equiv e
+
 special-map-classifier : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
                        → (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ )
                        → 𝓤 /[ P ] Y ≃ (Y → Σ P)
-special-map-classifier {𝓤} ua fe P Y = ≃-sym γ
- where
-  h : is-hae (χ Y)
-  h = invertibles-are-haes (χ Y) (T Y , χη ua Y , χε ua fe Y)
-
-  γ = (Y → Σ P)                                ≃⟨ ΠΣ-distr-≃ ⟩
-      (Σ \(A : Y → 𝓤 ̇ ) → (y : Y) → P (A y))   ≃⟨ Σ-change-of-variables-hae
-                                                   (λ A → Π (P ∘ A)) (χ Y) h ⟩
-      (Σ \(σ : 𝓤 / Y) → (y : Y) → P (χ Y σ y)) ≃⟨ Σ-assoc ⟩
-      (𝓤 /[ P ] Y)                             ■
+special-map-classifier {𝓤} ua fe P Y =
+ χ-special P Y , mc-gives-sc (universes-are-map-classifiers ua fe) P Y
 
 Ω-is-subtype-classifier : Univalence
                         → (Y : 𝓤 ̇ ) → subtypes-of Y ≃ (Y → Ω 𝓤)

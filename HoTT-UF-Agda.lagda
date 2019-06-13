@@ -4807,6 +4807,13 @@ The function `χ` gives the *characteristic function* of a map into `Y`:
 χ Y (X , f) = fiber f
 \end{code}
 
+We say that a universe is a map classifier if the above function is an equivalence for every `Y` in the universe:
+
+\begin{code}
+is-map-classifier : (𝓤 : Universe) → 𝓤 ⁺ ̇
+is-map-classifier 𝓤 = (Y : 𝓤 ̇ ) → is-equiv (χ Y)
+\end{code}
+
 Any `Y → 𝓤` is the characteristic function of some map into `Y` by
 taking its total space and the first projection:
 
@@ -4831,7 +4838,7 @@ T Y A = Σ A , pr₁
   r = to-Σ-≡ (p , q)
 
 χε : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
-  → (Y : 𝓤 ̇ ) (A : Y → 𝓤 ̇ ) → χ Y (T Y A) ≡ A
+   → (Y : 𝓤 ̇ ) (A : Y → 𝓤 ̇ ) → χ Y (T Y A) ≡ A
 χε ua fe Y A = fe γ
  where
   f : ∀ y → fiber pr₁ y → A y
@@ -4845,11 +4852,18 @@ T Y A = Σ A , pr₁
   γ : ∀ y → fiber pr₁ y ≡ A y
   γ y = Eq-to-Id ua _ _ (invertibility-gives-≃ (f y) (g y , η y , ε y))
 
-χ-is-equiv : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺) → (Y : 𝓤 ̇ ) → is-equiv (χ Y)
-χ-is-equiv ua fe Y = invertibles-are-equivs (χ Y) (T Y , χη ua Y , χε ua fe Y)
+universes-are-map-classifiers : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
+                              → is-map-classifier 𝓤
+universes-are-map-classifiers ua fe Y = invertibles-are-equivs (χ Y)
+                                         (T Y , χη ua Y , χε ua fe Y)
+\end{code}
 
-χ-≃ : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺) → (Y : 𝓤 ̇ ) → 𝓤 / Y ≃ (Y → 𝓤 ̇ )
-χ-≃ ua fe Y = χ Y , χ-is-equiv ua fe Y
+Therefore we have the following canonical equivalence:
+
+\begin{code}
+map-classification : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
+                   → (Y : 𝓤 ̇ ) → 𝓤 / Y ≃ (Y → 𝓤 ̇ )
+map-classification ua fe Y = χ Y , universes-are-map-classifiers ua fe Y
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -5585,7 +5599,7 @@ The following justifies the terminology "subsingleton":
  Show that `is-subsingleton X ⇔ (X ↪
  𝟙)`. [(2)](HoTT-UF-Agda.html#the-subsingletons-are-the-subtypes-of-a-singleton)
  Hence assuming function extensionality and propositional
- extensionality, conclude that `is-subsingleton X ⇔ (X ↪ 𝟙)`.
+ extensionality, conclude that `is-subsingleton X ≡ (X ↪ 𝟙)`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="yoneda"></a> The Yoneda Lemma for types
@@ -6345,24 +6359,49 @@ constructor](HoTT-UF-Agda.html#typeclassifier) `_/_`:
 \begin{code}
 _/[_]_ : (𝓤 : Universe) → (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
 𝓤 /[ P ] Y = Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → (y : Y) → P (fiber f y)
+
+χ-special : (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ ) → 𝓤 /[ P ] Y  → (Y → Σ P)
+χ-special P Y (X , f , φ) y = fiber f y , φ y
+
+is-special-map-classifier : (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ⁺ ⊔ 𝓥 ̇
+is-special-map-classifier {𝓤} P = (Y : 𝓤 ̇ ) → is-equiv (χ-special P Y)
 \end{code}
 
-Then `Σ P` is the classifier of maps with `P` fibers:
+If a universe is a map classifier then `Σ P` is the classifier of maps
+with P-fibers, for any `P : 𝓤  → 𝓥`:
+
+\begin{code}
+mc-gives-sc : is-map-classifier 𝓤
+            → (P : 𝓤 ̇ → 𝓥 ̇ ) → is-special-map-classifier P
+mc-gives-sc {𝓤} s P Y = γ
+ where
+  h : is-hae (χ Y)
+  h = invertibles-are-haes (χ Y) (equivs-are-invertible (χ Y) (s Y))
+
+  e = (𝓤 /[ P ] Y)                               ≃⟨ ≃-sym a ⟩
+      (Σ \(σ : 𝓤 / Y) → (y : Y) → P ((χ Y) σ y)) ≃⟨ ≃-sym b ⟩
+      (Σ \(A : Y → 𝓤 ̇ ) → (y : Y) → P (A y))     ≃⟨ ≃-sym c ⟩
+      (Y → Σ P)                                  ■
+   where
+    a = Σ-assoc
+    b = Σ-change-of-variables-hae (λ A → Π (P ∘ A)) (χ Y) h
+    c = ΠΣ-distr-≃
+
+  observation : χ-special P Y ≡ Eq-to-fun e
+  observation = refl _
+
+  γ : is-equiv (χ-special P Y)
+  γ = Eq-to-fun-is-equiv e
+\end{code}
+
+Therefore we have the following canonical equivalence:
 
 \begin{code}
 special-map-classifier : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
                        → (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ )
                        → 𝓤 /[ P ] Y ≃ (Y → Σ P)
-special-map-classifier {𝓤} ua fe P Y = ≃-sym γ
- where
-  h : is-hae (χ Y)
-  h = invertibles-are-haes (χ Y) (T Y , χη ua Y , χε ua fe Y)
-
-  γ = (Y → Σ P)                                ≃⟨ ΠΣ-distr-≃ ⟩
-      (Σ \(A : Y → 𝓤 ̇ ) → (y : Y) → P (A y))   ≃⟨ Σ-change-of-variables-hae
-                                                   (λ A → Π (P ∘ A)) (χ Y) h ⟩
-      (Σ \(σ : 𝓤 / Y) → (y : Y) → P (χ Y σ y)) ≃⟨ Σ-assoc ⟩
-      (𝓤 /[ P ] Y)                             ■
+special-map-classifier {𝓤} ua fe P Y =
+ χ-special P Y , mc-gives-sc (universes-are-map-classifiers ua fe) P Y
 \end{code}
 
 In particular, considering `P = is-subsingleton`, we get the promised
@@ -6376,7 +6415,8 @@ fact that `Ω` is the subtype classifier:
                                   is-subsingleton
 \end{code}
 
-In particular, the type of subtypes of `Y` is always a set, even if `Y` is not a set:
+It follows that the type of subtypes of `Y` is always a set, even if
+`Y` is not a set:
 
 \begin{code}
 subtypes-form-set : Univalence → (Y : 𝓤 ̇ ) → is-set (subtypes-of Y)
