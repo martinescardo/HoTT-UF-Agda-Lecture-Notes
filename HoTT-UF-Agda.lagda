@@ -131,7 +131,7 @@ to coincide with monoid isomorphism. Largeness and smallness are taken
 as relative concepts, with type *universes* incorporated in the theory
 to account for this distinction.
 
-Voevodsky's way to achive this is to start with a Martin-Löf type
+Voevodsky's way to achieve this is to start with a Martin-Löf type
 theory (MLTT), including identity types and type universes, and
 postulate a single axiom, named *univalence*. This axiom stipulates a
 [canonical](http://mathworld.wolfram.com/Canonical.html) bijection
@@ -215,17 +215,18 @@ propositional, or truth-value) truncations in order to be able to deal
 with the distinction between property and data, and in particular with
 the distinction between designated and unspecified existence (for
 example to be able to define the notions of image of a function and of
-surjective function). However, we will not assume them globally, so
-that the students can see clearly when univalence or truncation are or
-are not needed. In fact, the foundational definitions, constructions,
-theorems and proofs of univalent mathematics don't require univalence
-or propositional truncation, and so can be developed in a version of
-the original Martin-Löf type theories, and this is what happens in
-these notes, and what Voevodsky did in his brilliant [original
-development in the computer system
-Coq](https://github.com/UniMath/Foundations). Our use of Agda, rather
-than Coq, is a personal matter of taste only, and the students are
-encouraged to learn Coq, too.
+surjective function).
+
+However, we will not assume univalence and truncation globally, so
+that the students can see clearly when they are or are not needed. In
+fact, the foundational definitions, constructions, theorems and proofs
+of univalent mathematics don't require univalence or propositional
+truncation, and so can be developed in a version of the original
+Martin-Löf type theories, and this is what happens in these notes, and
+what Voevodsky did in his brilliant [original development in the
+computer system Coq](https://github.com/UniMath/Foundations). Our use
+of Agda, rather than Coq, is a personal matter of taste only, and the
+students are encouraged to learn Coq, too.
 
 [<sub>Table of contents ⇓</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="homotopytypetheory"></a> Homotopy type theory
@@ -5063,6 +5064,14 @@ Composition of equivalences is associative:
 ≃-sym-involutive fe fe' (f , a) = to-Σ-≡
                                    (inversion-involutive f a ,
                                     being-equiv-is-a-subsingleton fe fe' f _ _)
+
+≃-sym-is-equiv : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+               → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+               → is-equiv (≃-sym {𝓤} {𝓥} {X} {Y})
+≃-sym-is-equiv fe₀ fe₁ fe₂ = invertibles-are-equivs ≃-sym
+                                (≃-sym ,
+                                 ≃-sym-involutive fe₀ fe₂ ,
+                                 ≃-sym-involutive fe₁ fe₂)
 \end{code}
 
 *Exercise.* The hlevels are closed under `Σ` and, using `hfunext`, also
@@ -5433,10 +5442,7 @@ We then transfer the above to equivalence types:
 ≃-Sym : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
       → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
       → (X ≃ Y) ≃ (Y ≃ X)
-≃-Sym fe₀ fe₁ fe₂ = invertibility-gives-≃ ≃-sym
-                     (≃-sym ,
-                      ≃-sym-involutive fe₀ fe₂ ,
-                      ≃-sym-involutive fe₁ fe₂)
+≃-Sym fe₀ fe₁ fe₂ = ≃-sym , ≃-sym-is-equiv fe₀ fe₁ fe₂
 
 ≃-Comp : dfunext 𝓦 (𝓥 ⊔ 𝓦) → dfunext (𝓥 ⊔ 𝓦) (𝓥 ⊔ 𝓦 )
        → dfunext 𝓥 𝓥 → dfunext 𝓦 (𝓤 ⊔ 𝓦)
@@ -6368,7 +6374,7 @@ is-special-map-classifier {𝓤} P = (Y : 𝓤 ̇ ) → is-equiv (χ-special P Y
 \end{code}
 
 If a universe is a map classifier then `Σ P` is the classifier of maps
-with P-fibers, for any `P : 𝓤  → 𝓥`:
+with `P`-fibers, for any `P : 𝓤  → 𝓥`:
 
 \begin{code}
 mc-gives-sc : is-map-classifier 𝓤

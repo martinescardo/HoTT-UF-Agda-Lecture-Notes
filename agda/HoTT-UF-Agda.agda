@@ -2315,6 +2315,14 @@ hlevel-relation-is-a-subsingleton fe (succ n) X =
                                    (inversion-involutive f a ,
                                     being-equiv-is-a-subsingleton fe fe' f _ _)
 
+≃-sym-is-equiv : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+               → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+               → is-equiv (≃-sym {𝓤} {𝓥} {X} {Y})
+≃-sym-is-equiv fe₀ fe₁ fe₂ = invertibles-are-equivs ≃-sym
+                                (≃-sym ,
+                                 ≃-sym-involutive fe₀ fe₂ ,
+                                 ≃-sym-involutive fe₁ fe₂)
+
 Π-cong : dfunext 𝓤 𝓥 → dfunext 𝓤 𝓦
        → (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) (Y' : X → 𝓦 ̇ )
        → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
@@ -2592,10 +2600,7 @@ subset-extensionality' {𝓤} ua = subset-extensionality
 ≃-Sym : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
       → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
       → (X ≃ Y) ≃ (Y ≃ X)
-≃-Sym fe₀ fe₁ fe₂ = invertibility-gives-≃ ≃-sym
-                     (≃-sym ,
-                      ≃-sym-involutive fe₀ fe₂ ,
-                      ≃-sym-involutive fe₁ fe₂)
+≃-Sym fe₀ fe₁ fe₂ = ≃-sym , ≃-sym-is-equiv fe₀ fe₁ fe₂
 
 ≃-Comp : dfunext 𝓦 (𝓥 ⊔ 𝓦) → dfunext (𝓥 ⊔ 𝓦) (𝓥 ⊔ 𝓦 )
        → dfunext 𝓥 𝓥 → dfunext 𝓦 (𝓤 ⊔ 𝓦)
