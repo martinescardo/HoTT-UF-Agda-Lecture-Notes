@@ -2073,7 +2073,8 @@ In both cases, we proceed by induction on both arguments.
     IH = ≼-gives-≤ x y (z , succ-lc q)
 \end{code}
 
-[Later](HoTT-UF-Agda.html#additionalexercisessol) we will show that `(x ≤ y) ≡ Σ \(z : ℕ) → x + z ≡ y`, using univalence.
+[Later](HoTT-UF-Agda.html#additionalexercisesswol) we will show that
+`(x ≤ y) ≡ Σ \(z : ℕ) → x + z ≡ y`, using univalence.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ## <a id="uminagda"></a> Univalent Mathematics in Agda
@@ -2920,6 +2921,9 @@ minimal hlevel `0`.
 _has-minimal-hlevel_ : 𝓤 ̇ → ℕ → 𝓤 ̇
 X has-minimal-hlevel 0 = X is-of-hlevel 0
 X has-minimal-hlevel (succ n) = (X is-of-hlevel (succ n)) × ¬(X is-of-hlevel n)
+
+_has-minimal-hlevel-∞ : 𝓤 ̇ → 𝓤 ̇
+X has-minimal-hlevel-∞ = (n : ℕ) → ¬(X is-of-hlevel n)
 \end{code}
 
 The type `𝟘` has minimal hlevel `1`, the type `ℕ` has minimal hlevel

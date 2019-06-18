@@ -778,6 +778,9 @@ _has-minimal-hlevel_ : 𝓤 ̇ → ℕ → 𝓤 ̇
 X has-minimal-hlevel 0 = X is-of-hlevel 0
 X has-minimal-hlevel (succ n) = (X is-of-hlevel (succ n)) × ¬(X is-of-hlevel n)
 
+_has-minimal-hlevel-∞ : 𝓤 ̇ → 𝓤 ̇
+X has-minimal-hlevel-∞ = (n : ℕ) → ¬(X is-of-hlevel n)
+
 ℕ-is-set : is-set ℕ
 ℕ-is-set = Id-collapsibles-are-sets ℕ ℕ-Id-collapsible
  where
