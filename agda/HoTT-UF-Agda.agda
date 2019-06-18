@@ -24,8 +24,7 @@ data 𝟙 : 𝓤₀ ̇  where
 
 data 𝟘 : 𝓤₀ ̇  where
 
-𝟘-induction : (A : 𝟘 → 𝓤 ̇ )
-            → (x : 𝟘) → A x
+𝟘-induction : (A : 𝟘 → 𝓤 ̇ ) → (x : 𝟘) → A x
 𝟘-induction A ()
 
 𝟘-recursion : (A : 𝓤 ̇ ) → 𝟘 → A
