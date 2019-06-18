@@ -2080,7 +2080,7 @@ In both cases, we proceed by induction on both arguments.
 
 ### <a id="axiomaticutt"></a> Our univalent type theory
 
-  * Spartan MLTT [as above](HoTT-UF-Agda.html#spartanmltt).
+  * A spartan MLTT [as above](HoTT-UF-Agda.html#spartanmltt).
   * Univalence axiom as [below](HoTT-UF-Agda.html#univalence).
   * Subsingleton (or truth-value or propositional) truncations as [below](HoTT-UF-Agda.html#truncation).
 
