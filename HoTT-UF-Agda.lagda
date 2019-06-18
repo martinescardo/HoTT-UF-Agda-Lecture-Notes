@@ -797,7 +797,7 @@ This is for *numbers*. If we define *types* `𝟚 = 𝟙 + 𝟙` and `𝟜 = �
 𝟚` with two and four elements respectively, where we are anticipating
 the definition of [`_+_`](HoTT-UF-Agda.html#binarysum) for types, then we
 will instead have that `𝟚 + 𝟚 ≡ 𝟜` is a type with `4!` elements, which
-is [number of permutations](https://en.wikipedia.org/wiki/Factorial)
+is the [number of permutations](https://en.wikipedia.org/wiki/Factorial)
 of a set with four elements, rather than a truth value `𝟘` or `𝟙`, as
 a consequence of the univalence axiom. That is, we will have `(𝟚 + 𝟚 ≡
 𝟜) ≃ (𝟜 + 𝟜 + 𝟜 + 𝟜 + 𝟜 + 𝟜)`, so that the type identity `𝟚 + 𝟚 ≡ 𝟜`
