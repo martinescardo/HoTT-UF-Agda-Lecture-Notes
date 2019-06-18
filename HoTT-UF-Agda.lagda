@@ -3577,9 +3577,12 @@ will need from the next section onwards. Sample solutions are given
 [below](HoTT-UF-Agda.html#solutions).
 
 Define functions for the following type declarations. As a matter of
-procedure, we suggest to import this file and add another declaration
-with the same type and new name e.g. `section-are-lc-solution`,
-because we already have solutions in this file.
+procedure, we suggest to import this file in a solutions file and add
+another declaration with the same type and new name
+e.g. `section-are-lc-solution`, because we already have solutions in
+this file. It is important not to forget to include the option
+`--without-K` in the solutions file that imports (the Agda version of)
+this file.
 
 \begin{code}
 subsingleton-criterion : {X : 𝓤 ̇ }
