@@ -1680,45 +1680,51 @@ ap₂ = sol
       → x ≡ x' → y ≡ y' → f x y ≡ f x' y'
   sol f (refl x) (refl y) = refl (f x y)
 
-equiv-subsingleton-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
-                         → (f : (y : X) → x ≡ y → A y)
-                         → ((y : X) → is-equiv (f y))
-                         → is-subsingleton (Σ A)
-equiv-subsingleton-lemma {𝓤} {𝓥} {X} {A} x f i = γ
+equiv-singleton-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
+                      → (f : (y : X) → x ≡ y → A y)
+                      → ((y : X) → is-equiv (f y))
+                      → is-singleton (Σ A)
+equiv-singleton-lemma {𝓤} {𝓥} {X} {A} x f i = γ
  where
   abstract
    e : (y : X) → (x ≡ y) ≃ A y
    e y = (f y , i y)
    d : Σ A ≃ singleton-type' x
    d = ≃-sym (Σ-cong e)
-   s : is-singleton (Σ A)
-   s = equiv-to-singleton d (singleton-types'-are-singletons X x)
-   γ : is-subsingleton (Σ A)
-   γ = singletons-are-subsingletons (Σ A) s
+   γ : is-singleton (Σ A)
+   γ = equiv-to-singleton d (singleton-types'-are-singletons X x)
 
-subsingleton-equiv-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
-                         → (f : (y : X) → x ≡ y → A y)
-                         → is-subsingleton (Σ A)
-                         → (y : X) → is-equiv (f y)
-subsingleton-equiv-lemma {𝓤} {𝓥} {X} {A} x f i = γ
+singleton-equiv-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
+                      → (f : (y : X) → x ≡ y → A y)
+                      → is-singleton (Σ A)
+                      → (y : X) → is-equiv (f y)
+singleton-equiv-lemma {𝓤} {𝓥} {X} {A} x f i = γ
  where
   abstract
-   j : is-singleton (Σ A)
-   j = pointed-subsingletons-are-singletons (Σ A) (x , (f x (refl x))) i
    g : singleton-type' x → Σ A
    g = NatΣ f
    e : is-equiv g
-   e = maps-of-singletons-are-equivs g (singleton-types'-are-singletons X x) j
+   e = maps-of-singletons-are-equivs g (singleton-types'-are-singletons X x) i
    γ : (y : X) → is-equiv (f y)
    γ = NatΣ-equiv-gives-fiberwise-equiv f e
 
+univalence⇒ : is-univalent 𝓤
+            → (X : 𝓤 ̇ ) → is-singleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+univalence⇒ ua X = equiv-singleton-lemma X (Id-to-Eq X) (ua X)
+
+⇒univalence : ((X : 𝓤 ̇ ) → is-singleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y))
+            → is-univalent 𝓤
+⇒univalence i X = singleton-equiv-lemma X (Id-to-Eq X) (i X)
+
 univalence→ : is-univalent 𝓤
             → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-univalence→ ua X = equiv-subsingleton-lemma X (Id-to-Eq X) (ua X)
+univalence→ ua X = singletons-are-subsingletons
+                    (Σ (X ≃_)) (univalence⇒ ua X)
 
 →univalence : ((X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y))
             → is-univalent 𝓤
-→univalence i X = subsingleton-equiv-lemma X (Id-to-Eq X) (i X)
+→univalence i = ⇒univalence (λ X → pointed-subsingletons-are-singletons
+                                    (Σ (X ≃_)) (X , ≃-refl X) (i X))
 
 H-≃ : is-univalent 𝓤
     → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
@@ -2700,7 +2706,9 @@ embedding-gives-ap-is-equiv {𝓤} {𝓥} {X} f e = γ
   s : (x' : X) → is-subsingleton (Σ \(x : X) → f x' ≡ f x)
   s x' = equiv-to-subsingleton (d x') (e (f x'))
   γ : (x x' : X) → is-equiv (ap f {x} {x'})
-  γ x = subsingleton-equiv-lemma x (λ x' → ap f {x} {x'}) (s x)
+  γ x = singleton-equiv-lemma x (λ x' → ap f {x} {x'})
+         (pointed-subsingletons-are-singletons
+           (Σ \(x' : X) → f x ≡ f x') (x , (refl (f x))) (s x))
 
 embedding-criterion-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → is-embedding f
