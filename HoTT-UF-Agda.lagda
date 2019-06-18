@@ -1221,7 +1221,7 @@ We have the following uses of `Σ`.
 
   * Later we will discuss *unspecified* existence `∃ (x : X), A x`,
     which will be obtained by a sort of quotient of `Σ (x : X), A x`,
-    written `∥ Σ (x : X), A x ∥` that identifies all the elements of
+    written `∥ Σ (x : X), A x ∥`, that identifies all the elements of
     the type `Σ (x : X), A x` in a single equivalence class, called
     its subsingleton (or truth value or propositional)
     [truncation](HoTT-UF-Agda.html#truncation).
@@ -1368,10 +1368,11 @@ postulate](https://en.wikipedia.org/wiki/Parallel_postulate) in
 Euclidean geometry, which also considers models, which in turn are
 interesting in their own right.
 
-However, for the elements of *some* types, such as `ℕ`, it is
-[possible to prove](HoTT-UF-Agda.html#naturalsset) that any identity
-type `x ≡ y` has at most one element. Such types are called [sets in
-univalent mathematics](HoTT-UF-Agda.html#subsingletonsandsets).
+However, for the elements of *some* types, such as the type `ℕ` of
+natural numbers, it is [possible to
+prove](HoTT-UF-Agda.html#naturalsset) that any identity type `x ≡ y`
+has at most one element. Such types are called [sets in univalent
+mathematics](HoTT-UF-Agda.html#subsingletonsandsets).
 
 If instead of the axiom `K` we adopt Voevodsky's
 [univalence](HoTT-UF-Agda.html#univalence) axiom, we get [specific
