@@ -1990,7 +1990,7 @@ by induction on the second argument.
     IH = +-step-on-first x y
 \end{code}
 
-Using this, commutativity of addition can be proved by induction on the first argument.
+Using this, the commutativity of addition can be proved by induction on the first argument.
 
 \begin{code}
   +-comm : (x y : ℕ) → x ∔ y ≡ y ∔ x
