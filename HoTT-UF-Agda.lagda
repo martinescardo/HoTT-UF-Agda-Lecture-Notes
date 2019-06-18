@@ -752,8 +752,7 @@ truth value *false*. To prove that a property of elements of the empty
 type holds for all elements of the empty type, we have to do nothing.
 
 \begin{code}
-𝟘-induction : (A : 𝟘 → 𝓤 ̇ )
-            → (x : 𝟘) → A x
+𝟘-induction : (A : 𝟘 → 𝓤 ̇ ) → (x : 𝟘) → A x
 𝟘-induction A ()
 \end{code}
 
