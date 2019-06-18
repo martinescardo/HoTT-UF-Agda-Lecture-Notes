@@ -660,11 +660,30 @@ knows from the definition of `𝟙` that "`⋆`" is the only element of the
 type `𝟙`. This mechanism is called *pattern matching*.
 
 A particular case of `𝟙-induction` occurs when the family `A` is constant
-with value `B`, which can be written variously as `A = λ (x : 𝟙) → B`,
-or `A = λ x → B` if we want Agda to figure out the type of `x` by itself,
-or `A = λ _ → B` if we don't want to name the argument of `A` because it
+with value `B`, which can be written variously as
+
+   > `A x = B`
+
+or
+
+   > `A = λ (x : 𝟙) → B`,
+
+or
+
+   > `A = λ x → B`
+
+if we want Agda to figure out the type of `x` by itself, or
+
+   > `A = λ _ → B`
+
+if we don't want to name the argument of `A` because it
 is not used. In usual mathematical practice, such a [lambda expression](https://plato.stanford.edu/entries/lambda-calculus/) is [often
-written](https://en.wikipedia.org/wiki/Function_(mathematics)#Arrow_notation) `x ↦ B` (`x` is mapped to `B`) and so `A = (x ↦ B)`.
+written](https://en.wikipedia.org/wiki/Function_(mathematics)#Arrow_notation)
+
+   > `x ↦ B` (`x` is mapped to `B`)
+
+so that the above amount to `A = (x ↦ B)`.
+
 Given a type `B` and a point `b : B`, we construct the function `𝟙 → B`
 that maps any given `x : 𝟙` to `b`.
 
@@ -672,6 +691,10 @@ that maps any given `x : 𝟙` to `b`.
 𝟙-recursion : (B : 𝓤 ̇ ) → B → (𝟙 → B)
 𝟙-recursion B b x = 𝟙-induction (λ _ → B) b x
 \end{code}
+
+The above expression `B → (𝟙 → B)` can be written as `B → 𝟙 → B`,
+omitting the brackets, as the function-type formation symbol `→` is
+taken to be right associative.
 
 Not all types have to be seen as mathematical statements (for example
 the type `ℕ` of natural numbers defined below). But the above definition
@@ -694,16 +717,24 @@ function of a set or the identity arrow of an object of a category.
 !𝟙 x = ⋆
 \end{code}
 
-This means that when we write `!𝟙 x` we have to recover the (uniquely
-determined) missing type `X` with `x : X` "from the context". When
-Agda can't figure it out, we need to supply it and write `!𝟙 {𝓤} {X}
-x`. This is because `𝓤` is also an implicit argument (all things
-declared with the Agda keyword *variable* [as above](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/index.html#universes) are implicit
-arguments). There are
-[other](https://agda.readthedocs.io/en/latest/language/implicit-arguments.html),
-non-positional, ways to indicate `X` without having to indicate `𝓤`
-too. Occasionally, people define variants of a function with different
-choices of "implicitness", as above.
+This means that when we write
+
+   > `!𝟙 x`
+
+we have to recover the (uniquely determined) missing type `X` with `x : X`
+"from the context". When Agda can't figure it out, we need to
+supply it and write
+
+   > `!𝟙 {𝓤} {X} x`.
+
+This is because `𝓤` is also an implicit argument (all things declared
+with the Agda keyword *variable* [as
+above](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/index.html#universes)
+are implicit arguments). There are other,
+[non-positional](https://agda.readthedocs.io/en/latest/language/implicit-arguments.html),
+ways to indicate `X` without having to indicate `𝓤` too. Occasionally,
+people define variants of a function with different choices of
+"implicitness", as above.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="emptytype"></a> The empty type `𝟘`
