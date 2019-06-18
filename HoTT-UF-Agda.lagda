@@ -623,7 +623,7 @@ type `𝟙` satisfy a given property `A`.
     be a [truth value](HoTT-UF-Agda.html#subsingletonsandsets).  It can be
     any type. We will meet examples shortly.
 
-  * Mathematical statements are types, such as
+  * In MLTT, mathematical statements are types, such as
 
     > `Π (A : 𝟙 → 𝓤), A ⋆ → Π (x : 𝟙), A x`.
 
@@ -632,7 +632,7 @@ type `𝟙` satisfy a given property `A`.
     x` holds for all `x : 𝟙`".
 
 
-  * In Agda the above `Π` type is written as
+  * In Agda, the above `Π` type is written as
 
     > `(A : 𝟙 → 𝓤 ̇ ) → A ⋆ → (x : 𝟙) → A x`.
 
@@ -648,10 +648,11 @@ function `𝟙-induction` with "`:`" and then define the function by an
 equation:
 
 \begin{code}
-𝟙-induction : (A : 𝟙 → 𝓤 ̇ )
-            → A ⋆ → (x : 𝟙) → A x
+𝟙-induction : (A : 𝟙 → 𝓤 ̇ ) → A ⋆ → (x : 𝟙) → A x
 𝟙-induction A a ⋆ = a
 \end{code}
+
+The universe `𝓤` is arbitrary, and Agda knows `𝓤` is a universe variable because we [said so above](HoTT-UF-Agda,html#𝓤).
 
 Notice that we supply `A` and `a` as arbitrary arguments, but instead of
 an arbitrary `x : 𝟙` we have written "`⋆`". Agda accepts this because it
