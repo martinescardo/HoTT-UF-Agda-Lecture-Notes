@@ -557,7 +557,7 @@ Given a universe `𝓤`, we denote by
 its successor universe. For example, if `𝓤` is `𝓤₀` then `𝓤 ⁺` is
 `𝓤₁`. According to the above discussion, we have
 
-   > `𝓤 ̇ : 𝓤 ⁺ ̇
+   > `𝓤 ̇ : 𝓤 ⁺ ̇`
 
 The least upper bound of two universes `𝓤` and `𝓥` is written
 
@@ -571,8 +571,10 @@ We now bring our notation for universes by importing our Agda file
 asks to make all definitions in the file `Universe` visible in our
 file here.
 
-The Agda code in these notes has syntax highlighting and
-links, so that we can navigate to the definition of a name or symbol by clicking at it.
+The Agda code in these notes has syntax highlighting and links (in the
+html and pdf versions), so that we can navigate to the definition of a
+name or symbol by clicking at it.
+
 \begin{code}
 open import Universes public
 \end{code}
