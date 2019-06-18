@@ -555,7 +555,11 @@ Given a universe `𝓤`, we denote by
    > `𝓤 ⁺`
 
 its successor universe. For example, if `𝓤` is `𝓤₀` then `𝓤 ⁺` is
-`𝓤₁`. The least upper bound of two universes `𝓤` and `𝓥` is written
+`𝓤₁`. According to the above discussion, we have
+
+   > `𝓤 ̇ : 𝓤 ⁺ ̇
+
+The least upper bound of two universes `𝓤` and `𝓥` is written
 
    > `𝓤 ⊔ 𝓥`.
 
