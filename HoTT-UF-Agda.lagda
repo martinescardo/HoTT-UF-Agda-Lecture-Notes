@@ -2073,7 +2073,7 @@ In both cases, we proceed by induction on both arguments.
     IH = ≼-gives-≤ x y (z , succ-lc q)
 \end{code}
 
-[Later](HoTT-UF-Agda.html#additionalexercisessol) we will show that `(x ≤ y) ≡ Σ \(z : ℕ) → x + z ≡ y`.
+[Later](HoTT-UF-Agda.html#additionalexercisessol) we will show that `(x ≤ y) ≡ Σ \(z : ℕ) → x + z ≡ y`, using univalence.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ## <a id="uminagda"></a> Univalent Mathematics in Agda
