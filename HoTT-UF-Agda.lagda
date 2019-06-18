@@ -652,7 +652,7 @@ equation:
 𝟙-induction A a ⋆ = a
 \end{code}
 
-The universe `𝓤` is arbitrary, and Agda knows `𝓤` is a universe variable because we [said so above](HoTT-UF-Agda,html#𝓤).
+The universe `𝓤` is arbitrary, and Agda knows `𝓤` is a universe variable because we [said so above](HoTT-UF-Agda.html#universes).
 
 Notice that we supply `A` and `a` as arbitrary arguments, but instead of
 an arbitrary `x : 𝟙` we have written "`⋆`". Agda accepts this because it
