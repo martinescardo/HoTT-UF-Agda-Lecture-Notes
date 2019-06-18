@@ -485,8 +485,8 @@ scratch, and here are our first two lines of code:
 module HoTT-UF-Agda where
 \end{code}
 
- * The option [`--without-K`](https://agda.readthedocs.io/en/latest/language/without-k.html) disables [Streicher's `K` axiom](https://ncatlab.org/nlab/show/axiom+K+%28type+theory%29), which we don't
-   want for univalent mathematics.
+ * The option [`--without-K`](https://agda.readthedocs.io/en/latest/language/without-k.html) disables [Streicher's `K` axiom](https://ncatlab.org/nlab/show/axiom+K+%28type+theory%29), which we [don't
+   want](HoTT-UF-Agda.html#identitytype) for univalent mathematics.
 
  * The option [`--exact-split`](https://agda.readthedocs.io/en/latest/language/function-definitions.html#case-trees) makes Agda to only accept definitions
    with the equality sign "`=`" that behave like so-called
