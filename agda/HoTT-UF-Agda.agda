@@ -1344,7 +1344,7 @@ sections-are-lc = sol
  where
   sol : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (s : X → A)
       → has-retraction s → left-cancellable s
-  sol s (r , ε) {x} {y} p = x ≡⟨ (ε x)⁻¹ ⟩
+  sol s (r , ε) {x} {y} p = x       ≡⟨ (ε x)⁻¹ ⟩
                             r (s x) ≡⟨ ap r p ⟩
                             r (s y) ≡⟨ ε y ⟩
                             y       ∎
@@ -1741,7 +1741,7 @@ G-≃-equation : (ua : is-univalent 𝓤)
              → (a : A (X  , ≃-refl X))
              → G-≃ ua X A a X (≃-refl X) ≡ a
 G-≃-equation {𝓤} {𝓥} ua X A a =
-  G-≃ ua X A a X (≃-refl X)  ≡⟨ refl _ ⟩
+  G-≃ ua X A a X (≃-refl X) ≡⟨ refl _ ⟩
   transport A p a            ≡⟨ ap (λ - → transport A - a) q ⟩
   transport A (refl t) a     ≡⟨ refl _ ⟩
   a                          ∎
@@ -2466,9 +2466,9 @@ Id-from-subsingleton {𝓤} pe fe P i = Hedberg P (λ X → h X , k X)
    j : is-subsingleton (is-subsingleton X × (P ⇔ X))
    j = ×-is-subsingleton'
         ((λ (_ : P ⇔ X) → being-subsingleton-is-a-subsingleton fe) ,
-        (λ (l : is-subsingleton X) → ×-is-subsingleton
-                                      (Π-is-subsingleton fe (λ p → l))
-                                      (Π-is-subsingleton fe (λ x → i))))
+         (λ (l : is-subsingleton X) → ×-is-subsingleton
+                                       (Π-is-subsingleton fe (λ p → l))
+                                       (Π-is-subsingleton fe (λ x → i))))
    k : wconstant h
    k p q = ap g (j (f p) (f q))
 
@@ -3489,7 +3489,7 @@ record subsingleton-truncations-exist : 𝓤ω where
  field
   ∥_∥                  : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
   ∥∥-is-a-subsingleton : {𝓤 : Universe} {X : 𝓤 ̇ } → is-subsingleton ∥ X ∥
-  ∣_∣                 : {𝓤 : Universe} {X : 𝓤 ̇ } → X → ∥ X ∥
+  ∣_∣                  : {𝓤 : Universe} {X : 𝓤 ̇ } → X → ∥ X ∥
   ∥∥-recursion         : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {P : 𝓥 ̇ }
                        → is-subsingleton P → (X → P) → ∥ X ∥ → P
 

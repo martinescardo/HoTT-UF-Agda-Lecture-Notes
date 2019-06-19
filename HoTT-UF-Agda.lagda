@@ -3636,7 +3636,7 @@ will need from the next section onwards. Sample solutions are given
 Define functions for the following type declarations. As a matter of
 procedure, we suggest to import this file in a solutions file and add
 another declaration with the same type and new name
-e.g. `section-are-lc-solution`, because we already have solutions in
+e.g. `sections-are-lc-solution`, because we already have solutions in
 this file. It is important not to forget to include the option
 `--without-K` in the solutions file that imports (the Agda version of)
 this file.
@@ -3846,7 +3846,7 @@ sections-are-lc = sol
  where
   sol : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (s : X → A)
       → has-retraction s → left-cancellable s
-  sol s (r , ε) {x} {y} p = x ≡⟨ (ε x)⁻¹ ⟩
+  sol s (r , ε) {x} {y} p = x       ≡⟨ (ε x)⁻¹ ⟩
                             r (s x) ≡⟨ ap r p ⟩
                             r (s y) ≡⟨ ε y ⟩
                             y       ∎
@@ -4275,7 +4275,7 @@ G-≃-equation : (ua : is-univalent 𝓤)
              → (a : A (X  , ≃-refl X))
              → G-≃ ua X A a X (≃-refl X) ≡ a
 G-≃-equation {𝓤} {𝓥} ua X A a =
-  G-≃ ua X A a X (≃-refl X)  ≡⟨ refl _ ⟩
+  G-≃ ua X A a X (≃-refl X) ≡⟨ refl _ ⟩
   transport A p a            ≡⟨ ap (λ - → transport A - a) q ⟩
   transport A (refl t) a     ≡⟨ refl _ ⟩
   a                          ∎
@@ -5315,9 +5315,9 @@ Id-from-subsingleton {𝓤} pe fe P i = Hedberg P (λ X → h X , k X)
    j : is-subsingleton (is-subsingleton X × (P ⇔ X))
    j = ×-is-subsingleton'
         ((λ (_ : P ⇔ X) → being-subsingleton-is-a-subsingleton fe) ,
-        (λ (l : is-subsingleton X) → ×-is-subsingleton
-                                      (Π-is-subsingleton fe (λ p → l))
-                                      (Π-is-subsingleton fe (λ x → i))))
+         (λ (l : is-subsingleton X) → ×-is-subsingleton
+                                       (Π-is-subsingleton fe (λ p → l))
+                                       (Π-is-subsingleton fe (λ x → i))))
    k : wconstant h
    k p q = ap g (j (f p) (f q))
 
@@ -5907,7 +5907,7 @@ fiberwise-◁-gives-≃ X A x ρ = γ
 To prove that [`𝓨 {𝓤} {X}` is an
 embedding](https://arxiv.org/abs/1903.01211) of `X` into `X → 𝓤` for
 any type `X : 𝓤`, we need the following two lemmas, which are
-interesting on their own right:
+interesting in their own right:
 
 \begin{code}
 being-fiberwise-equiv-is-a-subsingleton : global-dfunext
@@ -6926,7 +6926,7 @@ record subsingleton-truncations-exist : 𝓤ω where
  field
   ∥_∥                  : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
   ∥∥-is-a-subsingleton : {𝓤 : Universe} {X : 𝓤 ̇ } → is-subsingleton ∥ X ∥
-  ∣_∣                 : {𝓤 : Universe} {X : 𝓤 ̇ } → X → ∥ X ∥
+  ∣_∣                  : {𝓤 : Universe} {X : 𝓤 ̇ } → X → ∥ X ∥
   ∥∥-recursion         : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {P : 𝓥 ̇ }
                        → is-subsingleton P → (X → P) → ∥ X ∥ → P
 \end{code}
@@ -7169,7 +7169,7 @@ system with Voevodsky's rules.
 
 The consistency of the resizing *rules* is an open problem at the time
 of writing, but the resizing *principles* are consistent relative to ZFC
-with Grothendieck universes, because it follows from excluded middle,
+with Grothendieck universes, because they follow from excluded middle,
 which is known to be validated by the simplicial-set model.
 
 It is also an open problem whether the resizing principles discussed
@@ -7423,11 +7423,8 @@ PR-gives-existence-of-truncations fe R =
  }
 \end{code}
 
-We have now covered the main foundational aspects of univalent
-mathematics. A major omission in these lecture notes is a discussion
-of higher-inductive types. On the other hand, we have completely
-covered the foundational principles behind
-[UniMath](https://github.com/UniMath/UniMath/blob/master/README.md).
+With this, we have now covered the main foundational aspects of univalent
+mathematics.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ## <a id="summary"></a> Summary of consistent axioms for univalent mathematics
@@ -7450,6 +7447,8 @@ We have that:
   * Excluded middle implies [propositional resizing and impredicativity](HoTT-UF-Agda.html#resizing).
   * The constructive status of propositional resizing and impredicativity is open.
   * Function extensionality and propositional resizing [imply](HoTT-UF-Agda.html#resizing) the existence of propositional truncations, and hence so do function extensionality and excluded middle.
+
+The avoidance of excluded middle and choice makes the theory not only constructive but also [applicable to more models](https://arxiv.org/abs/1904.07004).
 
 A major omission in these notes is a discussion of higher-inductive
 types.  On the other hand, these notes completely cover the
