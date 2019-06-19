@@ -1,5 +1,10 @@
 # agda 2.6.0, jekyll, ghc and google-chrome need to be installed in the system
 
+all : pdf/all/HoTT-UF-Agda.pdf _site/HoTT-UF-Agda.html agda/HoTT-UF-Agda.agda additionally
+	$(info )
+	$(info All done)
+	$(info )
+
 install : _site/HoTT-UF-Agda.html pdf/all/HoTT-UF-Agda.pdf agda/HoTT-UF-Agda.agda additionally
 	cp -a _site/index.html ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
 	cp -a _site/HoTT-UF-Agda.html ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
@@ -37,12 +42,8 @@ agda/HoTT-UF-Agda.agda :  HoTT-UF-Agda.lagda
 	cat HoTT-UF-Agda.lagda | ./illiterator > agda/HoTT-UF-Agda.agda
 	cat Universes.lagda    | ./illiterator > agda/Universes.agda
 
-
-all : pdf/all/HoTT-UF-Agda.pdf _site/HoTT-UF-Agda.html agda/HoTT-UF-Agda.agda additionally
-	.PHONY: all
-
 cleanless :
-	rm -f *.o *.hi HoTT-UF-Agda.md index.md Universes.md Agda.Primitive.html illiterator
+	rm -f *.o *.hi HoTT-UF-Agda.md index.md Universes.md Agda.Primitive.html
 
 clean :
 	rm -f *.agdai *.o *.hi HoTT-UF-Agda.md index.md Universes.md Agda.Primitive.html illiterator
