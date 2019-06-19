@@ -6,13 +6,14 @@ all : pdf/all/HoTT-UF-Agda.pdf _site/HoTT-UF-Agda.html agda/HoTT-UF-Agda.agda ad
 	$(info )
 
 install : _site/HoTT-UF-Agda.html pdf/all/HoTT-UF-Agda.pdf agda/HoTT-UF-Agda.agda additionally
-	cp -a _site/index.html ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-	cp -a _site/HoTT-UF-Agda.html ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-	cp -a _site/Universes.html ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-	cp -a _site/Agda.Primitive.html ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-	cp -a _site/css ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-	cp -a _site/LICENSE ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-	cp -a pdf/all/HoTT-UF-Agda.pdf ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
+	cp _site/index.html ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
+	cp _site/HoTT-UF-Agda.html ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
+	cp _site/Universes.html ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
+	cp _site/Agda.Primitive.html ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
+	cp -r _site/css ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
+	cp _site/LICENSE ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
+	cp pdf/all/HoTT-UF-Agda.pdf ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
+	chmod -R a+r ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
 	./additionally
 
 additionally :
