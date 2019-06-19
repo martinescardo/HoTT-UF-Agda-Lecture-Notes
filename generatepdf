@@ -2,9 +2,7 @@
 
 mkdir -p pdf/all
 
-google-chrome --headless --disable-gpu --print-to-pdf="pdf/all/HoTT-UF-Agda.pdf" https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html
-
-# google-chrome --headless --print-to-pdf="pdf/Universes.pdf"    https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/Universes.html
+google-chrome --headless --print-to-pdf="pdf/all/HoTT-UF-Agda.pdf" _site/HoTT-UF-Agda.html
 
 # # You may need "export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libgtk3-nocsd.so.0" before the following
 

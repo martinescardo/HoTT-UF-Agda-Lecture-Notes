@@ -1726,37 +1726,44 @@ univalence→ ua X = singletons-are-subsingletons
 →univalence i = ⇒univalence (λ X → pointed-subsingletons-are-singletons
                                     (Σ (X ≃_)) (X , ≃-refl X) (i X))
 
+G-≃ : is-univalent 𝓤
+    → (X : 𝓤 ̇ ) (A : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇ )
+    → A (X , ≃-refl X) → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A (Y , e)
+G-≃ {𝓤} ua X A a Y e = transport A p a
+ where
+  t : Σ \(Y : 𝓤 ̇ ) → X ≃ Y
+  t = (X , ≃-refl X)
+  p : t ≡ (Y , e)
+  p = univalence→ {𝓤} ua X t (Y , e)
+
+G-≃-equation : (ua : is-univalent 𝓤)
+             → (X : 𝓤 ̇ ) (A : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇ )
+             → (a : A (X  , ≃-refl X))
+             → G-≃ ua X A a X (≃-refl X) ≡ a
+G-≃-equation {𝓤} {𝓥} ua X A a =
+  G-≃ ua X A a X (≃-refl X)  ≡⟨ refl _ ⟩
+  transport A p a            ≡⟨ ap (λ - → transport A - a) q ⟩
+  transport A (refl t) a     ≡⟨ refl _ ⟩
+  a                          ∎
+ where
+  t : Σ \(Y : 𝓤 ̇ ) → X ≃ Y
+  t = (X  , ≃-refl X)
+  p : t ≡ t
+  p = univalence→ {𝓤} ua X t t
+  q : p ≡ refl t
+  q = subsingletons-are-sets (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+       (univalence→ {𝓤} ua X) t t p (refl t)
+
 H-≃ : is-univalent 𝓤
     → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
     → A X (≃-refl X) → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A Y e
-H-≃ {𝓤} {𝓥} ua X A a Y e = τ a
- where
-  B : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇
-  B (Y , e) = A Y e
-  p : (X , ≃-refl X) ≡ (Y , e)
-  p = univalence→ ua X (X , ≃-refl X) (Y , e)
-  τ : B (X , ≃-refl X) → B (Y , e)
-  τ = transport B p
+H-≃ ua X A = G-≃ ua X (Σ-induction A)
 
 H-≃-equation : (ua : is-univalent 𝓤)
              → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
              → (a : A X  (≃-refl X))
              → H-≃ ua X A a X (≃-refl X) ≡ a
-H-≃-equation {𝓤} {𝓥} ua X A a =
-  H-≃ ua X A a X (≃-refl X) ≡⟨ refl _ ⟩
-  transport B p a           ≡⟨ ap (λ - → transport B - a) q ⟩
-  transport B (refl t) a    ≡⟨ refl _ ⟩
-  a                         ∎
- where
-  B : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇
-  B (Y , e) = A Y e
-  t : Σ \(Y : 𝓤 ̇ ) → X ≃ Y
-  t = (X , ≃-refl X)
-  p : t ≡ t
-  p = univalence→ ua X t t
-  q : p ≡ refl t
-  q = subsingletons-are-sets (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-       (univalence→ ua X) t t p (refl t)
+H-≃-equation ua X A = G-≃-equation ua X (Σ-induction A)
 
 J-≃ : is-univalent 𝓤
     → (A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
@@ -3020,40 +3027,20 @@ univalence→''-dual : is-univalent (𝓤 ⊔ 𝓥) → (Y : 𝓤 ̇ )
                    → is-subsingleton (Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
 univalence→''-dual ua = univalence→'-dual ua ua
 
-H↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
-     → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
-     → A (Lift 𝓥 X) (≃-Lift X) → (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A Y e
-H↑-≃ {𝓤} {𝓥} {𝓦} ua X A a Y e = τ a
+G↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
+     → (X : 𝓤 ̇ ) (A : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇ )
+     → A (Lift 𝓥 X , ≃-Lift X) → (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A (Y , e)
+G↑-≃ {𝓤} {𝓥} ua X A a Y e = transport A p a
  where
-  B : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇
-  B (Y , e) = A Y e
   t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
   t = (Lift 𝓥 X , ≃-Lift X)
   p : t ≡ (Y , e)
   p = univalence→'' {𝓤} {𝓥} ua X t (Y , e)
-  τ : B t → B (Y , e)
-  τ = transport B p
 
-H↑-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
-              → (X : 𝓤 ̇ )
-              → (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
-              → (a : A (Lift 𝓥 X) (≃-Lift X))
-              → H↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡ a
-H↑-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
-  H↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X)  ≡⟨ refl _ ⟩
-  transport B p a                      ≡⟨ ap (λ - → transport B - a) q ⟩
-  transport B (refl t) a               ≡⟨ refl _ ⟩
-  a                                    ∎
- where
-  B : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇
-  B (Y , e) = A Y e
-  t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
-  t = (Lift 𝓥 X , ≃-Lift X)
-  p : t ≡ t
-  p = univalence→'' {𝓤} {𝓥} ua X t t
-  q : p ≡ refl t
-  q = subsingletons-are-sets (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
-       (univalence→'' {𝓤} {𝓥} ua X) t t p (refl t)
+H↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
+     → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
+     → A (Lift 𝓥 X) (≃-Lift X) → (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A Y e
+H↑-≃ ua X A = G↑-≃ ua X (Σ-induction A)
 
 J↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
      → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓥 ̇ )
@@ -3097,19 +3084,20 @@ equivs-are-haes↑ : is-univalent (𝓤 ⊔ 𝓥)
 equivs-are-haes↑ {𝓤} {𝓥} ua {X} {Y} = J↑-equiv {𝓤} {𝓥} ua (λ X Y f → is-hae f)
                                        lift-is-hae X Y
 
-H↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
-     → (Y : 𝓤 ̇ ) (A : (X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
-     → A (Lift 𝓥 Y) (Lift-≃ Y) → (X : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A X e
-H↓-≃ {𝓤} {𝓥} {𝓦} ua Y A a X e = τ a
+G↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
+     → (Y : 𝓤 ̇ ) (A : (Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇ )
+     → A (Lift 𝓥 Y , Lift-≃ Y) → (X : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A (X , e)
+G↓-≃ {𝓤} {𝓥} ua Y A a X e = transport A p a
  where
-  B : (Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇
-  B (X , e) = A X e
   t : Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
   t = (Lift 𝓥 Y , Lift-≃ Y)
   p : t ≡ (X , e)
-  p = univalence→'-dual ua ua Y t (X , e)
-  τ : B t → B (X , e)
-  τ = transport B p
+  p = univalence→'-dual {𝓤} {𝓤 ⊔ 𝓥} ua ua Y t (X , e)
+
+H↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
+     → (Y : 𝓤 ̇ ) (A : (X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
+     → A (Lift 𝓥 Y) (Lift-≃ Y) → (X : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A X e
+H↓-≃ ua Y A = G↓-≃ ua Y (Σ-induction A)
 
 J↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
      → (A : (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) → X ≃ Y → 𝓦 ̇ )
@@ -3872,6 +3860,32 @@ the-subsingletons-are-the-subtypes-of-a-singleton' pe fe X = γ
                                 being-embedding-is-a-subsingleton fe f' _ e')
   γ : is-subsingleton X ≡ (X ↪ 𝟙)
   γ = pe (being-subsingleton-is-a-subsingleton fe) b (pr₁ a) (pr₂ a)
+
+G↑-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
+              → (X : 𝓤 ̇ )
+              → (A : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇ )
+              → (a : A (Lift 𝓥 X , ≃-Lift X))
+              → G↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡ a
+G↑-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
+  G↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡⟨ refl (transport A p a) ⟩
+  transport A p a                     ≡⟨ ap (λ - → transport A - a) q ⟩
+  transport A (refl t) a              ≡⟨ refl a ⟩
+  a                                   ∎
+ where
+  t : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+  t = (Lift 𝓥 X , ≃-Lift X)
+  p : t ≡ t
+  p = univalence→'' {𝓤} {𝓤 ⊔ 𝓥} ua X t t
+  q : p ≡ refl t
+  q = subsingletons-are-sets (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+       (univalence→'' {𝓤} {𝓤 ⊔ 𝓥} ua X) t t p (refl t)
+
+H↑-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
+              → (X : 𝓤 ̇ )
+              → (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
+              → (a : A (Lift 𝓥 X) (≃-Lift X))
+              → H↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡ a
+H↑-≃-equation ua X A = G↑-≃-equation ua X (Σ-induction A)
 
 has-section-charac : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                    → ((y : Y) → Σ \(x : X) → f x ≡ y) ≃ has-section f

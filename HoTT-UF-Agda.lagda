@@ -4,20 +4,30 @@ title : Introduction to Homotopy Type Theory and Univalent Foundations (HoTT/UF)
 date : 2019-03-04
 ---
 <!--
- * This file is not meant to be read by people.
+  * This file is *not* meant to be read by people.
 
- * It is used to automatically generate the following files, which are
-   meant to be read by people:
+  * It is used to automatically generate the following files, which are
+    meant to be read by people:
 
-   - https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html
+    - https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html
 
-   - https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.pdf
+    - https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.pdf
 
-   - https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes/tree/master/agda
+    - https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes/tree/master/agda
 
-The html file is better rendered and probably easier to read than the
-pdf file, but both have internal links, including to the Agda
-definitions.
+  * The html file is better rendered and probably easier to read than
+    the pdf file, but both have internal links, including to the Agda
+    definitions.
+
+  * Warning: this file takes a long time to be checked by Agda.  We
+    are avoiding a modular development so that a single pdf file with
+    internal links, including to the Agda definitions, can be
+    produced. This works by first using Agda to generated html for the
+    Agda code, then using jekyll to process the markdown code to
+    generate html for everything else, and finally using google-chrome
+    in headless mode to generate pdf from the html code. See the
+    verious scripts distributed with this code. The main script is
+    `build`.
 -->
 ## <a id="lecturenotes">Introduction to Univalent Foundations of Mathematics with Agda</a>
 
@@ -4250,37 +4260,44 @@ univalence implies that `Σ \(Y : 𝓤 ̇ ) → X ≃ Y` is a subsingleton for
 any `X`.
 
 \begin{code}
+G-≃ : is-univalent 𝓤
+    → (X : 𝓤 ̇ ) (A : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇ )
+    → A (X , ≃-refl X) → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A (Y , e)
+G-≃ {𝓤} ua X A a Y e = transport A p a
+ where
+  t : Σ \(Y : 𝓤 ̇ ) → X ≃ Y
+  t = (X , ≃-refl X)
+  p : t ≡ (Y , e)
+  p = univalence→ {𝓤} ua X t (Y , e)
+
+G-≃-equation : (ua : is-univalent 𝓤)
+             → (X : 𝓤 ̇ ) (A : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇ )
+             → (a : A (X  , ≃-refl X))
+             → G-≃ ua X A a X (≃-refl X) ≡ a
+G-≃-equation {𝓤} {𝓥} ua X A a =
+  G-≃ ua X A a X (≃-refl X)  ≡⟨ refl _ ⟩
+  transport A p a            ≡⟨ ap (λ - → transport A - a) q ⟩
+  transport A (refl t) a     ≡⟨ refl _ ⟩
+  a                          ∎
+ where
+  t : Σ \(Y : 𝓤 ̇ ) → X ≃ Y
+  t = (X  , ≃-refl X)
+  p : t ≡ t
+  p = univalence→ {𝓤} ua X t t
+  q : p ≡ refl t
+  q = subsingletons-are-sets (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+       (univalence→ {𝓤} ua X) t t p (refl t)
+
 H-≃ : is-univalent 𝓤
     → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
     → A X (≃-refl X) → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A Y e
-H-≃ {𝓤} {𝓥} ua X A a Y e = τ a
- where
-  B : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇
-  B (Y , e) = A Y e
-  p : (X , ≃-refl X) ≡ (Y , e)
-  p = univalence→ ua X (X , ≃-refl X) (Y , e)
-  τ : B (X , ≃-refl X) → B (Y , e)
-  τ = transport B p
+H-≃ ua X A = G-≃ ua X (Σ-induction A)
 
 H-≃-equation : (ua : is-univalent 𝓤)
              → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
              → (a : A X  (≃-refl X))
              → H-≃ ua X A a X (≃-refl X) ≡ a
-H-≃-equation {𝓤} {𝓥} ua X A a =
-  H-≃ ua X A a X (≃-refl X) ≡⟨ refl _ ⟩
-  transport B p a           ≡⟨ ap (λ - → transport B - a) q ⟩
-  transport B (refl t) a    ≡⟨ refl _ ⟩
-  a                         ∎
- where
-  B : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇
-  B (Y , e) = A Y e
-  t : Σ \(Y : 𝓤 ̇ ) → X ≃ Y
-  t = (X , ≃-refl X)
-  p : t ≡ t
-  p = univalence→ ua X t t
-  q : p ≡ refl t
-  q = subsingletons-are-sets (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-       (univalence→ ua X) t t p (refl t)
+H-≃-equation ua X A = G-≃-equation ua X (Σ-induction A)
 \end{code}
 
 The induction principle `H-≃` keeps `X` fixed and lets `Y` vary, while
@@ -6128,20 +6145,24 @@ The first one is applied to get the following, where `Y` lives in a
 universe above that of `X`:
 
 \begin{code}
-H↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
-     → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
-     → A (Lift 𝓥 X) (≃-Lift X) → (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A Y e
-H↑-≃ {𝓤} {𝓥} {𝓦} ua X A a Y e = τ a
+G↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
+     → (X : 𝓤 ̇ ) (A : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇ )
+     → A (Lift 𝓥 X , ≃-Lift X) → (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A (Y , e)
+G↑-≃ {𝓤} {𝓥} ua X A a Y e = transport A p a
  where
-  B : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇
-  B (Y , e) = A Y e
   t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
   t = (Lift 𝓥 X , ≃-Lift X)
   p : t ≡ (Y , e)
   p = univalence→'' {𝓤} {𝓥} ua X t (Y , e)
-  τ : B t → B (Y , e)
-  τ = transport B p
+
+H↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
+     → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
+     → A (Lift 𝓥 X) (≃-Lift X) → (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A Y e
+H↑-≃ ua X A = G↑-≃ ua X (Σ-induction A)
 \end{code}
+
+*Exercise.* Formulate and prove the equations for `G↑-≃` and `H↑-≃`
+ corresponding to those for `G-≃` and `H-≃`.
 
 The difference with `H-≃` is that here, to get the conclusion, we need
 to assume
@@ -6151,31 +6172,6 @@ to assume
 rather than
 
    > `A X (≃-refl)`.
-
-The analogous equation is satisfied by `H↑-≃`:
-
-\begin{code}
-H↑-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
-              → (X : 𝓤 ̇ )
-              → (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
-              → (a : A (Lift 𝓥 X) (≃-Lift X))
-              → H↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡ a
-H↑-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
-  H↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X)  ≡⟨ refl _ ⟩
-  transport B p a                      ≡⟨ ap (λ - → transport B - a) q ⟩
-  transport B (refl t) a               ≡⟨ refl _ ⟩
-  a                                    ∎
- where
-  B : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇
-  B (Y , e) = A Y e
-  t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
-  t = (Lift 𝓥 X , ≃-Lift X)
-  p : t ≡ t
-  p = univalence→'' {𝓤} {𝓥} ua X t t
-  q : p ≡ refl t
-  q = subsingletons-are-sets (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
-       (univalence→'' {𝓤} {𝓥} ua X) t t p (refl t)
-\end{code}
 
 And we have a similar development with a similar example:
 
@@ -6247,19 +6243,20 @@ We have a dual development with the universes going down, where we
 consider `lower` in place of `lift`:
 
 \begin{code}
-H↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
-     → (Y : 𝓤 ̇ ) (A : (X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
-     → A (Lift 𝓥 Y) (Lift-≃ Y) → (X : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A X e
-H↓-≃ {𝓤} {𝓥} {𝓦} ua Y A a X e = τ a
+G↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
+     → (Y : 𝓤 ̇ ) (A : (Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇ )
+     → A (Lift 𝓥 Y , Lift-≃ Y) → (X : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A (X , e)
+G↓-≃ {𝓤} {𝓥} ua Y A a X e = transport A p a
  where
-  B : (Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇
-  B (X , e) = A X e
   t : Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
   t = (Lift 𝓥 Y , Lift-≃ Y)
   p : t ≡ (X , e)
-  p = univalence→'-dual ua ua Y t (X , e)
-  τ : B t → B (X , e)
-  τ = transport B p
+  p = univalence→'-dual {𝓤} {𝓤 ⊔ 𝓥} ua ua Y t (X , e)
+
+H↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
+     → (Y : 𝓤 ̇ ) (A : (X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
+     → A (Lift 𝓥 Y) (Lift-≃ Y) → (X : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A X e
+H↓-≃ ua Y A = G↓-≃ ua Y (Σ-induction A)
 
 J↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
      → (A : (X : 𝓤 ⊔ 𝓥 ̇ ) (Y : 𝓤 ̇ ) → X ≃ Y → 𝓦 ̇ )
@@ -7538,6 +7535,32 @@ the-subsingletons-are-the-subtypes-of-a-singleton' pe fe X = γ
                                 being-embedding-is-a-subsingleton fe f' _ e')
   γ : is-subsingleton X ≡ (X ↪ 𝟙)
   γ = pe (being-subsingleton-is-a-subsingleton fe) b (pr₁ a) (pr₂ a)
+
+G↑-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
+              → (X : 𝓤 ̇ )
+              → (A : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇ )
+              → (a : A (Lift 𝓥 X , ≃-Lift X))
+              → G↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡ a
+G↑-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
+  G↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡⟨ refl (transport A p a) ⟩
+  transport A p a                     ≡⟨ ap (λ - → transport A - a) q ⟩
+  transport A (refl t) a              ≡⟨ refl a ⟩
+  a                                   ∎
+ where
+  t : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+  t = (Lift 𝓥 X , ≃-Lift X)
+  p : t ≡ t
+  p = univalence→'' {𝓤} {𝓤 ⊔ 𝓥} ua X t t
+  q : p ≡ refl t
+  q = subsingletons-are-sets (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+       (univalence→'' {𝓤} {𝓤 ⊔ 𝓥} ua X) t t p (refl t)
+
+H↑-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
+              → (X : 𝓤 ̇ )
+              → (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
+              → (a : A (Lift 𝓥 X) (≃-Lift X))
+              → H↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡ a
+H↑-≃-equation ua X A = G↑-≃-equation ua X (Σ-induction A)
 
 has-section-charac : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                    → ((y : Y) → Σ \(x : X) → f x ≡ y) ≃ has-section f
