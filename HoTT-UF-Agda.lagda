@@ -4,7 +4,8 @@ title : Introduction to Homotopy Type Theory and Univalent Foundations (HoTT/UF)
 date : 2019-03-04
 ---
 <!--
-  * This file is *not* meant to be read by people.
+
+  * The file HoTT-UF-Agda.lagda is *not* meant to be read by people.
 
   * It is used to automatically generate the following files, which are
     meant to be read by people:
@@ -25,9 +26,8 @@ date : 2019-03-04
     produced. This works by first using Agda to generated html for the
     Agda code, then using jekyll to process the markdown code to
     generate html for everything else, and finally using google-chrome
-    in headless mode to generate pdf from the html code. See the
-    verious scripts distributed with this code. The main script is
-    `build`.
+    in headless mode to generate pdf from the html code.  See the makefile.
+
 -->
 ## <a id="lecturenotes">Introduction to Univalent Foundations of Mathematics with Agda</a>
 
