@@ -227,10 +227,10 @@ the distinction between designated and unspecified existence (for
 example to be able to define the notions of image of a function and of
 surjective function).
 
-However, we will not assume univalence and truncation globally, so
-that the students can see clearly when they are or are not needed. In
-fact, the foundational definitions, constructions, theorems and proofs
-of univalent mathematics don't require univalence or propositional
+We will not assume univalence and truncation globally, so that the
+students can see clearly when they are or are not needed. In fact, the
+foundational definitions, constructions, theorems and proofs of
+univalent mathematics don't require univalence or propositional
 truncation, and so can be developed in a version of the original
 Martin-Löf type theories, and this is what happens in these notes, and
 what Voevodsky did in his brilliant [original development in the
@@ -7448,7 +7448,7 @@ We have that:
   * The constructive status of propositional resizing and impredicativity is open.
   * Function extensionality and propositional resizing [imply](HoTT-UF-Agda.html#resizing) the existence of propositional truncations, and hence so do function extensionality and excluded middle.
 
-The avoidance of excluded middle and choice makes the theory not only constructive but also [applicable to more models](https://arxiv.org/abs/1904.07004).
+The avoidance of excluded middle and choice makes the theory not only constructive but also [applicable to more models](https://arxiv.org/abs/1904.07004). However, one is free to assume excluded middle and choice for pieces of mathematics that require them, or just if one simply prefers classical reasoning.
 
 A major omission in these notes is a discussion of higher-inductive
 types.  On the other hand, these notes completely cover the
