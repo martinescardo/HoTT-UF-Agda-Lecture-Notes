@@ -7629,7 +7629,7 @@ propositional resizing:
 
 For example, with this we can define the type of topological spaces as
 follows, where `𝓞` consists of designated sets, conventionally called
-*open* and collectively designated as the *topology* on `X`, which are
+*open* and collectively referred to as the *topology* on `X`, which are
 stipulated to be closed under finite intersections and arbitrary
 unions. For finite intersections we consider the unary case `full` and
 the binary case `∩` . Because the empty set is the union of the empty
@@ -7643,7 +7643,7 @@ sets.
         × Σ \(𝓞 : 𝓟𝓟 X)
         → full ∈ 𝓞
         × ((G G' : 𝓟 X) → G ∈ 𝓞 → G' ∈ 𝓞 → (G ∩ G') ∈ 𝓞)
-        × ((𝓖 : 𝓟𝓟 X) → ((G : 𝓟 X) → G ∈ 𝓖 → G ∈ 𝓞) → ⋃ 𝓖 ∈ 𝓞)
+        × ((𝓖 : 𝓟𝓟 X) → 𝓖 ⊆ 𝓞 → ⋃ 𝓖 ∈ 𝓞)
 \end{code}
 
 Notice that this jumps two universes.  It is also possible, with
