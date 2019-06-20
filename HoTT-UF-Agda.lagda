@@ -404,7 +404,7 @@ to practice univalent mathematics should consult the above references.
      1. [Magma equivalences](HoTT-UF-Agda.html#magmaequivalences)
      1. [Subsingleton truncation, disjunction and existence](HoTT-UF-Agda.html#truncation)
      1. [The univalent axiom of choice](HoTT-UF-Agda.html#choice)
-     1. [Propositional resizing](HoTT-UF-Agda.html#resizing)
+     1. [Propositional resizing, truncation and powersets](HoTT-UF-Agda.html#resizing)
      1. [Summary of consistent axioms for univalent mathematics](HoTT-UF-Agda.html#summary)
   1. [Appendix](HoTT-UF-Agda.html#appendix)
      1. [Solutions to some exercises](HoTT-UF-Agda.html#someexercisessol)
@@ -1712,9 +1712,16 @@ Intuitionism](https://books.google.co.uk/books/about/Brouwer_s_Cambridge_Lecture
 </blockquote>
 
 If we define *logical equivalence* by
+
 \begin{code}
 _⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ⇔ Y = (X → Y) × (Y → X)
+
+lr-implication : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X ⇔ Y) → (X → Y)
+lr-implication = pr₁
+
+rl-implication : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X ⇔ Y) → (Y → X)
+rl-implication = pr₂
 \end{code}
 
 then we can render Brouwer's argument in Agda as follows, where the
@@ -5412,7 +5419,7 @@ powersets-are-sets : hfunext 𝓤 (𝓥 ⁺) → dfunext 𝓥 𝓥 → propext �
 powersets-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-a-set fe' pe)
 \end{code}
 
-The above considers `X : 𝓤` and `Ω 𝓥`. When the two universes `𝓤` and `𝓥` are the same, we adopt the usual notation `𝓟 X` for the powerset `X → Ω 𝓤` of `X`:
+The above considers `X : 𝓤` and `Ω 𝓥`. When the two universes `𝓤` and `𝓥` are the same, we adopt the usual notation `𝓟 X` for the powerset `X → Ω 𝓤` of `X`.
 
 \begin{code}
 𝓟 : 𝓤 ̇ → 𝓤 ⁺ ̇
@@ -5431,6 +5438,15 @@ x ∈ A = A x holds
 
 _⊆_ : {X : 𝓤 ̇ } → 𝓟 X → 𝓟 X → 𝓤 ̇
 A ⊆ B = ∀ x → x ∈ A → x ∈ B
+
+∈-is-subsingleton : {X : 𝓤 ̇ } (x : X) (A : 𝓟 X) → is-subsingleton (x ∈ A)
+∈-is-subsingleton x A = holds-is-subsingleton (A x)
+
+⊆-is-subsingleton : dfunext 𝓤 𝓤
+                  → {X : 𝓤 ̇ } (A B : 𝓟 X) → is-subsingleton (A ⊆ B)
+⊆-is-subsingleton fe A B = Π-is-subsingleton fe
+                            (λ x → Π-is-subsingleton fe
+                                     (λ _ → ∈-is-subsingleton x B))
 
 ⊆-refl : {X : 𝓤 ̇ } (A : 𝓟 X) → A ⊆ A
 ⊆-refl A x = 𝑖𝑑 (x ∈ A)
@@ -6974,6 +6990,8 @@ Disjunction and existence are defined as the truncation of `+` and `Σ`:
   _∨_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
   A ∨ B = ∥ A + B ∥
 
+  infixl 2 _∨_
+
   ∃ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
   ∃ A = ∥ Σ A ∥
 \end{code}
@@ -7155,7 +7173,7 @@ in particular has a proof that univalent choice implies univalent
 excluded middle.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="resizing"></a> Propositional resizing
+### <a id="resizing"></a> Propositional resizing, truncation and powersets
 
 Voevodsky [considered resizing
 rules](https://www.math.ias.edu/vladimir/sites/math.ias.edu.vladimir/files/2011_Bergen.pdf)
@@ -7249,7 +7267,7 @@ EM-gives-PR {𝓤} {𝓥} em P i = Q (em P i) , e
    g (inr n) q = !𝟘 P (lower q)
    e : P ≃ Q (em P i)
    e = logically-equivalent-subsingletons-are-equivalent
-        P (Q (em P i)) i (j (em P i))  (f (em P i) , g (em P i))
+        P (Q (em P i)) i (j (em P i)) (f (em P i) , g (em P i))
 \end{code}
 
 To show that the propositional resizing principle is a subsingleton,
@@ -7280,36 +7298,37 @@ We consider two notions of propositional impredicativity:
 Impredicativity : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
 Impredicativity 𝓤 𝓥 = (Ω 𝓤) has-size 𝓥
 
-impredicativity : (𝓤 : Universe) → 𝓤 ⁺ ̇
-impredicativity 𝓤 = Impredicativity 𝓤 𝓤
+is-impredicative : (𝓤 : Universe) → 𝓤 ⁺ ̇
+is-impredicative 𝓤 = Impredicativity 𝓤 𝓤
 
 PR-gives-Impredicativity⁺ : global-propext
                           → global-dfunext
-                          → Propositional-resizing
+                          → propositional-resizing 𝓥 𝓤
+                          → propositional-resizing 𝓤 𝓥
                           → Impredicativity 𝓤 (𝓥 ⁺)
-PR-gives-Impredicativity⁺ {𝓤} {𝓥} pe fe ρ = γ
+PR-gives-Impredicativity⁺ {𝓥} {𝓤} pe fe ρ σ = γ
  where
   φ : Ω 𝓥 → Ω 𝓤
   φ (Q , j) = resize ρ Q j , resize-is-a-subsingleton ρ Q j
   ψ : Ω 𝓤 → Ω 𝓥
-  ψ (P , i) = resize ρ P i , resize-is-a-subsingleton ρ P i
+  ψ (P , i) = resize σ P i , resize-is-a-subsingleton σ P i
   η : (p : Ω 𝓤) → φ (ψ p) ≡ p
   η (P , i) = Ω-ext fe pe a b
    where
-    a : resize ρ (resize ρ P i) (resize-is-a-subsingleton ρ P i) → P
-    a = from-resize ρ P i
-      ∘ from-resize ρ (resize ρ P i) (resize-is-a-subsingleton ρ P i)
-    b : P → resize ρ (resize ρ P i) (resize-is-a-subsingleton ρ P i)
-    b = to-resize ρ (resize ρ P i) (resize-is-a-subsingleton ρ P i)
-      ∘ to-resize ρ P i
+    a : resize ρ (resize σ P i) (resize-is-a-subsingleton σ P i) → P
+    a = from-resize σ P i
+      ∘ from-resize ρ (resize σ P i) (resize-is-a-subsingleton σ P i)
+    b : P → resize ρ (resize σ P i) (resize-is-a-subsingleton σ P i)
+    b = to-resize ρ (resize σ P i) (resize-is-a-subsingleton σ P i)
+      ∘ to-resize σ P i
   ε : (q : Ω 𝓥) → ψ (φ q) ≡ q
   ε (Q , j) = Ω-ext fe pe a b
    where
-    a : resize ρ (resize ρ Q j) (resize-is-a-subsingleton ρ Q j) → Q
+    a : resize σ (resize ρ Q j) (resize-is-a-subsingleton ρ Q j) → Q
     a = from-resize ρ Q j
-      ∘ from-resize ρ (resize ρ Q j) (resize-is-a-subsingleton ρ Q j)
-    b : Q → resize ρ (resize ρ Q j) (resize-is-a-subsingleton ρ Q j)
-    b = to-resize ρ (resize ρ Q j) (resize-is-a-subsingleton ρ Q j)
+      ∘ from-resize σ (resize ρ Q j) (resize-is-a-subsingleton ρ Q j)
+    b : Q → resize σ (resize ρ Q j) (resize-is-a-subsingleton ρ Q j)
+    b = to-resize σ (resize ρ Q j) (resize-is-a-subsingleton ρ Q j)
       ∘ to-resize ρ Q j
   γ : (Ω 𝓤) has-size (𝓥 ⁺)
   γ = Ω 𝓥 , invertibility-gives-≃ ψ (φ , η , ε)
@@ -7322,9 +7341,10 @@ successor, universes 𝓤 ⁺ are.
 \begin{code}
 PR-gives-impredicativity⁺ : global-propext
                           → global-dfunext
-                          → Propositional-resizing
-                          → impredicativity (𝓤 ⁺)
-PR-gives-impredicativity⁺ = PR-gives-Impredicativity⁺
+                          → propositional-resizing (𝓤 ⁺) 𝓤
+                          → is-impredicative (𝓤 ⁺)
+PR-gives-impredicativity⁺ pe fe = PR-gives-Impredicativity⁺
+                                   pe fe (λ P i → resize-up P)
 \end{code}
 
 What we get with propositional resizing is that all types of
@@ -7334,9 +7354,10 @@ the second universe 𝓤₁:
 \begin{code}
 PR-gives-impredicativity₁ : global-propext
                           → global-dfunext
-                          → Propositional-resizing
+                          → propositional-resizing 𝓤 𝓤₀
                           → Impredicativity 𝓤 𝓤₁
-PR-gives-impredicativity₁ = PR-gives-Impredicativity⁺
+PR-gives-impredicativity₁ pe fe = PR-gives-Impredicativity⁺
+                                   pe fe (λ P i → resize-up P)
 \end{code}
 
 *Exercise.* Excluded middle
@@ -7422,6 +7443,223 @@ PR-gives-existence-of-truncations fe R =
                                     (inhabitation-is-a-subsingleton fe X) s))
  }
 \end{code}
+
+As a second, important, use of resizing, we revisit the powerset.
+First, given a set of subsets, that is, an element of the double
+powerset, we would like to consider its union. We investigate its
+existence in a submodule with assumptions.
+
+\begin{code}
+
+module powerset-union
+        (pt : subsingleton-truncations-exist)
+        (fe : global-dfunext)
+       where
+
+ open basic-truncation-development pt fe
+\end{code}
+
+Notice the increase of universe levels in the iteration of powersets:
+
+\begin{code}
+ 𝓟𝓟 : 𝓤 ̇ → 𝓤 ⁺⁺ ̇
+ 𝓟𝓟 X = 𝓟 (𝓟 X)
+\end{code}
+
+The following doesn't assert that unions of collections of subsets are
+available. It says what it means for them to be available:
+
+\begin{code}
+ availability-of-unions : (𝓤 : Universe) → 𝓤 ⁺⁺ ̇
+ availability-of-unions 𝓤 =
+  (X : 𝓤 ̇ )
+  (𝓐 : 𝓟𝓟 X)
+     → Σ \(B : 𝓟 X)
+             → (x : X) → (x ∈ B) ⇔ ∃ \(A : 𝓟 X) → (A ∈ 𝓐) × (x ∈ A)
+\end{code}
+
+Without propositional resizing principles, it is not possible to show
+that unions exist.
+
+\begin{code}
+ availability-of-unions-gives-PR : availability-of-unions 𝓤
+                                 → propositional-resizing (𝓤 ⁺) 𝓤
+ availability-of-unions-gives-PR {𝓤} α = γ
+  where
+   γ : (P : 𝓤 ⁺ ̇) → (i : is-subsingleton P) → P has-size 𝓤
+   γ P i = Q , e
+    where
+    𝟙ᵤ : 𝓤 ̇
+    𝟙ᵤ = Lift 𝓤 𝟙
+    ⋆ᵤ : 𝟙ᵤ
+    ⋆ᵤ = lift ⋆
+    𝟙ᵤ-is-subsingleton : is-subsingleton 𝟙ᵤ
+    𝟙ᵤ-is-subsingleton = equiv-to-subsingleton (Lift-≃ 𝟙) 𝟙-is-subsingleton
+    𝓐 : 𝓟𝓟 𝟙ᵤ
+    𝓐 = λ (A : 𝓟 𝟙ᵤ) → P , i
+    B : 𝓟 𝟙ᵤ
+    B = pr₁ (α 𝟙ᵤ 𝓐)
+    φ : (x : 𝟙ᵤ) → (x ∈ B) ⇔ ∃ \(A : 𝓟 𝟙ᵤ) → (A ∈ 𝓐) × (x ∈ A)
+    φ = pr₂ (α 𝟙ᵤ 𝓐)
+    Q : 𝓤 ̇
+    Q = ⋆ᵤ ∈ B
+    j : is-subsingleton Q
+    j = ∈-is-subsingleton ⋆ᵤ B
+    f : P → Q
+    f p = b
+     where
+      a : Σ \(A : 𝓟 𝟙ᵤ) → (A ∈ 𝓐) × (⋆ᵤ ∈ A)
+      a = (λ (x : 𝟙ᵤ) → 𝟙ᵤ , 𝟙ᵤ-is-subsingleton) , p , ⋆ᵤ
+      b : ⋆ᵤ ∈ B
+      b = rl-implication (φ ⋆ᵤ) ∣ a ∣
+    g : Q → P
+    g q = ∥∥-recursion i b a
+     where
+      a : ∃ \(A : 𝓟 𝟙ᵤ) → (A ∈ 𝓐) × (⋆ᵤ ∈ A)
+      a = lr-implication (φ ⋆ᵤ) q
+      b : (Σ \(A : 𝓟 𝟙ᵤ) → (A ∈ 𝓐) × (⋆ᵤ ∈ A)) → P
+      b (A , m , _) = m
+    e : P ≃ Q
+    e = logically-equivalent-subsingletons-are-equivalent P Q i j (f , g)
+\end{code}
+
+The converse also holds:
+
+\begin{code}
+ PR-gives-availability-of-unions : propositional-resizing (𝓤 ⁺) 𝓤
+                                 → availability-of-unions 𝓤
+ PR-gives-availability-of-unions {𝓤} ρ X 𝓐 = B , (λ x → lr x , rl x)
+  where
+   β : X → 𝓤 ⁺ ̇
+   β x = ∃ \(A : 𝓟 X) → (A ∈ 𝓐) × (x ∈ A)
+   i : (x : X) → is-subsingleton (β x)
+   i x = ∥∥-is-a-subsingleton
+   B : 𝓟 X
+   B x = (resize ρ (β x) (i x) , resize-is-a-subsingleton ρ (β x) (i x))
+   lr : (x : X) → x ∈ B → ∃ \(A : 𝓟 X) → (A ∈ 𝓐) × (x ∈ A)
+   lr x = from-resize ρ (β x) (i x)
+   rl : (x : X) → (∃ \(A : 𝓟 X) → (A ∈ 𝓐) × (x ∈ A)) → x ∈ B
+   rl x = to-resize ρ (β x) (i x)
+
+\end{code}
+
+We now close the above submodule and start another one with different
+assumptions:
+
+\begin{code}
+
+module basic-powerset-development
+        (fe : global-dfunext)
+        (ρ : Propositional-resizing)
+       where
+
+  pt : subsingleton-truncations-exist
+  pt = PR-gives-existence-of-truncations fe ρ
+
+  open basic-truncation-development pt fe
+  open powerset-union pt fe
+
+  ⋃ : {X : 𝓤 ̇ } → 𝓟𝓟 X → 𝓟 X
+  ⋃ 𝓐 = pr₁ (PR-gives-availability-of-unions ρ _ 𝓐)
+
+  ⋃-property : {X : 𝓤 ̇ } (𝓐 : 𝓟𝓟 X)
+             → (x : X) → (x ∈ ⋃ 𝓐) ⇔ ∃ \(A : 𝓟 X) → (A ∈ 𝓐) × (x ∈ A)
+  ⋃-property 𝓐 = pr₂ (PR-gives-availability-of-unions ρ _ 𝓐)
+\end{code}
+
+The construction of intersections is as that of availability of
+unions, using propositional resizing:
+
+\begin{code}
+  intersections-are-available :
+    (X : 𝓤 ̇ )
+    (𝓐 : 𝓟𝓟 X)
+       → Σ \(B : 𝓟 X)
+              → (x : X) → (x ∈ B) ⇔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A)
+  intersections-are-available {𝓤} X 𝓐 = B , (λ x → lr x , rl x)
+   where
+    β : X → 𝓤 ⁺ ̇
+    β x = (A : 𝓟 X) → A ∈ 𝓐 → x ∈ A
+    i : (x : X) → is-subsingleton (β x)
+    i x = Π-is-subsingleton fe
+           (λ A → Π-is-subsingleton fe
+                   (λ _ → ∈-is-subsingleton x A))
+    B : 𝓟 X
+    B x = (resize ρ (β x) (i x) , resize-is-a-subsingleton ρ (β x) (i x))
+    lr : (x : X) → x ∈ B → (A : 𝓟 X) → A ∈ 𝓐 → x ∈ A
+    lr x = from-resize ρ (β x) (i x)
+    rl : (x : X) → ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A) → x ∈ B
+    rl x = to-resize ρ (β x) (i x)
+
+  ⋂ : {X : 𝓤 ̇ } → 𝓟𝓟 X → 𝓟 X
+  ⋂ {𝓤} {X} 𝓐 = pr₁ (intersections-are-available X 𝓐)
+
+  ⋂-property : {X : 𝓤 ̇ } (𝓐 : 𝓟𝓟 X)
+             → (x : X) → (x ∈ ⋂ 𝓐) ⇔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A)
+  ⋂-property {𝓤} {X} 𝓐 = pr₂ (intersections-are-available X 𝓐)
+
+  ∅ full : {X : 𝓤 ̇} → 𝓟 X
+  ∅    = λ x → (Lift _ 𝟘 , equiv-to-subsingleton (Lift-≃ 𝟘) 𝟘-is-subsingleton)
+  full = λ x → (Lift _ 𝟙 , equiv-to-subsingleton (Lift-≃ 𝟙) 𝟙-is-subsingleton)
+
+  ∅-property : (X : 𝓤 ̇) → (x : X) → ¬(x ∈ ∅)
+  ∅-property X x = lower
+
+  full-property : (X : 𝓤 ̇) → (x : X) → x ∈ full
+  full-property X x = lift ⋆
+
+  _∩_ _∪_ : {X : 𝓤 ̇ } → 𝓟 X → 𝓟 X → 𝓟 X
+
+  (A ∪ B) = λ x → ((x ∈ A) ∨ (x ∈ B)) , ∥∥-is-a-subsingleton
+
+  (A ∩ B) = λ x → ((x ∈ A) × (x ∈ B)) ,
+                  ×-is-subsingleton
+                    (∈-is-subsingleton x A)
+                    (∈-is-subsingleton x B)
+
+  ∪-property : {X : 𝓤 ̇ } (A B : 𝓟 X)
+             → (x : X) → x ∈ (A ∪ B) ⇔ x ∈ A ∨ x ∈ B
+  ∪-property {𝓤} {X} A B x = id , id
+
+  ∩-property : {X : 𝓤 ̇ } (A B : 𝓟 X)
+             → (x : X) → x ∈ (A ∩ B) ⇔ (x ∈ A) × (x ∈ B)
+  ∩-property {𝓤} {X} A B x = id , id
+
+  infix  2 _∩_
+  infix  2 _∪_
+\end{code}
+
+For example, with this we can define the type of topological spaces as
+follows, where `𝓞` consists of designated sets, conventionally called
+*open* and collectively designated as the *topology* on `X`, which are
+stipulated to be closed under finite intersections and arbitrary
+unions. For finite intersections we consider the unary case `full` and
+the binary case `∩` . Because the empty set is the union of the empty
+collection (exercise), it is automatically included among the open
+sets.
+
+\begin{code}
+  Top : (𝓤 : Universe) → 𝓤 ⁺⁺ ̇
+  Top 𝓤 = Σ \(X : 𝓤 ̇)
+        → is-set X
+        × Σ \(𝓞 : 𝓟𝓟 X)
+        → full ∈ 𝓞
+        × ((G G' : 𝓟 X) → G ∈ 𝓞 → G' ∈ 𝓞 → (G ∩ G') ∈ 𝓞)
+        × ((𝓖 : 𝓟𝓟 X) → ((G : 𝓟 X) → G ∈ 𝓖 → G ∈ 𝓞) → ⋃ 𝓖 ∈ 𝓞)
+\end{code}
+
+Notice that this jumps two universes.  It is also possible, with
+Ω-resizing, to construct the powerset in such a way that the powerset
+of any type lives in the same universe as the type (exercise), and
+hence so that the type of topological spaces in a base universe lives
+in the next universe (exercise), rather than two universes above the
+base universe.
+
+*Exercise*. For a function `X → Y`,
+define its inverse image `𝓟 Y → 𝓟 X` and its direct image `𝓟 X → 𝓟 Y`.
+Define the notion of a continuous map of topological spaces, namely a
+function of the underlying sets whose inverse images of open sets are
+open.
 
 With this, we have now covered the main foundational aspects of univalent
 mathematics.
@@ -7846,6 +8084,7 @@ infixr 2 _×_
 infixr 1 _+_
 infixl 5 _∘_
 infix  0 _≡_
+infix  0 _⇔_
 infixl 2 _∙_
 infixr 0 _≡⟨_⟩_
 infix  1 _∎
@@ -7857,7 +8096,7 @@ infix  0 _≃_
 infixl 2 _●_
 infixr 0 _≃⟨_⟩_
 infix  1 _■
-
+infix  3 _∈_
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)

@@ -66,6 +66,13 @@ We name a few of the initial universes:
 𝓤₃ = 𝓤₂ ⁺
 \end{code}
 
+For notational convenience, we also define:
+
+\begin{code}
+_⁺⁺ : Universe → Universe
+𝓤 ⁺⁺ = 𝓤 ⁺ ⁺
+\end{code}
+
 The following is sometimes useful:
 
 \begin{code}

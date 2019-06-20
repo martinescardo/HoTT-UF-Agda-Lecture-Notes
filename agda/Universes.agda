@@ -21,6 +21,9 @@ _̇   : (𝓤 : Universe) → Type (𝓤 ⁺)
 𝓤₂ = 𝓤₁ ⁺
 𝓤₃ = 𝓤₂ ⁺
 
+_⁺⁺ : Universe → Universe
+𝓤 ⁺⁺ = 𝓤 ⁺ ⁺
+
 universe-of : {𝓤 : Universe} (X : 𝓤 ̇ ) → Universe
 universe-of {𝓤} X = 𝓤
 
