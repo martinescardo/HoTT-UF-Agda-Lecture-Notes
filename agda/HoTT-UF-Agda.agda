@@ -3569,6 +3569,24 @@ module basic-truncation-development
   is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
   is-surjection f = (y : codomain f) → ∃ \(x : domain f) → f x ≡ y
 
+  corestriction-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                          → is-surjection (corestriction f)
+  corestriction-surjection f (y , s) = ∥∥-functor g s
+   where
+    g : (Σ \x → f x ≡ y) → Σ \x → corestriction f x ≡ y , s
+    g (x , p) = x , to-Σ-≡ (p , ∥∥-is-a-subsingleton _ _)
+
+  surjection-induction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                       → is-surjection f
+                       → (P : Y → 𝓦 ̇ )
+                       → ((y : Y) → is-subsingleton (P y))
+                       → ((x : X) → P (f x))
+                       → (y : Y) → P y
+  surjection-induction f i P j α y = ∥∥-recursion (j y) φ (i y)
+   where
+    φ : (σ : fiber f y) → P y
+    φ (x , r) = transport P r (α x)
+
   ∣∣-is-surjection : (X : 𝓤 ̇ ) → is-surjection (λ (x : X) → ∣ x ∣)
   ∣∣-is-surjection X s = γ
    where
@@ -3964,6 +3982,147 @@ module basic-powerset-development
         → full ∈ 𝓞
         × ((G G' : 𝓟 X) → G ∈ 𝓞 → G' ∈ 𝓞 → (G ∩ G') ∈ 𝓞)
         × ((𝓖 : 𝓟𝓟 X) → 𝓖 ⊆ 𝓞 → ⋃ 𝓖 ∈ 𝓞)
+
+is-subsingleton-valued
+ reflexive
+ symmetric
+ transitive
+ equivalence-relation :
+
+ {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+
+is-subsingleton-valued _≈_ = ∀ x y → is-subsingleton (x ≈ y)
+reflexive              _≈_ = ∀ x → x ≈ x
+symmetric              _≈_ = ∀ x y → x ≈ y → y ≈ x
+transitive             _≈_ = ∀ x y z → x ≈ y → y ≈ z → x ≈ z
+
+equivalence-relation   _≈_ = is-subsingleton-valued _≈_
+                           × reflexive _≈_
+                           × symmetric _≈_
+                           × transitive _≈_
+
+module quotient
+       {𝓤 𝓥 : Universe}
+       (pt  : subsingleton-truncations-exist)
+       (fe  : global-dfunext)
+       (pe  : propext 𝓥)
+       (X   : 𝓤 ̇ )
+       (_≈_ : X → X → 𝓥 ̇ )
+       (≈p  : is-subsingleton-valued _≈_)
+       (≈r  : reflexive _≈_)
+       (≈s  : symmetric _≈_)
+       (≈t  : transitive _≈_)
+      where
+
+ open basic-truncation-development pt fe
+
+ equiv-rel : X → (X → Ω 𝓥)
+ equiv-rel x y = x ≈ y , ≈p x y
+
+ X/≈ : 𝓥 ⁺ ⊔ 𝓤  ̇
+ X/≈ = image equiv-rel
+
+ X/≈-is-set : is-set X/≈
+ X/≈-is-set = subsets-of-sets-are-sets (X → Ω 𝓥) _
+               (powersets-are-sets (dfunext-gives-hfunext fe) fe pe)
+               (λ _ → ∥∥-is-a-subsingleton)
+
+ η : X → X/≈
+ η = corestriction equiv-rel
+
+ η-surjection : is-surjection η
+ η-surjection = corestriction-surjection equiv-rel
+
+ η-induction : (P : X/≈ → 𝓦 ̇ )
+             → ((x' : X/≈) → is-subsingleton (P x'))
+             → ((x : X) → P (η x))
+             → (x' : X/≈) → P x'
+ η-induction = surjection-induction η η-surjection
+
+ η-equiv-equal : {x y : X} → x ≈ y → η x ≡ η y
+ η-equiv-equal {x} {y} e =
+  to-Σ-≡
+    (fe (λ z → to-Σ-≡
+                 (pe (≈p x z) (≈p y z) (≈t y x z (≈s x y e)) (≈t x y z e) ,
+                  being-subsingleton-is-a-subsingleton fe _ _)) ,
+     ∥∥-is-a-subsingleton _ _)
+
+ η-equal-equiv : {x y : X} → η x ≡ η y → x ≈ y
+ η-equal-equiv {x} {y} p = equiv-rel-reflect (ap pr₁ p)
+  where
+   equiv-rel-reflect : equiv-rel x ≡ equiv-rel y → x ≈ y
+   equiv-rel-reflect q = b (≈r y)
+    where
+     a : (y ≈ y) ≡ (x ≈ y)
+     a = ap (λ - → pr₁(- y)) (q ⁻¹)
+     b : y ≈ y → x ≈ y
+     b = Id-to-fun a
+
+ universal-property : (A : 𝓦 ̇ )
+                    → is-set A
+                    → (f : X → A)
+                    → ({x x' : X} → x ≈ x' → f x ≡ f x')
+                    → ∃! \(f' : X/≈ → A) → f' ∘ η ≡ f
+ universal-property {𝓦} A i f τ = e
+  where
+   G : X/≈ → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓦 ̇
+   G x' = Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a)
+   φ : (x' : X/≈) → is-subsingleton (G x')
+   φ = η-induction _ γ induction-step
+    where
+     induction-step : (y : X) → is-subsingleton (G (η y))
+     induction-step x (a , d) (b , e) = to-Σ-≡ (p , ∥∥-is-a-subsingleton _ _)
+      where
+       h : (Σ \x' → (η x' ≡ η x) × (f x' ≡ a))
+         → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))
+         → a ≡ b
+       h (x' , r , s) (y' , t , u) = a    ≡⟨ s ⁻¹ ⟩
+                                     f x' ≡⟨ τ (η-equal-equiv (r ∙ t ⁻¹)) ⟩
+                                     f y' ≡⟨ u ⟩
+                                     b    ∎
+       p : a ≡ b
+       p = ∥∥-recursion (i a b) (λ σ → ∥∥-recursion (i a b) (h σ) e) d
+
+     γ : (x' : X/≈) → is-subsingleton (is-subsingleton (G x'))
+     γ x' = being-subsingleton-is-a-subsingleton fe
+
+   k : (x' : X/≈) → G x'
+   k = η-induction _ φ induction-step
+    where
+     induction-step : (y : X) → G (η y)
+     induction-step x = f x , ∣ x , refl (η x) , refl (f x) ∣
+
+   f' : X/≈ → A
+   f' x' = pr₁ (k x')
+
+   r : f' ∘ η ≡ f
+   r = fe h
+    where
+     g : (y : X) → ∃ \x → (η x ≡ η y) × (f x ≡ f' (η y))
+     g y = pr₂ (k (η y))
+
+     j : (y : X) → (Σ \x → (η x ≡ η y) × (f x ≡ f' (η y))) → f'(η y) ≡ f y
+     j y (x , p , q) = f' (η y) ≡⟨ q ⁻¹ ⟩
+                       f x      ≡⟨ τ (η-equal-equiv p) ⟩
+                       f y      ∎
+
+     h : (y : X) → f'(η y) ≡ f y
+     h y = ∥∥-recursion (i (f' (η y)) (f y)) (j y) (g y)
+
+   c : (σ : Σ \(f'' : X/≈ → A) → f'' ∘ η ≡ f) → (f' , r) ≡ σ
+   c (f'' , s) = to-Σ-≡ (t , v)
+    where
+     w : ∀ x → f'(η x) ≡ f''(η x)
+     w = happly (f' ∘ η) (f'' ∘ η) (r ∙ s ⁻¹)
+     t : f' ≡ f''
+     t = fe (η-induction _ (λ x' → i (f' x') (f'' x')) w)
+     u : f'' ∘ η ≡ f
+     u = transport (λ - → - ∘ η ≡ f) t r
+     v : u ≡ s
+     v = Π-is-set (dfunext-gives-hfunext fe) (λ x → i) (f'' ∘ η) f u s
+
+   e : ∃! \(f' : X/≈ → A) → f' ∘ η ≡ f
+   e = (f' , r) , c
 
 module ℕ-order-exercise-solution where
 

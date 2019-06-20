@@ -405,6 +405,7 @@ to practice univalent mathematics should consult the above references.
      1. [Subsingleton truncation, disjunction and existence](HoTT-UF-Agda.html#truncation)
      1. [The univalent axiom of choice](HoTT-UF-Agda.html#choice)
      1. [Propositional resizing, truncation and the powerset](HoTT-UF-Agda.html#resizing)
+     1. [Quotients](HoTT-UF-Agda.html#quotients)
      1. [Summary of consistent axioms for univalent mathematics](HoTT-UF-Agda.html#summary)
   1. [Appendix](HoTT-UF-Agda.html#appendix)
      1. [Solutions to some exercises](HoTT-UF-Agda.html#someexercisessol)
@@ -7043,6 +7044,24 @@ way, we can use `is-inhabited` instead of `∥_∥` if we wish.
 
   is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
   is-surjection f = (y : codomain f) → ∃ \(x : domain f) → f x ≡ y
+
+  corestriction-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                          → is-surjection (corestriction f)
+  corestriction-surjection f (y , s) = ∥∥-functor g s
+   where
+    g : (Σ \x → f x ≡ y) → Σ \x → corestriction f x ≡ y , s
+    g (x , p) = x , to-Σ-≡ (p , ∥∥-is-a-subsingleton _ _)
+
+  surjection-induction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                       → is-surjection f
+                       → (P : Y → 𝓦 ̇ )
+                       → ((y : Y) → is-subsingleton (P y))
+                       → ((x : X) → P (f x))
+                       → (y : Y) → P y
+  surjection-induction f i P j α y = ∥∥-recursion (j y) φ (i y)
+   where
+    φ : (σ : fiber f y) → P y
+    φ (x , r) = transport P r (α x)
 \end{code}
 
 This time we can prove that the map `x ↦ ∣ x ∣` of `X` into `∥ X ∥` is
@@ -7660,8 +7679,235 @@ underlying sets whose inverse images of open sets are open. Show that
 the identity function is continuous and that continuous maps are
 closed under composition.
 
-With this, we have now covered the main foundational aspects of univalent
-mathematics.
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+## <a id="quotients"></a> Quotients
+
+We now construct quotients using a technique proposed by Voevodsky,
+who assumed propositional resizing for that purpose, so that the
+quotient of a given type by a given equivalence relation would live in
+the same universe as the type. But the requirement that the quotient
+lives in the same universe is not needed to prove the universal
+property of the quotient.
+
+We construct the quotient using propositional truncations, assuming
+functional and propositional extensionality, *without* assuming
+resizing.
+
+A binary relation `_≈_` on a type `X : 𝓤` with values in a universe
+`𝓥` (which can of course be `𝓤`) is called an *equivalence relation*
+if it is subsingleton-valued, reflexive, symmetric and transitive.
+All these notions
+
+\begin{code}
+is-subsingleton-valued
+ reflexive
+ symmetric
+ transitive
+ equivalence-relation :
+\end{code}
+
+have the same type
+
+\begin{code}
+ {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+\end{code}
+
+and are defined by
+
+\begin{code}
+
+is-subsingleton-valued _≈_ = ∀ x y → is-subsingleton (x ≈ y)
+reflexive              _≈_ = ∀ x → x ≈ x
+symmetric              _≈_ = ∀ x y → x ≈ y → y ≈ x
+transitive             _≈_ = ∀ x y z → x ≈ y → y ≈ z → x ≈ z
+
+equivalence-relation   _≈_ = is-subsingleton-valued _≈_
+                           × reflexive _≈_
+                           × symmetric _≈_
+                           × transitive _≈_
+\end{code}
+
+We now work with a module with parameters to quotient a given type `X`
+by a given equivalence relation `_≈_`. We assume not only the
+existence of propositional truncations, as discussed above, but also
+functional and propositional extensionality.
+
+\begin{code}
+module quotient
+       {𝓤 𝓥 : Universe}
+       (pt  : subsingleton-truncations-exist)
+       (fe  : global-dfunext)
+       (pe  : propext 𝓥)
+       (X   : 𝓤 ̇ )
+       (_≈_ : X → X → 𝓥 ̇ )
+       (≈p  : is-subsingleton-valued _≈_)
+       (≈r  : reflexive _≈_)
+       (≈s  : symmetric _≈_)
+       (≈t  : transitive _≈_)
+      where
+
+ open basic-truncation-development pt fe
+\end{code}
+
+From the given relation
+
+   > `_≈_ : X → X → 𝓥 ̇`
+
+we define a function
+
+   > `X → (X → Ω 𝓥)`,
+
+and we take the quotient `X/≈` to be the image of this function. It is
+for constructing the image that we need subsingleton
+truncations. Functional and propositional extensionality are then used
+to prove that the quotient is a set.
+
+\begin{code}
+ equiv-rel : X → (X → Ω 𝓥)
+ equiv-rel x y = x ≈ y , ≈p x y
+
+ X/≈ : 𝓥 ⁺ ⊔ 𝓤  ̇
+ X/≈ = image equiv-rel
+
+ X/≈-is-set : is-set X/≈
+ X/≈-is-set = subsets-of-sets-are-sets (X → Ω 𝓥) _
+               (powersets-are-sets (dfunext-gives-hfunext fe) fe pe)
+               (λ _ → ∥∥-is-a-subsingleton)
+
+ η : X → X/≈
+ η = corestriction equiv-rel
+\end{code}
+
+We show that `η` is the universal solution to the problem of transforming
+equivalence `_≈_` into equality `_≡_`.
+
+By construction, `η` is a surjection, of course:
+
+\begin{code}
+ η-surjection : is-surjection η
+ η-surjection = corestriction-surjection equiv-rel
+\end{code}
+
+It is convenient to use the following induction principle for
+reasoning about the image `X/≈`:
+
+\begin{code}
+ η-induction : (P : X/≈ → 𝓦 ̇ )
+             → ((x' : X/≈) → is-subsingleton (P x'))
+             → ((x : X) → P (η x))
+             → (x' : X/≈) → P x'
+ η-induction = surjection-induction η η-surjection
+\end{code}
+
+The first part of the universal property of `η` says that equivalent
+points are mapped to identified points:
+
+\begin{code}
+ η-equiv-equal : {x y : X} → x ≈ y → η x ≡ η y
+ η-equiv-equal {x} {y} e =
+  to-Σ-≡
+    (fe (λ z → to-Σ-≡
+                 (pe (≈p x z) (≈p y z) (≈t y x z (≈s x y e)) (≈t x y z e) ,
+                  being-subsingleton-is-a-subsingleton fe _ _)) ,
+     ∥∥-is-a-subsingleton _ _)
+\end{code}
+
+To prove the required universal property, we also need the fact that
+`η` reflects equality into equivalence:
+
+\begin{code}
+ η-equal-equiv : {x y : X} → η x ≡ η y → x ≈ y
+ η-equal-equiv {x} {y} p = equiv-rel-reflect (ap pr₁ p)
+  where
+   equiv-rel-reflect : equiv-rel x ≡ equiv-rel y → x ≈ y
+   equiv-rel-reflect q = b (≈r y)
+    where
+     a : (y ≈ y) ≡ (x ≈ y)
+     a = ap (λ - → pr₁(- y)) (q ⁻¹)
+     b : y ≈ y → x ≈ y
+     b = Id-to-fun a
+\end{code}
+
+We are now ready to formulate and prove the required universal
+property of the quotient. What is noteworthy here, regarding
+universes, is that the universal property says that we can eliminate
+into any set `A` of any universe `𝓦`.
+
+\begin{code}
+ universal-property : (A : 𝓦 ̇ )
+                    → is-set A
+                    → (f : X → A)
+                    → ({x x' : X} → x ≈ x' → f x ≡ f x')
+                    → ∃! \(f' : X/≈ → A) → f' ∘ η ≡ f
+ universal-property {𝓦} A i f τ = e
+  where
+   G : X/≈ → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓦 ̇
+   G x' = Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a)
+   φ : (x' : X/≈) → is-subsingleton (G x')
+   φ = η-induction _ γ induction-step
+    where
+     induction-step : (y : X) → is-subsingleton (G (η y))
+     induction-step x (a , d) (b , e) = to-Σ-≡ (p , ∥∥-is-a-subsingleton _ _)
+      where
+       h : (Σ \x' → (η x' ≡ η x) × (f x' ≡ a))
+         → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))
+         → a ≡ b
+       h (x' , r , s) (y' , t , u) = a    ≡⟨ s ⁻¹ ⟩
+                                     f x' ≡⟨ τ (η-equal-equiv (r ∙ t ⁻¹)) ⟩
+                                     f y' ≡⟨ u ⟩
+                                     b    ∎
+       p : a ≡ b
+       p = ∥∥-recursion (i a b) (λ σ → ∥∥-recursion (i a b) (h σ) e) d
+
+     γ : (x' : X/≈) → is-subsingleton (is-subsingleton (G x'))
+     γ x' = being-subsingleton-is-a-subsingleton fe
+
+   k : (x' : X/≈) → G x'
+   k = η-induction _ φ induction-step
+    where
+     induction-step : (y : X) → G (η y)
+     induction-step x = f x , ∣ x , refl (η x) , refl (f x) ∣
+
+   f' : X/≈ → A
+   f' x' = pr₁ (k x')
+
+   r : f' ∘ η ≡ f
+   r = fe h
+    where
+     g : (y : X) → ∃ \x → (η x ≡ η y) × (f x ≡ f' (η y))
+     g y = pr₂ (k (η y))
+
+     j : (y : X) → (Σ \x → (η x ≡ η y) × (f x ≡ f' (η y))) → f'(η y) ≡ f y
+     j y (x , p , q) = f' (η y) ≡⟨ q ⁻¹ ⟩
+                       f x      ≡⟨ τ (η-equal-equiv p) ⟩
+                       f y      ∎
+
+     h : (y : X) → f'(η y) ≡ f y
+     h y = ∥∥-recursion (i (f' (η y)) (f y)) (j y) (g y)
+
+   c : (σ : Σ \(f'' : X/≈ → A) → f'' ∘ η ≡ f) → (f' , r) ≡ σ
+   c (f'' , s) = to-Σ-≡ (t , v)
+    where
+     w : ∀ x → f'(η x) ≡ f''(η x)
+     w = happly (f' ∘ η) (f'' ∘ η) (r ∙ s ⁻¹)
+     t : f' ≡ f''
+     t = fe (η-induction _ (λ x' → i (f' x') (f'' x')) w)
+     u : f'' ∘ η ≡ f
+     u = transport (λ - → - ∘ η ≡ f) t r
+     v : u ≡ s
+     v = Π-is-set (dfunext-gives-hfunext fe) (λ x → i) (f'' ∘ η) f u s
+
+   e : ∃! \(f' : X/≈ → A) → f' ∘ η ≡ f
+   e = (f' , r) , c
+
+\end{code}
+
+As mentioned above, if one so wishes, it is possible to resize down
+the quotient `X/≈` to the same universe as the given type `X` lives by
+assuming propositional resizing. But we don't see any mathematical
+need to do so, as the constructed quotient, regardless of the universe
+it inhabits, has a universal property that eliminates in to any
+desired universe, lower, equal or higher than the quotiented type.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ## <a id="summary"></a> Summary of consistent axioms for univalent mathematics
@@ -7685,11 +7931,19 @@ We have that:
   * The constructive status of propositional resizing and impredicativity is open.
   * Function extensionality and propositional resizing [imply](HoTT-UF-Agda.html#resizing) the existence of propositional truncations, and hence so do function extensionality and excluded middle.
 
-The avoidance of excluded middle and choice makes the theory not only constructive but also [applicable to more models](https://arxiv.org/abs/1904.07004). However, one is free to assume excluded middle and choice for pieces of mathematics that require them, or just if one simply prefers classical reasoning.
+The avoidance of excluded middle and choice makes the theory not only
+constructive but also [applicable to more
+models](https://arxiv.org/abs/1904.07004). However, one is free to
+assume excluded middle and choice for pieces of mathematics that
+require them, or just if one simply prefers classical reasoning.
+Univalent foundations have enough room for the constructive,
+non-constructive, pluralistic and neutral approaches to mathematics,
+and in this sense they are no different from e.g. set theoretic
+foundations.
 
 A major omission in these notes is a discussion of higher-inductive
 types.  On the other hand, these notes completely cover the
-foundational principles supported by
+foundational principles officially supported by
 [UniMath](https://github.com/UniMath/UniMath/blob/master/README.md),
 namely (1)-(7) above.
 
