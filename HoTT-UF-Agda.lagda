@@ -404,7 +404,7 @@ to practice univalent mathematics should consult the above references.
      1. [Magma equivalences](HoTT-UF-Agda.html#magmaequivalences)
      1. [Subsingleton truncation, disjunction and existence](HoTT-UF-Agda.html#truncation)
      1. [The univalent axiom of choice](HoTT-UF-Agda.html#choice)
-     1. [Propositional resizing, truncation and powersets](HoTT-UF-Agda.html#resizing)
+     1. [Propositional resizing, truncation and the powerset](HoTT-UF-Agda.html#resizing)
      1. [Summary of consistent axioms for univalent mathematics](HoTT-UF-Agda.html#summary)
   1. [Appendix](HoTT-UF-Agda.html#appendix)
      1. [Solutions to some exercises](HoTT-UF-Agda.html#someexercisessol)
@@ -1717,10 +1717,10 @@ If we define *logical equivalence* by
 _⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ⇔ Y = (X → Y) × (Y → X)
 
-lr-implication : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X ⇔ Y) → (X → Y)
+lr-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (X → Y)
 lr-implication = pr₁
 
-rl-implication : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X ⇔ Y) → (Y → X)
+rl-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (Y → X)
 rl-implication = pr₂
 \end{code}
 
@@ -3377,7 +3377,7 @@ access to the given construction when proving things involving
 `∘-is-equiv`, such as the contravariance of inversion:
 
 \begin{code}
-inverse-of-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇}
+inverse-of-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
                (f : X → Y) (g : Y → Z)
                (i : is-equiv f) (j : is-equiv g)
              → inverse f i ∘ inverse g j ∼ inverse (g ∘ f) (∘-is-equiv j i)
@@ -7173,7 +7173,7 @@ in particular has a proof that univalent choice implies univalent
 excluded middle.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="resizing"></a> Propositional resizing, truncation and powersets
+### <a id="resizing"></a> Propositional resizing, truncation and the powerset
 
 Voevodsky [considered resizing
 rules](https://www.math.ias.edu/vladimir/sites/math.ias.edu.vladimir/files/2011_Bergen.pdf)
@@ -7447,11 +7447,11 @@ PR-gives-existence-of-truncations fe R =
 As a second, important, use of resizing, we revisit the powerset.
 First, given a set of subsets, that is, an element of the double
 powerset, we would like to consider its union. We investigate its
-existence in a submodule with assumptions.
+availability in a submodule with assumptions.
 
 \begin{code}
 
-module powerset-union
+module powerset-union-availability
         (pt : subsingleton-truncations-exist)
         (fe : global-dfunext)
        where
@@ -7478,15 +7478,15 @@ available. It says what it means for them to be available:
              → (x : X) → (x ∈ B) ⇔ ∃ \(A : 𝓟 X) → (A ∈ 𝓐) × (x ∈ A)
 \end{code}
 
-Without propositional resizing principles, it is not possible to show
-that unions exist.
+Without propositional resizing principles, it is not possible to
+establish the availability.
 
 \begin{code}
  availability-of-unions-gives-PR : availability-of-unions 𝓤
                                  → propositional-resizing (𝓤 ⁺) 𝓤
  availability-of-unions-gives-PR {𝓤} α = γ
   where
-   γ : (P : 𝓤 ⁺ ̇) → (i : is-subsingleton P) → P has-size 𝓤
+   γ : (P : 𝓤 ⁺ ̇ ) → (i : is-subsingleton P) → P has-size 𝓤
    γ P i = Q , e
     where
     𝟙ᵤ : 𝓤 ̇
@@ -7523,7 +7523,7 @@ that unions exist.
     e = logically-equivalent-subsingletons-are-equivalent P Q i j (f , g)
 \end{code}
 
-The converse also holds:
+The converse also holds, with an easier construction:
 
 \begin{code}
  PR-gives-availability-of-unions : propositional-resizing (𝓤 ⁺) 𝓤
@@ -7540,14 +7540,12 @@ The converse also holds:
    lr x = from-resize ρ (β x) (i x)
    rl : (x : X) → (∃ \(A : 𝓟 X) → (A ∈ 𝓐) × (x ∈ A)) → x ∈ B
    rl x = to-resize ρ (β x) (i x)
-
 \end{code}
 
 We now close the above submodule and start another one with different
 assumptions:
 
 \begin{code}
-
 module basic-powerset-development
         (fe : global-dfunext)
         (ρ : Propositional-resizing)
@@ -7557,7 +7555,7 @@ module basic-powerset-development
   pt = PR-gives-existence-of-truncations fe ρ
 
   open basic-truncation-development pt fe
-  open powerset-union pt fe
+  open powerset-union-availability pt fe
 
   ⋃ : {X : 𝓤 ̇ } → 𝓟𝓟 X → 𝓟 X
   ⋃ 𝓐 = pr₁ (PR-gives-availability-of-unions ρ _ 𝓐)
@@ -7567,8 +7565,8 @@ module basic-powerset-development
   ⋃-property 𝓐 = pr₂ (PR-gives-availability-of-unions ρ _ 𝓐)
 \end{code}
 
-The construction of intersections is as that of availability of
-unions, using propositional resizing:
+The construction of intersections is as that of unions using
+propositional resizing:
 
 \begin{code}
   intersections-are-available :
@@ -7598,14 +7596,14 @@ unions, using propositional resizing:
              → (x : X) → (x ∈ ⋂ 𝓐) ⇔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A)
   ⋂-property {𝓤} {X} 𝓐 = pr₂ (intersections-are-available X 𝓐)
 
-  ∅ full : {X : 𝓤 ̇} → 𝓟 X
+  ∅ full : {X : 𝓤 ̇ } → 𝓟 X
   ∅    = λ x → (Lift _ 𝟘 , equiv-to-subsingleton (Lift-≃ 𝟘) 𝟘-is-subsingleton)
   full = λ x → (Lift _ 𝟙 , equiv-to-subsingleton (Lift-≃ 𝟙) 𝟙-is-subsingleton)
 
-  ∅-property : (X : 𝓤 ̇) → (x : X) → ¬(x ∈ ∅)
+  ∅-property : (X : 𝓤 ̇ ) → (x : X) → ¬(x ∈ ∅)
   ∅-property X x = lower
 
-  full-property : (X : 𝓤 ̇) → (x : X) → x ∈ full
+  full-property : (X : 𝓤 ̇ ) → (x : X) → x ∈ full
   full-property X x = lift ⋆
 
   _∩_ _∪_ : {X : 𝓤 ̇ } → 𝓟 X → 𝓟 X → 𝓟 X
@@ -7640,7 +7638,7 @@ sets.
 
 \begin{code}
   Top : (𝓤 : Universe) → 𝓤 ⁺⁺ ̇
-  Top 𝓤 = Σ \(X : 𝓤 ̇)
+  Top 𝓤 = Σ \(X : 𝓤 ̇ )
         → is-set X
         × Σ \(𝓞 : 𝓟𝓟 X)
         → full ∈ 𝓞
@@ -7655,11 +7653,12 @@ hence so that the type of topological spaces in a base universe lives
 in the next universe (exercise), rather than two universes above the
 base universe.
 
-*Exercise*. For a function `X → Y`,
-define its inverse image `𝓟 Y → 𝓟 X` and its direct image `𝓟 X → 𝓟 Y`.
-Define the notion of a continuous map of topological spaces, namely a
-function of the underlying sets whose inverse images of open sets are
-open.
+*Exercise*. For a function `X → Y`, define its inverse image `𝓟 Y → 𝓟
+X` and its direct image `𝓟 X → 𝓟 Y`.  Define the notion of a
+continuous map of topological spaces, namely a function of the
+underlying sets whose inverse images of open sets are open. Show that
+the identity function is continuous and that continuous maps are
+closed under composition.
 
 With this, we have now covered the main foundational aspects of univalent
 mathematics.

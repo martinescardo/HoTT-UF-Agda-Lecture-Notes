@@ -270,10 +270,10 @@ tno A = contrapositive (dni A)
 _⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ⇔ Y = (X → Y) × (Y → X)
 
-lr-implication : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X ⇔ Y) → (X → Y)
+lr-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (X → Y)
 lr-implication = pr₁
 
-rl-implication : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X ⇔ Y) → (Y → X)
+rl-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (Y → X)
 rl-implication = pr₂
 
 absurdity³-is-absurdity : {A : 𝓤 ̇ } → ¬¬¬ A ⇔ ¬ A
@@ -1009,7 +1009,7 @@ id-is-equiv = singleton-types-are-singletons
          (∘-invertible (equivs-are-invertible g i)
          (equivs-are-invertible f j))
 
-inverse-of-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇}
+inverse-of-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
                (f : X → Y) (g : Y → Z)
                (i : is-equiv f) (j : is-equiv g)
              → inverse f i ∘ inverse g j ∼ inverse (g ∘ f) (∘-is-equiv j i)
@@ -3810,7 +3810,7 @@ PR-gives-existence-of-truncations fe R =
                                     (inhabitation-is-a-subsingleton fe X) s))
  }
 
-module powerset-union
+module powerset-union-availability
         (pt : subsingleton-truncations-exist)
         (fe : global-dfunext)
        where
@@ -3831,7 +3831,7 @@ module powerset-union
                                  → propositional-resizing (𝓤 ⁺) 𝓤
  availability-of-unions-gives-PR {𝓤} α = γ
   where
-   γ : (P : 𝓤 ⁺ ̇) → (i : is-subsingleton P) → P has-size 𝓤
+   γ : (P : 𝓤 ⁺ ̇ ) → (i : is-subsingleton P) → P has-size 𝓤
    γ P i = Q , e
     where
     𝟙ᵤ : 𝓤 ̇
@@ -3891,7 +3891,7 @@ module basic-powerset-development
   pt = PR-gives-existence-of-truncations fe ρ
 
   open basic-truncation-development pt fe
-  open powerset-union pt fe
+  open powerset-union-availability pt fe
 
   ⋃ : {X : 𝓤 ̇ } → 𝓟𝓟 X → 𝓟 X
   ⋃ 𝓐 = pr₁ (PR-gives-availability-of-unions ρ _ 𝓐)
@@ -3927,14 +3927,14 @@ module basic-powerset-development
              → (x : X) → (x ∈ ⋂ 𝓐) ⇔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A)
   ⋂-property {𝓤} {X} 𝓐 = pr₂ (intersections-are-available X 𝓐)
 
-  ∅ full : {X : 𝓤 ̇} → 𝓟 X
+  ∅ full : {X : 𝓤 ̇ } → 𝓟 X
   ∅    = λ x → (Lift _ 𝟘 , equiv-to-subsingleton (Lift-≃ 𝟘) 𝟘-is-subsingleton)
   full = λ x → (Lift _ 𝟙 , equiv-to-subsingleton (Lift-≃ 𝟙) 𝟙-is-subsingleton)
 
-  ∅-property : (X : 𝓤 ̇) → (x : X) → ¬(x ∈ ∅)
+  ∅-property : (X : 𝓤 ̇ ) → (x : X) → ¬(x ∈ ∅)
   ∅-property X x = lower
 
-  full-property : (X : 𝓤 ̇) → (x : X) → x ∈ full
+  full-property : (X : 𝓤 ̇ ) → (x : X) → x ∈ full
   full-property X x = lift ⋆
 
   _∩_ _∪_ : {X : 𝓤 ̇ } → 𝓟 X → 𝓟 X → 𝓟 X
@@ -3958,7 +3958,7 @@ module basic-powerset-development
   infix  2 _∪_
 
   Top : (𝓤 : Universe) → 𝓤 ⁺⁺ ̇
-  Top 𝓤 = Σ \(X : 𝓤 ̇)
+  Top 𝓤 = Σ \(X : 𝓤 ̇ )
         → is-set X
         × Σ \(𝓞 : 𝓟𝓟 X)
         → full ∈ 𝓞
