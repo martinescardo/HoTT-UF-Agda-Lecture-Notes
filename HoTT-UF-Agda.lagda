@@ -7690,8 +7690,8 @@ lives in the same universe is not needed to prove the universal
 property of the quotient.
 
 We construct the quotient using propositional truncations, assuming
-functional and propositional extensionality, *without* assuming
-resizing.
+functional and propositional extensionality, *without assuming
+resizing*.
 
 A binary relation `_≈_` on a type `X : 𝓤` with values in a universe
 `𝓥` (which can of course be `𝓤`) is called an *equivalence relation*
