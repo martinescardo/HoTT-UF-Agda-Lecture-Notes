@@ -7727,8 +7727,8 @@ equivalence-relation   _≈_ = is-subsingleton-valued _≈_
                            × transitive _≈_
 \end{code}
 
-We now work with a module with parameters to quotient a given type `X`
-by a given equivalence relation `_≈_`. We assume not only the
+We now work with a submodule with parameters to quotient a given type
+`X` by a given equivalence relation `_≈_`. We assume not only the
 existence of propositional truncations, as discussed above, but also
 functional and propositional extensionality.
 
@@ -7917,8 +7917,8 @@ The following axioms are together consistent by considering Voevodsky's [simplic
   1. [Propositional extensionality](HoTT-UF-Agda.html#propositionalextensionality).
   1. [Univalence](HoTT-UF-Agda.html#univalence).
   1. [Existence of propositional truncations](HoTT-UF-Agda.html#univalence).
-  1. [Univalent excluded middle](HoTT-UF-Agda.html#em).
-  1. [Univalent choice](HoTT-UF-Agda.html#choice).
+  1. [Excluded middle](HoTT-UF-Agda.html#em).
+  1. [Choice](HoTT-UF-Agda.html#choice).
   1. [Propositional resizing and impredicativity](HoTT-UF-Agda.html#resizing).
 
 We have that:
