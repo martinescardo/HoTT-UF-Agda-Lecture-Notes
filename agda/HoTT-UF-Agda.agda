@@ -3807,6 +3807,40 @@ module basic-truncation-development
         f : P → ⊤ ≡ P , i
         f p = Ω-ext fe pe (λ (_ : Lift 𝓤 𝟙) → p) (λ (_ : P) → lift ⋆)
 
+  global-choice : (𝓤 : Universe) → 𝓤 ⁺ ̇
+  global-choice 𝓤 = (X : 𝓤 ̇ ) → X + is-empty X
+
+  global-choice' : (𝓤 : Universe) → 𝓤 ⁺ ̇
+  global-choice' 𝓤 = (X : 𝓤 ̇ ) → ∥ X ∥ → X
+
+  global-choice-inconsistent-with-univalence : global-choice 𝓤₁
+                                             → is-univalent 𝓤₀
+                                             → 𝟘
+  global-choice-inconsistent-with-univalence g ua = c
+   where
+    b : (X : 𝓤₁ ̇) → is-set X
+    b X = hedberg (λ x y → g (x ≡ y))
+    open example-of-a-nonset ua
+    c : 𝟘
+    c = 𝓤₀-is-not-a-set (b (𝓤₀ ̇))
+
+  global-choice'-inconsistent-with-univalence : global-choice' 𝓤₁
+                                              → is-univalent 𝓤₀
+                                              → 𝟘
+  global-choice'-inconsistent-with-univalence g ua = c
+   where
+    a : (X : 𝓤₁ ̇) → has-decidable-equality X
+    a X x₀ x₁ = decidable-equality-criterion α (λ x → g (Σ \(n : 𝟚) → α n ≡ x))
+     where
+      α : 𝟚 → X
+      α ₀ = x₀
+      α ₁ = x₁
+    b : (X : 𝓤₁ ̇) → is-set X
+    b X = hedberg (a X)
+    open example-of-a-nonset ua
+    c : 𝟘
+    c = 𝓤₀-is-not-a-set (b (𝓤₀ ̇))
+
 _has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
 X has-size 𝓥 = Σ \(Y : 𝓥 ̇ ) → X ≃ Y
 
