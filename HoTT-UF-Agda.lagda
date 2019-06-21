@@ -7092,7 +7092,7 @@ choice](https://en.wikipedia.org/wiki/Axiom_of_global_choice), which
 [contradicts univalence](https://homotopytypetheory.org/book/), and
 also [gives classical logic](https://lmcs.episciences.org/3217).
 
-*Exercise*. If `X` and `Y` are types obtained by summing `x-` and
+*Exercise* (hard). If `X` and `Y` are types obtained by summing `x-` and
   `y`-many copies of the type `𝟙`, respectively, as in `𝟙 + 𝟙 + ... + 𝟙` , where `x`
   and `y` are natural numbers, then `∥ X ≡ Y ∥ ≃ (x ≡ y)` and the type
   `X ≡ X` has `x!` elements.
