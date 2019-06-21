@@ -7240,10 +7240,10 @@ module basic-truncation-development
     φ' = ∥∥-recursion (i s) φ
 
   ∥∥-computation : {X : 𝓤 ̇ } {P : ∥ X ∥ → 𝓥 ̇ }
-                → (i : (s : ∥ X ∥) → is-subsingleton (P s))
-                → (f : (x : X) → P ∣ x ∣)
-                → (x : X)
-                → ∥∥-induction i f ∣ x ∣ ≡ f x
+                 → (i : (s : ∥ X ∥) → is-subsingleton (P s))
+                 → (f : (x : X) → P ∣ x ∣)
+                 → (x : X)
+                 → ∥∥-induction i f ∣ x ∣ ≡ f x
   ∥∥-computation i f x = i ∣ x ∣ (∥∥-induction i f ∣ x ∣) (f x)
 
   ∥∥-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → ∥ X ∥ → ∥ Y ∥
@@ -7465,20 +7465,20 @@ extensionality):
 A third formulation of choice is the following.
 
 \begin{code}
-  SAC : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → is-set X → ((x : X) → is-set (A x)) → 𝓤 ⊔ 𝓥 ̇
-  SAC X A i j = ∥((x : X) → ∥ A x ∥ → A x)∥
+  TAC : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → is-set X → ((x : X) → is-set (A x)) → 𝓤 ⊔ 𝓥 ̇
+  TAC X A i j = ∥((x : X) → ∥ A x ∥ → A x)∥
 
-  SChoice : ∀ 𝓤 → 𝓤 ⁺ ̇
-  SChoice 𝓤 = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) (i : is-set X) (j : (x : X) → is-set (A x))
-            → SAC X A i j
+  TChoice : ∀ 𝓤 → 𝓤 ⁺ ̇
+  TChoice 𝓤 = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) (i : is-set X) (j : (x : X) → is-set (A x))
+            → TAC X A i j
 \end{code}
 
 Notice that we use the hypothesis twice to get the conclusion in the
 following:
 
 \begin{code}
-  IChoice-gives-SChoice : IChoice 𝓤 → SChoice 𝓤
-  IChoice-gives-SChoice {𝓤} iac X A i j = γ
+  IChoice-gives-TChoice : IChoice 𝓤 → TChoice 𝓤
+  IChoice-gives-TChoice {𝓤} iac X A i j = γ
    where
     B : (x : X) → ∥ A x ∥ → 𝓤 ̇
     B x s = A x
@@ -7494,14 +7494,15 @@ following:
 
     φ : (x : X) → ∥ (∥ A x ∥ → A x) ∥
     φ x = iac ∥ A x ∥ (B x) (l x) (k x) (𝑖𝑑 ∥ A x ∥)
+
     γ : ∥((x : X) → ∥ A x ∥ → A x)∥
     γ = iac X (λ x → ∥ A x ∥ → A x) i m φ
 
-  SChoice-gives-IChoice : SChoice 𝓤 → IChoice 𝓤
-  SChoice-gives-IChoice sac X A i j = γ
+  TChoice-gives-IChoice : TChoice 𝓤 → IChoice 𝓤
+  TChoice-gives-IChoice tac X A i j = γ
    where
     γ : ((x : X) → ∥ A x ∥) → ∥ Π A ∥
-    γ g = ∥∥-functor φ (sac X A i j)
+    γ g = ∥∥-functor φ (tac X A i j)
      where
       φ : ((x : X) → ∥ A x ∥ → A x) → Π A
       φ f x = f x (g x)
@@ -7525,6 +7526,7 @@ middle. We begin with the following lemma.
      where
       u : Σ \(n : 𝟚) → α n ≡ x
       u = c x t
+
       f : (Σ \(n : 𝟚) → α n ≡ x) → Σ \(n : 𝟚) → r n ≡ (x , t)
       f (n , p) = n , to-Σ-≡ (p , ∥∥-is-a-subsingleton _ t)
 
@@ -7561,9 +7563,9 @@ The first consequence of this lemma is that choice implies that every
 set has decidable equality.
 
 \begin{code}
-  choice-gives-decidable-equality : SChoice 𝓤
+  choice-gives-decidable-equality : TChoice 𝓤
                                   → (X : 𝓤 ̇ ) → is-set X → has-decidable-equality X
-  choice-gives-decidable-equality {𝓤} sac X i x₀ x₁ = γ
+  choice-gives-decidable-equality {𝓤} tac X i x₀ x₁ = γ
    where
     α : 𝟚 → X
     α ₀ = x₀
@@ -7582,7 +7584,7 @@ set has decidable equality.
     j x = subsets-of-sets-are-sets 𝟚 (λ n → α n ≡ x) 𝟚-is-set (λ n → i (α n) x)
 
     h : ∥((x : X) → ∥ A x ∥ → A x)∥
-    h = sac X A i j
+    h = tac X A i j
 
     γ : decidable (x₀ ≡ x₁)
     γ = δ h
@@ -7591,14 +7593,14 @@ set has decidable equality.
 Applying the above to the object of truth-values, we get excluded middle:
 
 \begin{code}
-  choice-gives-EM : propext 𝓤 → SChoice (𝓤 ⁺) → EM 𝓤
-  choice-gives-EM {𝓤} pe sac = em
+  choice-gives-EM : propext 𝓤 → TChoice (𝓤 ⁺) → EM 𝓤
+  choice-gives-EM {𝓤} pe tac = em
    where
     ⊤ : Ω 𝓤
     ⊤ = (Lift 𝓤 𝟙 , equiv-to-subsingleton (Lift-≃ 𝟙) 𝟙-is-subsingleton)
 
     δ : (ω : Ω 𝓤) → decidable (⊤ ≡ ω)
-    δ = choice-gives-decidable-equality sac (Ω 𝓤) (Ω-is-a-set fe pe) ⊤
+    δ = choice-gives-decidable-equality tac (Ω 𝓤) (Ω-is-a-set fe pe) ⊤
 
     em : (P : 𝓤 ̇ ) → is-subsingleton P → P + ¬ P
     em P i = γ (δ (P , i))
