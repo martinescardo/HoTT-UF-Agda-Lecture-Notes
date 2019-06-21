@@ -7290,21 +7290,21 @@ middle. We begin with the following lemma.
 
 \begin{code}
   decidable-equality-criterion : {X : 𝓤 ̇ } (α : 𝟚 → X)
-                               → ((x : X) → (∃ \(i : 𝟚) → α i ≡ x)
-                                          → (Σ \(i : 𝟚) → α i ≡ x))
+                               → ((x : X) → (∃ \(n : 𝟚) → α n ≡ x)
+                                          → (Σ \(n : 𝟚) → α n ≡ x))
                                → decidable(α ₀ ≡ α ₁)
   decidable-equality-criterion α c = γ d
    where
     r : 𝟚 → image α
     r = corestriction α
 
-    σ : (y : image α) → Σ \(m : 𝟚) → r m ≡ y
+    σ : (y : image α) → Σ \(n : 𝟚) → r n ≡ y
     σ (x , t) = f u
      where
       u : Σ \(n : 𝟚) → α n ≡ x
       u = c x t
-      f : (Σ \(m : 𝟚) → α m ≡ x) → Σ \(m : 𝟚) → r m ≡ (x , t)
-      f (m , p) = m , to-Σ-≡ (p , ∥∥-is-a-subsingleton _ t)
+      f : (Σ \(n : 𝟚) → α n ≡ x) → Σ \(n : 𝟚) → r n ≡ (x , t)
+      f (n , p) = n , to-Σ-≡ (p , ∥∥-is-a-subsingleton _ t)
 
     s : image α → 𝟚
     s y = pr₁ (σ y)
@@ -7333,7 +7333,12 @@ middle. We begin with the following lemma.
 
     d : decidable (s (r ₀) ≡ s (r ₁))
     d = 𝟚-has-decidable-equality (s (r ₀)) (s (r ₁))
+\end{code}
 
+The first consequence of this lemma is that choice implies that every
+set has decidable equality.
+
+\begin{code}
   choice-gives-decidable-equality : SChoice 𝓤
                                   → (X : 𝓤 ̇ ) → is-set X → has-decidable-equality X
   choice-gives-decidable-equality {𝓤} sac X i x₀ x₁ = γ
