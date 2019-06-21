@@ -1,6 +1,6 @@
 # agda 2.6.0, jekyll, ghc and google-chrome need to be installed in the system
 
-install : _site/HoTT-UF-Agda.html pdf/all/HoTT-UF-Agda.pdf agda/HoTT-UF-Agda.agda agda/HoTT-UF-Agda.agda additionally
+install : _site/HoTT-UF-Agda.html pdf/all/HoTT-UF-Agda.pdf agda/HoTT-UF-Agda.agda additionally
 	cp _site/index.html ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
 	cp _site/HoTT-UF-Agda.html ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
 	cp _site/Universes.html ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
