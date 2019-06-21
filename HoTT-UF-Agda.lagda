@@ -6861,7 +6861,6 @@ inhabited-gives-pointed-for-subsingletons P s = inhabited-recursion P P s (𝑖�
  `is-inhabited X ⇔ ¬¬X` if and only if excluded middle holds.
 
 \begin{code}
-
 inhabited-functorial : global-dfunext → (X : 𝓤 ⁺ ̇ ) (Y : 𝓤 ̇ )
                      → (X → Y) → is-inhabited X → is-inhabited Y
 inhabited-functorial fe X Y f = inhabited-recursion
@@ -7052,7 +7051,7 @@ way, we can use `is-inhabited` instead of `∥_∥` if we wish.
   is-surjection f = (y : codomain f) → ∃ \(x : domain f) → f x ≡ y
 
   corestriction-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                          → is-surjection (corestriction f)
+                           → is-surjection (corestriction f)
   corestriction-surjection f (y , s) = ∥∥-functor g s
    where
     g : (Σ \x → f x ≡ y) → Σ \x → corestriction f x ≡ y , s
@@ -7069,6 +7068,10 @@ way, we can use `is-inhabited` instead of `∥_∥` if we wish.
     φ : (σ : fiber f y) → P y
     φ (x , r) = transport P r (α x)
 \end{code}
+
+*Exercise*. Being a surjection is a proposition if function
+ extensionality holds. A map is an equivalence if and only if it is
+ both an embedding and a surjection.
 
 This time we can prove that the map `x ↦ ∣ x ∣` of `X` into `∥ X ∥` is
 a surjection without the universe levels getting in our way:
