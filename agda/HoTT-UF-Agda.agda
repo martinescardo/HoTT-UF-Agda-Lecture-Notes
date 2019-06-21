@@ -315,7 +315,13 @@ Id-to-Funs-agree (refl X) = refl (𝑖𝑑 X)
 ₁-is-not-₀[not-an-MLTT-proof] : ¬(₁ ≡ ₀)
 ₁-is-not-₀[not-an-MLTT-proof] ()
 
-𝟚-has-decidable-equality : (m n : 𝟚) → (m ≡ n) + (m ≢ n)
+decidable : 𝓤 ̇ → 𝓤 ̇
+decidable A = A + ¬ A
+
+has-decidable-equality : (X : 𝓤 ̇ ) → 𝓤 ̇
+has-decidable-equality X = (x y : X) → decidable (x ≡ y)
+
+𝟚-has-decidable-equality : has-decidable-equality 𝟚
 𝟚-has-decidable-equality ₀ ₀ = inl (refl ₀)
 𝟚-has-decidable-equality ₀ ₁ = inr (≢-sym ₁-is-not-₀)
 𝟚-has-decidable-equality ₁ ₀ = inr ₁-is-not-₀
@@ -363,13 +369,13 @@ pred (succ n) = n
 succ-lc : {x y : ℕ} → succ x ≡ succ y → x ≡ y
 succ-lc = ap pred
 
-ℕ-has-decidable-equality : (x y : ℕ) → (x ≡ y) + (x ≢ y)
+ℕ-has-decidable-equality : has-decidable-equality ℕ
 ℕ-has-decidable-equality 0 0               = inl (refl 0)
 ℕ-has-decidable-equality 0 (succ y)        = inr (≢-sym (positive-not-zero y))
 ℕ-has-decidable-equality (succ x) 0        = inr (positive-not-zero x)
 ℕ-has-decidable-equality (succ x) (succ y) = f (ℕ-has-decidable-equality x y)
  where
-  f : (x ≡ y) + x ≢ y → (succ x ≡ succ y) + (succ x ≢ succ y)
+  f : decidable (x ≡ y) → decidable (succ x ≡ succ y)
   f (inl p) = inl (ap succ p)
   f (inr k) = inr (λ (s : succ x ≡ succ y) → k (succ-lc s))
 
@@ -787,19 +793,24 @@ X has-minimal-hlevel (succ n) = (X is-of-hlevel (succ n)) × ¬(X is-of-hlevel n
 _has-minimal-hlevel-∞ : 𝓤 ̇ → 𝓤 ̇
 X has-minimal-hlevel-∞ = (n : ℕ) → ¬(X is-of-hlevel n)
 
-ℕ-is-set : is-set ℕ
-ℕ-is-set = Id-collapsibles-are-sets ℕ ℕ-Id-collapsible
+hedberg : {X : 𝓤 ̇ } → has-decidable-equality X → is-set X
+hedberg {𝓤} {X} d = Id-collapsibles-are-sets X ic
  where
-  ℕ-Id-collapsible : Id-collapsible ℕ
-  ℕ-Id-collapsible x y = f (ℕ-has-decidable-equality x y) ,
-                         κ (ℕ-has-decidable-equality x y)
+  ic : Id-collapsible X
+  ic x y = f (d x y) , κ (d x y)
    where
-    f : (x ≡ y) + ¬(x ≡ y) → x ≡ y → x ≡ y
+    f : decidable (x ≡ y) → x ≡ y → x ≡ y
     f (inl p) q = p
     f (inr g) q = !𝟘 (x ≡ y) (g q)
     κ : (d : (x ≡ y) + ¬(x ≡ y)) → wconstant (f d)
     κ (inl p) q r = refl p
     κ (inr g) q r = !𝟘 (f (inr g) q ≡ f (inr g) r) (g q)
+
+ℕ-is-set : is-set ℕ
+ℕ-is-set = hedberg ℕ-has-decidable-equality
+
+𝟚-is-set : is-set 𝟚
+𝟚-is-set = hedberg 𝟚-has-decidable-equality
 
 has-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 has-section r = Σ \(s : codomain r → domain r) → r ∘ s ∼ id
@@ -3570,7 +3581,7 @@ module basic-truncation-development
   is-surjection f = (y : codomain f) → ∃ \(x : domain f) → f x ≡ y
 
   corestriction-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                          → is-surjection (corestriction f)
+                           → is-surjection (corestriction f)
   corestriction-surjection f (y , s) = ∥∥-functor g s
    where
     g : (Σ \x → f x ≡ y) → Σ \x → corestriction f x ≡ y , s
@@ -3987,19 +3998,19 @@ is-subsingleton-valued
  reflexive
  symmetric
  transitive
- equivalence-relation :
+ is-equivalence-relation :
 
  {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 
-is-subsingleton-valued _≈_ = ∀ x y → is-subsingleton (x ≈ y)
-reflexive              _≈_ = ∀ x → x ≈ x
-symmetric              _≈_ = ∀ x y → x ≈ y → y ≈ x
-transitive             _≈_ = ∀ x y z → x ≈ y → y ≈ z → x ≈ z
+is-subsingleton-valued  _≈_ = ∀ x y → is-subsingleton (x ≈ y)
+reflexive               _≈_ = ∀ x → x ≈ x
+symmetric               _≈_ = ∀ x y → x ≈ y → y ≈ x
+transitive              _≈_ = ∀ x y z → x ≈ y → y ≈ z → x ≈ z
 
-equivalence-relation   _≈_ = is-subsingleton-valued _≈_
-                           × reflexive _≈_
-                           × symmetric _≈_
-                           × transitive _≈_
+is-equivalence-relation _≈_ = is-subsingleton-valued _≈_
+                            × reflexive _≈_
+                            × symmetric _≈_
+                            × transitive _≈_
 
 module quotient
        {𝓤 𝓥 : Universe}

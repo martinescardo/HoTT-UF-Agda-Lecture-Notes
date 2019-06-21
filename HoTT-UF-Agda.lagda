@@ -383,7 +383,7 @@ to practice univalent mathematics should consult the above references.
      1. [The types of hlevel 1 are the subsingletons](HoTT-UF-Agda.html#hlevel1subsingleton)
      1. [The types of hlevel 2 are the sets](HoTT-UF-Agda.html#hlevel2set)
      1. [The hlevels are upper closed](HoTT-UF-Agda.html#hlevelsupper)
-     1. [ℕ is a set](HoTT-UF-Agda.html#naturalsset)
+     1. [`ℕ` and `𝟚` are sets](HoTT-UF-Agda.html#naturalsset)
      1. [Retracts](HoTT-UF-Agda.html#retracts)
      1. [Voevodsky' notion of type equivalence](HoTT-UF-Agda.html#fibersandequivalences)
      1. [Voevodsky's univalence axiom](HoTT-UF-Agda.html#univalence)
@@ -397,7 +397,7 @@ to practice univalent mathematics should consult the above references.
      1. [Variations of function extensionality and their logical equivalence](HoTT-UF-Agda.html#hfunext)
      1. [Universes are map classifiers](HoTT-UF-Agda.html#typeclassifier)
      1. [The univalence axiom is a (sub)singleton type](HoTT-UF-Agda.html#univalencesubsingleton)
-     1. [`hfunext` and `vvfunext` are subsingletons](HoTT-UF-Agda.html#hfunextsubsingleton)
+     1. [`hfunext` and `vvfunext` are subsingleton types](HoTT-UF-Agda.html#hfunextsubsingleton)
      1. [More consequences of function extensionality](HoTT-UF-Agda.html#morefunextuses)
      1. [Propositional extensionality and the powerset](HoTT-UF-Agda.html#propositionalextensionality)
      1. [Some constructions with types of equivalences](HoTT-UF-Agda.html#equivconstructions)
@@ -1823,7 +1823,13 @@ nowhere else in these notes.
 Perhaps the following is sufficiently self-explanatory given the above:
 
 \begin{code}
-𝟚-has-decidable-equality : (m n : 𝟚) → (m ≡ n) + (m ≢ n)
+decidable : 𝓤 ̇ → 𝓤 ̇
+decidable A = A + ¬ A
+
+has-decidable-equality : (X : 𝓤 ̇ ) → 𝓤 ̇
+has-decidable-equality X = (x y : X) → decidable (x ≡ y)
+
+𝟚-has-decidable-equality : has-decidable-equality 𝟚
 𝟚-has-decidable-equality ₀ ₀ = inl (refl ₀)
 𝟚-has-decidable-equality ₀ ₁ = inr (≢-sym ₁-is-not-₀)
 𝟚-has-decidable-equality ₁ ₀ = inr ₁-is-not-₀
@@ -1930,13 +1936,13 @@ Without assuming the principle of excluded middle, we can prove that
 `ℕ` has decidable equality in the following sense:
 
 \begin{code}
-ℕ-has-decidable-equality : (x y : ℕ) → (x ≡ y) + (x ≢ y)
+ℕ-has-decidable-equality : has-decidable-equality ℕ
 ℕ-has-decidable-equality 0 0               = inl (refl 0)
 ℕ-has-decidable-equality 0 (succ y)        = inr (≢-sym (positive-not-zero y))
 ℕ-has-decidable-equality (succ x) 0        = inr (positive-not-zero x)
 ℕ-has-decidable-equality (succ x) (succ y) = f (ℕ-has-decidable-equality x y)
  where
-  f : (x ≡ y) + x ≢ y → (succ x ≡ succ y) + (succ x ≢ succ y)
+  f : decidable (x ≡ y) → decidable (succ x ≡ succ y)
   f (inl p) = inl (ap succ p)
   f (inr k) = inr (λ (s : succ x ≡ succ y) → k (succ-lc s))
 \end{code}
@@ -2955,30 +2961,36 @@ next section. More ambitiously, after
 type of monoids has minimal hlevel `3`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="naturalsset"></a> `ℕ` is a set
+### <a id="naturalsset"></a> `ℕ` and `𝟚` are sets
 
-Using the decidability of equality we can define a `wconstant`
-function `x ≡ y → x ≡ y` and hence conclude that `ℕ` is a set. This
+If a type has decidability of equality we can define a `wconstant`
+function `x ≡ y → x ≡ y` and hence conclude that it is a set. This
 argument is due to Hedberg.
 
 \begin{code}
-ℕ-is-set : is-set ℕ
-ℕ-is-set = Id-collapsibles-are-sets ℕ ℕ-Id-collapsible
+hedberg : {X : 𝓤 ̇ } → has-decidable-equality X → is-set X
+hedberg {𝓤} {X} d = Id-collapsibles-are-sets X ic
  where
-  ℕ-Id-collapsible : Id-collapsible ℕ
-  ℕ-Id-collapsible x y = f (ℕ-has-decidable-equality x y) ,
-                         κ (ℕ-has-decidable-equality x y)
+  ic : Id-collapsible X
+  ic x y = f (d x y) , κ (d x y)
    where
-    f : (x ≡ y) + ¬(x ≡ y) → x ≡ y → x ≡ y
+    f : decidable (x ≡ y) → x ≡ y → x ≡ y
     f (inl p) q = p
     f (inr g) q = !𝟘 (x ≡ y) (g q)
     κ : (d : (x ≡ y) + ¬(x ≡ y)) → wconstant (f d)
     κ (inl p) q r = refl p
     κ (inr g) q r = !𝟘 (f (inr g) q ≡ f (inr g) r) (g q)
+
+ℕ-is-set : is-set ℕ
+ℕ-is-set = hedberg ℕ-has-decidable-equality
+
+𝟚-is-set : is-set 𝟚
+𝟚-is-set = hedberg 𝟚-has-decidable-equality
 \end{code}
 
-*Exercise.* Hedberg proved this for any type with decidable
-equality. Generalize the above to account for this.
+Notice that excluded middle implies directly that all sets have
+decidable equality, so that it in its presence a type is a set if and
+only if it has decidable equality.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="retracts"></a> Retracts
@@ -5069,7 +5081,7 @@ univalence-gives-global-hfunext ua {𝓤} {𝓥} = univalence-gives-hfunext'
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="hfunextsubsingleton"></a> `hfunext` and `vvfunext` are subsingletons
+### <a id="hfunextsubsingleton"></a> `hfunext` and `vvfunext` are subsingleton types
 
 This is left as an exercise. Like univalence, the proof that these two
 forms of function extensional extensionality require assumptions of
@@ -7712,7 +7724,7 @@ is-subsingleton-valued
  reflexive
  symmetric
  transitive
- equivalence-relation :
+ is-equivalence-relation :
 \end{code}
 
 have the same type
@@ -7725,15 +7737,15 @@ and are defined by
 
 \begin{code}
 
-is-subsingleton-valued _≈_ = ∀ x y → is-subsingleton (x ≈ y)
-reflexive              _≈_ = ∀ x → x ≈ x
-symmetric              _≈_ = ∀ x y → x ≈ y → y ≈ x
-transitive             _≈_ = ∀ x y z → x ≈ y → y ≈ z → x ≈ z
+is-subsingleton-valued  _≈_ = ∀ x y → is-subsingleton (x ≈ y)
+reflexive               _≈_ = ∀ x → x ≈ x
+symmetric               _≈_ = ∀ x y → x ≈ y → y ≈ x
+transitive              _≈_ = ∀ x y z → x ≈ y → y ≈ z → x ≈ z
 
-equivalence-relation   _≈_ = is-subsingleton-valued _≈_
-                           × reflexive _≈_
-                           × symmetric _≈_
-                           × transitive _≈_
+is-equivalence-relation _≈_ = is-subsingleton-valued _≈_
+                            × reflexive _≈_
+                            × symmetric _≈_
+                            × transitive _≈_
 \end{code}
 
 We now work with a submodule with parameters to quotient a given type
