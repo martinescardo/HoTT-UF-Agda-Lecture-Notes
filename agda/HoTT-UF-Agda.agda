@@ -3128,6 +3128,14 @@ record Lift {𝓤 : Universe} (𝓥 : Universe) (X : 𝓤 ̇ ) : 𝓤 ⊔ 𝓥 �
 
 open Lift public
 
+type-of-Lift  :             type-of (Lift  {𝓤} 𝓥)       ≡ (𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇ )
+type-of-lift  : {X : 𝓤 ̇ } → type-of (lift  {𝓤} {𝓥} {X}) ≡ (X → Lift 𝓥 X)
+type-of-lower : {X : 𝓤 ̇ } → type-of (lower {𝓤} {𝓥} {X}) ≡ (Lift 𝓥 X → X)
+
+type-of-Lift  = refl _
+type-of-lift  = refl _
+type-of-lower = refl _
+
 Lift-induction : ∀ {𝓤} 𝓥 (X : 𝓤 ̇ ) (A : Lift 𝓥 X → 𝓦 ̇ )
                → ((x : X) → A (lift x))
                → (l : Lift 𝓥 X) → A l
@@ -3145,11 +3153,11 @@ lift-lower = refl
 
 Lift-≃ : (X : 𝓤 ̇ ) → Lift 𝓥 X ≃ X
 Lift-≃ {𝓤} {𝓥} X = invertibility-gives-≃ lower
-                    (lift , lift-lower , lower-lift {𝓤} {𝓥})
+                     (lift , lift-lower , lower-lift {𝓤} {𝓥})
 
 ≃-Lift : (X : 𝓤 ̇ ) → X ≃ Lift 𝓥 X
 ≃-Lift {𝓤} {𝓥} X = invertibility-gives-≃ lift
-                    (lower , lower-lift {𝓤} {𝓥} , lift-lower)
+                     (lower , lower-lift {𝓤} {𝓥} , lift-lower)
 
 lower-dfunext : ∀ 𝓦 𝓣 𝓤 𝓥 → dfunext (𝓤 ⊔ 𝓦) (𝓥 ⊔ 𝓣) → dfunext 𝓤 𝓥
 lower-dfunext 𝓦 𝓣 𝓤 𝓥 fe {X} {A} {f} {g} h = p
@@ -4002,7 +4010,7 @@ module basic-truncation-development
     δ : (ω : Ω 𝓤) → decidable (⊤ ≡ ω)
     δ = choice-gives-decidable-equality sac (Ω 𝓤) (Ω-is-a-set fe pe) ⊤
 
-    em : (P : 𝓤 ̇) → is-subsingleton P → P + ¬ P
+    em : (P : 𝓤 ̇ ) → is-subsingleton P → P + ¬ P
     em P i = γ (δ (P , i))
      where
       γ : decidable (⊤ ≡ (P , i)) → P + ¬ P
@@ -4028,33 +4036,33 @@ module basic-truncation-development
                                              → 𝟘
   global-choice-inconsistent-with-univalence g ua = c
    where
-    b : (X : 𝓤₁ ̇) → is-set X
+    b : (X : 𝓤₁ ̇ ) → is-set X
     b X = hedberg (λ x y → g (x ≡ y))
 
     open example-of-a-nonset ua
 
     c : 𝟘
-    c = 𝓤₀-is-not-a-set (b (𝓤₀ ̇))
+    c = 𝓤₀-is-not-a-set (b (𝓤₀ ̇ ))
 
   global-choice'-inconsistent-with-univalence : global-choice' 𝓤₁
                                               → is-univalent 𝓤₀
                                               → 𝟘
   global-choice'-inconsistent-with-univalence g ua = c
    where
-    a : (X : 𝓤₁ ̇) → has-decidable-equality X
+    a : (X : 𝓤₁ ̇ ) → has-decidable-equality X
     a X x₀ x₁ = decidable-equality-criterion α (λ x → g (Σ \(n : 𝟚) → α n ≡ x))
      where
       α : 𝟚 → X
       α ₀ = x₀
       α ₁ = x₁
 
-    b : (X : 𝓤₁ ̇) → is-set X
+    b : (X : 𝓤₁ ̇ ) → is-set X
     b X = hedberg (a X)
 
     open example-of-a-nonset ua
 
     c : 𝟘
-    c = 𝓤₀-is-not-a-set (b (𝓤₀ ̇))
+    c = 𝓤₀-is-not-a-set (b (𝓤₀ ̇ ))
 
 _has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
 X has-size 𝓥 = Σ \(Y : 𝓥 ̇ ) → X ≃ Y

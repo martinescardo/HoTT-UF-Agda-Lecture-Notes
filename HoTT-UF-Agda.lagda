@@ -6216,7 +6216,23 @@ record Lift {𝓤 : Universe} (𝓥 : Universe) (X : 𝓤 ̇ ) : 𝓤 ⊔ 𝓥 �
   lower : X
 
 open Lift public
+\end{code}
 
+The functions `Lift`, `lift` and `lower` have the following types:
+
+\begin{code}
+type-of-Lift  :             type-of (Lift  {𝓤} 𝓥)       ≡ (𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇ )
+type-of-lift  : {X : 𝓤 ̇ } → type-of (lift  {𝓤} {𝓥} {X}) ≡ (X → Lift 𝓥 X)
+type-of-lower : {X : 𝓤 ̇ } → type-of (lower {𝓤} {𝓥} {X}) ≡ (Lift 𝓥 X → X)
+
+type-of-Lift  = refl _
+type-of-lift  = refl _
+type-of-lower = refl _
+\end{code}
+
+The induction and recursion principles are as follows:
+
+\begin{code}
 Lift-induction : ∀ {𝓤} 𝓥 (X : 𝓤 ̇ ) (A : Lift 𝓥 X → 𝓦 ̇ )
                → ((x : X) → A (lift x))
                → (l : Lift 𝓥 X) → A l
@@ -6229,7 +6245,7 @@ Lift-recursion 𝓥 {X} {B} = Lift-induction 𝓥 X (λ _ → B)
 
 This gives an equivalence `lift : X → Lift 𝓥 X` and hence an embedding
 `Lift 𝓥 : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇`. The following two constructions can be
-performed with induction, but actually hold on the nose by the [η rule
+performed with induction, but actually hold on the nose by the so-called [`η` rule
 for
 records](https://agda.readthedocs.io/en/latest/language/record-types.html#eta-expansion):
 
@@ -6242,11 +6258,11 @@ lift-lower = refl
 
 Lift-≃ : (X : 𝓤 ̇ ) → Lift 𝓥 X ≃ X
 Lift-≃ {𝓤} {𝓥} X = invertibility-gives-≃ lower
-                    (lift , lift-lower , lower-lift {𝓤} {𝓥})
+                     (lift , lift-lower , lower-lift {𝓤} {𝓥})
 
 ≃-Lift : (X : 𝓤 ̇ ) → X ≃ Lift 𝓥 X
 ≃-Lift {𝓤} {𝓥} X = invertibility-gives-≃ lift
-                    (lower , lower-lift {𝓤} {𝓥} , lift-lower)
+                     (lower , lower-lift {𝓤} {𝓥} , lift-lower)
 \end{code}
 
 With universe lifting, we can generalize equivalence induction as
@@ -6406,7 +6422,7 @@ H↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
 H↑-≃ ua X A = G↑-≃ ua X (Σ-induction A)
 \end{code}
 
-*Exercise.* Formulate and prove the equations for `G↑-≃` and `H↑-≃`
+*Exercise.* [Formulate and prove](HoTT-UF-Agda.html#someexercisessol) the equations for `G↑-≃` and `H↑-≃`
  corresponding to those for `G-≃` and `H-≃`.
 
 The difference with `H-≃` is that here, to get the conclusion, we need
@@ -7584,7 +7600,7 @@ Applying the above to the object of truth-values, we get excluded middle:
     δ : (ω : Ω 𝓤) → decidable (⊤ ≡ ω)
     δ = choice-gives-decidable-equality sac (Ω 𝓤) (Ω-is-a-set fe pe) ⊤
 
-    em : (P : 𝓤 ̇) → is-subsingleton P → P + ¬ P
+    em : (P : 𝓤 ̇ ) → is-subsingleton P → P + ¬ P
     em P i = γ (δ (P , i))
      where
       γ : decidable (⊤ ≡ (P , i)) → P + ¬ P
@@ -7630,33 +7646,33 @@ can pick a point of every inhabited type:
                                              → 𝟘
   global-choice-inconsistent-with-univalence g ua = c
    where
-    b : (X : 𝓤₁ ̇) → is-set X
+    b : (X : 𝓤₁ ̇ ) → is-set X
     b X = hedberg (λ x y → g (x ≡ y))
 
     open example-of-a-nonset ua
 
     c : 𝟘
-    c = 𝓤₀-is-not-a-set (b (𝓤₀ ̇))
+    c = 𝓤₀-is-not-a-set (b (𝓤₀ ̇ ))
 
   global-choice'-inconsistent-with-univalence : global-choice' 𝓤₁
                                               → is-univalent 𝓤₀
                                               → 𝟘
   global-choice'-inconsistent-with-univalence g ua = c
    where
-    a : (X : 𝓤₁ ̇) → has-decidable-equality X
+    a : (X : 𝓤₁ ̇ ) → has-decidable-equality X
     a X x₀ x₁ = decidable-equality-criterion α (λ x → g (Σ \(n : 𝟚) → α n ≡ x))
      where
       α : 𝟚 → X
       α ₀ = x₀
       α ₁ = x₁
 
-    b : (X : 𝓤₁ ̇) → is-set X
+    b : (X : 𝓤₁ ̇ ) → is-set X
     b X = hedberg (a X)
 
     open example-of-a-nonset ua
 
     c : 𝟘
-    c = 𝓤₀-is-not-a-set (b (𝓤₀ ̇))
+    c = 𝓤₀-is-not-a-set (b (𝓤₀ ̇ ))
 \end{code}
 
 See also Theorem 3.2.2 and Corollary 3.2.7 of the HoTT Book for a
