@@ -7388,6 +7388,60 @@ Applying the above to the object of truth-values, we get excluded middle:
 For more information with Agda code, see
 [this](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Choice.html).
 
+We take the opportunity to briefly address *global choice*.
+
+\begin{code}
+  global-choice : (𝓤 : Universe) → 𝓤 ⁺ ̇
+  global-choice 𝓤 = (X : 𝓤 ̇ ) → X + is-empty X
+\end{code}
+
+The above says that, for any given `X`, we can either choose a point
+of `X` or tell that `X` is empty, whereas the following says that we
+can pick a point of every inhabited type:
+
+\begin{code}
+  global-choice' : (𝓤 : Universe) → 𝓤 ⁺ ̇
+  global-choice' 𝓤 = (X : 𝓤 ̇ ) → ∥ X ∥ → X
+\end{code}
+
+*Exercise* [Show](https://lmcs.episciences.org/3217) that these two
+ forms of global choice are logically equivalent, and in turn
+ logically equivalent to `(X : 𝓤 ̇ ) → ¬(is-empty X) → X`, so that we
+ can choose a point of every nonempty type.
+
+\begin{code}
+  global-choice-inconsistent-with-univalence : global-choice 𝓤₁
+                                             → is-univalent 𝓤₀
+                                             → 𝟘
+  global-choice-inconsistent-with-univalence g ua = c
+   where
+    b : (X : 𝓤₁ ̇) → is-set X
+    b X = hedberg (λ x y → g (x ≡ y))
+    open example-of-a-nonset ua
+    c : 𝟘
+    c = 𝓤₀-is-not-a-set (b (𝓤₀ ̇))
+
+  global-choice'-inconsistent-with-univalence : global-choice' 𝓤₁
+                                              → is-univalent 𝓤₀
+                                              → 𝟘
+  global-choice'-inconsistent-with-univalence g ua = c
+   where
+    a : (X : 𝓤₁ ̇) → has-decidable-equality X
+    a X x₀ x₁ = decidable-equality-criterion α (λ x → g (Σ \(n : 𝟚) → α n ≡ x))
+     where
+      α : 𝟚 → X
+      α ₀ = x₀
+      α ₁ = x₁
+    b : (X : 𝓤₁ ̇) → is-set X
+    b X = hedberg (a X)
+    open example-of-a-nonset ua
+    c : 𝟘
+    c = 𝓤₀-is-not-a-set (b (𝓤₀ ̇))
+\end{code}
+
+See also Theorem 3.2.2 and Corollary 3.2.7 of the HoTT Book for a
+different argument that works with a single universe.
+
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="resizing"></a> Propositional resizing, truncation and the powerset
 
