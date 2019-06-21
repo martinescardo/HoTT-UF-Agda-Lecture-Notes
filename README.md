@@ -19,3 +19,5 @@ Agda [2.6.0](https://agda.readthedocs.io/en/v2.6.0/getting-started/installation.
 * It is possible to run `./slowloop`, `./fastloop` and `jekyll serve` in parallel, and we do this for editing these notes.
 
 * The loop scripts use `inotifywait` to detect `lagda` file changes and trigger the appropriate conversion actions.
+
+* The `install` action of the `makefile` allows to run an additional action for particular requirements of users or environments, in a file `additionally`, which is not distributed and is ignored by `git`. If this file doesn't exist, an empty executable file is created.

@@ -3016,9 +3016,9 @@ module _ {𝓤 𝓥 : Universe}
      e Y = (X ≃ Y)                 ≃⟨ ≃-Sym fe₀ fe₁ fe ⟩
            (Y ≃ X)                 ≃⟨ Eq-Eq-cong' fe₁ fe fe₂ fe₁ fe fe fe fe₃ fe
                                        fe fe fe (≃-Lift Y) (≃-Lift X) ⟩
-           (Lift 𝓤 Y ≃ Lift 𝓥 X)  ≃⟨ ≃-sym (is-univalent-≃ ua'
+           (Lift 𝓤 Y ≃ Lift 𝓥 X)   ≃⟨ ≃-sym (is-univalent-≃ ua'
                                              (Lift 𝓤 Y) (Lift 𝓥 X)) ⟩
-           (Lift 𝓤 Y ≡ Lift 𝓥 X)  ■
+           (Lift 𝓤 Y ≡ Lift 𝓥 X)   ■
      d : (Σ \(Y : 𝓥 ̇ ) → X ≃ Y) ≃ (Σ \(Y : 𝓥 ̇ ) → Lift 𝓤 Y ≡ Lift 𝓥 X)
      d = Σ-cong e
      i : is-subsingleton (Σ \(Y : 𝓥 ̇ ) → Lift 𝓤 Y ≡ Lift 𝓥 X)

@@ -1131,7 +1131,7 @@ algorithms in the implementation of Agda. In such cases we can write
 
 because `Y = λ (x : X) → Y x` by a so-called η-rule. However, we will
 often use the synonym `\` of `λ` for `Σ`, as if considering it as part
-of the `Σ` syntax.
+of the `Σ` syntax:
 
    > `Σ \(x : X) → Y x`.
 
@@ -6097,10 +6097,7 @@ Lift-is-embedding {𝓤} {𝓥} ua ua' = universe-embedding-criterion {𝓤} {�
 
 Thirdly, we have a generalization of `univalence→`
 from a single universe to a pair of universes. We work with two
-symmetrical versions, where the second is derived from the first. Here
-an anonymous module is used to provide the same hypotheses to both
-versions.
-
+symmetrical versions, where the second is derived from the first.
 We use an [anonymous
 module](https://agda.readthedocs.io/en/latest/language/module-system.html#anonymous-modules)
 to assume univalence in the following couple of construction:
@@ -6131,9 +6128,9 @@ module _ {𝓤 𝓥 : Universe}
      e Y = (X ≃ Y)                 ≃⟨ ≃-Sym fe₀ fe₁ fe ⟩
            (Y ≃ X)                 ≃⟨ Eq-Eq-cong' fe₁ fe fe₂ fe₁ fe fe fe fe₃ fe
                                        fe fe fe (≃-Lift Y) (≃-Lift X) ⟩
-           (Lift 𝓤 Y ≃ Lift 𝓥 X)  ≃⟨ ≃-sym (is-univalent-≃ ua'
+           (Lift 𝓤 Y ≃ Lift 𝓥 X)   ≃⟨ ≃-sym (is-univalent-≃ ua'
                                              (Lift 𝓤 Y) (Lift 𝓥 X)) ⟩
-           (Lift 𝓤 Y ≡ Lift 𝓥 X)  ■
+           (Lift 𝓤 Y ≡ Lift 𝓥 X)   ■
      d : (Σ \(Y : 𝓥 ̇ ) → X ≃ Y) ≃ (Σ \(Y : 𝓥 ̇ ) → Lift 𝓤 Y ≡ Lift 𝓥 X)
      d = Σ-cong e
      i : is-subsingleton (Σ \(Y : 𝓥 ̇ ) → Lift 𝓤 Y ≡ Lift 𝓥 X)

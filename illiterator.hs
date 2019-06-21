@@ -28,13 +28,11 @@ illiterator (xs:xss)
   | take (length begin) (dropWhile isSpace xs) == begin  = copy xss
   | otherwise                                            = illiterator xss
 
-
 copy [] = []
 copy (xs:xss)
   | take (length end) (dropWhile isSpace xs) == end  = "\n" ++ illiterator xss
   | isComment xs                                     = copy xss
   | otherwise                                        = xs ++ "\n" ++ copy xss
-
 
 reduceBlankLines :: String -> String
 reduceBlankLines "" = ""
@@ -43,7 +41,6 @@ reduceBlankLines (x:xs) = x : reduceBlankLines xs
 
 pipe :: String -> String
 pipe stdin = reduceBlankLines(illiterator(lines stdin))
-
 
 main :: IO()
 main = interact pipe
