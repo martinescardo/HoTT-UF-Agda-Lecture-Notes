@@ -3945,6 +3945,7 @@ module basic-truncation-development
      where
       u : Σ \(n : 𝟚) → α n ≡ x
       u = c x t
+
       f : (Σ \(n : 𝟚) → α n ≡ x) → Σ \(n : 𝟚) → r n ≡ (x , t)
       f (n , p) = n , to-Σ-≡ (p , ∥∥-is-a-subsingleton _ t)
 
