@@ -1937,7 +1937,7 @@ succ-lc = ap pred
 With this we have proved all the Peano axioms.
 
 Without assuming the principle of excluded middle, we can prove that
-`ℕ` has decidable equality in the following sense:
+`ℕ` has decidable equality:
 
 \begin{code}
 ℕ-has-decidable-equality : has-decidable-equality ℕ
