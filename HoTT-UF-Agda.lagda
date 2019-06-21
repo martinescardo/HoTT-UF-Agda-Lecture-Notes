@@ -5295,6 +5295,38 @@ being-joyal-equiv-is-a-subsingleton fe₀ fe₁ fe₂ f =
    at-most-one-retraction fe₀ fe₂ f)
 \end{code}
 
+Another consequence of function extensionality is that emptiness is a
+subsingleton:
+
+\begin{code}
+emptiness-is-a-subsingleton : dfunext 𝓤 𝓤₀ → (X : 𝓤 ̇ ) → is-subsingleton (is-empty X)
+emptiness-is-a-subsingleton fe X f g = fe (λ x → !𝟘 (f x ≡ g x) (f x))
+\end{code}
+
+If `P` is a subsingleton, then so is `P + ¬ P`. More
+generally:
+
+\begin{code}
++-is-subsingleton : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
+                  → is-subsingleton P
+                  → is-subsingleton Q
+                  → (P → Q → 𝟘) → is-subsingleton(P + Q)
++-is-subsingleton {𝓤} {𝓥} {P} {Q} i j f = γ
+ where
+  γ : (x y : P + Q) → x ≡ y
+  γ (inl p) (inl p') = ap inl (i p p')
+  γ (inl p) (inr q)  = !𝟘 (inl p ≡ inr q) (f p q)
+  γ (inr q) (inl p)  = !𝟘 (inr q ≡ inl p) (f p q)
+  γ (inr q) (inr q') = ap inr (j q q')
+
++-is-subsingleton' : dfunext 𝓤 𝓤₀
+                   → {P : 𝓤 ̇ } → is-subsingleton P → is-subsingleton(P + ¬ P)
++-is-subsingleton' fe {P} i = +-is-subsingleton i
+                               (emptiness-is-a-subsingleton fe P)
+                               (λ p n → n p)
+\end{code}
+
+
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="propositionalextensionality"></a> Propositional extensionality and the powerset
 
@@ -7253,10 +7285,108 @@ following:
       φ f x = f x (g x)
 \end{code}
 
+We apply this third formulation to show that choice implies excluded
+middle. We begin with the following lemma.
+
+\begin{code}
+  decidable-equality-criterion : {X : 𝓤 ̇ } (α : 𝟚 → X)
+                               → ((x : X) → (∃ \(i : 𝟚) → α i ≡ x)
+                                          → (Σ \(i : 𝟚) → α i ≡ x))
+                               → decidable(α ₀ ≡ α ₁)
+  decidable-equality-criterion α c = γ d
+   where
+    r : 𝟚 → image α
+    r = corestriction α
+
+    σ : (y : image α) → Σ \(m : 𝟚) → r m ≡ y
+    σ (x , t) = f u
+     where
+      u : Σ \(n : 𝟚) → α n ≡ x
+      u = c x t
+      f : (Σ \(m : 𝟚) → α m ≡ x) → Σ \(m : 𝟚) → r m ≡ (x , t)
+      f (m , p) = m , to-Σ-≡ (p , ∥∥-is-a-subsingleton _ t)
+
+    s : image α → 𝟚
+    s y = pr₁ (σ y)
+
+    η : (y : image α) → r (s y) ≡ y
+    η y = pr₂ (σ y)
+
+    l : left-cancellable s
+    l = sections-are-lc s (r , η)
+
+    αr : {m n : 𝟚} → α m ≡ α n → r m ≡ r n
+    αr p = to-Σ-≡ (p , ∥∥-is-a-subsingleton _ _)
+
+    rα : {m n : 𝟚} → r m ≡ r n → α m ≡ α n
+    rα = ap pr₁
+
+    αs : {m n : 𝟚} → α m ≡ α n → s (r m) ≡ s (r n)
+    αs p = ap s (αr p)
+
+    sα : {m n : 𝟚} → s (r m) ≡ s (r n) → α m ≡ α n
+    sα p = rα (l p)
+
+    γ : decidable (s (r ₀) ≡ s (r ₁)) → decidable(α ₀ ≡ α ₁)
+    γ (inl p) = inl (sα p)
+    γ (inr u) = inr (contrapositive αs u)
+
+    d : decidable (s (r ₀) ≡ s (r ₁))
+    d = 𝟚-has-decidable-equality (s (r ₀)) (s (r ₁))
+
+  choice-gives-decidable-equality : SChoice 𝓤
+                                  → (X : 𝓤 ̇ ) → is-set X → has-decidable-equality X
+  choice-gives-decidable-equality {𝓤} sac X i x₀ x₁ = γ
+   where
+    α : 𝟚 → X
+    α ₀ = x₀
+    α ₁ = x₁
+
+    A : X → 𝓤 ̇
+    A x = Σ \(n : 𝟚) → α n ≡ x
+
+    l : is-subsingleton (decidable (x₀ ≡ x₁))
+    l = +-is-subsingleton' fe (i (α ₀) (α ₁))
+
+    δ : ∥((x : X) → ∥ A x ∥ → A x)∥ → decidable(x₀ ≡ x₁)
+    δ = ∥∥-recursion l (decidable-equality-criterion α)
+
+    j : (x : X) → is-set (A x)
+    j x = subsets-of-sets-are-sets 𝟚 (λ n → α n ≡ x) 𝟚-is-set (λ n → i (α n) x)
+
+    h : ∥((x : X) → ∥ A x ∥ → A x)∥
+    h = sac X A i j
+
+    γ : decidable (x₀ ≡ x₁)
+    γ = δ h
+\end{code}
+
+Applying the above to the object of truth-values, we get excluded middle:
+
+\begin{code}
+  choice-gives-EM : propext 𝓤 → SChoice (𝓤 ⁺) → EM 𝓤
+  choice-gives-EM {𝓤} pe sac = em
+   where
+    ⊤ : Ω 𝓤
+    ⊤ = (Lift 𝓤 𝟙 , equiv-to-subsingleton (Lift-≃ 𝟙) 𝟙-is-subsingleton)
+    δ : (ω : Ω 𝓤) → decidable (⊤ ≡ ω)
+    δ = choice-gives-decidable-equality sac (Ω 𝓤) (Ω-is-a-set fe pe) ⊤
+    em : (P : 𝓤 ̇) → is-subsingleton P → P + ¬ P
+    em P i = γ (δ (P , i))
+     where
+      γ : decidable (⊤ ≡ (P , i)) → P + ¬ P
+      γ (inl r) = inl (Id-to-fun s (lift ⋆))
+       where
+        s : Lift 𝓤 𝟙 ≡ P
+        s = ap pr₁ r
+      γ (inr n) = inr (contrapositive f n)
+       where
+        f : P → ⊤ ≡ P , i
+        f p = Ω-ext fe pe (λ (_ : Lift 𝓤 𝟙) → p) (λ (_ : P) → lift ⋆)
+\end{code}
+
 For more information with Agda code, see
-[this](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Choice.html), which
-in particular has a proof that univalent choice implies univalent
-excluded middle.
+[this](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Choice.html).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="resizing"></a> Propositional resizing, truncation and the powerset
@@ -8205,16 +8335,13 @@ But we do have that
 lifttwo : is-univalent 𝓤₀ → is-univalent 𝓤₁ → (𝟚 ≡ 𝟚) ≡ Lift 𝓤₁ 𝟚
 \end{code}
 
+*Exercise*. Having decidable equality is a subsingleton type.
+
 *Exercise*. We now discuss alternative formulations of the principle of excluded middle.
 
 \begin{code}
 DNE : ∀ 𝓤 → 𝓤 ⁺ ̇
 DNE 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → ¬¬ P → P
-
-neg-is-subsingleton : dfunext 𝓤 𝓤₀ → (X : 𝓤 ̇ ) → is-subsingleton (¬ X)
-
-emsanity : dfunext 𝓤 𝓤₀ → (P : 𝓤 ̇ )
-         → is-subsingleton P → is-subsingleton (P + ¬ P)
 
 ne : (X : 𝓤 ̇ ) → ¬¬(X + ¬ X)
 
@@ -8332,19 +8459,19 @@ lifttwo = sol
         𝟚         ≃⟨ ≃-sym (Lift-≃ 𝟚) ⟩
         Lift 𝓤₁ 𝟚 ■
 
-neg-is-subsingleton = sol
+hde-is-a-subsingleton : dfunext 𝓤 𝓤₀
+                      → dfunext 𝓤 𝓤
+                      → (X : 𝓤 ̇ )
+                      → is-subsingleton (has-decidable-equality X)
+hde-is-a-subsingleton fe₀ fe X h h' = c h h'
  where
-  sol : dfunext 𝓤 𝓤₀ → (X : 𝓤 ̇ ) → is-subsingleton (¬ X)
-  sol fe X f g = fe (λ x → !𝟘 (f x ≡ g x) (f x))
-
-emsanity = sol
- where
-  sol : dfunext 𝓤 𝓤₀ → (P : 𝓤 ̇ )
-      → is-subsingleton P → is-subsingleton (P + ¬ P)
-  sol fe P i (inl p) (inl q) = ap inl (i p q)
-  sol fe P i (inl p) (inr n) = !𝟘 (inl p ≡ inr n) (n p)
-  sol fe P i (inr m) (inl q) = !𝟘 (inr m ≡ inl q) (m q)
-  sol fe P i (inr m) (inr n) = ap inr (neg-is-subsingleton fe P m n)
+  a : (x y : X) → is-subsingleton (decidable (x ≡ y))
+  a x y = +-is-subsingleton' fe₀ b
+   where
+    b : is-subsingleton (x ≡ y)
+    b = hedberg h x y
+  c : is-subsingleton (has-decidable-equality X)
+  c = Π-is-subsingleton fe (λ x → Π-is-subsingleton fe (a x))
 
 ne = sol
  where
@@ -8354,7 +8481,7 @@ ne = sol
 DNE-gives-EM = sol
  where
   sol : dfunext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
-  sol fe dne P i = dne (P + ¬ P) (emsanity fe P i) (ne P)
+  sol fe dne P i = dne (P + ¬ P) (+-is-subsingleton' fe i) (ne P)
 
 EM-gives-DNE = sol
  where
