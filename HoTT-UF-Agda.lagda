@@ -271,7 +271,7 @@ A common compromise is to refer to the subject as [HoTT/UF](https://cas.oslo.no/
    - [HoTT book](https://homotopytypetheory.org/book/).
    - `ncatlab` [references](https://ncatlab.org/nlab/show/homotopy+type+theory#References).
 
-It particular, it is recommended to read the concluding notes for each
+In particular, it is recommended to read the concluding notes for each
 chapter in the HoTT book for discussion of original sources. Moreover,
 the whole HoTT book is a recommended complementary reading for this
 course.
@@ -2277,7 +2277,7 @@ magma-Id-to-iso : {M N : Magma 𝓤} → M ≡ N → M ≅ₘ N
 magma-Id-to-iso p = (⌜ p ⌝ , ⌜⌝-is-iso p )
 \end{code}
 
-If we omit the set-hood condition in the definition of the type of
+If we omit the sethood condition in the definition of the type of
 magmas, we get the type of what we could call `∞`-magmas (then the
 type of magmas could be called `0-Magma`).
 
@@ -2331,7 +2331,7 @@ We could drop the `is-set X` condition, but then we wouldn't get
 `∞`-monoids" or "incoherent `∞`-monoids". The reason is that in
 monoids (with sets as carriers) the neutrality and associativity
 equations can hold in at most one way, by definition of set. But if we
-drop the set-hood requirement, then the equations can hold in multiple
+drop the sethood requirement, then the equations can hold in multiple
 ways. And then one is forced to consider equations between the
 identifications (all the way up in the ∞-case), which is
 what "[coherence](https://ncatlab.org/nlab/show/coherence+law) data"
@@ -2434,7 +2434,7 @@ Here are some more constructions with identifications:
 
 The application operation on identifications is functorial, in the
 sense that is preserves the neutral element and commutes with
-composition.:
+composition:
 
 \begin{code}
 ap-refl : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (x : X)
@@ -2473,7 +2473,7 @@ Transport is also functorial with respect to identification
 composition and function composition. By construction, it maps the
 neutral element to the identity function. The apparent contravariance
 takes place because we have defined function composition in the usual
-order, but identification composition in diagramatic order (as is
+order, but identification composition in the diagramatic order (as is
 customary in each case).
 
 \begin{code}
@@ -2538,7 +2538,7 @@ With univalence, we will have that `Color ≡ 𝟚` where `𝟚` is the
 that identifies `Black` with `₀` and `White` with `₁`, and another one
 that identifies `Black` with `₁` and `White` with `₀`. There is no
 preferred coding of binary colors as bits.  And, precisely because of
-that, even if univalence does give inhabitants of the type `Colour ≡
+that, even if univalence does give inhabitants of the type `Color ≡
 𝟚`, it doesn't make sense to ask whether `Black ≡ ₀` holds without
 specifying one of the possible inhabitants `p₀` and `p₁`.
 
@@ -2618,6 +2618,65 @@ apd : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : (x : X) → A x) {x y : X}
       (p : x ≡ y) → transport A p (f x) ≡ f y
 apd f (refl x) = refl (f x)
 \end{code}
+
+*Discussion.* We take the opportunity to comment on the slogan
+"isomorphic types are equal" used in some popularizations of univalent
+mathematics, which is technically inaccurate and pedagogically
+misleading.
+
+  * It is inaccurate because the notion considered in univalent
+    mathematics is not *isomorphism* but instead *equivalence*.
+
+  * It is also inaccurate because the notion considered in univalent
+    mathematics is not *equality*, traditionally conceived as
+    truth-valued, but instead *Martin-Löf's identity type*, which is
+    type-valued and in particular may assume multiple values.
+
+  * It is misleading because, with the above reparations, so that we
+    understand isomorphism as equivalence and equality as the identity
+    type, it still gives the incorrect impression that isomorphism
+    would behave like equality.
+
+  * It is rather the other way round. It is equality, redefined to
+    mean Martin-Löf's identity type, that behaves like isomorphism.
+
+    In order to make comparisons between isomorphic objects, we have
+    to transport along a specific isomosphism, and, likewise, to make
+    comparisons between identified types, we have to transport along a
+    specific identification, as in the above example with colors.
+
+  * The conclusion of this discussion is that the univalence axiom
+    gives a possible explanation of the identity type. It does not
+    redefine isomorphism or equivalence to mean equality. It rather
+    explains that Martin-Löf's identity type of a type universe can be
+    understood as the type of equivalences. It gives a precise meaning
+    (equivalence) to a vague notion (identity type).
+
+  * There is one new thing, however, regarding
+    isomorphisms/equivalences, that gets lost in translation, namely
+    that the mathematics becomes invariant under equivalence. This is
+    because properties and constructions are invariant under
+    Martin-Löf's identity, by design, and univalence identifies type
+    identity with type equivalence.
+
+  * So, in summary, this is what really happens:
+
+      - Equality, understood as Martin-Löf's identity type, behaves
+        like the notion of isomorphism, with all the bureaucracy
+        involved in reasoning with isomorphisms, in particular the
+        need to explicitly transport along designated identifications.
+
+      - Isomorphism, understood as equivalence, behaves a little bit
+        like equality, in the sense that the mathematics becomes
+        invariant under equivalence. Whatever we can say about a type,
+        holds automatically for any other equivalent type, by applying
+        a transport along the identification canonically induced by an
+        equivalence - with univalence, the type of equivalences obeys
+        the `J`-induction principle. This is what is new and
+        interesting and useful and intriguing,
+
+Hopefully the technical development that follows will clarify the
+above discussion in practice.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="sigmaequality"></a> Equality in Σ types
