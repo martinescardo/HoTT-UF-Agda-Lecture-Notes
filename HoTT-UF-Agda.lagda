@@ -6980,6 +6980,9 @@ module basic-truncation-development
 
   open subsingleton-truncations-exist pt public
 
+  hfe : global-hfunext
+  hfe = dfunext-gives-hfunext fe
+
   ∥∥-induction : {X : 𝓤 ̇ } {P : ∥ X ∥ → 𝓥 ̇ }
               → ((s : ∥ X ∥) → is-subsingleton (P s))
               → ((x : X) → P ∣ x ∣)
@@ -7205,6 +7208,49 @@ extensionality):
     h g = (λ x → pr₁ (g x)) , (λ x → pr₂ (g x))
     γ : ∃ \(f : Π A) → (x : X) → R x (f x)
     γ = ∥∥-functor h a
+\end{code}
+
+A third formulation of choice is the following.
+
+\begin{code}
+  SAC : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+      → is-set X → ((x : X) → is-set (A x)) → 𝓤 ⊔ 𝓥 ̇
+  SAC X A i j = ∥((x : X) → ∥ A x ∥ → A x)∥
+
+  SChoice : ∀ 𝓤 → 𝓤 ⁺ ̇
+  SChoice 𝓤 = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ )
+              (i : is-set X) (j : (x : X) → is-set (A x))
+            → SAC X A i j
+\end{code}
+
+Notice that we use the hypothesis twice to get the conclusion in the
+following:
+
+\begin{code}
+  IChoice-gives-SChoice : IChoice 𝓤 → SChoice 𝓤
+  IChoice-gives-SChoice {𝓤} iac X A i j = γ
+   where
+    B : (x : X) → ∥ A x ∥ → 𝓤 ̇
+    B x s = A x
+    k : (x : X) (s : ∥ A x ∥) → is-set (B x s)
+    k x s = j x
+    l : (x : X) → is-set ∥ A x ∥
+    l x = subsingletons-are-sets ∥ A x ∥ ∥∥-is-a-subsingleton
+    m : (x : X) →  is-set (∥ A x ∥ → A x)
+    m x = Π-is-set hfe (λ s → j x)
+    φ : (x : X) → ∥ (∥ A x ∥ → A x) ∥
+    φ x = iac ∥ A x ∥ (B x) (l x) (k x) (𝑖𝑑 ∥ A x ∥)
+    γ : ∥((x : X) → ∥ A x ∥ → A x)∥
+    γ = iac X (λ x → ∥ A x ∥ → A x) i m φ
+
+  SChoice-gives-IChoice : SChoice 𝓤 → IChoice 𝓤
+  SChoice-gives-IChoice sac X A i j = γ
+   where
+    γ : ((x : X) → ∥ A x ∥) → ∥ Π A ∥
+    γ g = ∥∥-functor φ (sac X A i j)
+     where
+      φ : ((x : X) → ∥ A x ∥ → A x) → Π A
+      φ f x = f x (g x)
 \end{code}
 
 For more information with Agda code, see
