@@ -6796,9 +6796,7 @@ is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
 
 This says that if we have a function from `X` to a subsingleton `P`, then
 `P` must have a point. So this fails when `X=𝟘`. Considering `P=𝟘`, we conclude
-that `¬¬ X` if `X` is inhabited, which says that `X` is non-empty. However,
-in the absence of excluded middle, [inhabitation is stronger than
-non-emptiness](https://lmcs.episciences.org/3217).
+that `¬¬ X` if `X` is inhabited, which says that `X` is non-empty.
 
 For simplicity in the formulation of the theorems, we assume global
 function extensionality.
@@ -6849,13 +6847,20 @@ inhabited-computation fe i f x = i (pointed-is-inhabited x)
                                    (f x)
 \end{code}
 
-Although we [don't necessarily have](HoTT-UF-Agda.html#moreexercises) that
-`¬¬ P → P`, we do have that `is-inhabited P → P` if `P` is a subsingleton:
+The definition of inhabitation looks superficially like double negation.
+However, although we [don't necessarily have](HoTT-UF-Agda.html#moreexercises) that
+`¬¬ P → P`, we do have that `is-inhabited P → P` if `P` is a subsingleton.
 
 \begin{code}
 inhabited-gives-pointed-for-subsingletons : (P : 𝓤 ̇ )
                                           → is-subsingleton P → is-inhabited P → P
 inhabited-gives-pointed-for-subsingletons P s = inhabited-recursion P P s (𝑖𝑑 P)
+\end{code}
+
+*Exercise*. [Show](https://lmcs.episciences.org/3217) that
+ `is-inhabited X ⇔ ¬¬X` if and only if excluded middle holds.
+
+\begin{code}
 
 inhabited-functorial : global-dfunext → (X : 𝓤 ⁺ ̇ ) (Y : 𝓤 ̇ )
                      → (X → Y) → is-inhabited X → is-inhabited Y
