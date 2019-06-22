@@ -1757,11 +1757,11 @@ equiv-singleton-lemma {𝓤} {𝓥} {X} {A} x f i = γ
    e : (y : X) → (x ≡ y) ≃ A y
    e y = (f y , i y)
 
-   d : Σ A ≃ singleton-type' x
-   d = ≃-sym (Σ-cong e)
+   d : singleton-type' x ≃ Σ A
+   d = Σ-cong e
 
    γ : is-singleton (Σ A)
-   γ = equiv-to-singleton d (singleton-types'-are-singletons X x)
+   γ = equiv-to-singleton (≃-sym d) (singleton-types'-are-singletons X x)
 
 singleton-equiv-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
                       → (f : (y : X) → x ≡ y → A y)
@@ -1813,7 +1813,7 @@ G-≃-equation : (ua : is-univalent 𝓤)
              → (a : A (X  , ≃-refl X))
              → G-≃ ua X A a X (≃-refl X) ≡ a
 G-≃-equation {𝓤} {𝓥} ua X A a =
-  G-≃ ua X A a X (≃-refl X) ≡⟨ refl _ ⟩
+  G-≃ ua X A a X (≃-refl X)  ≡⟨ refl _ ⟩
   transport A p a            ≡⟨ ap (λ - → transport A - a) q ⟩
   transport A (refl t) a     ≡⟨ refl _ ⟩
   a                          ∎
@@ -2035,11 +2035,11 @@ invertibles-are-haes f (g , η , ε) = g , η , ε' , τ
 funext : ∀ 𝓤 𝓥 → (𝓤 ⊔ 𝓥)⁺ ̇
 funext 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y} → f ∼ g → f ≡ g
 
-pre-comp-is-equiv : is-univalent 𝓤
-                  → (X Y : 𝓤 ̇ ) (f : X → Y)
-                  → is-equiv f
-                  → (Z : 𝓤 ̇ ) → is-equiv (λ (g : Y → Z) → g ∘ f)
-pre-comp-is-equiv {𝓤} ua =
+precomp-is-equiv : is-univalent 𝓤
+                 → (X Y : 𝓤 ̇ ) (f : X → Y)
+                 → is-equiv f
+                 → (Z : 𝓤 ̇ ) → is-equiv (λ (g : Y → Z) → g ∘ f)
+precomp-is-equiv {𝓤} ua =
    J-equiv ua
      (λ X Y (f : X → Y) → (Z : 𝓤 ̇ ) → is-equiv (λ g → g ∘ f))
      (λ X Z → id-is-equiv (X → Z))
@@ -2069,7 +2069,7 @@ univalence-gives-funext ua {X} {Y} {f₀} {f₁} = γ
   φ π = π ∘ δ
 
   φ-is-equiv : is-equiv φ
-  φ-is-equiv = pre-comp-is-equiv ua Y Δ δ δ-is-equiv Y
+  φ-is-equiv = precomp-is-equiv ua Y Δ δ δ-is-equiv Y
 
   p : φ π₀ ≡ φ π₁
   p = refl (𝑖𝑑 Y)
@@ -2114,12 +2114,12 @@ dfunext-gives-vvfunext fe {X} {A} i = f , c
   c : (g : Π A) → f ≡ g
   c g = fe (λ (x : X) → centrality (A x) (i x) (g x))
 
-post-comp-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
-                     → funext 𝓦 𝓤 → funext 𝓦 𝓥
-                     → (f : X → Y)
-                     → invertible f
-                     → invertible (λ (h : A → X) → f ∘ h)
-post-comp-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {A} nfe nfe' f (g , η , ε) = γ
+postcomp-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
+                    → funext 𝓦 𝓤 → funext 𝓦 𝓥
+                    → (f : X → Y)
+                    → invertible f
+                    → invertible (λ (h : A → X) → f ∘ h)
+postcomp-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {A} nfe nfe' f (g , η , ε) = γ
  where
   f' : (A → X) → (A → Y)
   f' h = f ∘ h
@@ -2136,13 +2136,13 @@ post-comp-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {A} nfe nfe' f (g , η , ε) =
   γ : invertible (λ h → f ∘ h)
   γ = (g' , η' , ε')
 
-post-comp-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
-                   → funext 𝓦 𝓤 → funext 𝓦 𝓥
-                   → (f : X → Y) → is-equiv f → is-equiv (λ (h : A → X) → f ∘ h)
-post-comp-is-equiv fe fe' f e =
+postcomp-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
+                  → funext 𝓦 𝓤 → funext 𝓦 𝓥
+                  → (f : X → Y) → is-equiv f → is-equiv (λ (h : A → X) → f ∘ h)
+postcomp-is-equiv fe fe' f e =
  invertibles-are-equivs
   (λ h → f ∘ h)
-  (post-comp-invertible fe fe' f (equivs-are-invertible f e))
+  (postcomp-invertible fe fe' f (equivs-are-invertible f e))
 
 vvfunext-gives-hfunext : vvfunext 𝓤 𝓥 → hfunext 𝓤 𝓥
 vvfunext-gives-hfunext vfe {X} {Y} f = γ
@@ -2184,7 +2184,7 @@ funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
   g h = f ∘ h
 
   e : is-equiv g
-  e = post-comp-is-equiv fe fe' f f-is-equiv
+  e = postcomp-is-equiv fe fe' f f-is-equiv
 
   i : is-singleton (Σ \(h : X → Σ A) → f ∘ h ≡ 𝑖𝑑 X)
   i = e (𝑖𝑑 X)
@@ -2491,11 +2491,11 @@ hlevel-relation-is-a-subsingleton fe (succ n) X =
   GF : (φ : ((x : X) → Y x)) → G(F φ) ≡ φ
   GF φ = fe (λ x → gf x (φ x))
 
-pre-comp-invertible : dfunext 𝓥 𝓦 → dfunext 𝓤 𝓦
-                    → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y)
-                    → invertible f
-                    → invertible (λ (h : Y → Z) → h ∘ f)
-pre-comp-invertible fe fe' {X} {Y} {Z} f (g , η , ε) = (g' , η' , ε')
+precomp-invertible : dfunext 𝓥 𝓦 → dfunext 𝓤 𝓦
+                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y)
+                   → invertible f
+                   → invertible (λ (h : Y → Z) → h ∘ f)
+precomp-invertible fe fe' {X} {Y} {Z} f (g , η , ε) = (g' , η' , ε')
  where
   f' : (Y → Z) → (X → Z)
   f' h = h ∘ f
@@ -2522,7 +2522,7 @@ at-most-one-section {𝓥} {𝓤} fe hfe {X} {Y} f (g , gf) (h , fh) = d
   a = joyal-equivs-are-invertible f (((h , fh) , g , gf))
 
   b : is-singleton (fiber (λ h →  f ∘ h) id)
-  b = invertibles-are-equivs (λ h → f ∘ h) (post-comp-invertible fe fe' f a) id
+  b = invertibles-are-equivs (λ h → f ∘ h) (postcomp-invertible fe fe' f a) id
 
   r : fiber (λ h →  f ∘ h) id → has-section f
   r (h , p) = (h , happly (f ∘ h) id p)
@@ -2555,7 +2555,7 @@ at-most-one-retraction {𝓤} {𝓥} hfe fe' {X} {Y} f (g , fg) (h , hf) = d
   a = joyal-equivs-are-invertible f ((g , fg) , (h , hf))
 
   b : is-singleton (fiber (λ h →  h ∘ f) id)
-  b = invertibles-are-equivs (λ h → h ∘ f) (pre-comp-invertible fe' fe f a) id
+  b = invertibles-are-equivs (λ h → h ∘ f) (precomp-invertible fe' fe f a) id
 
   r : fiber (λ h →  h ∘ f) id → has-retraction f
   r (h , p) = (h , happly (h ∘ f) id p)

@@ -3,9 +3,9 @@
 ghc --make agdatomd.hs
 
 generatemd () {
-    cat HoTT-UF-Agda.lagda | ./agdatomd > ../HoTT-UF-Agda.md
+    cat HoTT-UF-Agda.lagda | ./agdatomd > HoTT-UF-Agda.md
     cp HoTT-UF-Agda.md index.md
-    cat Universes.lagda    | ./agdatomd > ../Universes.md
+    cat Universes.lagda    | ./agdatomd > Universes.md
     }
 
 generatemd

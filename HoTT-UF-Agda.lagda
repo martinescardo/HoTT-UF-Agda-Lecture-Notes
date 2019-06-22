@@ -1219,9 +1219,11 @@ represents logical implication, and that a dependent function type
 We have the following uses of `Σ`.
 
   * The binary cartesian product represents conjunction "and". If the
-    types `A` and `B` stand for mathematical statements, then the mathematical
-    statement "`A` and `B`" is codified as `A × B`. This is because to prove
-    "`A` and `B`", we have to provide a pair `(a , b)` of proofs `a : A` and `b : B`.
+    types `A` and `B` stand for mathematical statements, then the
+    mathematical statement "`A` and `B`" is codified as `A × B`.
+
+    This is because to establish that "`A` and `B`", we have to
+    provide a pair `(a , b)` of proofs `a : A` and `b : B`.
 
     So notice that in type theory proofs are mathematical objects,
     rather than meta-mathematical entities like in set theory. They are
@@ -1230,8 +1232,10 @@ We have the following uses of `Σ`.
   * The more general type `Σ (x : X), A x`, if the type `X` stands
     for a mathematical object and `A` stands for a mathematical
     statement, represents *designated* existence "there is a
-    designated `x : X` with `A x`".  To prove this, we have to provide
-    a specific `x : X` and a proof `a : A x`, together in a pair `(x ,
+    designated `x : X` with `A x`".
+
+    To establish this, we have to provide a specific
+    element `x : X` and a proof `a : A x`, together in a pair `(x ,
     a)`.
 
   * Later we will discuss *unspecified* existence `∃ (x : X), A x`,
@@ -1243,12 +1247,14 @@ We have the following uses of `Σ`.
 
   * Another reading of `Σ (x : X), A x` is as "the type of `x : X`
     with `A x`", similar to subset notation `{ x ∈ X | A x }` in set
-    theory. But have to be careful because if there is more than one
-    element in the type `A x`, then `x` is put more than once in this
-    type. In such situations, if we don't want that, we have to be
-    careful and either ensure that the type `A x` has at most one
-    element for every `x : X`, or instead consider the truncated type
-    `∥ A x ∥` and write `Σ (x : X), ∥ A x ∥`.
+    theory.
+
+    But have to be careful because if there is more than one element
+    in the type `A x`, then `x` is put more than once in this type. In
+    such situations, if we don't want that, we have to be careful and
+    either ensure that the type `A x` has at most one element for
+    every `x : X`, or instead consider the truncated type `∥ A x ∥`
+    and write `Σ (x : X), ∥ A x ∥`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="pitypes"></a> `Π` types
@@ -1340,13 +1346,13 @@ in a universe `𝓤`, we define a *function*
    > `Id X : X → X → 𝓤`
 
 by some mysterious sort of induction. It is this that prevents us from
-being able to prove that `refl x` would be the only element of the type `Id
-X x x`, or that the type `Id X x y` would have at most one element no
-matter what `y : X` is.
+being able to prove that the only element of the type `Id X x x` would
+be `refl x`, or that the type `Id X x y` would have at most one
+element no matter what `y : X` is.
 
-There is however, one interesting, and crucial, thing we
-[can prove](HoTT-UF-Agda.html#singleton-type), namely that for any fixed `x : X`, the
-type
+There is however, one interesting, and crucial, thing we [can
+prove](HoTT-UF-Agda.html#singleton-type), namely that for any fixed
+element `x : X`, the type
 
 
    > `Σ \(y : Y) → Id X x y`
@@ -1357,7 +1363,7 @@ We will use the following alternative notation for the identity type
 former `Id`, where the symbol "`_`" in the right-hand side of the
 definition indicates that we ask Agda to infer which type we are
 talking about (which is `X`, but this name is not available in the
-scope of the *defining equation* of `_≡_`):
+scope of the *defining equation* of the type former `_≡_`):
 
 \begin{code}
 _≡_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
@@ -1406,14 +1412,14 @@ which gives rise to types that are more general than sets, the
 say, in particular, that for some types `X` and elements `x y : X`, the
 identity type `x ≡ y` does have more than one element.
 
-A possible way to understand the point `refl x` of the type `x ≡ x` is
-as the "generic identification" between `x` and itself, but which is
-by no means necessarily the *only* identitification in univalent
-foundations. It is generic in the sense that to explain what happens
-with all identifications `p : x ≡ y` between any two points `x` and
-`y` of a type `X`, it suffices to explain what happens with the
-identification `refl x : x ≡ x` for all points `x : X`. This
-is what the induction principle for identity given by Martin-Löf says,
+A possible way to understand the element `refl x` of the type `x ≡ x`
+is as the "generic identification" between the point `x` and itself,
+but which is by no means necessarily the *only* identitification in
+univalent foundations. It is generic in the sense that to explain what
+happens with all identifications `p : x ≡ y` between any two points
+`x` and `y` of a type `X`, it suffices to explain what happens with
+the identification `refl x : x ≡ x` for all points `x : X`. This is
+what the induction principle for identity given by Martin-Löf says,
 which he called `J` (we could have called it `≡-induction`, but we
 prefer to honour MLTT tradition):
 
@@ -1672,7 +1678,7 @@ that is invariant under automorphisms. However, the [axiom of
 choice](#choice) *is* consistent with univalent type
 theory, as stated in the [introduction](HoTT-UF-Agda.html#introduction).
 
-In the proof of the following, we assume we are given hypothetical
+In the proof of the following, we are given hypothetical
 functions `f : A → B` and `v : B → 𝟘`, and a hypothetical element `a :
 A`, and our goal is to get an element of `𝟘`. But this is easy,
 because `f a : B` and hence `v (f a) : 𝟘`.
@@ -1849,13 +1855,13 @@ for `n`. The first one assumes a hypothetical function `f : ₀ ≡ ₀ →
 𝟘`, from which we get `f (refl ₀) : 𝟘`, and then, using `!𝟘`, we get
 an element of any type we like, which we choose to be `₀ ≡ ₁`, and we
 are done. Of course, we will never be able to use the function
-`not-zero-is-one` with such outrageous arguments. The other case `n = ₁`
-doesn't need to use the hypothesis `f : ₁ ≡ ₀ → 𝟘`, because the
+`not-zero-is-one` with such outrageous arguments. The other case `n =
+₁` doesn't need to use the hypothesis `f : ₁ ≡ ₀ → 𝟘`, because the
 desired conclusion holds right away, as it is `₁ ≡ ₁`, which is proved
 by `refl ₁`. But notice that there is nothing wrong with the
 hypothesis `f : ₁ ≡ ₀ → 𝟘`. For example, we can use `not-zero-is-one`
-with `n = ₀` and `f = ₁-is-not-₀`, so that the hypotheses can be
-fulfilled in the second equation.
+taking `n` to be `₀` and `f` to be `₁-is-not-₀`, so that the
+hypotheses can be fulfilled in the second equation.
 
 \begin{code}
 not-zero-is-one : (n : 𝟚) → n ≢ ₀ → n ≡ ₁
@@ -2533,7 +2539,7 @@ data Color : 𝓤₀ ̇  where
 \end{code}
 
 With univalence, we will have that `Color ≡ 𝟚` where `𝟚` is the
-[two-point type](HoTT-UF-Agda.html#binarysum) `𝟙 + 𝟙` with points `₀` and
+[two-point type](HoTT-UF-Agda.html#binarysum) `𝟙 + 𝟙` with elements `₀` and
 `₁`.  But there will be two identifications `p₀ p₁ : Color ≡ 𝟚`, one
 that identifies `Black` with `₀` and `White` with `₁`, and another one
 that identifies `Black` with `₁` and `White` with `₀`. There is no
@@ -2542,13 +2548,13 @@ that, even if univalence does give inhabitants of the type `Color ≡
 𝟚`, it doesn't make sense to ask whether `Black ≡ ₀` holds without
 specifying one of the possible inhabitants `p₀` and `p₁`.
 
-What we will have is that `transport id p₀` and `transport id p₁` are
-the two possible bijections `Color → 𝟚` that identify colors with
-bits. So, it is not enough to have `Color ≡ 𝟚` to be able to compare a
-color `c : Color` with a bit `b : 𝟚`. We need to specify which
-identification `p : Color ≡ 𝟚` we want to consider for the comparison.
-The [same considerations](HoTT-UF-Agda.html#notsets) apply when we
-consider identifications `p : 𝟚 ≡ 𝟚`.
+What we will have is that the functions `transport id p₀` and
+`transport id p₁` are the two possible bijections `Color → 𝟚` that
+identify colors with bits. So, it is not enough to have `Color ≡ 𝟚` to
+be able to compare a color `c : Color` with a bit `b : 𝟚`. We need to
+specify which identification `p : Color ≡ 𝟚` we want to consider for
+the comparison.  The [same considerations](HoTT-UF-Agda.html#notsets)
+apply when we consider identifications `p : 𝟚 ≡ 𝟚`.
 
 So the meaningful comparison in the more general situation is
 
@@ -2600,12 +2606,11 @@ we again cannot write down the identity type
 
    > ~~`a ≡ b`~~ .
 
-This is again a non-sensical mathematical statement in univalent
-foundations, because the types `A x` and `A y` are not the same, but
-only identified, and in general there can be many identifications, not
-just `ap A p`, and so any identification between elements of `A x` and
-`A y` has to be with respect to a specific identification, as in the
-above particular case.
+This is again a non-sensical mathematical statement, because the types
+`A x` and `A y` are not the same, but only identified, and in general
+there can be many identifications, not just `ap A p`, and so any
+identification between elements of `A x` and `A y` has to be with
+respect to a specific identification, as in the above particular case.
 
 This time, the meaningful comparison, given `p : x ≡ y`, is
 
@@ -3312,7 +3317,7 @@ such as that of the HoTT book, which has a well-established
 categorical pedigree.
 
 The problem with the notion of invertibility of `f` is that, while we
-can prove that the inverse `g` is unique when it exists, we cannot in
+have that the inverse `g` is unique when it exists, we cannot in
 general prove that the identification data `g ∘ f ∼ id` and `f ∘ g ∼
 id` are also unique, and, indeed, [they are not in
 general](https://github.com/HoTT/HoTT/blob/master/contrib/HoTTBookExercises.v).
@@ -3669,7 +3674,7 @@ by [Mike Shulman](https://home.sandiego.edu/~shulman/).
 ### <a id="notsets"></a> Example of a type that is not a set under univalence
 
 We have two automorphisms of `𝟚`, namely the identity function and the
-function that swaps ₀ and ₁:
+map that swaps ₀ and ₁:
 
 \begin{code}
 swap₂ : 𝟚 → 𝟚
@@ -3813,7 +3818,7 @@ retractions-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
 \end{code}
 
 An alternative notion of equivalence, equivalent to Voevodsky's, has
-been given by Andre Joyal:
+been given by André Joyal:
 
 \begin{code}
 is-joyal-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
@@ -4333,11 +4338,11 @@ equiv-singleton-lemma {𝓤} {𝓥} {X} {A} x f i = γ
    e : (y : X) → (x ≡ y) ≃ A y
    e y = (f y , i y)
 
-   d : Σ A ≃ singleton-type' x
-   d = ≃-sym (Σ-cong e)
+   d : singleton-type' x ≃ Σ A
+   d = Σ-cong e
 
    γ : is-singleton (Σ A)
-   γ = equiv-to-singleton d (singleton-types'-are-singletons X x)
+   γ = equiv-to-singleton (≃-sym d) (singleton-types'-are-singletons X x)
 
 
 singleton-equiv-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
@@ -4413,7 +4418,7 @@ G-≃-equation : (ua : is-univalent 𝓤)
              → (a : A (X  , ≃-refl X))
              → G-≃ ua X A a X (≃-refl X) ≡ a
 G-≃-equation {𝓤} {𝓥} ua X A a =
-  G-≃ ua X A a X (≃-refl X) ≡⟨ refl _ ⟩
+  G-≃ ua X A a X (≃-refl X)  ≡⟨ refl _ ⟩
   transport A p a            ≡⟨ ap (λ - → transport A - a) q ⟩
   transport A (refl t) a     ≡⟨ refl _ ⟩
   a                          ∎
@@ -4472,7 +4477,7 @@ H-equiv {𝓤} {𝓥} ua X A a Y f i = γ (f , i) i
 \end{code}
 
 The above and the following say that to prove that a property of
-functions holds for all equivalences, it is enough to prove it for all
+*functions* holds for all equivalences, it is enough to prove it for all
 identity functions:
 
 \begin{code}
@@ -4561,9 +4566,15 @@ in the above example.
 ### <a id="haes"></a> Half adjoint equivalences
 
 An often useful alternative formulation of the notion of equivalence
-is that of half adjoint equivalence. If we have a function `f : X → Y`
-with inversion data `g : Y → X` and `η : g ∘ f ∼ id` and `ε : f ∘ g ∼
-id`, then for any `x : X` we have that
+is that of half adjoint equivalence. If we have a function
+
+   > `f : X → Y`
+
+with inversion data
+
+   > `g : Y → X` , `η : g ∘ f ∼ id` and `ε : f ∘ g ∼ id`,
+
+then for any `x : X` we have that
 
    > `ap f (η x)` and `ε (f x)`
 
@@ -4750,8 +4761,9 @@ statements, namely the generalization to dependent functions, and the
 requirement that the canonical map `(f ≡ g) → (f ∼ g)` is an
 equivalence.
 
-*Exercise.* Assuming `funext`, prove that if `f : X → Y` is an equivalence
-then so is the function `(-) ∘ f : (Y → Z) → (X → Z)`.
+*Exercise.* Assuming `funext`, prove that if a function `f : X → Y` is
+an equivalence then so is the precomposition map `(-) ∘ f : (Y → Z) →
+(X → Z)`.
 
 The crucial step in [Voevodsky's
 proof](https://www.math.uwo.ca/faculty/kapulkin/notes/ua_implies_fe.pdf)
@@ -4759,15 +4771,15 @@ that univalence implies `funext` is to establish the conclusion of the
 above exercise assuming univalence instead. We prove this by
 [equivalence induction](HoTT-UF-Agda.html#equivalenceinduction) on
 `f`, which means that we only need to consider the case when `f` is an
-identity function, for which pre-composition with `f` is itself an
+identity function, for which precomposition with `f` is itself an
 identity function (of a function type), and hence an equivalence:
 
 \begin{code}
-pre-comp-is-equiv : is-univalent 𝓤
-                  → (X Y : 𝓤 ̇ ) (f : X → Y)
-                  → is-equiv f
-                  → (Z : 𝓤 ̇ ) → is-equiv (λ (g : Y → Z) → g ∘ f)
-pre-comp-is-equiv {𝓤} ua =
+precomp-is-equiv : is-univalent 𝓤
+                 → (X Y : 𝓤 ̇ ) (f : X → Y)
+                 → is-equiv f
+                 → (Z : 𝓤 ̇ ) → is-equiv (λ (g : Y → Z) → g ∘ f)
+precomp-is-equiv {𝓤} ua =
    J-equiv ua
      (λ X Y (f : X → Y) → (Z : 𝓤 ̇ ) → is-equiv (λ g → g ∘ f))
      (λ X Z → id-is-equiv (X → Z))
@@ -4801,7 +4813,7 @@ univalence-gives-funext ua {X} {Y} {f₀} {f₁} = γ
   φ π = π ∘ δ
 
   φ-is-equiv : is-equiv φ
-  φ-is-equiv = pre-comp-is-equiv ua Y Δ δ δ-is-equiv Y
+  φ-is-equiv = precomp-is-equiv ua Y Δ δ δ-is-equiv Y
 
   p : φ π₀ ≡ φ π₁
   p = refl (𝑖𝑑 Y)
@@ -4883,12 +4895,12 @@ dfunext-gives-vvfunext fe {X} {A} i = f , c
 We need some lemmas to get `hfunext` from `vvfunext`:
 
 \begin{code}
-post-comp-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
-                     → funext 𝓦 𝓤 → funext 𝓦 𝓥
-                     → (f : X → Y)
-                     → invertible f
-                     → invertible (λ (h : A → X) → f ∘ h)
-post-comp-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {A} nfe nfe' f (g , η , ε) = γ
+postcomp-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
+                    → funext 𝓦 𝓤 → funext 𝓦 𝓥
+                    → (f : X → Y)
+                    → invertible f
+                    → invertible (λ (h : A → X) → f ∘ h)
+postcomp-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {A} nfe nfe' f (g , η , ε) = γ
  where
   f' : (A → X) → (A → Y)
   f' h = f ∘ h
@@ -4905,13 +4917,13 @@ post-comp-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {A} nfe nfe' f (g , η , ε) =
   γ : invertible (λ h → f ∘ h)
   γ = (g' , η' , ε')
 
-post-comp-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
-                   → funext 𝓦 𝓤 → funext 𝓦 𝓥
-                   → (f : X → Y) → is-equiv f → is-equiv (λ (h : A → X) → f ∘ h)
-post-comp-is-equiv fe fe' f e =
+postcomp-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
+                  → funext 𝓦 𝓤 → funext 𝓦 𝓥
+                  → (f : X → Y) → is-equiv f → is-equiv (λ (h : A → X) → f ∘ h)
+postcomp-is-equiv fe fe' f e =
  invertibles-are-equivs
   (λ h → f ∘ h)
-  (post-comp-invertible fe fe' f (equivs-are-invertible f e))
+  (postcomp-invertible fe fe' f (equivs-are-invertible f e))
 
 vvfunext-gives-hfunext : vvfunext 𝓤 𝓥 → hfunext 𝓤 𝓥
 vvfunext-gives-hfunext vfe {X} {Y} f = γ
@@ -4959,7 +4971,7 @@ funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
   g h = f ∘ h
 
   e : is-equiv g
-  e = post-comp-is-equiv fe fe' f f-is-equiv
+  e = postcomp-is-equiv fe fe' f f-is-equiv
 
   i : is-singleton (Σ \(h : X → Σ A) → f ∘ h ≡ 𝑖𝑑 X)
   i = e (𝑖𝑑 X)
@@ -5379,11 +5391,11 @@ closed under equivalence first.)
   GF : (φ : ((x : X) → Y x)) → G(F φ) ≡ φ
   GF φ = fe (λ x → gf x (φ x))
 
-pre-comp-invertible : dfunext 𝓥 𝓦 → dfunext 𝓤 𝓦
-                    → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y)
-                    → invertible f
-                    → invertible (λ (h : Y → Z) → h ∘ f)
-pre-comp-invertible fe fe' {X} {Y} {Z} f (g , η , ε) = (g' , η' , ε')
+precomp-invertible : dfunext 𝓥 𝓦 → dfunext 𝓤 𝓦
+                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y)
+                   → invertible f
+                   → invertible (λ (h : Y → Z) → h ∘ f)
+precomp-invertible fe fe' {X} {Y} {Z} f (g , η , ε) = (g' , η' , ε')
  where
   f' : (Y → Z) → (X → Z)
   f' h = h ∘ f
@@ -5419,7 +5431,7 @@ at-most-one-section {𝓥} {𝓤} fe hfe {X} {Y} f (g , gf) (h , fh) = d
   a = joyal-equivs-are-invertible f (((h , fh) , g , gf))
 
   b : is-singleton (fiber (λ h →  f ∘ h) id)
-  b = invertibles-are-equivs (λ h → f ∘ h) (post-comp-invertible fe fe' f a) id
+  b = invertibles-are-equivs (λ h → f ∘ h) (postcomp-invertible fe fe' f a) id
 
   r : fiber (λ h →  f ∘ h) id → has-section f
   r (h , p) = (h , happly (f ∘ h) id p)
@@ -5452,7 +5464,7 @@ at-most-one-retraction {𝓤} {𝓥} hfe fe' {X} {Y} f (g , fg) (h , hf) = d
   a = joyal-equivs-are-invertible f ((g , fg) , (h , hf))
 
   b : is-singleton (fiber (λ h →  h ∘ f) id)
-  b = invertibles-are-equivs (λ h → h ∘ f) (pre-comp-invertible fe' fe f a) id
+  b = invertibles-are-equivs (λ h → h ∘ f) (precomp-invertible fe' fe f a) id
 
   r : fiber (λ h →  h ∘ f) id → has-retraction f
   r (h , p) = (h , happly (h ∘ f) id p)
@@ -5993,10 +6005,9 @@ By our definition of [`Nat`](HoTT-UF-Agda.html#Nat), for any
 
 and, by [`Nats-are-natural`](HoTT-UF-Agda.html#Nats-are-natural), we
 have that `Nat (𝓨 x) A` is the type of natural transformations from
-the presheaf `𝓨 x` to the presheaf `A`.
-
-The starting point of the Yoneda Lemma, in our context, is that every
-natural transformation `Nat (𝓨 x) A` is a transport:
+the presheaf `𝓨 x` to the presheaf `A`.  The starting point of the
+Yoneda Lemma, in our context, is that every such natural
+transformation is a transport.
 
 \begin{code}
 transport-lemma : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
@@ -6005,8 +6016,8 @@ transport-lemma : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
 transport-lemma A x τ x (refl x) = refl (τ x (refl x))
 \end{code}
 
-We refer to `τ x (refl x)` as the *Yoneda element* of `τ` and denote it by
-`𝓔 A x τ`.
+We denote the point `τ x (refl x)` in the above lemma by `𝓔 A x τ` as
+refer to it as the *Yoneda element* of `τ`.
 
 \begin{code}
 𝓔 : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
@@ -6050,8 +6061,7 @@ By a fiberwise equivalence we mean a natural transformation whose
 components are all equivalences:
 
 \begin{code}
-is-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
-                   → Nat A B → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+is-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 is-fiberwise-equiv τ = ∀ x → is-equiv (τ x)
 
 𝓔-is-equiv : dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
@@ -6145,6 +6155,7 @@ universal-representable {𝓤} {𝓥} {X} {A} ((x , a) , p) = x , φ
  where
   e : is-fiberwise-equiv (𝓝 A x a)
   e = universal-fiberwise-equiv A x ((x , a) , p) (𝓝 A x a)
+
   φ : (y : X) → (x ≡ y) ≃ A y
   φ y = (𝓝 A x a y , e y)
 \end{code}
@@ -8043,7 +8054,6 @@ powerset, we would like to consider its union. We investigate its
 availability in a submodule with assumptions.
 
 \begin{code}
-
 module powerset-union-availability
         (pt : subsingleton-truncations-exist)
         (fe : global-dfunext)

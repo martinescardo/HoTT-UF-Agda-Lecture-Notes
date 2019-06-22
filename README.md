@@ -12,9 +12,9 @@ Agda [2.6.0](https://agda.readthedocs.io/en/v2.6.0/getting-started/installation.
 
 * The program `agdatomd.hs` converts from `.lagda` to `.md` for use by the script `fastloop`.
 
-* This script is used for editing the notes in conjunction with `jekyll serve` so that after an update it is only necessary to reload the page on the browser to view it.
+* This script is used for editing the notes in conjunction with `jekyll serve -watch --incremental` so that after an update it is only necessary to reload the page on the browser to view it.
 
-* The script `slowloop` serves the same purpose, but calls Agda instead of `agdatomd`, via the script `generatehtml`, to that we get syntax highlighting in the html pages. This can be very slow depending on which `lagda` file is changed. This means that after the first reload, one is likely to see the Agda code without syntax highlighting.
+* The script `slowloop` serves the same purpose, but calls Agda instead of `agdatomd`, via the script `generatehtml`, so that we get syntax highlighting in the html pages. This can be very slow depending on which `lagda` file is changed. This means that after the first reload, one is likely to see the Agda code without syntax highlighting.
 
 * It is possible to run `./slowloop`, `./fastloop` and `jekyll serve` in parallel, and we do this for editing these notes.
 

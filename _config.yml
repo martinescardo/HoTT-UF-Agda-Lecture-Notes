@@ -1,6 +1,7 @@
 name: Martin Escardo
 markdown: kramdown
 exclude:
+  - "makefile"
   - "Gemfile"
   - "Gemfile.lock"
   - "*.agdai"
@@ -19,6 +20,7 @@ exclude:
   - "generatepdf"
   - "illiterate"
   - "illiterator"
+  - "agdatomd"
   - "replace"
   - "slowloop"
   - "test"
