@@ -6271,8 +6271,8 @@ With this it is almost immediate that the Yoneda map is an embedding:
 ### <a id="universelifting"></a> Universe lifting
 
 Universes are not cumulative on the nose in Agda, in the sense that
-from `X : 𝓤` we would get `X : 𝓤⁺` or `X : 𝓤 ⊔ 𝓥`.  Instead we work
-with embeddings of universes into larger universes.
+from `X : 𝓤` we would get that `X : 𝓤⁺` or `X : 𝓤 ⊔ 𝓥`.  Instead we
+work with embeddings of universes into larger universes.
 
 The following together with its induction principle should be
 considered as part of the universe handling of our spartan Martin-Löf
@@ -6654,8 +6654,8 @@ A crucial example of an equivalence "going down one universe" is
 `Id-to-Eq X Y`. This is because the identity type `X ≡ Y` lives in the
 successor universe `𝓤 ⁺` if `X` and `Y` live in `𝓤`, whereas the
 equivalence type `X ≃ Y` lives in the same universe as `X` and
-`Y`. Hence we can apply `invertibles-are-haes↓` to `Id-to-Eq X Y` to
-conclude that it is a half adjoint equivalence:
+`Y`. Hence we can apply the above function `invertibles-are-haes↓` to
+`Id-to-Eq X Y` to conclude that it is a half adjoint equivalence:
 
 \begin{code}
 Id-to-Eq-is-hae : is-univalent 𝓤 → is-univalent (𝓤 ⁺)
@@ -7578,7 +7578,10 @@ following:
       φ f x = f x (g x)
 \end{code}
 
-We apply this third formulation to show that choice implies excluded
+*Exercise*. A fourth formulation of the axiom of choice is that every
+ surjection of sets has an unspecified section.
+
+We apply the third formulation to show that choice implies excluded
 middle. We begin with the following lemma.
 
 \begin{code}
@@ -8051,10 +8054,10 @@ PR-gives-existence-of-truncations fe R =
 As a second, important, use of resizing, we revisit the powerset.
 First, given a set of subsets, that is, an element of the double
 powerset, we would like to consider its union. We investigate its
-availability in a submodule with assumptions.
+existence in a submodule with assumptions.
 
 \begin{code}
-module powerset-union-availability
+module powerset-union-existence
         (pt : subsingleton-truncations-exist)
         (fe : global-dfunext)
        where
@@ -8073,21 +8076,23 @@ The following doesn't assert that unions of collections of subsets are
 available. It says what it means for them to be available:
 
 \begin{code}
- availability-of-unions : (𝓤 : Universe) → 𝓤 ⁺⁺ ̇
- availability-of-unions 𝓤 =
+ existence-of-unions : (𝓤 : Universe) → 𝓤 ⁺⁺ ̇
+ existence-of-unions 𝓤 =
   (X : 𝓤 ̇ )
   (𝓐 : 𝓟𝓟 X)
      → Σ \(B : 𝓟 X)
              → (x : X) → (x ∈ B) ⇔ ∃ \(A : 𝓟 X) → (A ∈ 𝓐) × (x ∈ A)
 \end{code}
 
+*Exercise*. Show that the existence of unions is a subsingleton type.
+
 Without propositional resizing principles, it is not possible to
-establish the availability.
+establish the existence.
 
 \begin{code}
- availability-of-unions-gives-PR : availability-of-unions 𝓤
-                                 → propositional-resizing (𝓤 ⁺) 𝓤
- availability-of-unions-gives-PR {𝓤} α = γ
+ existence-of-unions-gives-PR : existence-of-unions 𝓤
+                              → propositional-resizing (𝓤 ⁺) 𝓤
+ existence-of-unions-gives-PR {𝓤} α = γ
   where
    γ : (P : 𝓤 ⁺ ̇ ) → (i : is-subsingleton P) → P has-size 𝓤
    γ P i = Q , e
@@ -8141,9 +8146,9 @@ establish the availability.
 The converse also holds, with an easier construction:
 
 \begin{code}
- PR-gives-availability-of-unions : propositional-resizing (𝓤 ⁺) 𝓤
-                                 → availability-of-unions 𝓤
- PR-gives-availability-of-unions {𝓤} ρ X 𝓐 = B , (λ x → lr x , rl x)
+ PR-gives-existence-of-unions : propositional-resizing (𝓤 ⁺) 𝓤
+                              → existence-of-unions 𝓤
+ PR-gives-existence-of-unions {𝓤} ρ X 𝓐 = B , (λ x → lr x , rl x)
   where
    β : X → 𝓤 ⁺ ̇
    β x = ∃ \(A : 𝓟 X) → (A ∈ 𝓐) × (x ∈ A)
@@ -8174,26 +8179,26 @@ module basic-powerset-development
   pt = PR-gives-existence-of-truncations fe ρ
 
   open basic-truncation-development pt fe
-  open powerset-union-availability pt fe
+  open powerset-union-existence pt fe
 
   ⋃ : {X : 𝓤 ̇ } → 𝓟𝓟 X → 𝓟 X
-  ⋃ 𝓐 = pr₁ (PR-gives-availability-of-unions ρ _ 𝓐)
+  ⋃ 𝓐 = pr₁ (PR-gives-existence-of-unions ρ _ 𝓐)
 
   ⋃-property : {X : 𝓤 ̇ } (𝓐 : 𝓟𝓟 X)
              → (x : X) → (x ∈ ⋃ 𝓐) ⇔ ∃ \(A : 𝓟 X) → (A ∈ 𝓐) × (x ∈ A)
-  ⋃-property 𝓐 = pr₂ (PR-gives-availability-of-unions ρ _ 𝓐)
+  ⋃-property 𝓐 = pr₂ (PR-gives-existence-of-unions ρ _ 𝓐)
 \end{code}
 
 The construction of intersections is as that of unions using
 propositional resizing:
 
 \begin{code}
-  intersections-are-available :
+  intersections-exist :
     (X : 𝓤 ̇ )
     (𝓐 : 𝓟𝓟 X)
        → Σ \(B : 𝓟 X)
               → (x : X) → (x ∈ B) ⇔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A)
-  intersections-are-available {𝓤} X 𝓐 = B , (λ x → lr x , rl x)
+  intersections-exist {𝓤} X 𝓐 = B , (λ x → lr x , rl x)
    where
     β : X → 𝓤 ⁺ ̇
     β x = (A : 𝓟 X) → A ∈ 𝓐 → x ∈ A
@@ -8213,11 +8218,11 @@ propositional resizing:
     rl x = to-resize ρ (β x) (i x)
 
   ⋂ : {X : 𝓤 ̇ } → 𝓟𝓟 X → 𝓟 X
-  ⋂ {𝓤} {X} 𝓐 = pr₁ (intersections-are-available X 𝓐)
+  ⋂ {𝓤} {X} 𝓐 = pr₁ (intersections-exist X 𝓐)
 
   ⋂-property : {X : 𝓤 ̇ } (𝓐 : 𝓟𝓟 X)
              → (x : X) → (x ∈ ⋂ 𝓐) ⇔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A)
-  ⋂-property {𝓤} {X} 𝓐 = pr₂ (intersections-are-available X 𝓐)
+  ⋂-property {𝓤} {X} 𝓐 = pr₂ (intersections-exist X 𝓐)
 
   ∅ full : {X : 𝓤 ̇ } → 𝓟 X
   ∅    = λ x → (Lift _ 𝟘 , equiv-to-subsingleton (Lift-≃ 𝟘) 𝟘-is-subsingleton)
@@ -8270,7 +8275,7 @@ sets.
 \end{code}
 
 Notice that this jumps two universes.  It is also possible, with
-Ω-resizing, to construct the powerset in such a way that the powerset
+`Ω`-resizing, to construct the powerset in such a way that the powerset
 of any type lives in the same universe as the type (exercise), and
 hence so that the type of topological spaces in a base universe lives
 in the next universe (exercise), rather than two universes above the
@@ -8393,7 +8398,7 @@ By construction, `η` is a surjection, of course:
 \end{code}
 
 It is convenient to use the following induction principle for
-reasoning about the image `X/≈`:
+reasoning about the image `X/≈`.
 
 \begin{code}
  η-induction : (P : X/≈ → 𝓦 ̇ )
