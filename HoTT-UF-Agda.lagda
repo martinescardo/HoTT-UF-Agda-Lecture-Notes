@@ -3473,8 +3473,8 @@ invertibility-gives-≃ f i = f , invertibles-are-equivs f i
 Identity and composition of equivalences:
 
 \begin{code}
-≃-refl : (X : 𝓤 ̇ ) → X ≃ X
-≃-refl X = 𝑖𝑑 X , id-is-equiv X
+id-≃ : (X : 𝓤 ̇ ) → X ≃ X
+id-≃ X = 𝑖𝑑 X , id-is-equiv X
 
 _●_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ≃ Y → Y ≃ Z → X ≃ Z
 (f , d) ● (f' , e) = f' ∘ f , ∘-is-equiv e d
@@ -3490,7 +3490,7 @@ _≃⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ≃ Y → Y �
 _ ≃⟨ d ⟩ e = d ● e
 
 _■ : (X : 𝓤 ̇ ) → X ≃ X
-_■ = ≃-refl
+_■ = id-≃
 \end{code}
 
 We conclude this section with some important examples.
@@ -3566,13 +3566,13 @@ equiv-to-singleton e = retract-of-singleton (≃-gives-◁ e)
 
 There is a canonical transformation `(X Y : 𝓤 ̇ ) → X ≡ Y → X ≃ Y` that
 sends the identity identification `refl X : X ≡ X` to the identity
-equivalence `≃-refl X : X ≃ X` by induction on identifications. The
+equivalence `id-≃ X : X ≃ X` by induction on identifications. The
 univalence axiom, for the universe `𝓤`, says that this canonical map
 is itself an equivalence.
 
 \begin{code}
 Id→Eq : (X Y : 𝓤 ̇ ) → X ≡ Y → X ≃ Y
-Id→Eq X X (refl X) = ≃-refl X
+Id→Eq X X (refl X) = id-≃ X
 
 is-univalent : (𝓤 : Universe) → 𝓤 ⁺ ̇
 is-univalent 𝓤 = (X Y : 𝓤 ̇ ) → is-equiv (Id→Eq X Y)
@@ -3654,7 +3654,7 @@ The above gives two distinct equivalences:
 
 \begin{code}
  e₀ e₁ : 𝟚 ≃ 𝟚
- e₀ = ≃-refl 𝟚
+ e₀ = id-≃ 𝟚
  e₁ = swap₂ , swap₂-is-equiv
 
  e₀-is-not-e₁ : e₀ ≢ e₁
@@ -4338,7 +4338,7 @@ univalence→ ua X = singletons-are-subsingletons
 →univalence : ((X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y))
             → is-univalent 𝓤
 →univalence i = ⇒univalence (λ X → pointed-subsingletons-are-singletons
-                                    (Σ (X ≃_)) (X , ≃-refl X) (i X))
+                                    (Σ (X ≃_)) (X , id-≃ X) (i X))
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -4348,7 +4348,7 @@ Under univalence, we get an induction principle for type equivalences,
 corresponding to the induction principles [`H`](HoTT-UF-Agda.html#H)
 and [`J`](HoTT-UF-Agda.html#J) for identifications.  To prove a
 property of equivalences, it is enough to prove it for the identity
-equivalence `≃-refl X` for all `X`. In order to also easily derive an
+equivalence `id-≃ X` for all `X`. In order to also easily derive an
 equation for this, we perform the construction using the fact that
 univalence implies that `Σ \(Y : 𝓤 ̇ ) → X ≃ Y` is a subsingleton for
 any `X`.
@@ -4356,27 +4356,27 @@ any `X`.
 \begin{code}
 G-≃ : is-univalent 𝓤
     → (X : 𝓤 ̇ ) (A : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇ )
-    → A (X , ≃-refl X) → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A (Y , e)
+    → A (X , id-≃ X) → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A (Y , e)
 G-≃ {𝓤} ua X A a Y e = transport A p a
  where
   t : Σ \(Y : 𝓤 ̇ ) → X ≃ Y
-  t = (X , ≃-refl X)
+  t = (X , id-≃ X)
 
   p : t ≡ (Y , e)
   p = univalence→ {𝓤} ua X t (Y , e)
 
 G-≃-equation : (ua : is-univalent 𝓤)
              → (X : 𝓤 ̇ ) (A : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇ )
-             → (a : A (X  , ≃-refl X))
-             → G-≃ ua X A a X (≃-refl X) ≡ a
+             → (a : A (X  , id-≃ X))
+             → G-≃ ua X A a X (id-≃ X) ≡ a
 G-≃-equation {𝓤} {𝓥} ua X A a =
-  G-≃ ua X A a X (≃-refl X)  ≡⟨ refl _ ⟩
-  transport A p a            ≡⟨ ap (λ - → transport A - a) q ⟩
-  transport A (refl t) a     ≡⟨ refl _ ⟩
-  a                          ∎
+  G-≃ ua X A a X (id-≃ X) ≡⟨ refl _ ⟩
+  transport A p a         ≡⟨ ap (λ - → transport A - a) q ⟩
+  transport A (refl t) a  ≡⟨ refl _ ⟩
+  a                       ∎
  where
   t : Σ \(Y : 𝓤 ̇ ) → X ≃ Y
-  t = (X  , ≃-refl X)
+  t = (X  , id-≃ X)
 
   p : t ≡ t
   p = univalence→ {𝓤} ua X t t
@@ -4387,13 +4387,13 @@ G-≃-equation {𝓤} {𝓥} ua X A a =
 
 H-≃ : is-univalent 𝓤
     → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
-    → A X (≃-refl X) → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A Y e
+    → A X (id-≃ X) → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A Y e
 H-≃ ua X A = G-≃ ua X (Σ-induction A)
 
 H-≃-equation : (ua : is-univalent 𝓤)
              → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
-             → (a : A X  (≃-refl X))
-             → H-≃ ua X A a X (≃-refl X) ≡ a
+             → (a : A X  (id-≃ X))
+             → H-≃ ua X A a X (id-≃ X) ≡ a
 H-≃-equation ua X A = G-≃-equation ua X (Σ-induction A)
 \end{code}
 
@@ -4403,7 +4403,7 @@ the induction principle `J-≃` lets both vary:
 \begin{code}
 J-≃ : is-univalent 𝓤
     → (A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
-    → ((X : 𝓤 ̇ ) → A X X (≃-refl X))
+    → ((X : 𝓤 ̇ ) → A X X (id-≃ X))
     → (X Y : 𝓤 ̇ ) (e : X ≃ Y) → A X Y e
 J-≃ ua A φ X = H-≃ ua X (A X) (φ X)
 \end{code}
@@ -4421,7 +4421,7 @@ H-equiv {𝓤} {𝓥} ua X A a Y f i = γ (f , i) i
   B : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓤 ⊔ 𝓥 ̇
   B Y (f , i) = is-equiv f → A Y f
 
-  b : B X (≃-refl X)
+  b : B X (id-≃ X)
   b = λ (_ : is-equiv (𝑖𝑑 X)) → a
 
   γ : (e : X ≃ Y) → B Y e
@@ -4463,7 +4463,7 @@ Here is an example:
    B : (Y : 𝓤 ̇ ) → X ≃ Y →  (𝓤 ⊔ 𝓥)⁺ ̇
    B Y (f , i) = (Σ A) ≡ (Σ (A ∘ inverse f i))
 
-   b : B X (≃-refl X)
+   b : B X (id-≃ X)
    b = refl (Σ A)
 \end{code}
 
@@ -4499,12 +4499,12 @@ transport-map-along-≃ {𝓤} ua {X} {Y} {Z} = J-≃ ua A a X Y
   A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓤 ̇
   A X Y e = (g : X → Z) → transport (λ - → - → Z) (Eq→Id ua X Y e) g
                         ≡ g ∘ Eq→fun (≃-sym e)
-  a : (X : 𝓤 ̇ ) → A X X (≃-refl X)
-  a X g = transport (λ - → - → Z) (Eq→Id ua X X (≃-refl X)) g ≡⟨ q ⟩
-          transport (λ - → - → Z) (refl X) g                  ≡⟨ refl _ ⟩
-          g                                                   ∎
+  a : (X : 𝓤 ̇ ) → A X X (id-≃ X)
+  a X g = transport (λ - → - → Z) (Eq→Id ua X X (id-≃ X)) g ≡⟨ q ⟩
+          transport (λ - → - → Z) (refl X) g                ≡⟨ refl _ ⟩
+          g                                                 ∎
     where
-     p : Eq→Id ua X X (≃-refl X) ≡ refl X
+     p : Eq→Id ua X X (id-≃ X) ≡ refl X
      p = inverse-is-retraction (Id→Eq X X) (ua X X) (refl X)
 
      q = ap (λ - → transport (λ - → - → Z) - g ) p
@@ -5720,16 +5720,16 @@ We first prove some
 properties of equivalence symmetrization and composition:
 
 \begin{code}
-≃-refl-left : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
-            → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
-            → ≃-refl X ● α ≡ α
-≃-refl-left fe fe' α = to-Σ-≡
+id-≃-left : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+          → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
+          → id-≃ X ● α ≡ α
+id-≃-left fe fe' α = to-Σ-≡
                         (refl _ ,
                          being-equiv-is-a-subsingleton fe fe' _ _ _)
 
 ≃-sym-left-inverse : dfunext 𝓥 𝓥
                    → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
-                   → ≃-sym α ● α ≡ ≃-refl Y
+                   → ≃-sym α ● α ≡ id-≃ Y
 ≃-sym-left-inverse fe (f , e) = to-Σ-≡
                                  (p ,
                                   being-equiv-is-a-subsingleton fe fe _ _ _)
@@ -5739,7 +5739,7 @@ properties of equivalence symmetrization and composition:
 
 ≃-sym-right-inverse : dfunext 𝓤 𝓤
                     → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
-                    → α ● ≃-sym α ≡ ≃-refl X
+                    → α ● ≃-sym α ≡ id-≃ X
 ≃-sym-right-inverse fe (f , e) = to-Σ-≡
                                   (p ,
                                    being-equiv-is-a-subsingleton fe fe _ _ _)
@@ -5766,12 +5766,12 @@ We then transfer the above to equivalence types:
  where
   p = λ β → ≃-sym α ● (α ● β) ≡⟨ ●-assoc fe₀ fe₁ (≃-sym α) α β ⟩
             (≃-sym α ● α) ● β ≡⟨ ap (_● β) (≃-sym-left-inverse fe₂ α) ⟩
-            ≃-refl _ ● β      ≡⟨ ≃-refl-left fe₀ fe₁ _ ⟩
+            id-≃ _ ● β        ≡⟨ id-≃-left fe₀ fe₁ _ ⟩
             β                 ∎
 
   q = λ γ → α ● (≃-sym α ● γ) ≡⟨ ●-assoc fe₃ fe₄ α (≃-sym α) γ ⟩
             (α ● ≃-sym α) ● γ ≡⟨ ap (_● γ) (≃-sym-right-inverse fe₅ α) ⟩
-            ≃-refl _ ● γ      ≡⟨ ≃-refl-left fe₃ fe₄ _ ⟩
+            id-≃ _ ● γ        ≡⟨ id-≃-left fe₃ fe₄ _ ⟩
             γ                 ∎
 \end{code}
 
@@ -6454,7 +6454,7 @@ to assume
 
 rather than
 
-   > `A X (≃-refl)`.
+   > `A X (id-≃)`.
 
 And we have a similar development with a similar example:
 
@@ -8645,7 +8645,7 @@ retraction-classifier : Univalence
                       → (Y : 𝓤 ̇ ) → retractions-into Y ≃ (Y → pointed-types 𝓤)
 retraction-classifier {𝓤} ua Y =
  retractions-into Y                                               ≃⟨ i ⟩
- (Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → (y : Y) → Σ \(x : X) → f x ≡ y) ≃⟨ ≃-refl _ ⟩
+ (Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → (y : Y) → Σ \(x : X) → f x ≡ y) ≃⟨ id-≃ _ ⟩
  ((𝓤 /[ id ] Y))                                                  ≃⟨ ii ⟩
  (Y → pointed-types 𝓤)                                            ■
  where
