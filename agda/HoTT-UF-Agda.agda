@@ -291,18 +291,18 @@ x ≢ y = ¬(x ≡ y)
 ≢-sym : {X : 𝓤 ̇ } {x y : X} → x ≢ y → y ≢ x
 ≢-sym {𝓤} {X} {x} {y} u = λ (p : y ≡ x) → u (p ⁻¹)
 
-Id-to-Fun : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
-Id-to-Fun {𝓤} = transport (𝑖𝑑 (𝓤 ̇ ))
+Id→Fun : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
+Id→Fun {𝓤} = transport (𝑖𝑑 (𝓤 ̇ ))
 
-Id-to-Fun' : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
-Id-to-Fun' (refl X) = 𝑖𝑑 X
+Id→Fun' : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
+Id→Fun' (refl X) = 𝑖𝑑 X
 
-Id-to-Funs-agree : {X Y : 𝓤 ̇ } (p : X ≡ Y)
-                 → Id-to-Fun p ≡ Id-to-Fun' p
-Id-to-Funs-agree (refl X) = refl (𝑖𝑑 X)
+Id→Funs-agree : {X Y : 𝓤 ̇ } (p : X ≡ Y)
+              → Id→Fun p ≡ Id→Fun' p
+Id→Funs-agree (refl X) = refl (𝑖𝑑 X)
 
 𝟙-is-not-𝟘 : 𝟙 ≢ 𝟘
-𝟙-is-not-𝟘 p = Id-to-Fun p ⋆
+𝟙-is-not-𝟘 p = Id→Fun p ⋆
 
 ₁-is-not-₀ : ₁ ≢ ₀
 ₁-is-not-₀ p = 𝟙-is-not-𝟘 q
@@ -554,8 +554,8 @@ module magmas where
  _≅ₘ_ : Magma 𝓤 → Magma 𝓤 → 𝓤 ̇
  M ≅ₘ N = Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-magma-iso M N f
 
- magma-Id-to-iso : {M N : Magma 𝓤} → M ≡ N → M ≅ₘ N
- magma-Id-to-iso p = (⌜ p ⌝ , ⌜⌝-is-iso p )
+ magma-Id→iso : {M N : Magma 𝓤} → M ≡ N → M ≅ₘ N
+ magma-Id→iso p = (⌜ p ⌝ , ⌜⌝-is-iso p )
 
  ∞-Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
  ∞-Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → X → X → X
@@ -657,6 +657,10 @@ from-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
          → σ ≡ τ
          → Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ
 from-Σ-≡ (refl (x , a)) = (refl x , refl a)
+
+to-Σ-≡' : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y y' : Y x}
+        → y ≡ y' → Id (Σ Y) (x , y) (x , y')
+to-Σ-≡' {𝓤} {𝓥} {X} {Y} {x} = ap (λ - → (x , -))
 
 is-singleton : 𝓤 ̇ → 𝓤 ̇
 is-singleton X = Σ \(c : X) → (x : X) → c ≡ x
@@ -883,7 +887,7 @@ X ◀ = ◁-refl X
   η x = retract-equation (ρ x)
 
   η' : (σ : Σ A) → NatΣ r (NatΣ s σ) ≡ σ
-  η' (x , a) = x , r x (s x a) ≡⟨ ap (λ - → x , -) (η x a) ⟩
+  η' (x , a) = x , r x (s x a) ≡⟨ to-Σ-≡' (η x a) ⟩
                x , a           ∎
 
 transport-is-retraction : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
@@ -1068,11 +1072,11 @@ inverse-of-∘ f g i j z =
 _≃_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ≃ Y = Σ \(f : X → Y) → is-equiv f
 
-Eq-to-fun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X → Y
-Eq-to-fun (f , i) = f
+Eq→fun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X → Y
+Eq→fun (f , i) = f
 
-Eq-to-fun-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X ≃ Y) → is-equiv (Eq-to-fun e)
-Eq-to-fun-is-equiv (f , i) = i
+Eq→fun-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X ≃ Y) → is-equiv (Eq→fun e)
+Eq→fun-is-equiv (f , i) = i
 
 invertibility-gives-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                       → invertible f → X ≃ Y
@@ -1114,23 +1118,23 @@ transport-is-equiv A (refl x) = id-is-equiv (A x)
   invertibility-gives-≃ (NatΣ f) (NatΣ g , NatΣ-η , NatΣ-ε)
  where
   f : (x : X) → A x → B x
-  f x = Eq-to-fun (φ x)
+  f x = Eq→fun (φ x)
 
   g : (x : X) → B x → A x
-  g x = inverse (f x) (Eq-to-fun-is-equiv (φ x))
+  g x = inverse (f x) (Eq→fun-is-equiv (φ x))
 
   η : (x : X) (a : A x) → g x (f x a) ≡ a
-  η x = inverse-is-retraction (f x) (Eq-to-fun-is-equiv (φ x))
+  η x = inverse-is-retraction (f x) (Eq→fun-is-equiv (φ x))
 
   ε : (x : X) (b : B x) → f x (g x b) ≡ b
-  ε x = inverse-is-section (f x) (Eq-to-fun-is-equiv (φ x))
+  ε x = inverse-is-section (f x) (Eq→fun-is-equiv (φ x))
 
   NatΣ-η : (w : Σ A) → NatΣ g (NatΣ f w) ≡ w
-  NatΣ-η (x , a) = x , g x (f x a) ≡⟨ ap (λ - → x , -) (η x a) ⟩
+  NatΣ-η (x , a) = x , g x (f x a) ≡⟨ to-Σ-≡' (η x a) ⟩
                    x , a           ∎
 
   NatΣ-ε : (t : Σ B) → NatΣ f (NatΣ g t) ≡ t
-  NatΣ-ε (x , b) = x , f x (g x b) ≡⟨ ap (λ - → x , -) (ε x b) ⟩
+  NatΣ-ε (x , b) = x , f x (g x b) ≡⟨ to-Σ-≡' (ε x b) ⟩
                    x , b           ∎
 
 ≃-gives-◁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X ◁ Y
@@ -1143,24 +1147,24 @@ equiv-to-singleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                    → X ≃ Y → is-singleton Y → is-singleton X
 equiv-to-singleton e = retract-of-singleton (≃-gives-◁ e)
 
-Id-to-Eq : (X Y : 𝓤 ̇ ) → X ≡ Y → X ≃ Y
-Id-to-Eq X X (refl X) = ≃-refl X
+Id→Eq : (X Y : 𝓤 ̇ ) → X ≡ Y → X ≃ Y
+Id→Eq X X (refl X) = ≃-refl X
 
 is-univalent : (𝓤 : Universe) → 𝓤 ⁺ ̇
-is-univalent 𝓤 = (X Y : 𝓤 ̇ ) → is-equiv (Id-to-Eq X Y)
+is-univalent 𝓤 = (X Y : 𝓤 ̇ ) → is-equiv (Id→Eq X Y)
 
 is-univalent-≃ : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
-is-univalent-≃ ua X Y = Id-to-Eq X Y , ua X Y
+is-univalent-≃ ua X Y = Id→Eq X Y , ua X Y
 
-Eq-to-Id : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → X ≃ Y → X ≡ Y
-Eq-to-Id ua X Y = inverse (Id-to-Eq X Y) (ua X Y)
+Eq→Id : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → X ≃ Y → X ≡ Y
+Eq→Id ua X Y = inverse (Id→Eq X Y) (ua X Y)
 
-Id-to-fun : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
-Id-to-fun {𝓤} {X} {Y} p = Eq-to-fun (Id-to-Eq X Y p)
+Id→fun : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
+Id→fun {𝓤} {X} {Y} p = Eq→fun (Id→Eq X Y p)
 
-Id-to-funs-agree : {X Y : 𝓤 ̇ } (p : X ≡ Y)
-                 → Id-to-fun p ≡ Id-to-Fun p
-Id-to-funs-agree (refl X) = refl (𝑖𝑑 X)
+Id→funs-agree : {X Y : 𝓤 ̇ } (p : X ≡ Y)
+              → Id→fun p ≡ Id→Fun p
+Id→funs-agree (refl X) = refl (𝑖𝑑 X)
 
 swap₂ : 𝟚 → 𝟚
 swap₂ ₀ = ₁
@@ -1185,22 +1189,22 @@ module example-of-a-nonset (ua : is-univalent 𝓤₀) where
  e₀-is-not-e₁ p = ₁-is-not-₀ r
   where
    q : id ≡ swap₂
-   q = ap Eq-to-fun p
+   q = ap Eq→fun p
 
    r : ₁ ≡ ₀
    r = ap (λ - → - ₁) q
 
  p₀ p₁ : 𝟚 ≡ 𝟚
- p₀ = Eq-to-Id ua 𝟚 𝟚 e₀
- p₁ = Eq-to-Id ua 𝟚 𝟚 e₁
+ p₀ = Eq→Id ua 𝟚 𝟚 e₀
+ p₁ = Eq→Id ua 𝟚 𝟚 e₁
 
  p₀-is-not-p₁ : p₀ ≢ p₁
  p₀-is-not-p₁ q = e₀-is-not-e₁ r
   where
-   r = e₀              ≡⟨ (inverse-is-section (Id-to-Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₀)⁻¹ ⟩
-       Id-to-Eq 𝟚 𝟚 p₀ ≡⟨ ap (Id-to-Eq 𝟚 𝟚) q ⟩
-       Id-to-Eq 𝟚 𝟚 p₁ ≡⟨ inverse-is-section (Id-to-Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₁ ⟩
-       e₁              ∎
+   r = e₀            ≡⟨ (inverse-is-section (Id→Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₀)⁻¹ ⟩
+       Id→Eq 𝟚 𝟚 p₀  ≡⟨ ap (Id→Eq 𝟚 𝟚) q ⟩
+       Id→Eq 𝟚 𝟚 p₁  ≡⟨ inverse-is-section (Id→Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₁ ⟩
+       e₁            ∎
 
  𝓤₀-is-not-a-set : ¬(is-set (𝓤₀ ̇ ))
  𝓤₀-is-not-a-set s = p₀-is-not-p₁ q
@@ -1439,8 +1443,8 @@ equiv-to-set = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → is-set Y → is-set X
   sol e = subtypes-of-sets-are-sets
-            (Eq-to-fun e)
-            (equivs-are-lc (Eq-to-fun e) (Eq-to-fun-is-equiv e))
+            (Eq→fun e)
+            (equivs-are-lc (Eq→fun e) (Eq→fun-is-equiv e))
 
 sections-closed-under-∼ = sol
  where
@@ -1784,11 +1788,11 @@ singleton-equiv-lemma {𝓤} {𝓥} {X} {A} x f i = γ
 
 univalence⇒ : is-univalent 𝓤
             → (X : 𝓤 ̇ ) → is-singleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
-univalence⇒ ua X = equiv-singleton-lemma X (Id-to-Eq X) (ua X)
+univalence⇒ ua X = equiv-singleton-lemma X (Id→Eq X) (ua X)
 
 ⇒univalence : ((X : 𝓤 ̇ ) → is-singleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y))
             → is-univalent 𝓤
-⇒univalence i X = singleton-equiv-lemma X (Id-to-Eq X) (i X)
+⇒univalence i X = singleton-equiv-lemma X (Id→Eq X) (i X)
 
 univalence→ : is-univalent 𝓤
             → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
@@ -1896,25 +1900,25 @@ J-invertible ua A φ X Y f i = J-equiv ua A φ X Y f (invertibles-are-equivs f i
 
 transport-map-along-≡ : {X Y Z : 𝓤 ̇ } (p : X ≡ Y) (g : X → Z)
                       → transport (λ - → - → Z) p g
-                      ≡ g ∘ Id-to-fun (p ⁻¹)
+                      ≡ g ∘ Id→fun (p ⁻¹)
 transport-map-along-≡ (refl X) = refl
 
 transport-map-along-≃ : (ua : is-univalent 𝓤) {X Y Z : 𝓤 ̇ }
                         (e : X ≃ Y) (g : X → Z)
-                      → transport (λ - → - → Z) (Eq-to-Id ua X Y e) g
-                      ≡ g ∘ Eq-to-fun (≃-sym e)
+                      → transport (λ - → - → Z) (Eq→Id ua X Y e) g
+                      ≡ g ∘ Eq→fun (≃-sym e)
 transport-map-along-≃ {𝓤} ua {X} {Y} {Z} = J-≃ ua A a X Y
  where
   A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓤 ̇
-  A X Y e = (g : X → Z) → transport (λ - → - → Z) (Eq-to-Id ua X Y e) g
-                        ≡ g ∘ Eq-to-fun (≃-sym e)
+  A X Y e = (g : X → Z) → transport (λ - → - → Z) (Eq→Id ua X Y e) g
+                        ≡ g ∘ Eq→fun (≃-sym e)
   a : (X : 𝓤 ̇ ) → A X X (≃-refl X)
-  a X g = transport (λ - → - → Z) (Eq-to-Id ua X X (≃-refl X)) g ≡⟨ q ⟩
-          transport (λ - → - → Z) (refl X) g                     ≡⟨ refl _ ⟩
-          g                                                      ∎
+  a X g = transport (λ - → - → Z) (Eq→Id ua X X (≃-refl X)) g ≡⟨ q ⟩
+          transport (λ - → - → Z) (refl X) g                  ≡⟨ refl _ ⟩
+          g                                                   ∎
     where
-     p : Eq-to-Id ua X X (≃-refl X) ≡ refl X
-     p = inverse-is-retraction (Id-to-Eq X X) (ua X X) (refl X)
+     p : Eq→Id ua X X (≃-refl X) ≡ refl X
+     p = inverse-is-retraction (Id→Eq X X) (ua X X) (refl X)
 
      q = ap (λ - → transport (λ - → - → Z) - g ) p
 
@@ -2274,13 +2278,13 @@ T Y A = Σ A , pr₁
   e = total-fiber-is-domain f
 
   p : Σ (fiber f) ≡ X
-  p = Eq-to-Id ua (Σ (fiber f)) X e
+  p = Eq→Id ua (Σ (fiber f)) X e
 
-  observation : Eq-to-fun (≃-sym e) ≡ (λ x → f x , x , refl (f x))
+  observation : Eq→fun (≃-sym e) ≡ (λ x → f x , x , refl (f x))
   observation = refl _
 
   q = transport (λ - → - → Y) p pr₁ ≡⟨ transport-map-along-≃ ua e pr₁ ⟩
-      pr₁ ∘ Eq-to-fun (≃-sym e)     ≡⟨ refl _ ⟩
+      pr₁ ∘ Eq→fun (≃-sym e)        ≡⟨ refl _ ⟩
       f                             ∎
 
   r : (Σ (fiber f) , pr₁) ≡ (X , f)
@@ -2303,7 +2307,7 @@ T Y A = Σ A , pr₁
   ε y a = refl a
 
   γ : ∀ y → fiber pr₁ y ≡ A y
-  γ y = Eq-to-Id ua _ _ (invertibility-gives-≃ (f y) (g y , η y , ε y))
+  γ y = Eq→Id ua _ _ (invertibility-gives-≃ (f y) (g y , η y , ε y))
 
 universes-are-map-classifiers : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
                               → is-map-classifier 𝓤
@@ -2358,7 +2362,7 @@ univalence-is-a-subsingleton {𝓤} ua⁺ ua ua' = p
   i : is-subsingleton (is-univalent 𝓤)
   i = Π-is-subsingleton dfe₂
        (λ X → Π-is-subsingleton dfe₂
-               (λ Y → being-equiv-is-a-subsingleton dfe₁ dfe₂ (Id-to-Eq X Y)))
+               (λ Y → being-equiv-is-a-subsingleton dfe₁ dfe₂ (Id→Eq X Y)))
 
   p : ua ≡ ua'
   p = i ua ua'
@@ -2468,10 +2472,10 @@ hlevel-relation-is-a-subsingleton fe (succ n) X =
 Π-cong fe fe' X Y Y' φ = invertibility-gives-≃ F (G , GF , FG)
  where
   f : (x : X) → Y x → Y' x
-  f x = Eq-to-fun (φ x)
+  f x = Eq→fun (φ x)
 
   e : (x : X) → is-equiv (f x)
-  e x = Eq-to-fun-is-equiv (φ x)
+  e x = Eq→fun-is-equiv (φ x)
 
   g : (x : X) → Y' x → Y x
   g x = inverse (f x) (e x)
@@ -2534,7 +2538,7 @@ at-most-one-section {𝓥} {𝓤} fe hfe {X} {Y} f (g , gf) (h , fh) = d
   s (h , η) = (h , fe' η)
 
   rs : (σ : has-section f) → r (s σ) ≡ σ
-  rs (h , η) = ap (λ - → (h , -)) q
+  rs (h , η) = to-Σ-≡' q
    where
     q : happly (f ∘ h) id (inverse (happly (f ∘ h) id) (hfe (f ∘ h) id) η) ≡ η
     q = inverse-is-section (happly (f ∘ h) id) (hfe (f ∘ h) id) η
@@ -2567,7 +2571,7 @@ at-most-one-retraction {𝓤} {𝓥} hfe fe' {X} {Y} f (g , fg) (h , hf) = d
   s (h , η) = (h , fe η)
 
   rs : (σ : has-retraction f) → r (s σ) ≡ σ
-  rs (h , η) = ap (λ - → (h , -)) q
+  rs (h , η) = to-Σ-≡' q
    where
     q : happly (h ∘ f) id (inverse (happly (h ∘ f) id) (hfe (h ∘ f) id) η) ≡ η
     q = inverse-is-section (happly (h ∘ f) id) (hfe (h ∘ f) id) η
@@ -2618,7 +2622,7 @@ global-propext = ∀ {𝓤} → propext 𝓤
 
 univalence-gives-propext : is-univalent 𝓤 → propext 𝓤
 univalence-gives-propext ua {P} {Q} i j f g =
- Eq-to-Id ua P Q
+ Eq→Id ua P Q
   (logically-equivalent-subsingletons-are-equivalent P Q i j (f , g))
 
 Id-from-subsingleton : propext 𝓤 → dfunext 𝓤 𝓤
@@ -2629,7 +2633,7 @@ Id-from-subsingleton {𝓤} pe fe P i = Hedberg P (λ X → h X , k X)
  where
   module _ (X : 𝓤 ̇ ) where
    f : P ≡ X → is-subsingleton X × (P ⇔ X)
-   f p = transport is-subsingleton p i , Id-to-fun p , (Id-to-fun (p ⁻¹))
+   f p = transport is-subsingleton p i , Id→fun p , (Id→fun (p ⁻¹))
 
    g : is-subsingleton X × (P ⇔ X) → P ≡ X
    g (l , φ , ψ) = pe i l φ ψ
@@ -2650,7 +2654,7 @@ Id-from-subsingleton {𝓤} pe fe P i = Hedberg P (λ X → h X , k X)
 subsingleton-univalence : propext 𝓤 → dfunext 𝓤 𝓤
                         → (P : 𝓤 ̇ )
                         → is-subsingleton P
-                        → (X : 𝓤 ̇ ) → is-equiv (Id-to-Eq P X)
+                        → (X : 𝓤 ̇ ) → is-equiv (Id→Eq P X)
 subsingleton-univalence {𝓤} pe fe P i X = γ
  where
   l : P ≃ X → is-subsingleton X
@@ -2658,7 +2662,7 @@ subsingleton-univalence {𝓤} pe fe P i X = γ
 
   eqtoid : P ≃ X → P ≡ X
   eqtoid e = pe i (equiv-to-subsingleton (≃-sym e) i)
-                (Eq-to-fun e) (Eq-to-fun (≃-sym e))
+                (Eq→fun e) (Eq→fun (≃-sym e))
 
   m : is-subsingleton (P ≃ X)
   m (f , k) (f' , k') = to-Σ-≡ (fe (λ x → j (f x) (f' x)) ,
@@ -2667,18 +2671,18 @@ subsingleton-univalence {𝓤} pe fe P i X = γ
      j : is-subsingleton X
      j = equiv-to-subsingleton (≃-sym (f , k)) i
 
-  ε : (e : P ≃ X) → Id-to-Eq P X (eqtoid e) ≡ e
-  ε e = m (Id-to-Eq P X (eqtoid e)) e
+  ε : (e : P ≃ X) → Id→Eq P X (eqtoid e) ≡ e
+  ε e = m (Id→Eq P X (eqtoid e)) e
 
-  η : (q : P ≡ X) → eqtoid (Id-to-Eq P X q) ≡ q
-  η q = Id-from-subsingleton pe fe P i X (eqtoid (Id-to-Eq P X q)) q
+  η : (q : P ≡ X) → eqtoid (Id→Eq P X q) ≡ q
+  η q = Id-from-subsingleton pe fe P i X (eqtoid (Id→Eq P X q)) q
 
-  γ : is-equiv (Id-to-Eq P X)
-  γ = invertibles-are-equivs (Id-to-Eq P X) (eqtoid , η , ε)
+  γ : is-equiv (Id→Eq P X)
+  γ = invertibles-are-equivs (Id→Eq P X) (eqtoid , η , ε)
 
 subsingleton-univalence-≃ : propext 𝓤 → dfunext 𝓤 𝓤
                           → (X P : 𝓤 ̇ ) → is-subsingleton P → (P ≡ X) ≃ (P ≃ X)
-subsingleton-univalence-≃ pe fe X P i = Id-to-Eq P X ,
+subsingleton-univalence-≃ pe fe X P i = Id→Eq P X ,
                                         subsingleton-univalence pe fe P i X
 
 Ω : (𝓤 : Universe) → 𝓤 ⁺ ̇
@@ -2714,9 +2718,9 @@ holds-is-subsingleton (P , i) = i
     a : p holds ≡ q holds
     a = ap _holds e
     u : p holds → q holds
-    u = Id-to-fun a
+    u = Id→fun a
     v : q holds → p holds
-    v = Id-to-fun (a ⁻¹)
+    v = Id→fun (a ⁻¹)
 
   h : (p q : Ω 𝓤) → A p q → p ≡ q
   h p q (u , v) = Ω-ext fe pe u v
@@ -3387,9 +3391,9 @@ equivs-are-haes↓ : is-univalent (𝓤 ⊔ 𝓥)
 equivs-are-haes↓ {𝓤} {𝓥} ua {X} {Y} = J↓-equiv {𝓤} {𝓥} ua (λ X Y f → is-hae f)
                                        lower-is-hae X Y
 
-Id-to-Eq-is-hae : is-univalent 𝓤 → is-univalent (𝓤 ⁺)
-                → {X Y : 𝓤 ̇ } → is-hae (Id-to-Eq X Y)
-Id-to-Eq-is-hae ua ua⁺ {X} {Y} = equivs-are-haes↓ ua⁺ (Id-to-Eq X Y) (ua X Y)
+Id→Eq-is-hae : is-univalent 𝓤 → is-univalent (𝓤 ⁺)
+             → {X Y : 𝓤 ̇ } → is-hae (Id→Eq X Y)
+Id→Eq-is-hae ua ua⁺ {X} {Y} = equivs-are-haes↓ ua⁺ (Id→Eq X Y) (ua X Y)
 
 global-property-of-types : 𝓤ω
 global-property-of-types = {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
@@ -3409,7 +3413,7 @@ global-≃-ap' : Univalence
              → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → A X ≃ A Y
 global-≃-ap' {𝓤} {𝓥} ua F A φ X Y e =
   A X          ≃⟨ φ X ⟩
-  A (Lift 𝓥 X) ≃⟨ Id-to-Eq (A (Lift 𝓥 X)) (A (Lift 𝓤 Y)) q ⟩
+  A (Lift 𝓥 X) ≃⟨ Id→Eq (A (Lift 𝓥 X)) (A (Lift 𝓤 Y)) q ⟩
   A (Lift 𝓤 Y) ≃⟨ ≃-sym (φ Y) ⟩
   A Y          ■
  where
@@ -3420,7 +3424,7 @@ global-≃-ap' {𝓤} {𝓥} ua F A φ X Y e =
       Lift 𝓤 Y ■
 
   p : Lift 𝓥 X ≡ Lift 𝓤 Y
-  p = Eq-to-Id (ua (𝓤 ⊔ 𝓥)) (Lift 𝓥 X) (Lift 𝓤 Y) d
+  p = Eq→Id (ua (𝓤 ⊔ 𝓥)) (Lift 𝓥 X) (Lift 𝓤 Y) d
 
   q : A (Lift 𝓥 X) ≡ A (Lift 𝓤 Y)
   q = ap A p
@@ -3455,11 +3459,11 @@ mc-gives-sc {𝓤} s P Y = γ
     b = Σ-change-of-variables-hae (λ A → Π (P ∘ A)) (χ Y) h
     c = ΠΣ-distr-≃
 
-  observation : χ-special P Y ≡ Eq-to-fun e
+  observation : χ-special P Y ≡ Eq→fun e
   observation = refl _
 
   γ : is-equiv (χ-special P Y)
-  γ = Eq-to-fun-is-equiv e
+  γ = Eq→fun-is-equiv e
 
 special-map-classifier : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
                        → (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ )
@@ -3607,7 +3611,7 @@ module magma-equivalences (ua : Univalence) where
 
  magma-iso-charac' : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
                    → is-magma-iso M N f ≡ is-magma-equiv M N f
- magma-iso-charac' M N f = Eq-to-Id (ua (universe-of ⟨ M ⟩))
+ magma-iso-charac' M N f = Eq→Id (ua (universe-of ⟨ M ⟩))
                             (is-magma-iso M N f)
                             (is-magma-equiv M N f)
                             (magma-iso-charac M N f)
@@ -3637,7 +3641,7 @@ module magma-equivalences (ua : Univalence) where
                                 (s : magma-structure X) (t : magma-structure Y)
                                 (p : X ≡ Y)
                               → (transport magma-structure p s ≡ t)
-                              ≃ is-magma-hom (X , s) (Y , t) (Id-to-fun p)
+                              ≃ is-magma-hom (X , s) (Y , t) (Id→fun p)
  transport-of-magma-structure X X (i , _·_) (j , _*_) (refl X) =
    ((i , _·_) ≡ (j , _*_))                       ≃⟨ a ⟩
    (_·_ ≡ _*_)                                   ≃⟨ b ⟩
@@ -3654,11 +3658,11 @@ module magma-equivalences (ua : Univalence) where
 
  magma-identity-is-equivalence : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≃ₘ N)
  magma-identity-is-equivalence {𝓤} M N =
-  (M ≡ N)                                                                          ≃⟨ a ⟩
-  (Σ \(p : ⟨ M ⟩ ≡ ⟨ N ⟩) → transport magma-structure p _·_ ≡ _*_)                 ≃⟨ b ⟩
-  (Σ \(p : ⟨ M ⟩ ≡ ⟨ N ⟩) → is-magma-hom M N (Eq-to-fun (Id-to-Eq ⟨ M ⟩ ⟨ N ⟩ p))) ≃⟨ c ⟩
-  (Σ \(e : ⟨ M ⟩ ≃ ⟨ N ⟩) → is-magma-hom M N (Eq-to-fun e))                        ≃⟨ Σ-assoc ⟩
-  (Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-equiv f × is-magma-hom M N f)                       ■
+  (M ≡ N)                                                                    ≃⟨ a ⟩
+  (Σ \(p : ⟨ M ⟩ ≡ ⟨ N ⟩) → transport magma-structure p _·_ ≡ _*_)           ≃⟨ b ⟩
+  (Σ \(p : ⟨ M ⟩ ≡ ⟨ N ⟩) → is-magma-hom M N (Eq→fun (Id→Eq ⟨ M ⟩ ⟨ N ⟩ p))) ≃⟨ c ⟩
+  (Σ \(e : ⟨ M ⟩ ≃ ⟨ N ⟩) → is-magma-hom M N (Eq→fun e))                     ≃⟨ Σ-assoc ⟩
+  (Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-equiv f × is-magma-hom M N f)                 ■
   where
    _·_ = structure-of M
    _*_ = structure-of N
@@ -3666,9 +3670,9 @@ module magma-equivalences (ua : Univalence) where
    a = Σ-≡-≃ M N
    b = Σ-cong (transport-of-magma-structure ⟨ M ⟩ ⟨ N ⟩ _·_ _*_)
    c = ≃-sym (Σ-change-of-variables-hae
-                (λ e → is-magma-hom M N (Eq-to-fun e))
-                (Id-to-Eq ⟨ M ⟩ ⟨ N ⟩)
-                (Id-to-Eq-is-hae (ua 𝓤) (ua (𝓤 ⁺))))
+                (λ e → is-magma-hom M N (Eq→fun e))
+                (Id→Eq ⟨ M ⟩ ⟨ N ⟩)
+                (Id→Eq-is-hae (ua 𝓤) (ua (𝓤 ⁺))))
 
  magma-identity-is-isomorphism : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≅ₘ N)
  magma-identity-is-isomorphism M N =
@@ -4022,7 +4026,7 @@ module basic-truncation-development
      where
       γ : decidable (⊤ ≡ (P , i)) → P + ¬ P
 
-      γ (inl r) = inl (Id-to-fun s (lift ⋆))
+      γ (inl r) = inl (Id→fun s (lift ⋆))
        where
         s : Lift 𝓤 𝟙 ≡ P
         s = ap pr₁ r
@@ -4095,12 +4099,12 @@ resize-is-a-subsingleton ρ P i = equiv-to-subsingleton (≃-sym (pr₂ (ρ P i)
 to-resize : (ρ : propositional-resizing 𝓤 𝓥)
             (P : 𝓤 ̇ ) (i : is-subsingleton P)
           → P → resize ρ P i
-to-resize ρ P i = Eq-to-fun (pr₂ (ρ P i))
+to-resize ρ P i = Eq→fun (pr₂ (ρ P i))
 
 from-resize : (ρ : propositional-resizing 𝓤 𝓥)
               (P : 𝓤 ̇ ) (i : is-subsingleton P)
             → resize ρ P i → P
-from-resize ρ P i = Eq-to-fun (≃-sym(pr₂ (ρ P i)))
+from-resize ρ P i = Eq→fun (≃-sym(pr₂ (ρ P i)))
 
 Propositional-resizing : 𝓤ω
 Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
@@ -4218,7 +4222,7 @@ Impredicativity-gives-PR {𝓤} {𝓥} pe fe (O , e) P i = Q , ε
   k (lift ⋆) (lift ⋆) = refl (lift ⋆)
 
   down : Ω 𝓤 → O
-  down = Eq-to-fun e
+  down = Eq→fun e
 
   O-is-set : is-set O
   O-is-set = equiv-to-set (≃-sym e) (Ω-is-a-set fe pe)
@@ -4230,8 +4234,8 @@ Impredicativity-gives-PR {𝓤} {𝓥} pe fe (O , e) P i = Q , ε
   j = O-is-set (down (Lift 𝓤 𝟙 , k)) (down (P , i))
 
   φ : Q → P
-  φ q = Id-to-fun
-         (ap _holds (equivs-are-lc down (Eq-to-fun-is-equiv e) q))
+  φ q = Id→fun
+         (ap _holds (equivs-are-lc down (Eq→fun-is-equiv e) q))
          (lift ⋆)
 
   γ : P → Q
@@ -4527,7 +4531,7 @@ module quotient
      a = ap (λ - → pr₁(- y)) (q ⁻¹)
 
      b : y ≈ y → x ≈ y
-     b = Id-to-fun a
+     b = Id→fun a
 
  universal-property : (A : 𝓦 ̇ )
                     → is-set A
@@ -4878,9 +4882,9 @@ cantors-diagonal = sol
 lifttwo = sol
  where
   sol : is-univalent 𝓤₀ → is-univalent 𝓤₁ → (𝟚 ≡ 𝟚) ≡ Lift 𝓤₁ 𝟚
-  sol ua₀ ua₁ = Eq-to-Id ua₁ (𝟚 ≡ 𝟚) (Lift 𝓤₁ 𝟚) e
+  sol ua₀ ua₁ = Eq→Id ua₁ (𝟚 ≡ 𝟚) (Lift 𝓤₁ 𝟚) e
    where
-    e = (𝟚 ≡ 𝟚)   ≃⟨ Id-to-Eq 𝟚 𝟚 , ua₀ 𝟚 𝟚 ⟩
+    e = (𝟚 ≡ 𝟚)   ≃⟨ Id→Eq 𝟚 𝟚 , ua₀ 𝟚 𝟚 ⟩
         (𝟚 ≃ 𝟚)   ≃⟨ 𝟚-has-𝟚-automorphisms (univalence-gives-dfunext ua₀) ⟩
         𝟚         ≃⟨ ≃-sym (Lift-≃ 𝟚) ⟩
         Lift 𝓤₁ 𝟚 ■
