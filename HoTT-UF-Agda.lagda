@@ -418,7 +418,7 @@ to practice univalent mathematics should consult the above references.
      1. [Operator fixities and precedences](HoTT-UF-Agda.html#infixop)
      1. [Agda files automatically extracted from these notes](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes/tree/master/agda)
      1. [The sources for these notes](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes)
-     1. [License](LICENSE)
+     1. [License](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes/blob/master/LICENSE)
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ## <a id="mlttinagda"></a> MLTT in Agda
@@ -2193,8 +2193,10 @@ A [magma](https://en.wikipedia.org/wiki/Magma_(algebra)) is a *set* equipped wit
 [[Bourbaki](https://books.google.co.uk/books?id=STS9aZ6F204C&pg=PA1&redir_esc=y#v=onepage&q&f=false)].  We can define the type of magmas in a universe `𝓤` as follows:
 
 \begin{code}
-Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → is-set X × (X → X → X)
+module magmas where
+
+ Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
+ Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → is-set X × (X → X → X)
 \end{code}
 
 The type `Magma 𝓤` collects all magmas in a universe `𝓤`, and lives in
@@ -2207,21 +2209,21 @@ Given a magma `M = (X , i , _·_)` we denote by `⟨ M ⟩` its underlying
 set `X` and by `magma-operation M` its multiplication `_·_`:
 
 \begin{code}
-⟨_⟩ : Magma 𝓤 → 𝓤 ̇
-⟨ X , i , _·_ ⟩ = X
+ ⟨_⟩ : Magma 𝓤 → 𝓤 ̇
+ ⟨ X , i , _·_ ⟩ = X
 
-magma-is-set : (M : Magma 𝓤) → is-set ⟨ M ⟩
-magma-is-set (X , i , _·_) = i
+ magma-is-set : (M : Magma 𝓤) → is-set ⟨ M ⟩
+ magma-is-set (X , i , _·_) = i
 
-magma-operation : (M : Magma 𝓤) → ⟨ M ⟩ → ⟨ M ⟩ → ⟨ M ⟩
-magma-operation (X , i , _·_) = _·_
+ magma-operation : (M : Magma 𝓤) → ⟨ M ⟩ → ⟨ M ⟩ → ⟨ M ⟩
+ magma-operation (X , i , _·_) = _·_
 \end{code}
 
 The following [syntax declaration](https://agda.readthedocs.io/en/latest/language/syntax-declarations.html)
 allows us to write `x ·⟨ M ⟩ y` as an abbreviation of `magma-operation M x y`:
 
 \begin{code}
-syntax magma-operation M x y = x ·⟨ M ⟩ y
+ syntax magma-operation M x y = x ·⟨ M ⟩ y
 \end{code}
 
 For some reason, Agda has this kind of definition backwards: the
@@ -2237,41 +2239,41 @@ A function of the underlying sets of two magmas is a called a
 homomorphism when it commutes with the magma operations:
 
 \begin{code}
-is-magma-hom : (M N : Magma 𝓤) → (⟨ M ⟩ → ⟨ N ⟩) → 𝓤 ̇
-is-magma-hom M N f = (x y : ⟨ M ⟩) → f (x ·⟨ M ⟩ y) ≡ f x ·⟨ N ⟩ f y
+ is-magma-hom : (M N : Magma 𝓤) → (⟨ M ⟩ → ⟨ N ⟩) → 𝓤 ̇
+ is-magma-hom M N f = (x y : ⟨ M ⟩) → f (x ·⟨ M ⟩ y) ≡ f x ·⟨ N ⟩ f y
 
-id-is-magma-hom : (M : Magma 𝓤) → is-magma-hom M M (𝑖𝑑 ⟨ M ⟩)
-id-is-magma-hom M = λ (x y : ⟨ M ⟩) → refl (x ·⟨ M ⟩ y)
+ id-is-magma-hom : (M : Magma 𝓤) → is-magma-hom M M (𝑖𝑑 ⟨ M ⟩)
+ id-is-magma-hom M = λ (x y : ⟨ M ⟩) → refl (x ·⟨ M ⟩ y)
 
-is-magma-iso : (M N : Magma 𝓤) → (⟨ M ⟩ → ⟨ N ⟩) → 𝓤 ̇
-is-magma-iso M N f = is-magma-hom M N f
-                   × Σ \(g : ⟨ N ⟩ → ⟨ M ⟩) → is-magma-hom N M g
-                                            × (g ∘ f ∼ 𝑖𝑑 ⟨ M ⟩)
-                                            × (f ∘ g ∼ 𝑖𝑑 ⟨ N ⟩)
+ is-magma-iso : (M N : Magma 𝓤) → (⟨ M ⟩ → ⟨ N ⟩) → 𝓤 ̇
+ is-magma-iso M N f = is-magma-hom M N f
+                    × Σ \(g : ⟨ N ⟩ → ⟨ M ⟩) → is-magma-hom N M g
+                                             × (g ∘ f ∼ 𝑖𝑑 ⟨ M ⟩)
+                                             × (f ∘ g ∼ 𝑖𝑑 ⟨ N ⟩)
 
-id-is-magma-iso : (M : Magma 𝓤) → is-magma-iso M M (𝑖𝑑 ⟨ M ⟩)
-id-is-magma-iso M = id-is-magma-hom M ,
-                    𝑖𝑑 ⟨ M ⟩ ,
-                    id-is-magma-hom M ,
-                    refl ,
-                    refl
+ id-is-magma-iso : (M : Magma 𝓤) → is-magma-iso M M (𝑖𝑑 ⟨ M ⟩)
+ id-is-magma-iso M = id-is-magma-hom M ,
+                     𝑖𝑑 ⟨ M ⟩ ,
+                     id-is-magma-hom M ,
+                     refl ,
+                     refl
 \end{code}
 
 Any identification of magmas gives rise to a magma isomorphism by transport:
 
 \begin{code}
-⌜_⌝ : {M N : Magma 𝓤} → M ≡ N → ⟨ M ⟩ → ⟨ N ⟩
-⌜ p ⌝ = transport ⟨_⟩ p
+ ⌜_⌝ : {M N : Magma 𝓤} → M ≡ N → ⟨ M ⟩ → ⟨ N ⟩
+ ⌜ p ⌝ = transport ⟨_⟩ p
 
-⌜⌝-is-iso : {M N : Magma 𝓤} (p : M ≡ N) → is-magma-iso M N (⌜ p ⌝)
-⌜⌝-is-iso (refl M) = id-is-magma-iso M
+ ⌜⌝-is-iso : {M N : Magma 𝓤} (p : M ≡ N) → is-magma-iso M N (⌜ p ⌝)
+ ⌜⌝-is-iso (refl M) = id-is-magma-iso M
 \end{code}
 
 The isomorphisms can be collected in a type:
 
 \begin{code}
-_≅ₘ_ : Magma 𝓤 → Magma 𝓤 → 𝓤 ̇
-M ≅ₘ N = Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-magma-iso M N f
+ _≅ₘ_ : Magma 𝓤 → Magma 𝓤 → 𝓤 ̇
+ M ≅ₘ N = Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-magma-iso M N f
 \end{code}
 
 The following function [will be](HoTT-UF-Agda.html#magmaequivalences) a bijection in the presence of
@@ -2279,8 +2281,8 @@ univalence, so that the identifications of magmas are in one-to-one
 correspondence with the magma isomorphisms:
 
 \begin{code}
-magma-Id-to-iso : {M N : Magma 𝓤} → M ≡ N → M ≅ₘ N
-magma-Id-to-iso p = (⌜ p ⌝ , ⌜⌝-is-iso p )
+ magma-Id-to-iso : {M N : Magma 𝓤} → M ≡ N → M ≅ₘ N
+ magma-Id-to-iso p = (⌜ p ⌝ , ⌜⌝-is-iso p )
 \end{code}
 
 If we omit the sethood condition in the definition of the type of
@@ -2288,8 +2290,8 @@ magmas, we get the type of what we could call `∞`-magmas (then the
 type of magmas could be called `0-Magma`).
 
 \begin{code}
-∞-Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
-∞-Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → X → X → X
+ ∞-Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
+ ∞-Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → X → X → X
 \end{code}
 
 A [monoid](https://en.wikipedia.org/wiki/Monoid) is a set equipped with an associative binary operation and
@@ -2299,27 +2301,28 @@ follows.
 We first define the three laws:
 
 \begin{code}
-left-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
-left-neutral e _·_ = ∀ x → e · x ≡ x
+module monoids where
+ left-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
+ left-neutral e _·_ = ∀ x → e · x ≡ x
 
-right-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
-right-neutral e _·_ = ∀ x → x · e ≡ x
+ right-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
+ right-neutral e _·_ = ∀ x → x · e ≡ x
 
-associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
-associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
+ associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
+ associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
 \end{code}
 
 Then a monoid is a set equipped with such `e` and `_·_` satisfying these
 three laws:
 
 \begin{code}
-Monoid : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Monoid 𝓤 = Σ \(X : 𝓤 ̇ ) → is-set X
-                        × Σ \(_·_ : X → X → X)
-                        → Σ \(e : X)
-                        → left-neutral e _·_
-                        × right-neutral e _·_
-                        × associative _·_
+ Monoid : (𝓤 : Universe) → 𝓤 ⁺ ̇
+ Monoid 𝓤 = Σ \(X : 𝓤 ̇ ) → is-set X
+                         × Σ \(_·_ : X → X → X)
+                         → Σ \(e : X)
+                         → left-neutral e _·_
+                         × right-neutral e _·_
+                         × associative _·_
 \end{code}
 
 *Remark.* People are more likely to use
@@ -2623,65 +2626,6 @@ apd : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : (x : X) → A x) {x y : X}
       (p : x ≡ y) → transport A p (f x) ≡ f y
 apd f (refl x) = refl (f x)
 \end{code}
-
-*Discussion.* We take the opportunity to comment on the slogan
-"isomorphic types are equal" used in some popularizations of univalent
-mathematics, which is technically inaccurate and pedagogically
-misleading.
-
-  * It is inaccurate because the notion considered in univalent
-    mathematics is not *isomorphism* but instead *equivalence*.
-
-  * It is also inaccurate because the notion considered in univalent
-    mathematics is not *equality*, traditionally conceived as
-    truth-valued, but instead *Martin-Löf's identity type*, which is
-    type-valued and in particular may assume multiple values.
-
-  * It is misleading because, with the above reparations, so that we
-    understand isomorphism as equivalence and equality as the identity
-    type, it still gives the incorrect impression that isomorphism
-    would behave like equality.
-
-  * It is rather the other way round. It is equality, redefined to
-    mean Martin-Löf's identity type, that behaves like isomorphism.
-
-    In order to make comparisons between isomorphic objects, we have
-    to transport along a specific isomosphism, and, likewise, to make
-    comparisons between identified types, we have to transport along a
-    specific identification, as in the above example with colors.
-
-  * The conclusion of this discussion is that the univalence axiom
-    gives a possible explanation of the identity type. It does not
-    redefine isomorphism or equivalence to mean equality. It rather
-    explains that Martin-Löf's identity type of a type universe can be
-    understood as the type of equivalences. It gives a precise meaning
-    (equivalence) to a vague notion (identity type).
-
-  * There is one new thing, however, regarding
-    isomorphisms/equivalences, that gets lost in translation, namely
-    that the mathematics becomes invariant under equivalence. This is
-    because properties and constructions are invariant under
-    Martin-Löf's identity, by design, and univalence identifies type
-    identity with type equivalence.
-
-  * So, in summary, this is what really happens:
-
-      - Equality, understood as Martin-Löf's identity type, behaves
-        like the notion of isomorphism, with all the bureaucracy
-        involved in reasoning with isomorphisms, in particular the
-        need to explicitly transport along designated identifications.
-
-      - Isomorphism, understood as equivalence, behaves a little bit
-        like equality, in the sense that the mathematics becomes
-        invariant under equivalence. Whatever we can say about a type,
-        holds automatically for any other equivalent type, by applying
-        a transport along the identification canonically induced by an
-        equivalence - with univalence, the type of equivalences obeys
-        the `J`-induction principle. This is what is new and
-        interesting and useful and intriguing,
-
-Hopefully the technical development that follows will clarify the
-above discussion in practice.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="sigmaequality"></a> Equality in Σ types
@@ -6903,6 +6847,8 @@ get global function extensionality.
 
 \begin{code}
 module magma-equivalences (ua : Univalence) where
+
+ open magmas
 
  dfe : global-dfunext
  dfe = univalence-gives-global-dfunext ua

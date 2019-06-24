@@ -510,70 +510,73 @@ is-truth-value = is-subsingleton
 is-set : 𝓤 ̇ → 𝓤 ̇
 is-set X = (x y : X) → is-subsingleton (x ≡ y)
 
-Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → is-set X × (X → X → X)
+module magmas where
 
-⟨_⟩ : Magma 𝓤 → 𝓤 ̇
-⟨ X , i , _·_ ⟩ = X
+ Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
+ Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → is-set X × (X → X → X)
 
-magma-is-set : (M : Magma 𝓤) → is-set ⟨ M ⟩
-magma-is-set (X , i , _·_) = i
+ ⟨_⟩ : Magma 𝓤 → 𝓤 ̇
+ ⟨ X , i , _·_ ⟩ = X
 
-magma-operation : (M : Magma 𝓤) → ⟨ M ⟩ → ⟨ M ⟩ → ⟨ M ⟩
-magma-operation (X , i , _·_) = _·_
+ magma-is-set : (M : Magma 𝓤) → is-set ⟨ M ⟩
+ magma-is-set (X , i , _·_) = i
 
-syntax magma-operation M x y = x ·⟨ M ⟩ y
+ magma-operation : (M : Magma 𝓤) → ⟨ M ⟩ → ⟨ M ⟩ → ⟨ M ⟩
+ magma-operation (X , i , _·_) = _·_
 
-is-magma-hom : (M N : Magma 𝓤) → (⟨ M ⟩ → ⟨ N ⟩) → 𝓤 ̇
-is-magma-hom M N f = (x y : ⟨ M ⟩) → f (x ·⟨ M ⟩ y) ≡ f x ·⟨ N ⟩ f y
+ syntax magma-operation M x y = x ·⟨ M ⟩ y
 
-id-is-magma-hom : (M : Magma 𝓤) → is-magma-hom M M (𝑖𝑑 ⟨ M ⟩)
-id-is-magma-hom M = λ (x y : ⟨ M ⟩) → refl (x ·⟨ M ⟩ y)
+ is-magma-hom : (M N : Magma 𝓤) → (⟨ M ⟩ → ⟨ N ⟩) → 𝓤 ̇
+ is-magma-hom M N f = (x y : ⟨ M ⟩) → f (x ·⟨ M ⟩ y) ≡ f x ·⟨ N ⟩ f y
 
-is-magma-iso : (M N : Magma 𝓤) → (⟨ M ⟩ → ⟨ N ⟩) → 𝓤 ̇
-is-magma-iso M N f = is-magma-hom M N f
-                   × Σ \(g : ⟨ N ⟩ → ⟨ M ⟩) → is-magma-hom N M g
-                                            × (g ∘ f ∼ 𝑖𝑑 ⟨ M ⟩)
-                                            × (f ∘ g ∼ 𝑖𝑑 ⟨ N ⟩)
+ id-is-magma-hom : (M : Magma 𝓤) → is-magma-hom M M (𝑖𝑑 ⟨ M ⟩)
+ id-is-magma-hom M = λ (x y : ⟨ M ⟩) → refl (x ·⟨ M ⟩ y)
 
-id-is-magma-iso : (M : Magma 𝓤) → is-magma-iso M M (𝑖𝑑 ⟨ M ⟩)
-id-is-magma-iso M = id-is-magma-hom M ,
-                    𝑖𝑑 ⟨ M ⟩ ,
-                    id-is-magma-hom M ,
-                    refl ,
-                    refl
+ is-magma-iso : (M N : Magma 𝓤) → (⟨ M ⟩ → ⟨ N ⟩) → 𝓤 ̇
+ is-magma-iso M N f = is-magma-hom M N f
+                    × Σ \(g : ⟨ N ⟩ → ⟨ M ⟩) → is-magma-hom N M g
+                                             × (g ∘ f ∼ 𝑖𝑑 ⟨ M ⟩)
+                                             × (f ∘ g ∼ 𝑖𝑑 ⟨ N ⟩)
 
-⌜_⌝ : {M N : Magma 𝓤} → M ≡ N → ⟨ M ⟩ → ⟨ N ⟩
-⌜ p ⌝ = transport ⟨_⟩ p
+ id-is-magma-iso : (M : Magma 𝓤) → is-magma-iso M M (𝑖𝑑 ⟨ M ⟩)
+ id-is-magma-iso M = id-is-magma-hom M ,
+                     𝑖𝑑 ⟨ M ⟩ ,
+                     id-is-magma-hom M ,
+                     refl ,
+                     refl
 
-⌜⌝-is-iso : {M N : Magma 𝓤} (p : M ≡ N) → is-magma-iso M N (⌜ p ⌝)
-⌜⌝-is-iso (refl M) = id-is-magma-iso M
+ ⌜_⌝ : {M N : Magma 𝓤} → M ≡ N → ⟨ M ⟩ → ⟨ N ⟩
+ ⌜ p ⌝ = transport ⟨_⟩ p
 
-_≅ₘ_ : Magma 𝓤 → Magma 𝓤 → 𝓤 ̇
-M ≅ₘ N = Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-magma-iso M N f
+ ⌜⌝-is-iso : {M N : Magma 𝓤} (p : M ≡ N) → is-magma-iso M N (⌜ p ⌝)
+ ⌜⌝-is-iso (refl M) = id-is-magma-iso M
 
-magma-Id-to-iso : {M N : Magma 𝓤} → M ≡ N → M ≅ₘ N
-magma-Id-to-iso p = (⌜ p ⌝ , ⌜⌝-is-iso p )
+ _≅ₘ_ : Magma 𝓤 → Magma 𝓤 → 𝓤 ̇
+ M ≅ₘ N = Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-magma-iso M N f
 
-∞-Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
-∞-Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → X → X → X
+ magma-Id-to-iso : {M N : Magma 𝓤} → M ≡ N → M ≅ₘ N
+ magma-Id-to-iso p = (⌜ p ⌝ , ⌜⌝-is-iso p )
 
-left-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
-left-neutral e _·_ = ∀ x → e · x ≡ x
+ ∞-Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
+ ∞-Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → X → X → X
 
-right-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
-right-neutral e _·_ = ∀ x → x · e ≡ x
+module monoids where
+ left-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
+ left-neutral e _·_ = ∀ x → e · x ≡ x
 
-associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
-associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
+ right-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
+ right-neutral e _·_ = ∀ x → x · e ≡ x
 
-Monoid : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Monoid 𝓤 = Σ \(X : 𝓤 ̇ ) → is-set X
-                        × Σ \(_·_ : X → X → X)
-                        → Σ \(e : X)
-                        → left-neutral e _·_
-                        × right-neutral e _·_
-                        × associative _·_
+ associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
+ associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
+
+ Monoid : (𝓤 : Universe) → 𝓤 ⁺ ̇
+ Monoid 𝓤 = Σ \(X : 𝓤 ̇ ) → is-set X
+                         × Σ \(_·_ : X → X → X)
+                         → Σ \(e : X)
+                         → left-neutral e _·_
+                         × right-neutral e _·_
+                         × associative _·_
 
 refl-left : {X : 𝓤 ̇ } {x y : X} {p : x ≡ y} → refl x ∙ p ≡ p
 refl-left {𝓤} {X} {x} {x} {refl x} = refl (refl x)
@@ -2957,8 +2960,7 @@ yoneda-ε A x = γ
   γ : (a : A x) → transport A (refl x) a ≡ a
   γ = refl
 
-is-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
-                   → Nat A B → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+is-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 is-fiberwise-equiv τ = ∀ x → is-equiv (τ x)
 
 𝓔-is-equiv : dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
@@ -3030,6 +3032,7 @@ universal-representable {𝓤} {𝓥} {X} {A} ((x , a) , p) = x , φ
  where
   e : is-fiberwise-equiv (𝓝 A x a)
   e = universal-fiberwise-equiv A x ((x , a) , p) (𝓝 A x a)
+
   φ : (y : X) → (x ≡ y) ≃ A y
   φ y = (𝓝 A x a y , e y)
 
@@ -3515,6 +3518,8 @@ univalence-→-again {𝓤} ua Y = equiv-to-singleton (equiv-classification ua Y
                 (univalence-gives-dfunext (ua 𝓤)))
 
 module magma-equivalences (ua : Univalence) where
+
+ open magmas
 
  dfe : global-dfunext
  dfe = univalence-gives-global-dfunext ua
@@ -4273,7 +4278,7 @@ PR-gives-existence-of-truncations fe R =
                                     (inhabitation-is-a-subsingleton fe X) s))
  }
 
-module powerset-union-availability
+module powerset-union-existence
         (pt : subsingleton-truncations-exist)
         (fe : global-dfunext)
        where
@@ -4283,16 +4288,16 @@ module powerset-union-availability
  𝓟𝓟 : 𝓤 ̇ → 𝓤 ⁺⁺ ̇
  𝓟𝓟 X = 𝓟 (𝓟 X)
 
- availability-of-unions : (𝓤 : Universe) → 𝓤 ⁺⁺ ̇
- availability-of-unions 𝓤 =
+ existence-of-unions : (𝓤 : Universe) → 𝓤 ⁺⁺ ̇
+ existence-of-unions 𝓤 =
   (X : 𝓤 ̇ )
   (𝓐 : 𝓟𝓟 X)
      → Σ \(B : 𝓟 X)
              → (x : X) → (x ∈ B) ⇔ ∃ \(A : 𝓟 X) → (A ∈ 𝓐) × (x ∈ A)
 
- availability-of-unions-gives-PR : availability-of-unions 𝓤
-                                 → propositional-resizing (𝓤 ⁺) 𝓤
- availability-of-unions-gives-PR {𝓤} α = γ
+ existence-of-unions-gives-PR : existence-of-unions 𝓤
+                              → propositional-resizing (𝓤 ⁺) 𝓤
+ existence-of-unions-gives-PR {𝓤} α = γ
   where
    γ : (P : 𝓤 ⁺ ̇ ) → (i : is-subsingleton P) → P has-size 𝓤
    γ P i = Q , e
@@ -4342,9 +4347,9 @@ module powerset-union-availability
     e : P ≃ Q
     e = logically-equivalent-subsingletons-are-equivalent P Q i j (f , g)
 
- PR-gives-availability-of-unions : propositional-resizing (𝓤 ⁺) 𝓤
-                                 → availability-of-unions 𝓤
- PR-gives-availability-of-unions {𝓤} ρ X 𝓐 = B , (λ x → lr x , rl x)
+ PR-gives-existence-of-unions : propositional-resizing (𝓤 ⁺) 𝓤
+                              → existence-of-unions 𝓤
+ PR-gives-existence-of-unions {𝓤} ρ X 𝓐 = B , (λ x → lr x , rl x)
   where
    β : X → 𝓤 ⁺ ̇
    β x = ∃ \(A : 𝓟 X) → (A ∈ 𝓐) × (x ∈ A)
@@ -4370,21 +4375,21 @@ module basic-powerset-development
   pt = PR-gives-existence-of-truncations fe ρ
 
   open basic-truncation-development pt fe
-  open powerset-union-availability pt fe
+  open powerset-union-existence pt fe
 
   ⋃ : {X : 𝓤 ̇ } → 𝓟𝓟 X → 𝓟 X
-  ⋃ 𝓐 = pr₁ (PR-gives-availability-of-unions ρ _ 𝓐)
+  ⋃ 𝓐 = pr₁ (PR-gives-existence-of-unions ρ _ 𝓐)
 
   ⋃-property : {X : 𝓤 ̇ } (𝓐 : 𝓟𝓟 X)
              → (x : X) → (x ∈ ⋃ 𝓐) ⇔ ∃ \(A : 𝓟 X) → (A ∈ 𝓐) × (x ∈ A)
-  ⋃-property 𝓐 = pr₂ (PR-gives-availability-of-unions ρ _ 𝓐)
+  ⋃-property 𝓐 = pr₂ (PR-gives-existence-of-unions ρ _ 𝓐)
 
-  intersections-are-available :
+  intersections-exist :
     (X : 𝓤 ̇ )
     (𝓐 : 𝓟𝓟 X)
        → Σ \(B : 𝓟 X)
               → (x : X) → (x ∈ B) ⇔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A)
-  intersections-are-available {𝓤} X 𝓐 = B , (λ x → lr x , rl x)
+  intersections-exist {𝓤} X 𝓐 = B , (λ x → lr x , rl x)
    where
     β : X → 𝓤 ⁺ ̇
     β x = (A : 𝓟 X) → A ∈ 𝓐 → x ∈ A
@@ -4404,11 +4409,11 @@ module basic-powerset-development
     rl x = to-resize ρ (β x) (i x)
 
   ⋂ : {X : 𝓤 ̇ } → 𝓟𝓟 X → 𝓟 X
-  ⋂ {𝓤} {X} 𝓐 = pr₁ (intersections-are-available X 𝓐)
+  ⋂ {𝓤} {X} 𝓐 = pr₁ (intersections-exist X 𝓐)
 
   ⋂-property : {X : 𝓤 ̇ } (𝓐 : 𝓟𝓟 X)
              → (x : X) → (x ∈ ⋂ 𝓐) ⇔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A)
-  ⋂-property {𝓤} {X} 𝓐 = pr₂ (intersections-are-available X 𝓐)
+  ⋂-property {𝓤} {X} 𝓐 = pr₂ (intersections-exist X 𝓐)
 
   ∅ full : {X : 𝓤 ̇ } → 𝓟 X
   ∅    = λ x → (Lift _ 𝟘 , equiv-to-subsingleton (Lift-≃ 𝟘) 𝟘-is-subsingleton)
