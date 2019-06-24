@@ -658,9 +658,9 @@ from-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
          → Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ
 from-Σ-≡ (refl (x , a)) = (refl x , refl a)
 
-to-Σ-≡' : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y y' : Y x}
-        → y ≡ y' → Id (Σ Y) (x , y) (x , y')
-to-Σ-≡' {𝓤} {𝓥} {X} {Y} {x} = ap (λ - → (x , -))
+to-Σ-≡' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x : X} {a a' : A x}
+        → a ≡ a' → Id (Σ A) (x , a) (x , a')
+to-Σ-≡' {𝓤} {𝓥} {X} {A} {x} = ap (λ - → (x , -))
 
 is-singleton : 𝓤 ̇ → 𝓤 ̇
 is-singleton X = Σ \(c : X) → (x : X) → c ≡ x
@@ -2867,6 +2867,40 @@ pr₂-embedding A X i x ((a , x) , refl x) ((b , x) , refl x) = p
  where
   p : ((a , x) , refl x) ≡ ((b , x) , refl x)
   p = ap (λ - → ((- , x) , refl x)) (i a b)
+
+pr₁-embedding : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+              → ((x : X) → is-subsingleton (A x))
+              → is-embedding (pr₁ {𝓤} {𝓥} {X} {A})
+pr₁-embedding i x ((x , a) , refl x) ((x , a') , refl x) = γ
+ where
+  γ : (x , a) , refl x ≡ (x , a') , refl x
+  γ = ap (λ - → (x , -) , refl x) (i x a a')
+
+equivs-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                        (f : X → Y)
+                      → is-equiv f → is-embedding f
+equivs-are-embeddings f i y = singletons-are-subsingletons (fiber f y) (i y)
+
+id-is-embedding : {X : 𝓤 ̇ } → is-embedding (𝑖𝑑 X)
+id-is-embedding {𝓤} {X} = equivs-are-embeddings id (id-is-equiv X)
+
+∘-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+              {f : X → Y} {g : Y → Z}
+            → is-embedding f  → is-embedding g → is-embedding (g ∘ f)
+∘-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} e d = h
+ where
+  A : (z : Z) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+  A z = Σ \(w : fiber g z) → fiber f (pr₁ w)
+  i : (z : Z) → is-subsingleton (A z)
+  i z = Σ-is-subsingleton (d z) (λ w → e (pr₁ w))
+  φ : (z : Z) → fiber (g ∘ f) z → A z
+  φ z (x , p) = (f x , p) , x , refl (f x)
+  γ : (z : Z) → A z → fiber (g ∘ f) z
+  γ z ((_ , p) , x , refl _) = x , p
+  η : (z : Z) (t : fiber (g ∘ f) z) → γ z (φ z t) ≡ t
+  η _ (x , refl _) = refl (x , refl ((g ∘ f) x))
+  h : (z : Z) → is-subsingleton (fiber (g ∘ f) z)
+  h z = lc-maps-reflect-subsingletons (φ z) (sections-are-lc (φ z) (γ z , η z)) (i z)
 
 embedding-lemma : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → ((x : X) → is-singleton (fiber f (f x)))
