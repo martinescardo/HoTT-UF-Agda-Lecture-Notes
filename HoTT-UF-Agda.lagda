@@ -6610,9 +6610,20 @@ equivalence type `X ≃ Y` lives in the same universe as `X` and
 `Id→Eq X Y` to conclude that it is a half adjoint equivalence:
 
 \begin{code}
-Id→Eq-is-hae : is-univalent 𝓤 → is-univalent (𝓤 ⁺)
+Id→Eq-is-hae' : is-univalent 𝓤 → is-univalent (𝓤 ⁺)
+              → {X Y : 𝓤 ̇ } → is-hae (Id→Eq X Y)
+Id→Eq-is-hae' ua ua⁺ {X} {Y} = equivs-are-haes↓ ua⁺ (Id→Eq X Y) (ua X Y)
+\end{code}
+
+We can be parsimonious with the uses of univalence by instead using
+`invertibles-are-haes`, which doesn't require univalence. However, that
+`Id→Eq` is invertibles of course requires univalence.
+
+\begin{code}
+Id→Eq-is-hae : is-univalent 𝓤
              → {X Y : 𝓤 ̇ } → is-hae (Id→Eq X Y)
-Id→Eq-is-hae ua ua⁺ {X} {Y} = equivs-are-haes↓ ua⁺ (Id→Eq X Y) (ua X Y)
+Id→Eq-is-hae ua {X} {Y} = invertibles-are-haes (Id→Eq X Y)
+                           (equivs-are-invertible (Id→Eq X Y) (ua X Y))
 \end{code}
 
 We apply the fact that `Id→Eq X Y` is a half adjoint equivalence to
@@ -7048,7 +7059,7 @@ Magma identity is equivalent to magma equivalence, and hence to magma isomorphis
    c = ≃-sym (Σ-change-of-variables-hae
                 (λ e → is-magma-hom M N (Eq→fun e))
                 (Id→Eq ⟨ M ⟩ ⟨ N ⟩)
-                (Id→Eq-is-hae (ua 𝓤) (ua (𝓤 ⁺))))
+                (Id→Eq-is-hae (ua 𝓤)))
 
  magma-identity-is-isomorphism : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≅ₘ N)
  magma-identity-is-isomorphism M N =

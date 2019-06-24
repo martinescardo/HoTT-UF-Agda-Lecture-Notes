@@ -3391,9 +3391,14 @@ equivs-are-haes↓ : is-univalent (𝓤 ⊔ 𝓥)
 equivs-are-haes↓ {𝓤} {𝓥} ua {X} {Y} = J↓-equiv {𝓤} {𝓥} ua (λ X Y f → is-hae f)
                                        lower-is-hae X Y
 
-Id→Eq-is-hae : is-univalent 𝓤 → is-univalent (𝓤 ⁺)
+Id→Eq-is-hae' : is-univalent 𝓤 → is-univalent (𝓤 ⁺)
+              → {X Y : 𝓤 ̇ } → is-hae (Id→Eq X Y)
+Id→Eq-is-hae' ua ua⁺ {X} {Y} = equivs-are-haes↓ ua⁺ (Id→Eq X Y) (ua X Y)
+
+Id→Eq-is-hae : is-univalent 𝓤
              → {X Y : 𝓤 ̇ } → is-hae (Id→Eq X Y)
-Id→Eq-is-hae ua ua⁺ {X} {Y} = equivs-are-haes↓ ua⁺ (Id→Eq X Y) (ua X Y)
+Id→Eq-is-hae ua {X} {Y} = invertibles-are-haes (Id→Eq X Y)
+                           (equivs-are-invertible (Id→Eq X Y) (ua X Y))
 
 global-property-of-types : 𝓤ω
 global-property-of-types = {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
@@ -3672,7 +3677,7 @@ module magma-equivalences (ua : Univalence) where
    c = ≃-sym (Σ-change-of-variables-hae
                 (λ e → is-magma-hom M N (Eq→fun e))
                 (Id→Eq ⟨ M ⟩ ⟨ N ⟩)
-                (Id→Eq-is-hae (ua 𝓤) (ua (𝓤 ⁺))))
+                (Id→Eq-is-hae (ua 𝓤)))
 
  magma-identity-is-isomorphism : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≅ₘ N)
  magma-identity-is-isomorphism M N =
