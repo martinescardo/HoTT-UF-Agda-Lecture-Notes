@@ -7843,7 +7843,7 @@ general structure identity principle:
         (α₀ : amnestic S₀ 𝓦₀) ( α₁ : amnestic S₁ 𝓦₁)
         (A B : Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X)
       →
-       (A ≡ B) ≃ (A ≃⟦ α₀ , α₁ ⟧ B)
+        (A ≡ B) ≃ (A ≃⟦ α₀ , α₁ ⟧ B)
 
  characterization-of-≡-join ua S₀ S₁ α₀ α₁ =
   characterization-of-≡ ua (λ X → S₀ X × S₁ X) (join S₀ S₁ α₀ α₁)
