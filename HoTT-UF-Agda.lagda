@@ -7633,7 +7633,7 @@ module magma-example (𝓤 : Universe) where
  in the above format of structure with axioms. The following
    developement solves this exercise.
 
-#### Another example of the general structure identity principle
+#### Another example of the general structure identity principle: pointed types
 
 The following should be self-explanatory:
 
@@ -7679,9 +7679,9 @@ module pointed-type-example (𝓤 : Universe) where
 We now show how to join two mathematics structures, so as to obtain a
 characterization of equality of the join from the characterization of
 the equalities of the structures. For example, we build the
-characterization of equality of pointed magmas from the
+characterization of equality of pointed ∞-magmas from the
 characterizations of the equality of pointed types and the
-characterization the equality of magmas. Moreover, adding axioms, we
+characterization of the equality of magmas. Moreover, adding axioms, we
 get a characterization of equality of monoids which amounts to the
 characterization of equality of pointed ∞-magmas:
 
