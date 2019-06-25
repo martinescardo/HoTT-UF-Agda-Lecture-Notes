@@ -204,7 +204,7 @@ which are common place in current mathematical practice
 (up to isomorphism), whereas monoidal closedness is given structure).
 
 In summary, univalent mathematics is characterized by (1)-(8) and not
-by the univalence axiom alone. In fact, half of theses notes begin
+by the univalence axiom alone. In fact, half of these notes begin
 *without* the univalence axiom (as measured by the number of lines in
 these lecture notes until we formulate the univalence axiom and start
 to use it).
