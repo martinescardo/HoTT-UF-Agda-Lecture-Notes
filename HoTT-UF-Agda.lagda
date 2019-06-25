@@ -5737,7 +5737,7 @@ For set-level mathematics, function extensionality and propositional
 extensionality are often the only consequences of univalence that are
 needed. A noteworthy exception is the theorem that the type of
 ordinals in a universe is an ordinal in the next universe, which
-requires univalence for sets (see the HoTT Book or
+requires univalence for sets (see the HoTT book or
 [this](https://www.cs.bham.ac.uk/~mhe/agda-new/OrdinalOfOrdinals.html)).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -7157,11 +7157,11 @@ We now generalize the above development.
 ### <a id="sip"></a> Some structure identity principles
 
 A *structure identity principle* describes equality of mathematical
-structures in terms of equivalences of their underlying types.  The
-first published *structure identity principle*, for a large class of
-algebraic structures, is [[Coquand and
+structures in terms of equivalences of their underlying types, relying
+on univalence.  The first published *structure identity principle*,
+for a large class of algebraic structures, is [[Coquand and
 Danielsson]](https://www.sciencedirect.com/science/article/pii/S0019357713000694). The
-HoTT Book (section 9.8) has a categorical version, whose formulation
+HoTT book (section 9.8) has a categorical version, whose formulation
 is attributed to Peter Aczel.
 
 Here we formulate a variation for types equipped with structure. We
@@ -7169,14 +7169,16 @@ consider several versions:
 
  * One for raw structures subject to no axioms, such as ∞-magmas and pointed types.
 
- * One that adds axioms to a structure, so as to e.g. get magmas from
-   ∞-magmas.
+ * One that adds axioms to a structure, so as to e.g. get a
+   characterization of magma equality from ∞-magmas equalitty.
 
- * One that joins two kinds od structure, so as to e.g. get pointed ∞-magmas from pointed types and ∞-magmas.
+ * One that joins two kinds od structure, so as to e.g. a
+   characterization of equality of pointed ∞-magmas from
+   characterizations of equality for pointed types and for ∞-magmas.
 
- * Then adding axioms to pointed ∞-magmas we get monoids, and an
-   automatic characterization of equality of monoid in terms of
-   equivalences of underlying structure, in the expected way.
+ * In particular, adding axioms to pointed ∞-magmas we get monoids,
+   and we get an automatic characterization of equality of monoids in
+   terms of equivalences of underlying structure, in the expected way.
 
 \begin{code}
 module sip where
@@ -7260,8 +7262,8 @@ We then collect the favourable data in the type `amnestic S 𝓦`:
  amnestic : (𝓤 ̇ → 𝓥 ̇ ) → (𝓦 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
 
  amnestic {𝓤} {𝓥} S 𝓦 = Σ \(ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
-                      → Σ \(ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
-                      → {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
+                       → Σ \(ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
+                       → {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
 \end{code}
 
 We write `is-homomorphism` for the first projection (we don't need
@@ -8540,7 +8542,7 @@ can pick a point of every inhabited type:
     c = 𝓤₀-is-not-a-set (b (𝓤₀ ̇ ))
 \end{code}
 
-See also Theorem 3.2.2 and Corollary 3.2.7 of the HoTT Book for a
+See also Theorem 3.2.2 and Corollary 3.2.7 of the HoTT book for a
 different argument that works with a single, arbitrary universe.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
