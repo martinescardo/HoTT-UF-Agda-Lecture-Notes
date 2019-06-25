@@ -7564,9 +7564,9 @@ structure and axioms:
             → Σ \(i : is-equiv f) → is-homomorphism α [ A ] [ B ] (f , i)
 \end{code}
 
-And with this we can formulate what the addition of axioms achieves,
-namely that the characterization of equality is the same, ignoring the
-axioms:
+And with this we can formulate and prove what the addition of axioms
+achieves, namely that the characterization of equality is the same,
+ignoring the axioms:
 
 \begin{code}
  characterization-of-≡-with-axioms :
@@ -7798,9 +7798,7 @@ The main construction in this submodule is this:
      γ = equivs-closed-under-∼ _ _ i e
 \end{code}
 
-We then can characterize equality of structures in the join by the following relation
-
-   >  `A ≃⟦ α₀ , α₁ ⟧ B`.
+We then can characterize equality of structures in the join by the following relation:
 
 \begin{code}
  _≃⟦_,_⟧_ : {S₀ : 𝓤 ̇ → 𝓥 ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
