@@ -7170,7 +7170,7 @@ consider several versions:
  * One for raw structures subject to no axioms, such as ∞-magmas and pointed types.
 
  * One that adds axioms to a structure, so as to e.g. get a
-   characterization of magma equality from ∞-magmas equalitty.
+   characterization of magma equality from ∞-magma equalitty.
 
  * One that joins two kinds od structure, so as to e.g. a
    characterization of equality of pointed ∞-magmas from
@@ -7184,7 +7184,7 @@ consider several versions:
 module sip where
 \end{code}
 
-We consider a structure specified by a function
+We consider mathematical structures specified by a function
 
    > `S : 𝓤 ̇ → 𝓥 ̇ `
 
@@ -7252,7 +7252,9 @@ We first define the canonical map:
                  (ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
                  {X : 𝓤 ̇ }
                  (s t : S X)
+
                → s ≡ t → ι (X , s) (X , t) (id-≃ X)
+
  canonical-map ι ρ {X} s s (refl s) = ρ (X , s)
 \end{code}
 
@@ -7289,8 +7291,8 @@ used in the definition:
             → Σ \(i : is-equiv f) → is-homomorphism α A B (f , i)
 \end{code}
 
-For example, when `S` is ∞-magma structure, we will have that
-`is-homorphism α A B (f , i)` amounts to `f` being a magma
+For example, when specifies `S` is ∞-magma structure, we will have
+that `is-homorphism α A B (f , i)` amounts to `f` being a magma
 homomorphism.
 
 The main lemma says that the homomorphism condition of an equivalence
@@ -7476,7 +7478,7 @@ module sip-with-axioms where
 
 The first construction, given `S` as above, and given
 subsingleton-valued axioms for types equipped with structure specified
-by `S`, constructs favourable data on `S'` defined by
+by `S`, builds favourable data on `S'` defined by
 
    > `S' X = Σ \(s : S X) → axioms X s`
 
@@ -7546,7 +7548,7 @@ embedding precisely because the axioms are subsingleton-valued:
 
 And this completess the construction.
 
-We now need a definition of equivalence of types equipped with
+We now need a notion of equivalence of types equipped with
 structure and axioms:
 
 \begin{code}
@@ -7653,18 +7655,19 @@ module pointed-type-example (𝓤 : Universe) where
 We now show how to join two mathematics structures, so as to obtain a
 characterization of equality of the join from the characterization of
 the equalities of the structures. For example, we build the
-characterization of equality of pointed magmas from the equality of
-pointed types and the equality of magmas. Moreover, adding axioms,
-from this we get a characterization of equality of monoids.
+characterization of equality of pointed magmas from the
+characterization of equality of pointed types and the characterization
+equality of magmas. Moreover, adding axioms, from this we get a
+characterization of equality of monoids.
 
 \begin{code}
 module sip-join where
 \end{code}
 
-We begin with the following technical lemma:
+We begin with the following technical lemma which may be of interest
+independently of structure identity principles:
 
 \begin{code}
-
  technical-lemma :
      {X : 𝓤 ̇ } {A : X → X → 𝓥 ̇ }
      {Y : 𝓦 ̇ } {B : Y → Y → 𝓣 ̇ }
@@ -7724,7 +7727,9 @@ We begin with the following technical lemma:
 *Exercise*. Try to find a shorter, more conceptual proof of the
  technical lemma, maybe using the Yoneda machinery.
 
-We consider two given structures specified by `S₀` and `S₁`, and work with structures specified by their combination `λ X → S₀ X × S₁ X`
+We consider two given mathematical structures specified by `S₀` and
+`S₁`, and work with structures specified by their combination `λ X →
+S₀ X × S₁ X`
 
 \begin{code}
  variable
@@ -7817,7 +7822,7 @@ The following is then an immediate of the join construction:
   characterization-of-≡ ua (λ X → S₀ X × S₁ X) (join S₀ S₁ α₀ α₁)
 \end{code}
 
-This concludes the submodule. Some examples of uses of this follows.
+This concludes the submodule. Some examples of uses of this follow.
 
 \begin{code}
 module pointed-∞-magma-example (𝓤 : Universe) where
@@ -7849,8 +7854,8 @@ module monoid-example (𝓤 : Universe) (ua : is-univalent 𝓤) where
  dfe = univalence-gives-dfunext ua
 
  open sip
- open sip-with-axioms
  open sip-join
+ open sip-with-axioms
 
  monoid-structure : 𝓤 ̇ → 𝓤 ̇
  monoid-structure X = (X → X → X) × X
@@ -7889,6 +7894,7 @@ module monoid-example (𝓤 : Universe) (ua : is-univalent 𝓤) where
  Monoid = Σ \(X : 𝓤 ̇) → Σ \(s : monoid-structure X) → monoid-axioms X s
 
  _≃ₘ_ : Monoid → Monoid → 𝓤 ̇
+
  (X , (_·_ , d) , a) ≃ₘ (Y , (_*_ , e) , b) =
 
    Σ \(f : X → Y) → is-equiv f

@@ -3763,7 +3763,9 @@ module sip where
                  (ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
                  {X : 𝓤 ̇ }
                  (s t : S X)
+
                → s ≡ t → ι (X , s) (X , t) (id-≃ X)
+
  canonical-map ι ρ {X} s s (refl s) = ρ (X , s)
 
  amnestic : (𝓤 ̇ → 𝓥 ̇ ) → (𝓦 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
@@ -4183,8 +4185,8 @@ module monoid-example (𝓤 : Universe) (ua : is-univalent 𝓤) where
  dfe = univalence-gives-dfunext ua
 
  open sip
- open sip-with-axioms
  open sip-join
+ open sip-with-axioms
 
  monoid-structure : 𝓤 ̇ → 𝓤 ̇
  monoid-structure X = (X → X → X) × X
@@ -4222,6 +4224,7 @@ module monoid-example (𝓤 : Universe) (ua : is-univalent 𝓤) where
  Monoid = Σ \(X : 𝓤 ̇) → Σ \(s : monoid-structure X) → monoid-axioms X s
 
  _≃ₘ_ : Monoid → Monoid → 𝓤 ̇
+
  (X , (_·_ , d) , a) ≃ₘ (Y , (_*_ , e) , b) =
 
    Σ \(f : X → Y) → is-equiv f
