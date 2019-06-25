@@ -7164,8 +7164,8 @@ Danielsson]](https://www.sciencedirect.com/science/article/pii/S0019357713000694
 HoTT book (section 9.8) has a categorical version, whose formulation
 is attributed to Peter Aczel.
 
-Here we formulate a variation for types equipped with structure. We
-consider several versions:
+Here we formulate and prove a variation for types equipped with
+structure. We consider several versions:
 
  * One for raw structures subject to no axioms, such as ∞-magmas and pointed types.
 
