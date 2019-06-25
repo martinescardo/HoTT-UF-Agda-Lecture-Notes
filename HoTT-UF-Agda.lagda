@@ -7170,9 +7170,10 @@ consider several versions:
  * One for raw structures subject to no axioms, such as ∞-magmas and pointed types.
 
  * One that adds axioms to a structure, so as to e.g. get a
-   characterization of magma equality from ∞-magma equalitty.
+   characterization of magma equality from a characterization of
+   ∞-magma equalitty.
 
- * One that joins two kinds od structure, so as to e.g. a
+ * One that joins two kinds of structure, so as to e.g. get a
    characterization of equality of pointed ∞-magmas from
    characterizations of equality for pointed types and for ∞-magmas.
 
