@@ -4031,6 +4031,7 @@ module pointed-type-example (𝓤 : Universe) where
 module sip-join where
 
  technical-lemma :
+
      {X : 𝓤 ̇ } {A : X → X → 𝓥 ̇ }
      {Y : 𝓦 ̇ } {B : Y → Y → 𝓣 ̇ }
      (f : (x₀ x₁ : X) → x₀ ≡ x₁ → A x₀ x₁)

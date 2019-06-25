@@ -7204,10 +7204,7 @@ For example, for the type of ∞-magmas we will take `𝓥 = 𝓤` and
 
 Our objective is to describe the identity type `Id (Σ S) A B`, in
 favourable circumstances, in terms of equivalences of the underlying
-type of `A B : Σ S`.
-
-We first introduce notation for the underlying type and the underlying
-structure:
+types `⟨ A ⟩` and `⟨ B ⟩` of `A B : Σ S`.
 
 \begin{code}
  ⟨_⟩ : {S : 𝓤 ̇ → 𝓥 ̇ } → Σ S → 𝓤 ̇
@@ -7292,7 +7289,7 @@ used in the definition:
             → Σ \(i : is-equiv f) → is-homomorphism α A B (f , i)
 \end{code}
 
-For example, when specifies `S` is ∞-magma structure, we will have
+For example, when `S` specifies ∞-magma structure, we will have
 that `is-homorphism α A B (f , i)` amounts to `f` being a magma
 homomorphism.
 
@@ -7520,8 +7517,12 @@ For `ι'` and `ρ'` we use `ι` and `ρ` ignoring the axioms.
 \end{code}
 
 For `ε'` we need more work, but the essence of the construction is the
-fact that the projection `S' X → S X` that forgets the axioms is an
-embedding precisely because the axioms are subsingleton-valued:
+fact that the projection
+
+   > `S' X → S X`
+
+that forgets the axioms is an embedding precisely because the axioms
+are subsingleton-valued:
 
 \begin{code}
    ε' : {X : 𝓤 ̇ } (s t : S' X) → is-equiv (canonical-map ι' ρ' s t)
@@ -7547,7 +7548,7 @@ embedding precisely because the axioms are subsingleton-valued:
      γ = equivs-closed-under-∼ _ _ e l
 \end{code}
 
-And this completess the construction.
+And this completess the construction of addition of axioms.
 
 We now need a notion of equivalence of types equipped with
 structure and axioms:
@@ -7561,7 +7562,13 @@ structure and axioms:
 
  A ≃⟦ α ⟧ B = Σ \(f : ⟪ A ⟫ → ⟪ B ⟫)
             → Σ \(i : is-equiv f) → is-homomorphism α [ A ] [ B ] (f , i)
+\end{code}
 
+And with this we can formulate what the addition of axioms achieves,
+namely that the characterization of equality is the same, ignoring the
+axioms:
+
+\begin{code}
  characterization-of-≡-with-axioms :
 
      is-univalent 𝓤
@@ -7657,9 +7664,10 @@ We now show how to join two mathematics structures, so as to obtain a
 characterization of equality of the join from the characterization of
 the equalities of the structures. For example, we build the
 characterization of equality of pointed magmas from the
-characterization of equality of pointed types and the characterization
-equality of magmas. Moreover, adding axioms, from this we get a
-characterization of equality of monoids.
+characterizations of the equality of pointed types and the
+characterization the equality of magmas. Moreover, adding axioms, we
+get a characterization of equality of monoids which amounts to the
+characterization of equality of pointed ∞-magmas:
 
 \begin{code}
 module sip-join where
@@ -7670,6 +7678,7 @@ independently of structure identity principles:
 
 \begin{code}
  technical-lemma :
+
      {X : 𝓤 ̇ } {A : X → X → 𝓥 ̇ }
      {Y : 𝓦 ̇ } {B : Y → Y → 𝓣 ̇ }
      (f : (x₀ x₁ : X) → x₀ ≡ x₁ → A x₀ x₁)
@@ -7789,7 +7798,9 @@ The main construction in this submodule is this:
      γ = equivs-closed-under-∼ _ _ i e
 \end{code}
 
-We then can characterize equality of structures in the join by the following relation:
+We then can characterize equality of structures in the join by the following relation
+
+   >  `A ≃⟦ α₀ , α₁ ⟧ B`.
 
 \begin{code}
  _≃⟦_,_⟧_ : {S₀ : 𝓤 ̇ → 𝓥 ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
