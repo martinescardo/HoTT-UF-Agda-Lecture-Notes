@@ -7181,6 +7181,8 @@ structure. We consider several versions:
    and we get an automatic characterization of equality of monoids in
    terms of equivalences of underlying structure, in the expected way.
 
+#### A general structure identity princple
+
 \begin{code}
 module sip where
 \end{code}
@@ -7403,6 +7405,8 @@ And this completes the construction and is the end of the module `sip`
 
 We now consider some examples of uses of this.
 
+#### Application of the general structure identity principle to ∞-magmas
+
 \begin{code}
 module ∞-magma-example (𝓤 : Universe) where
 
@@ -7467,6 +7471,8 @@ considered, for example that the underlying type is a set, or that the
 monoid structure satisfies the unit and associativity laws. We do this
 in a submodule, by reduction to the characterization of
 equality given in the module `sip`.
+
+#### Adding axioms
 
 \begin{code}
 module sip-with-axioms where
@@ -7585,6 +7591,8 @@ ignoring the axioms:
 And this concludes the module `sip-with-axioms`. We now consider some
 examples.
 
+#### Example of adding axioms: magmas
+
 \begin{code}
 module magma-example (𝓤 : Universe) where
 
@@ -7620,6 +7628,8 @@ module magma-example (𝓤 : Universe) where
  is convenient to redefine the type of monoids to an equivalent type
  in the above format of structure with axioms. The following
    developement solves this exercise.
+
+#### Another example of the general structure identity principle
 
 The following should be self-explanatory:
 
@@ -7668,6 +7678,8 @@ characterizations of the equality of pointed types and the
 characterization the equality of magmas. Moreover, adding axioms, we
 get a characterization of equality of monoids which amounts to the
 characterization of equality of pointed ∞-magmas:
+
+#### The structure identity principle for the join of two mathematical structures
 
 \begin{code}
 module sip-join where
@@ -7834,6 +7846,8 @@ The following is then an immediate of the join construction:
 
 This concludes the submodule. Some examples of uses of this follow.
 
+#### Example: pointed ∞-magmas
+
 \begin{code}
 module pointed-∞-magma-example (𝓤 : Universe) where
 
@@ -7856,6 +7870,8 @@ module pointed-∞-magma-example (𝓤 : Universe) where
 \end{code}
 
 In the following example, we combine joins and addition of axioms.
+
+#### Example: monoids
 
 \begin{code}
 module monoid-example (𝓤 : Universe) (ua : is-univalent 𝓤) where
