@@ -7359,7 +7359,7 @@ In summary, in the following chain of equivalences:
   * (i) is the characterization of equality in `Σ` types.
   * (ii) uses that `p = Eq→Id ua ⟨ A ⟩ ⟨ B ⟩ (Id→Eq ⟨ A ⟩ ⟨ B ⟩ p)` by univalence.
   * (iii) then applies a change of variables in `Σ` using the fact that `Id→Eq ⟨ A ⟩ ⟨ B ⟩ p` is an equivalence by univalence.
-  * (iv) uses the homomorphism-lemma.
+  * (iv) uses the `homomorphism-lemma`.
   * (v) applies `Σ` associativity.
 
 \begin{code}
@@ -7446,7 +7446,8 @@ function is an equivalence:
  α = (ι , ρ , ε)
 \end{code}
 
-Hence we have the data to apply the characterization of equality:
+Hence we have the required data to apply the above characterization of
+equality:
 
 \begin{code}
  characterization-of-∞-Magma-≡ :
@@ -7461,7 +7462,7 @@ Hence we have the data to apply the characterization of equality:
    characterization-of-≡ ua S α (X , _·_) (Y , _⋆_)
 \end{code}
 
-Next we want to account for situations in which "axioms" are
+Next we want to account for situations in which axioms are
 considered, for example that the underlying type is a set, or that the
 monoid structure satisfies the unit and associativity laws. We do this
 in a submodule, by reduction to the characterization of
@@ -7482,7 +7483,7 @@ by `S`, constructs favourable data on `S'` defined by
 from given favourable data on `S`.
 
 For that purpose we first define a forgetful map `Σ S' → Σ S` and
-underlying-type function `Σ S → 𝓤`:
+an underlying-type function `Σ S → 𝓤`:
 
 \begin{code}
  [_] : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ }
@@ -7607,7 +7608,8 @@ module magma-example (𝓤 : Universe) where
 
 *Exercise*. Characterize equality of monoids along the above lines. It
  is convenient to redefine the type of monoids to an equivalent type
- in the above format of structure with axioms.
+ in the above format of structure with axioms. The following
+   developement solves this exercise.
 
 The following should be self-explanatory:
 
@@ -7649,11 +7651,11 @@ module pointed-type-example (𝓤 : Universe) where
 \end{code}
 
 We now show how to join two mathematics structures, so as to obtain a
-characterization of equality of the join for the characterization of
-the equalities of the structures. For example, build the equality of
-pointed magmas from the equality of pointed types and the equality of
-magmas. Moreover, adding axioms, from this we get a characterization
-of equality of monoids.
+characterization of equality of the join from the characterization of
+the equalities of the structures. For example, we build the
+characterization of equality of pointed magmas from the equality of
+pointed types and the equality of magmas. Moreover, adding axioms,
+from this we get a characterization of equality of monoids.
 
 \begin{code}
 module sip-join where
@@ -7662,6 +7664,7 @@ module sip-join where
 We begin with the following technical lemma:
 
 \begin{code}
+
  technical-lemma :
      {X : 𝓤 ̇ } {A : X → X → 𝓥 ̇ }
      {Y : 𝓦 ̇ } {B : Y → Y → 𝓣 ̇ }
@@ -7742,7 +7745,6 @@ We consider two given structures specified by `S₀` and `S₁`, and work with s
  [_]₁ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
       → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X) → Σ S₁
  [ X , s₀ , s₁ ]₁ = (X , s₁)
-
 \end{code}
 
 The main construction in this submodule is this:
@@ -7838,7 +7840,7 @@ module pointed-∞-magma-example (𝓤 : Universe) where
      (pointed-type-example.α 𝓤) (∞-magma-example.α 𝓤) (X , x₀ , _·_) (Y , y₀ , _*_)
 \end{code}
 
-In the following example, we combine joins as addition of axioms.
+In the following example, we combine joins and addition of axioms.
 
 \begin{code}
 module monoid-example (𝓤 : Universe) (ua : is-univalent 𝓤) where
