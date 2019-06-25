@@ -405,6 +405,7 @@ to practice univalent mathematics should consult the above references.
      1. [The Yoneda Lemma for types](HoTT-UF-Agda.html#yoneda)
      1. [Universe lifting](HoTT-UF-Agda.html#universelifting)
      1. [The subtype classifier and other classifiers](HoTT-UF-Agda.html#subtypeclassifier)
+     1. [A structure identity principle](HoTT-UF-Agda.html#sip)
      1. [Magma equivalences](HoTT-UF-Agda.html#magmaequivalences)
      1. [Subsingleton truncation, disjunction and existence](HoTT-UF-Agda.html#truncation)
      1. [The univalent axiom of choice](HoTT-UF-Agda.html#choice)
@@ -2317,12 +2318,13 @@ three laws:
 
 \begin{code}
  Monoid : (𝓤 : Universe) → 𝓤 ⁺ ̇
- Monoid 𝓤 = Σ \(X : 𝓤 ̇ ) → is-set X
-                         × Σ \(_·_ : X → X → X)
-                         → Σ \(e : X)
-                         → left-neutral e _·_
-                         × right-neutral e _·_
-                         × associative _·_
+ Monoid 𝓤 = Σ \(X : 𝓤 ̇ )
+          → is-set X
+          × Σ \(_·_ : X → X → X)
+          → Σ \(e : X)
+          → left-neutral e _·_
+          × right-neutral e _·_
+          × associative _·_
 \end{code}
 
 *Remark.* People are more likely to use
@@ -5861,19 +5863,24 @@ id-is-embedding {𝓤} {X} = equivs-are-embeddings id (id-is-equiv X)
 
 ∘-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
               {f : X → Y} {g : Y → Z}
-            → is-embedding f  → is-embedding g → is-embedding (g ∘ f)
-∘-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} e d = h
+            → is-embedding g  → is-embedding f → is-embedding (g ∘ f)
+∘-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} d e = h
  where
   A : (z : Z) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
   A z = Σ \(w : fiber g z) → fiber f (pr₁ w)
+
   i : (z : Z) → is-subsingleton (A z)
   i z = Σ-is-subsingleton (d z) (λ w → e (pr₁ w))
+
   φ : (z : Z) → fiber (g ∘ f) z → A z
   φ z (x , p) = (f x , p) , x , refl (f x)
+
   γ : (z : Z) → A z → fiber (g ∘ f) z
   γ z ((_ , p) , x , refl _) = x , p
+
   η : (z : Z) (t : fiber (g ∘ f) z) → γ z (φ z t) ≡ t
   η _ (x , refl _) = refl (x , refl ((g ∘ f) x))
+
   h : (z : Z) → is-subsingleton (fiber (g ∘ f) z)
   h z = lc-maps-reflect-subsingletons (φ z) (sections-are-lc (φ z) (γ z , η z)) (i z)
 \end{code}
@@ -6899,9 +6906,438 @@ the type `Σ \(A : 𝓤 ̇ ) → A` of pointed types.
 defined [propositional truncations](HoTT-UF-Agda.html#truncation) and
 surjections, show that the surjections into `Y` are classified by the
 type `Σ \(A : 𝓤 ̇ ) → ∥ A ∥` of inhabited types.
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="sip"></a> A structure identity principle
+
+A *structure identity principle* describes equality of mathematical
+structures in terms of equivalences of their underlying types.  The
+first published *structure identity principle*, for a large class of
+algebraic structures, is [[Coquand and
+Danielsson]](https://www.sciencedirect.com/science/article/pii/S0019357713000694). The
+HoTT Book (section 9.8) has a categorical version, whose formulation
+is attributed to Peter Aczel.
+
+Here we formulate a variation for types equipped with structure. We
+consider two versions, where the second, which is derived from the
+first, allows us to easily accounts for the situation where part of
+the structure consist of subsingleton-valued axioms.
+
+\begin{code}
+module sip where
+\end{code}
+
+We consider a structure specified by a function
+
+   > `S : 𝓤 ̇ → 𝓥 ̇ `
+
+and types `X : 𝓤` equipped with such structure `s : S X`, collected in
+the type
+
+   > `Σ \(X : 𝓤) → S X`,
+
+which, as we have seen, can be abbreviated as
+
+   > `Σ S`.
+
+For example, for the type of ∞-magmas we will take `𝓥 = 𝓤` and
+
+   > `S X = X → X → X`.
+
+Our objective is to describe the identity type `Id (Σ S) A B`, in
+favourable circumstances, in terms of equivalences of the underlying
+type of `A B : Σ S`.
+
+We first introduce notation for the underlying type and the underlying
+structure:
+
+\begin{code}
+ ⟨_⟩ : {S : 𝓤 ̇ → 𝓥 ̇ } → Σ S → 𝓤 ̇
+ ⟨ X , s ⟩ = X
+
+ structure : {S : 𝓤 ̇ → 𝓥 ̇ } (A : Σ S) → S ⟨ A ⟩
+ structure (X , s) = s
+\end{code}
+
+The "favourable circumstances" will be given by data
+
+   > `ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ `
+
+   > `ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)`
+
+The idea is that
+
+  * `ι` describes favourable equivalences, and
+  * `ρ` then stipulates that all identity equivalences are favourable.
+
+We require that two structures on the same type making the identity
+equivalence favourable must be equal in a canonical way:
+
+ * The canonical map
+
+   > `s ≡ t  → ι (X , s) (X , t) (id-≃ X)`
+
+   defined by induction on identifications by
+
+   > `refl t ↦ ρ (X , s)`
+
+   must be an equivalence for all `X : 𝓤 ` and `s t : S X` .
+
+This may sound a bit abstract at this point, but in practical examples
+of interest it is easy to fulfill these requirements, as we will
+illustrate in due course.
+
+We first define the canonical map:
+
+\begin{code}
+ canonical-map : {S : 𝓤 ̇ → 𝓥 ̇ }
+                 (ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇)
+                 (ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
+                 {X : 𝓤 ̇ }
+                 (s t : S X)
+               → s ≡ t → ι (X , s) (X , t) (id-≃ X)
+ canonical-map ι ρ {X} s s (refl s) = ρ (X , s)
+\end{code}
+
+We then collect the favourable data in the type `Favourable S 𝓦`:
+
+\begin{code}
+ Favourable : (𝓤 ̇ → 𝓥 ̇ ) → (𝓦 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+
+ Favourable {𝓤} {𝓥} S 𝓦 = Σ \(ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
+                        → Σ \(ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
+                        → {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
+\end{code}
+
+We use lower-case `favourable` for the first projection (we don't need
+names for the other two projections):
+
+\begin{code}
+ favourable : {S : 𝓤 ̇ → 𝓥 ̇ } → Favourable S 𝓦 → (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇
+ favourable (ι , ρ , ε) = ι
+\end{code}
+
+We then collect the favourable equivalences of `A B : Σ S`, assuming
+that `S` is favourable, witnessed by `φ`, in a type
+
+   > `A ≃[ φ ] B`.
+
+Notice that only the first component of `φ`, namely `favourable φ`, is
+used in the definition:
+
+\begin{code}
+ _≃[_]_ : {S : 𝓤 ̇ → 𝓥 ̇ } → Σ S → Favourable S 𝓦 → Σ S → 𝓤 ⊔ 𝓦 ̇
+ A ≃[ φ ] B = Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → Σ \(i : is-equiv f) → favourable φ A B (f , i)
+\end{code}
+
+For example, when `S` is ∞-magma structure, we will have that `f` is
+favourable precisely when it is a homomorphism.
+
+The main lemma says that the favourability of an equivalence
+
+   > `e : ⟨ A ⟩ ≃ ⟨ B ⟩`
+
+is equivalent to the preservation of structure by transport along `S`
+using the identification
+
+   > `Eq→Id ua ⟨ A ⟩ ⟨ B ⟩ e : ⟨ A ⟩ ≡ ⟨ B ⟩`
+
+corresponding to `e` by univalence. We prove this by equivalence
+induction.
+
+\begin{code}
+ lemma : (ua : is-univalent 𝓤) (S : 𝓤 ̇ → 𝓥 ̇ ) (φ : Favourable S 𝓦)
+         (A B : Σ S) (e : ⟨ A ⟩ ≃ ⟨ B ⟩)
+       → (transport S (Eq→Id ua ⟨ A ⟩ ⟨ B ⟩ e) (structure A) ≡ structure B)
+       ≃ favourable φ A B e
+
+ lemma {𝓤} {𝓥} {𝓦} ua S (ι , ρ , ε) (X , s) (Y , t) e = J-≃ ua C c X Y e s t
+  where
+   C : (X Y : 𝓤 ̇) (e : X ≃ Y) → 𝓥 ⊔ 𝓦 ̇
+   C X Y e = (s : S X) (t : S Y)
+           → (transport S (Eq→Id ua X Y e) s ≡ t) ≃ ι (X , s) (Y , t) e
+
+   c : (X : 𝓤 ̇ ) → C X X (id-≃ X)
+   c X s t = (transport S (Eq→Id ua X X (id-≃ X)) s ≡ t) ≃⟨ i ⟩
+             (transport S (refl X) s ≡ t)                ≃⟨ ii ⟩
+             ι (X , s) (X , t) (id-≃ X)                  ■
+     where
+      p : Eq→Id ua X X (id-≃ X) ≡ refl X
+      p = inverse-is-retraction (Id→Eq X X) (ua X X) (refl X)
+
+      q : (transport S (Eq→Id ua X X (id-≃ X)) s ≡ t) ≡ (transport S (refl X) s ≡ t)
+      q = ap (λ - → transport S - s ≡ t) p
+
+      i  = Id→Eq _ _ q
+      ii = (canonical-map ι ρ s t , ε s t)
+\end{code}
+
+With this we are ready to prove the promised characterization of equality on `Σ S`:
+
+\begin{code}
+ characterization-of-≡ : is-univalent 𝓤
+                       → (S : 𝓤 ̇ → 𝓥 ̇ )
+                       → (φ : Favourable S 𝓦)
+                       → (A B : Σ S) → (A ≡ B) ≃ A ≃[ φ ] B
+
+ characterization-of-≡ {𝓤} {𝓥} {𝓦} ua S (ι , ρ , ε) = γ
+  where
+   φ : Favourable S 𝓦
+   φ = ι , ρ , ε
+\end{code}
+
+In summary, in the following chain of equivalences:
+
+  * (i) is the characterization of equality in `Σ` types.
+  * (ii) uses that `p = Eq→Id ua ⟨ A ⟩ ⟨ B ⟩ (Id→Eq ⟨ A ⟩ ⟨ B ⟩ p)` by univalence.
+  * (iii) then applies a change of variables in `Σ` using the fact that `Id→Eq ⟨ A ⟩ ⟨ B ⟩ p` is an equivalence by univalence.
+  * (iv) uses the lemma.
+  * (v) applies `Σ` associativity.
+
+\begin{code}
+   γ : (A B : Σ S) → (A ≡ B) ≃ (A ≃[ φ ] B)
+   γ A B =
+    (A ≡ B)                                                                  ≃⟨ i ⟩
+    (Σ \(p : ⟨ A ⟩ ≡ ⟨ B ⟩) → transport S p     (structure A) ≡ structure B) ≃⟨ ii ⟩
+    (Σ \(p : ⟨ A ⟩ ≡ ⟨ B ⟩) → transport S (f p) (structure A) ≡ structure B) ≃⟨ iii ⟩
+    (Σ \(e : ⟨ A ⟩ ≃ ⟨ B ⟩) → transport S (g e) (structure A) ≡ structure B) ≃⟨ iv ⟩
+    (Σ \(e : ⟨ A ⟩ ≃ ⟨ B ⟩) → ι A B e)                                       ≃⟨ v ⟩
+    (A ≃[ φ ] B)                                                             ■
+    where
+     i = Σ-≡-≃ A B
+
+     g : ⟨ A ⟩ ≃ ⟨ B ⟩ → ⟨ A ⟩ ≡ ⟨ B ⟩
+     g = Eq→Id ua ⟨ A ⟩ ⟨ B ⟩
+
+     f : ⟨ A ⟩ ≡ ⟨ B ⟩ → ⟨ A ⟩ ≡ ⟨ B ⟩
+     f p = g (Id→Eq ⟨ A ⟩ ⟨ B ⟩ p)
+
+     q : (p : ⟨ A ⟩ ≡ ⟨ B ⟩) → p ≡ f p
+     q p = (inverse-is-retraction (Id→Eq ⟨ A ⟩ ⟨ B ⟩) (ua ⟨ A ⟩ ⟨ B ⟩) p)⁻¹
+
+     r : (p : ⟨ A ⟩ ≡ ⟨ B ⟩)
+        → (transport S p     (structure A) ≡ structure B)
+        ≡ (transport S (f p) (structure A) ≡ structure B)
+     r p = ap (λ - → transport S - (structure A) ≡ structure B) (q p)
+
+     ii  = Σ-cong (λ p → Id→Eq _ _ (r p))
+     iii = ≃-sym (Σ-change-of-variables-hae
+                   (λ - → transport S (g -) (structure A) ≡ structure B)
+                   (Id→Eq ⟨ A ⟩ ⟨ B ⟩)
+                   (Id→Eq-is-hae ua))
+     iv  = Σ-cong (lemma ua S φ A B)
+     v   = Σ-assoc
+\end{code}
+
+And this completes the construction and is the end of the module `sip`
+
+*Exercise*. Describe the equivalence `A ≡ B → A ≃[ φ ] B` constructed above by induction
+ on identifications.
+
+We now consider some examples of uses of this.
+
+\begin{code}
+module ∞-magma-example (𝓤 : Universe) (ua : is-univalent 𝓤) where
+
+ open sip
+
+ S : 𝓤 ̇ → 𝓤 ̇
+ S X = X → X → X
+\end{code}
+
+We guess that a favourable equivalence is one that is a homomorphism:
+
+\begin{code}
+ ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
+ ι (X , _·_) (Y , _*_) (f , i) = (λ x x' → f (x · x')) ≡ (λ x x' → f x * f x')
+\end{code}
+
+The guess works because the identity function is a homomorphism:
+
+\begin{code}
+ ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
+ ρ (X , _·_) = refl (λ x x' → x · x')
+\end{code}
+
+And because the canonical map is pointwise equal to the identity
+function, by induction on identifications, and because the identity
+function is an equivalence:
+
+\begin{code}
+ ε : {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
+ ε {X} _·_ _*_ = γ
+  where
+   h : canonical-map ι ρ _·_ _*_ ∼ 𝑖𝑑 (_·_ ≡ _*_)
+   h (refl _·_) = refl (refl _·_)
+   γ : is-equiv (canonical-map ι ρ _·_ _*_)
+   γ = equivs-closed-under-∼
+        id (canonical-map ι ρ _·_ _*_) (id-is-equiv (_·_ ≡ _*_)) h
+
+ φ : Favourable S 𝓤
+ φ = (ι , ρ , ε)
+\end{code}
+
+Hence we have the data to apply the characterization of equality:
+
+\begin{code}
+ ∞-Magma-≡ : (X Y : 𝓤 ̇ ) (_·_ : X → X → X) (_*_ : Y → Y → Y)
+           → ((X , _·_) ≡ (Y , _*_))
+           ≃ Σ \(f : X → Y) → is-equiv f
+                            × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+
+ ∞-Magma-≡ X Y _·_ _⋆_ = characterization-of-≡ ua S φ (X , _·_) (Y , _⋆_)
+\end{code}
+
+Next we want to account for situations in which "axioms" are
+considered, for example that the underlying type is a set, or that the
+monoid structure satisfies the unit and associativity laws. We do this
+in a submodule, by reduction to the characterization of
+equality given in the module `sip`.
+
+\begin{code}
+module sip-with-axioms where
+
+ open sip public
+\end{code}
+
+The first construction, given `S` as above, and given
+subsingleton-valued axioms for types equipped with structure specified
+by `S`, constructs favourable data on `S'` defined by
+
+   > `S' X = Σ \(s : S X) → axioms X s`
+
+from given favourable data on `S`.
+
+For that purpose we first define a forgetful map `Σ S' → Σ S` and and
+underlying-type function `Σ S → 𝓤`:
+
+\begin{code}
+
+ [_] : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ }
+     → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s) → Σ S
+ [ X , s , α ] = (X , s)
+
+ ⟪_⟫ : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ }
+     → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s) → 𝓤 ̇
+ ⟪ X , s , α ⟫ = X
+
+ axioms-Favourable : (S : 𝓤 ̇ → 𝓥 ̇ )
+                     (axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ )
+                   → ((X : 𝓤 ̇ ) (s : S X) → is-subsingleton (axioms X s))
+                   → Favourable S 𝓦
+                   → Favourable (λ X → Σ \(s : S X) → axioms X s) 𝓦
+
+ axioms-Favourable {𝓤} {𝓥} {𝓦} S axioms i (ι , ρ , ε) = ι' , ρ' , ε'
+  where
+   S' : 𝓤 ̇ → 𝓥  ̇
+   S' X = Σ \(s : S X) → axioms X s
+\end{code}
+
+For `ι'` and `ρ'` we use `ι` and `ρ` ignoring the axioms.
+
+\begin{code}
+   ι' : (A B : Σ S') → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇
+   ι' A B = ι [ A ] [ B ]
+
+   ρ' : (A : Σ S') → ι' A A (id-≃ ⟨ A ⟩)
+   ρ' A = ρ [ A ]
+\end{code}
+
+For `ε'` we need more work, but the essence of the construction is the
+fact that the projection `S' X → S X` that forgets the axioms is an
+embedding precisely because the axioms are subsingleton-valued:
+
+\begin{code}
+   ε' : {X : 𝓤 ̇} (s t : S' X) → is-equiv (canonical-map ι' ρ' s t)
+   ε' {X} (s , α) (t , β) = γ
+    where
+     π : S' X → S X
+     π (s , α) = s
+
+     j : is-embedding π
+     j = pr₁-embedding (i X)
+
+     k : {s' t' : S' X} → is-equiv (ap π {s'} {t'})
+     k {s'} {t'} = embedding-gives-ap-is-equiv π j s' t'
+
+     l : canonical-map ι ρ s t ∘ ap π {s , α} {t , β}
+       ∼ canonical-map ι' ρ' (s , α) (t , β)
+     l (refl (s , α)) = refl (ρ (X , s))
+
+     e : is-equiv (canonical-map ι ρ s t ∘ ap π {s , α} {t , β})
+     e = ∘-is-equiv (ε s t) k
+
+     γ : is-equiv (canonical-map ι' ρ' (s , α) (t , β))
+     γ = equivs-closed-under-∼' _ _ e l
+\end{code}
+
+And this completess the construction.
+
+We now need a definition of equivalence of types equipped with
+structure and axioms:
+
+\begin{code}
+ _≃⟦_⟧_ : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ }
+        → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s)
+        → Favourable S 𝓦
+        → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s)
+        → 𝓤 ⊔ 𝓦 ̇
+
+ A ≃⟦ φ ⟧ B = Σ \(f : ⟪ A ⟫ → ⟪ B ⟫)
+            → Σ \(i : is-equiv f) → favourable φ [ A ] [ B ] (f , i)
+
+ characterization-of-≡-with-axioms :
+
+     is-univalent 𝓤
+   → (S : 𝓤 ̇ → 𝓥 ̇ )
+     (φ : Favourable S 𝓦)
+     (axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ )
+   → ((X : 𝓤 ̇ ) (s : S X) → is-subsingleton (axioms X s))
+   → (A B : Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s) → (A ≡ B) ≃ (A ≃⟦ φ ⟧ B)
+
+ characterization-of-≡-with-axioms {𝓤} {𝓥} {𝓦} ua S φ axioms i =
+  characterization-of-≡ ua (λ X → Σ \(s : S X) → axioms X s) (axioms-Favourable S axioms i φ)
+\end{code}
+
+And this concludes the module `sip-with-axioms`. We now consider some
+examples.
+
+\begin{code}
+module magma-example (𝓤 : Universe) (ua : is-univalent 𝓤) where
+
+ open ∞-magma-example 𝓤 ua
+ open sip-with-axioms
+
+ axioms : (X : 𝓤 ̇ ) → S X → 𝓤 ̇
+ axioms X s = is-set X
+
+ S' : 𝓤 ̇ → 𝓤 ̇
+ S' X = Σ \(s : S X) → axioms X s
+
+ i : ((X : 𝓤 ̇ ) (s : S X) → is-subsingleton (axioms X s))
+ i X s = being-set-is-a-subsingleton (univalence-gives-dfunext ua)
+\end{code}
+
+\begin{code}
+ Magma-≡ : (X Y : 𝓤 ̇ )
+           (_·_ : X → X → X) (_*_ : Y → Y → Y)
+           (α : axioms X _·_) (β : axioms Y _*_)
+
+           → ((X , _·_ , α) ≡ (Y , _*_ , β))
+           ≃ Σ \(f : X → Y) → is-equiv f
+                            × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+
+ Magma-≡ X Y _·_ _⋆_ α β = characterization-of-≡-with-axioms
+                            ua S φ axioms i (X , _·_ , α) (Y , _⋆_ , β)
+\end{code}
+
+*Exercise*. Characterize equality of monoids along the above lines. It
+ is convenient to redefine the type of monoids to an equivalent type
+ in the above format of structure with axioms.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="magmaequivalences"></a> Magma equivalences
+
+*This section needs rewriting after the addition of the previous, which subsumes part of this one.*
 
 We now define magma equivalences and show that the type of magma
 equivalences is identified with the type of magma isomorphisms, assuming
