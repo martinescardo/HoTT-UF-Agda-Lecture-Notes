@@ -561,6 +561,7 @@ module magmas where
  ∞-Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → X → X → X
 
 module monoids where
+
  left-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
  left-neutral e _·_ = ∀ x → e · x ≡ x
 
@@ -1130,6 +1131,18 @@ from-×-≡ {𝓤} {𝓥} {X} {Y} (refl (x , y)) = (refl x , refl y)
 
   ε : (q : (pr₀ z ≡ pr₀ t) × (pr₁ z ≡ pr₁ t)) → from-×-≡ (to-×-≡ q) ≡ q
   ε (refl x , refl y) = refl (refl x , refl y)
+
+ap-pr₀-to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
+              → (p₀ : pr₀ z ≡ pr₀ t)
+              → (p₁ : pr₁ z ≡ pr₁ t)
+              → ap pr₀ (to-×-≡ (p₀ , p₁)) ≡ p₀
+ap-pr₀-to-×-≡ (refl x) (refl y) = refl (refl x)
+
+ap-pr₁-to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
+              → (p₀ : pr₀ z ≡ pr₀ t)
+              → (p₁ : pr₁ z ≡ pr₁ t)
+              → ap pr₁ (to-×-≡ (p₀ , p₁)) ≡ p₁
+ap-pr₁-to-×-≡ (refl x) (refl y) = refl (refl y)
 
 Σ-cong : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
        → ((x : X) → A x ≃ B x) → Σ A ≃ Σ B
@@ -4012,6 +4025,213 @@ module pointed-type-example (𝓤 : Universe) where
 
  characterization-of-pointed-type-≡ ua X Y x₀ y₀ =
    characterization-of-≡ ua S α (X , x₀) (Y , y₀)
+
+module sip-join where
+
+ technical-lemma :
+     {X : 𝓤 ̇ } {A : X → X → 𝓥 ̇ }
+     {Y : 𝓦 ̇ } {B : Y → Y → 𝓣 ̇ }
+     (f : (x₀ x₁ : X) → x₀ ≡ x₁ → A x₀ x₁)
+     (g : (y₀ y₁ : Y) → y₀ ≡ y₁ → B y₀ y₁)
+   → ((x₀ x₁ : X) → is-equiv (f x₀ x₁))
+   → ((y₀ y₁ : Y) → is-equiv (g y₀ y₁))
+
+   → (z₀ z₁ : X × Y) → is-equiv (λ (r : z₀ ≡ z₁) → f (pr₀ z₀) (pr₀ z₁) (ap pr₀ r) ,
+                                                   g (pr₁ z₀) (pr₁ z₁) (ap pr₁ r))
+
+ technical-lemma {𝓤} {𝓥} {𝓦} {𝓣} {X} {A} {Y} {B} f g i j (x₀ , y₀) (x₁ , y₁) = γ
+  where
+   h : (x₀ , y₀) ≡ (x₁ , y₁) → A x₀ x₁ × B y₀ y₁
+   h r = f x₀ x₁ (ap pr₀ r) , g y₀ y₁ (ap pr₁ r)
+
+   f' : (a : A x₀ x₁) → x₀ ≡ x₁
+   f' = inverse (f x₀ x₁) (i x₀ x₁)
+
+   g' : (b : B y₀ y₁) → y₀ ≡ y₁
+   g' = inverse (g y₀ y₁) (j y₀ y₁)
+
+   k : A x₀ x₁ × B y₀ y₁ → (x₀ , y₀) ≡ (x₁ , y₁)
+   k (a , b) = to-×-≡ (f' a , g' b)
+
+   η : (q : (x₀ , y₀) ≡ (x₁ , y₁)) → k (h q) ≡ q
+   η (refl (x₀ , x₁)) =
+     k (h (refl (x₀ , x₁)))                                    ≡⟨ refl _ ⟩
+     to-×-≡ (inverse (f x₀ x₀) (i x₀ x₀) (f x₀ x₀ (refl x₀)) ,
+             inverse (g y₀ y₀) (j y₀ y₀) (g y₀ y₀ (refl y₀)))  ≡⟨ ii ⟩
+     to-×-≡ (refl x₀ , refl y₀)                                ≡⟨ refl _ ⟩
+     refl (x₀ , x₁)                                            ∎
+    where
+     ii = ap₂ (λ l r → to-×-≡ (l , r))
+            (inverse-is-retraction (f x₀ x₀) (i x₀ x₀) (refl x₀))
+            (inverse-is-retraction (g y₀ y₀) (j y₀ y₀) (refl x₁))
+
+   ε : (c : A x₀ x₁ × B y₀ y₁) → h (k c) ≡ c
+   ε (a , b) =
+     h (k (a , b))                              ≡⟨ refl _ ⟩
+     h (to-×-≡  (f' a , g' b))                  ≡⟨ refl _ ⟩
+     (f x₀ x₁ (ap pr₀ (to-×-≡ (f' a , g' b))) ,
+      g y₀ y₁ (ap pr₁ (to-×-≡ (f' a , g' b))))  ≡⟨ ii ⟩
+     (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ≡⟨ iii ⟩
+     a , b                                      ∎
+    where
+     ii = ap₂ (λ l r → f x₀ x₁ l , g y₀ y₁ r)
+              (ap-pr₀-to-×-≡ (f' a) (g' b))
+              (ap-pr₁-to-×-≡ (f' a) (g' b))
+     iii = to-×-≡ (inverse-is-section (f x₀ x₁) (i x₀ x₁) a ,
+                   inverse-is-section (g y₀ y₁) (j y₀ y₁) b)
+
+   γ : is-equiv h
+   γ = invertibles-are-equivs h (k , η , ε)
+
+ variable
+  𝓥₀ 𝓥₁ 𝓦₀ 𝓦₁ : Universe
+
+ open sip
+
+ ⟪_⟫ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
+     → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X) → 𝓤 ̇
+ ⟪ X , s₀ , s₁ ⟫ = X
+
+ [_]₀ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
+      → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X) → Σ S₀
+ [ X , s₀ , s₁ ]₀ = (X , s₀)
+
+ [_]₁ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
+      → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X) → Σ S₁
+ [ X , s₀ , s₁ ]₁ = (X , s₁)
+
+ join : (S₀ : 𝓤 ̇ → 𝓥₀ ̇ ) (S₁ : 𝓤 ̇ → 𝓥₁ ̇ )
+      → amnestic S₀ 𝓦₀
+      → amnestic S₁ 𝓦₁
+      → amnestic (λ X → S₀ X × S₁ X) (𝓦₀ ⊔ 𝓦₁)
+
+ join {𝓤} {𝓥₀} {𝓥₁} {𝓦₀} {𝓦₁} S₀ S₁ (ι₀ , ρ₀ , ε₀) (ι₁ , ρ₁ , ε₁) = ι , ρ , ε
+  where
+   S : 𝓤 ̇ → 𝓥₀ ⊔ 𝓥₁  ̇
+   S X = S₀ X × S₁ X
+
+   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦₀ ⊔ 𝓦₁ ̇
+   ι A B e = ι₀ [ A ]₀ [ B ]₀ e  ×  ι₁ [ A ]₁ [ B ]₁ e
+
+   ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
+   ρ A = (ρ₀ [ A ]₀ , ρ₁ [ A ]₁)
+
+   ε : {X : 𝓤 ̇} (s t : S X) → is-equiv (canonical-map ι ρ s t)
+   ε {X} (s₀ , s₁) (t₀ , t₁) = γ
+    where
+     c : (p : s₀ , s₁ ≡ t₀ , t₁) → ι₀ (X , s₀) (X , t₀) (id-≃ X)
+                                 × ι₁ (X , s₁) (X , t₁) (id-≃ X)
+     c p = (canonical-map ι₀ ρ₀ s₀ t₀ (ap pr₀ p) , canonical-map ι₁ ρ₁ s₁ t₁ (ap pr₁ p))
+
+     i : is-equiv c
+     i = technical-lemma (canonical-map ι₀ ρ₀) (canonical-map ι₁ ρ₁) ε₀ ε₁ (s₀ , s₁) (t₀ , t₁)
+
+     e : canonical-map ι ρ (s₀ , s₁) (t₀ , t₁) ∼ c
+     e (refl (s₀ , s₁)) = refl (ρ₀ (X , s₀) , ρ₁ (X , s₁))
+
+     γ : is-equiv (canonical-map ι ρ (s₀ , s₁) (t₀ , t₁))
+     γ = equivs-closed-under-∼ _ _ i e
+
+ _≃⟦_,_⟧_ : {S₀ : 𝓤 ̇ → 𝓥 ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
+
+          → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X)
+          → amnestic S₀ 𝓦₀
+          → amnestic S₁ 𝓦₁
+          → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X)
+
+          → 𝓤 ⊔ 𝓦₀ ⊔ 𝓦₁ ̇
+
+ A ≃⟦ α₀ , α₁ ⟧ B = Σ \(f : ⟪ A ⟫ → ⟪ B ⟫)
+                  → Σ \(i : is-equiv f) → is-homomorphism α₀ [ A ]₀ [ B ]₀ (f , i)
+                                        × is-homomorphism α₁ [ A ]₁ [ B ]₁ (f , i)
+
+ characterization-of-≡-join :
+
+        is-univalent 𝓤
+
+      → (S₀ : 𝓤 ̇ → 𝓥 ̇ ) (S₁ : 𝓤 ̇ → 𝓥₁ ̇ )
+        (α₀ : amnestic S₀ 𝓦₀) ( α₁ : amnestic S₁ 𝓦₁)
+        (A B : Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X)
+      →
+       (A ≡ B) ≃ (A ≃⟦ α₀ , α₁ ⟧ B)
+
+ characterization-of-≡-join ua S₀ S₁ α₀ α₁ =
+  characterization-of-≡ ua (λ X → S₀ X × S₁ X) (join S₀ S₁ α₀ α₁)
+
+module pointed-∞-magma-example (𝓤 : Universe) where
+
+ open sip-join
+
+ characterization-of-pointed-magma-≡ :
+
+     is-univalent 𝓤
+   → (X Y : 𝓤 ̇ ) (x₀ : X) (y₀ : Y)
+     (_·_ : X → X → X) (_*_ : Y → Y → Y)
+   →
+     ((X , x₀ , _·_) ≡ (Y , y₀ , _*_))
+   ≃ Σ \(f : X → Y) → is-equiv f
+                    × (f x₀ ≡ y₀)
+                    × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+
+ characterization-of-pointed-magma-≡ ua X Y x₀ y₀ _·_ _*_ =
+   characterization-of-≡-join ua (λ X → X) (λ X → X → X → X)
+     (pointed-type-example.α 𝓤) (∞-magma-example.α 𝓤) (X , x₀ , _·_) (Y , y₀ , _*_)
+
+module monoid-example (𝓤 : Universe) (ua : is-univalent 𝓤) where
+
+ dfe : dfunext 𝓤 𝓤
+ dfe = univalence-gives-dfunext ua
+
+ open sip
+ open sip-with-axioms
+ open sip-join
+
+ monoid-structure : 𝓤 ̇ → 𝓤 ̇
+ monoid-structure X = (X → X → X) × X
+
+ monoid-axioms : (X : 𝓤 ̇ ) → monoid-structure X → 𝓤 ̇
+ monoid-axioms X (_·_ , e) = is-set X
+                           × monoids.left-neutral  e _·_
+                           × monoids.right-neutral e _·_
+                           × monoids.associative     _·_
+
+ monoid-axioms-subsingleton : (X : 𝓤 ̇ ) (s : monoid-structure X)
+                            → is-subsingleton (monoid-axioms X s)
+
+ monoid-axioms-subsingleton X (_·_ , e) s = γ s
+  where
+   i : is-set X
+   i = pr₀ s
+
+   γ : is-subsingleton (monoid-axioms X (_·_ , e))
+   γ = ×-is-subsingleton (being-set-is-a-subsingleton dfe)
+       (×-is-subsingleton (Π-is-subsingleton dfe (λ x → i (e · x) x))
+         (×-is-subsingleton (Π-is-subsingleton dfe (λ x → i (x · e) x))
+           (Π-is-subsingleton dfe
+             (λ x → Π-is-subsingleton dfe
+                     (λ y → Π-is-subsingleton dfe
+                             (λ z → i ((x · y) · z) (x · (y · z))))))))
+
+ α : amnestic monoid-structure 𝓤
+ α = join (λ X → X → X → X) (λ X → X) (∞-magma-example.α 𝓤) (pointed-type-example.α 𝓤)
+
+ β : amnestic (λ X → Σ \(s : monoid-structure X) → monoid-axioms X s) 𝓤
+ β = add-axioms monoid-structure monoid-axioms monoid-axioms-subsingleton α
+
+ Monoid : 𝓤 ⁺ ̇
+ Monoid = Σ \(X : 𝓤 ̇) → Σ \(s : monoid-structure X) → monoid-axioms X s
+
+ _≃ₘ_ : Monoid → Monoid → 𝓤 ̇
+ (X , (_·_ , d) , a) ≃ₘ (Y , (_*_ , e) , b) =
+
+   Σ \(f : X → Y) → is-equiv f
+                  × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+                  × (f d ≡ e)
+
+ characterization-of-monoid-≡ : is-univalent 𝓤 → (A B : Monoid)
+                              → (A ≡ B) ≃ (A ≃ₘ B)
+
+ characterization-of-monoid-≡ ua = characterization-of-≡ ua (λ X → Σ (monoid-axioms X)) β
 
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
