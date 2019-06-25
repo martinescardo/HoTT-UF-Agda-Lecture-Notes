@@ -1104,14 +1104,32 @@ transport-is-equiv A (refl x) = id-is-equiv (A x)
 
 Σ-≡-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ τ : Σ A)
       → (σ ≡ τ) ≃ (Σ \(p : pr₀ σ ≡ pr₀ τ) → transport A p (pr₁ σ) ≡ pr₁ τ)
-Σ-≡-≃ {𝓤} {𝓥} {X} {A}  σ τ = invertibility-gives-≃ from-Σ-≡ (to-Σ-≡ , ε , η)
+Σ-≡-≃ {𝓤} {𝓥} {X} {A}  σ τ = invertibility-gives-≃ from-Σ-≡ (to-Σ-≡ , η , ε)
  where
-  η : (w : Σ \(p : pr₀ σ ≡ pr₀ τ) → transport A p (pr₁ σ) ≡ pr₁ τ)
-    → from-Σ-≡ (to-Σ-≡ w) ≡ w
-  η (refl p , refl q) = refl (refl p , refl q)
+  η : (q : σ ≡ τ) → to-Σ-≡ (from-Σ-≡ q) ≡ q
+  η (refl σ) = refl (refl σ)
 
-  ε : (q : σ ≡ τ) → to-Σ-≡ (from-Σ-≡ q) ≡ q
-  ε (refl σ) = refl (refl σ)
+  ε : (w : Σ \(p : pr₀ σ ≡ pr₀ τ) → transport A p (pr₁ σ) ≡ pr₁ τ)
+    → from-Σ-≡ (to-Σ-≡ w) ≡ w
+  ε (refl p , refl q) = refl (refl p , refl q)
+
+to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
+       → (pr₀ z ≡ pr₀ t) × (pr₁ z ≡ pr₁ t) → z ≡ t
+to-×-≡ (refl x , refl y) = refl (x , y)
+
+from-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
+         → z ≡ t → (pr₀ z ≡ pr₀ t) × (pr₁ z ≡ pr₁ t)
+from-×-≡ {𝓤} {𝓥} {X} {Y} (refl (x , y)) = (refl x , refl y)
+
+×-≡-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (z t : X × Y)
+      → (z ≡ t) ≃ (pr₀ z ≡ pr₀ t) × (pr₁ z ≡ pr₁ t)
+×-≡-≃ {𝓤} {𝓥} {X} {Y} z t = invertibility-gives-≃ from-×-≡ (to-×-≡ , η , ε)
+ where
+  η : (p : z ≡ t) → to-×-≡ (from-×-≡ p) ≡ p
+  η (refl z) = refl (refl z)
+
+  ε : (q : (pr₀ z ≡ pr₀ t) × (pr₁ z ≡ pr₁ t)) → from-×-≡ (to-×-≡ q) ≡ q
+  ε (refl x , refl y) = refl (refl x , refl y)
 
 Σ-cong : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
        → ((x : X) → A x ≃ B x) → Σ A ≃ Σ B
@@ -1368,11 +1386,6 @@ NatΣ-equiv-gives-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X �
                   → is-subsingleton X
                   → is-subsingleton Y
                   → is-subsingleton (X × Y)
-
-to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
-       → pr₀ z ≡ pr₀ t
-       → pr₁ z ≡ pr₁ t
-       → z ≡ t
 
 ×-is-subsingleton' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                    → ((Y → is-subsingleton X) × (X → is-subsingleton Y))
@@ -1720,12 +1733,6 @@ NatΣ-equiv-gives-fiberwise-equiv = sol
       → is-subsingleton X → is-subsingleton Y → is-subsingleton (X × Y)
   sol i j = Σ-is-subsingleton i (λ _ → j)
 
-to-×-≡ = sol
- where
-  sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
-      → pr₀ z ≡ pr₀ t → pr₁ z ≡ pr₁ t → z ≡ t
-  sol (refl x) (refl y) = refl (x , y)
-
 ×-is-subsingleton' = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -1734,7 +1741,7 @@ to-×-≡ = sol
   sol {𝓤} {𝓥} {X} {Y} (i , j) = k
    where
     k : is-subsingleton (X × Y)
-    k (x , y) (x' , y') = to-×-≡ (i y x x') (j x y y')
+    k (x , y) (x' , y') = to-×-≡ (i y x x' , j x y y')
 
 ×-is-subsingleton'-back = sol
  where
@@ -3603,7 +3610,7 @@ module magma-equivalences (ua : Univalence) where
             (Π-is-subsingleton dfe (λ y → magma-is-set N (f (g' y)) y)))
 
    γ : (h , g , k , η , ε) ≡ (h' , g' , k' , η' , ε')
-   γ = to-×-≡ p (to-Σ-≡ (q , i _ _))
+   γ = to-×-≡ (p , to-Σ-≡ (q , i _ _))
 
  is-magma-equiv : (M N : Magma 𝓤) → (⟨ M ⟩ → ⟨ N ⟩) → 𝓤 ̇
  is-magma-equiv M N f = is-equiv f × is-magma-hom M N f
@@ -3913,15 +3920,15 @@ module sip-with-axioms where
      k : {s' t' : S' X} → is-equiv (ap π {s'} {t'})
      k {s'} {t'} = embedding-gives-ap-is-equiv π j s' t'
 
-     l : canonical-map ι ρ s t ∘ ap π {s , α} {t , β}
-       ∼ canonical-map ι' ρ' (s , α) (t , β)
+     l : canonical-map ι' ρ' (s , α) (t , β)
+       ∼ canonical-map ι ρ s t ∘ ap π {s , α} {t , β}
      l (refl (s , α)) = refl (ρ (X , s))
 
      e : is-equiv (canonical-map ι ρ s t ∘ ap π {s , α} {t , β})
      e = ∘-is-equiv (ε s t) k
 
      γ : is-equiv (canonical-map ι' ρ' (s , α) (t , β))
-     γ = equivs-closed-under-∼' _ _ e l
+     γ = equivs-closed-under-∼ _ _ e l
 
  _≃⟦_⟧_ : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ }
         → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s)
