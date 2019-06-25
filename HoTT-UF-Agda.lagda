@@ -405,8 +405,8 @@ to practice univalent mathematics should consult the above references.
      1. [The Yoneda Lemma for types](HoTT-UF-Agda.html#yoneda)
      1. [Universe lifting](HoTT-UF-Agda.html#universelifting)
      1. [The subtype classifier and other classifiers](HoTT-UF-Agda.html#subtypeclassifier)
-     1. [A structure identity principle](HoTT-UF-Agda.html#sip)
      1. [Magma equivalences](HoTT-UF-Agda.html#magmaequivalences)
+     1. [A structure identity principle](HoTT-UF-Agda.html#sip)
      1. [Subsingleton truncation, disjunction and existence](HoTT-UF-Agda.html#truncation)
      1. [The univalent axiom of choice](HoTT-UF-Agda.html#choice)
      1. [Propositional resizing, truncation and the powerset](HoTT-UF-Agda.html#resizing)
@@ -6907,6 +6907,227 @@ defined [propositional truncations](HoTT-UF-Agda.html#truncation) and
 surjections, show that the surjections into `Y` are classified by the
 type `Σ \(A : 𝓤 ̇ ) → ∥ A ∥` of inhabited types.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="magmaequivalences"></a> Magma equivalences
+
+We now define magma equivalences and show that the type of magma
+equivalences is identified with the type of magma isomorphisms.  We
+apply this to characterize magma equality. We then [generalize
+this]((HoTT-UF-Agda.html#sip) by formulating a proving structure
+identity principles.
+
+For simplicity we assume global univalence here.
+
+\begin{code}
+module magma-equivalences (ua : Univalence) where
+
+ open magmas
+
+ dfe : global-dfunext
+ dfe = univalence-gives-global-dfunext ua
+
+ hfe : global-hfunext
+ hfe = univalence-gives-global-hfunext ua
+\end{code}
+
+The magma homomorphism and isomorphism conditions are subsingleton
+types by virtue of the fact that the underlying type of a magma is a
+sset by definition.
+
+\begin{code}
+ being-magma-hom-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                                   → is-subsingleton (is-magma-hom M N f)
+ being-magma-hom-is-a-subsingleton M N f =
+  Π-is-subsingleton dfe
+    (λ x → Π-is-subsingleton dfe
+             (λ y → magma-is-set N (f (x ·⟨ M ⟩ y)) (f x ·⟨ N ⟩ f y)))
+
+ being-magma-iso-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                                   → is-subsingleton (is-magma-iso M N f)
+ being-magma-iso-is-a-subsingleton M N f (h , g , k , η , ε) (h' , g' , k' , η' , ε') = γ
+  where
+   p : h ≡ h'
+   p = being-magma-hom-is-a-subsingleton M N f h h'
+
+   q : g ≡ g'
+   q = dfe (λ y → g y          ≡⟨ (ap g (ε' y))⁻¹ ⟩
+                  g (f (g' y)) ≡⟨ η (g' y) ⟩
+                  g' y         ∎)
+
+   i : is-subsingleton (is-magma-hom N M g' × (g' ∘ f ∼ id) × (f ∘ g' ∼ id))
+   i = ×-is-subsingleton
+         (being-magma-hom-is-a-subsingleton N M g')
+         (×-is-subsingleton
+            (Π-is-subsingleton dfe (λ x → magma-is-set M (g' (f x)) x))
+            (Π-is-subsingleton dfe (λ y → magma-is-set N (f (g' y)) y)))
+
+   γ : (h , g , k , η , ε) ≡ (h' , g' , k' , η' , ε')
+   γ = to-×-≡ p (to-Σ-≡ (q , i _ _))
+\end{code}
+
+By a magma equivalence we mean an equivalence which is a magma
+homomorphism. This notion is again a subsingleton type.
+
+\begin{code}
+ is-magma-equiv : (M N : Magma 𝓤) → (⟨ M ⟩ → ⟨ N ⟩) → 𝓤 ̇
+ is-magma-equiv M N f = is-equiv f × is-magma-hom M N f
+
+ being-magma-equiv-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                                     → is-subsingleton (is-magma-equiv M N f)
+ being-magma-equiv-is-a-subsingleton M N f =
+  ×-is-subsingleton
+   (being-equiv-is-a-subsingleton dfe dfe f)
+   (being-magma-hom-is-a-subsingleton M N f)
+\end{code}
+
+A function is a magma isomorphism if and only if it is a magma equivalence.
+
+\begin{code}
+ magma-isos-are-magma-equivs : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                             → is-magma-iso M N f
+                             → is-magma-equiv M N f
+ magma-isos-are-magma-equivs M N f (h , g , k , η , ε) = i , h
+  where
+   i : is-equiv f
+   i = invertibles-are-equivs f (g , η , ε)
+
+ magma-equivs-are-magma-isos : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                             → is-magma-equiv M N f
+                             → is-magma-iso M N f
+ magma-equivs-are-magma-isos M N f (i , h) = h , g , k , η , ε
+  where
+   g : ⟨ N ⟩ → ⟨ M ⟩
+   g = inverse f i
+
+   η : g ∘ f ∼ id
+   η = inverse-is-retraction f i
+
+   ε : f ∘ g ∼ id
+   ε = inverse-is-section f i
+
+   k : (a b : ⟨ N ⟩) → g (a ·⟨ N ⟩ b) ≡ g a ·⟨ M ⟩ g b
+   k a b = g (a ·⟨ N ⟩ b)             ≡⟨ ap₂ (λ a b → g (a ·⟨ N ⟩ b)) ((ε a)⁻¹)
+                                             ((ε b)⁻¹) ⟩
+           g (f (g a) ·⟨ N ⟩ f (g b)) ≡⟨ ap g ((h (g a) (g b))⁻¹) ⟩
+           g (f (g a ·⟨ M ⟩ g b))     ≡⟨ η (g a ·⟨ M ⟩ g b) ⟩
+           g a ·⟨ M ⟩ g b             ∎
+\end{code}
+
+Because these two notions are subsingleton types, we conclude that
+they are equivalent.
+
+\begin{code}
+ magma-iso-charac : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                  → is-magma-iso M N f ≃ is-magma-equiv M N f
+ magma-iso-charac M N f = logically-equivalent-subsingletons-are-equivalent
+                           (is-magma-iso M N f)
+                           (is-magma-equiv M N f)
+                           (being-magma-iso-is-a-subsingleton M N f)
+                           (being-magma-equiv-is-a-subsingleton M N f)
+                           (magma-isos-are-magma-equivs M N f ,
+                            magma-equivs-are-magma-isos M N f)
+\end{code}
+
+And hence they are equal by univalence.
+
+\begin{code}
+ magma-iso-charac' : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                   → is-magma-iso M N f ≡ is-magma-equiv M N f
+ magma-iso-charac' M N f = Eq→Id (ua (universe-of ⟨ M ⟩))
+                            (is-magma-iso M N f)
+                            (is-magma-equiv M N f)
+                            (magma-iso-charac M N f)
+\end{code}
+
+And by function extensionality the *properties* of being a magma
+isomorphism and a magma equivalence are the same:
+
+\begin{code}
+ magma-iso-charac'' : (M N : Magma 𝓤)
+                    → is-magma-iso M N ≡ is-magma-equiv M N
+ magma-iso-charac'' M N = dfe (magma-iso-charac' M N)
+\end{code}
+
+Hence the type of magma equivalences is equivalent, and therefore
+equal, to the type of magma isomorphisms.
+
+\begin{code}
+ _≃ₘ_ : Magma 𝓤 → Magma 𝓤 → 𝓤 ̇
+ M ≃ₘ N = Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-magma-equiv M N f
+
+ ≅ₘ-charac : (M N : Magma 𝓤)
+           → (M ≅ₘ N) ≃ (M ≃ₘ N)
+ ≅ₘ-charac M N = Σ-cong (magma-iso-charac M N)
+
+ ≅ₘ-charac' : (M N : Magma 𝓤)
+            → (M ≅ₘ N) ≡ (M ≃ₘ N)
+ ≅ₘ-charac' M N = ap Σ (magma-iso-charac'' M N)
+\end{code}
+
+To conclude, we characterize magma identity as magma equivalence. For
+this purpose, we first characterize transport of magma structure:
+
+\begin{code}
+ magma-structure : 𝓤 ̇ → 𝓤 ̇
+ magma-structure X = is-set X × (X → X → X)
+
+ structure-of : (M : Magma 𝓤) → magma-structure ⟨ M ⟩
+ structure-of (X , s) = s
+
+ homomorphism-lemma : (X Y : 𝓤 ̇ )
+                      (s : magma-structure X) (t : magma-structure Y)
+                      (p : X ≡ Y)
+                    →
+                      (transport magma-structure p s ≡ t)
+                    ≃ is-magma-hom (X , s) (Y , t) (Id→fun p)
+
+ homomorphism-lemma X X (i , _·_) (j , _*_) (refl X) =
+
+   ((i , _·_) ≡ (j , _*_))                       ≃⟨ a ⟩
+   (_·_ ≡ _*_)                                   ≃⟨ b ⟩
+   ((x : X) → (λ x' → x · x') ≡ (λ x' → x * x')) ≃⟨ c ⟩
+   ((x x' : X) → x · x' ≡ x * x')                ■
+
+  where
+   a = ≃-sym (embedding-criterion-converse pr₁
+               (pr₁-embedding (is-set X) (X → X → X)
+                 (being-set-is-a-subsingleton dfe))
+               (i , _·_)
+               (j , _*_))
+   b = happly _·_ _*_ , hfe _·_ _*_
+   c = Π-cong dfe dfe X _ _ (λ x → happly (x ·_) (x *_) , hfe (x ·_) (x *_))
+\end{code}
+
+Magma identity is equivalent to magma equivalence, and hence to magma isomorphism:
+
+\begin{code}
+ magma-identity-is-equivalence : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≃ₘ N)
+ magma-identity-is-equivalence {𝓤} M N =
+  (M ≡ N)                                                                    ≃⟨ a ⟩
+  (Σ \(p : ⟨ M ⟩ ≡ ⟨ N ⟩) → transport magma-structure p _·_ ≡ _*_)           ≃⟨ b ⟩
+  (Σ \(p : ⟨ M ⟩ ≡ ⟨ N ⟩) → is-magma-hom M N (Eq→fun (Id→Eq ⟨ M ⟩ ⟨ N ⟩ p))) ≃⟨ c ⟩
+  (Σ \(e : ⟨ M ⟩ ≃ ⟨ N ⟩) → is-magma-hom M N (Eq→fun e))                     ≃⟨ Σ-assoc ⟩
+  (Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-equiv f × is-magma-hom M N f)                 ■
+  where
+   _·_ = structure-of M
+   _*_ = structure-of N
+
+   a = Σ-≡-≃ M N
+   b = Σ-cong (homomorphism-lemma ⟨ M ⟩ ⟨ N ⟩ _·_ _*_)
+   c = ≃-sym (Σ-change-of-variables-hae
+                (λ e → is-magma-hom M N (Eq→fun e))
+                (Id→Eq ⟨ M ⟩ ⟨ N ⟩)
+                (Id→Eq-is-hae (ua 𝓤)))
+
+ magma-identity-is-isomorphism : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≅ₘ N)
+ magma-identity-is-isomorphism M N =
+   (M ≡ N)  ≃⟨ magma-identity-is-equivalence M N ⟩
+   (M ≃ₘ N) ≃⟨ ≃-sym (≅ₘ-charac M N) ⟩
+   (M ≅ₘ N) ■
+\end{code}
+
+We now generalize the above development.
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="sip"></a> A structure identity principle
 
 A *structure identity principle* describes equality of mathematical
@@ -7389,226 +7610,6 @@ module pointed-type-example (𝓤 : Universe) where
  characterization-of-pointed-type-≡ ua X Y x₀ y₀ =
    characterization-of-≡ ua S α (X , x₀) (Y , y₀)
 \end{code}
-
-[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="magmaequivalences"></a> Magma equivalences
-
-*This section needs rewriting after the addition of the previous, which subsumes part of this one.*
-
-We now define magma equivalences and show that the type of magma
-equivalences is identified with the type of magma isomorphisms, assuming
-univalence. For simplicity, we assume global univalence, from which we
-get global function extensionality.
-
-\begin{code}
-module magma-equivalences (ua : Univalence) where
-
- open magmas
-
- dfe : global-dfunext
- dfe = univalence-gives-global-dfunext ua
-
- hfe : global-hfunext
- hfe = univalence-gives-global-hfunext ua
-\end{code}
-
-The magma homomorphism and isomorphism conditions are subsingleton
-types by virtue of the fact that the underlying type of a magma is a
-set by definition.
-
-\begin{code}
- being-magma-hom-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
-                                   → is-subsingleton (is-magma-hom M N f)
- being-magma-hom-is-a-subsingleton M N f =
-  Π-is-subsingleton dfe
-    (λ x → Π-is-subsingleton dfe
-             (λ y → magma-is-set N (f (x ·⟨ M ⟩ y)) (f x ·⟨ N ⟩ f y)))
-
- being-magma-iso-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
-                                   → is-subsingleton (is-magma-iso M N f)
- being-magma-iso-is-a-subsingleton M N f (h , g , k , η , ε) (h' , g' , k' , η' , ε') = γ
-  where
-   p : h ≡ h'
-   p = being-magma-hom-is-a-subsingleton M N f h h'
-
-   q : g ≡ g'
-   q = dfe (λ y → g y          ≡⟨ (ap g (ε' y))⁻¹ ⟩
-                  g (f (g' y)) ≡⟨ η (g' y) ⟩
-                  g' y         ∎)
-
-   i : is-subsingleton (is-magma-hom N M g' × (g' ∘ f ∼ id) × (f ∘ g' ∼ id))
-   i = ×-is-subsingleton
-         (being-magma-hom-is-a-subsingleton N M g')
-         (×-is-subsingleton
-            (Π-is-subsingleton dfe (λ x → magma-is-set M (g' (f x)) x))
-            (Π-is-subsingleton dfe (λ y → magma-is-set N (f (g' y)) y)))
-
-   γ : (h , g , k , η , ε) ≡ (h' , g' , k' , η' , ε')
-   γ = to-×-≡ p (to-Σ-≡ (q , i _ _))
-\end{code}
-
-By a magma equivalence we mean an equivalence which is a magma
-homomorphism. This notion is again a subsingleton type.
-
-\begin{code}
- is-magma-equiv : (M N : Magma 𝓤) → (⟨ M ⟩ → ⟨ N ⟩) → 𝓤 ̇
- is-magma-equiv M N f = is-equiv f × is-magma-hom M N f
-
- being-magma-equiv-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
-                                     → is-subsingleton (is-magma-equiv M N f)
- being-magma-equiv-is-a-subsingleton M N f =
-  ×-is-subsingleton
-   (being-equiv-is-a-subsingleton dfe dfe f)
-   (being-magma-hom-is-a-subsingleton M N f)
-\end{code}
-
-A function is a magma isomorphism if and only if it is a magma equivalence.
-
-\begin{code}
- magma-isos-are-magma-equivs : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
-                             → is-magma-iso M N f
-                             → is-magma-equiv M N f
- magma-isos-are-magma-equivs M N f (h , g , k , η , ε) = i , h
-  where
-   i : is-equiv f
-   i = invertibles-are-equivs f (g , η , ε)
-
- magma-equivs-are-magma-isos : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
-                             → is-magma-equiv M N f
-                             → is-magma-iso M N f
- magma-equivs-are-magma-isos M N f (i , h) = h , g , k , η , ε
-  where
-   g : ⟨ N ⟩ → ⟨ M ⟩
-   g = inverse f i
-
-   η : g ∘ f ∼ id
-   η = inverse-is-retraction f i
-
-   ε : f ∘ g ∼ id
-   ε = inverse-is-section f i
-
-   k : (a b : ⟨ N ⟩) → g (a ·⟨ N ⟩ b) ≡ g a ·⟨ M ⟩ g b
-   k a b = g (a ·⟨ N ⟩ b)             ≡⟨ ap₂ (λ a b → g (a ·⟨ N ⟩ b)) ((ε a)⁻¹)
-                                             ((ε b)⁻¹) ⟩
-           g (f (g a) ·⟨ N ⟩ f (g b)) ≡⟨ ap g ((h (g a) (g b))⁻¹) ⟩
-           g (f (g a ·⟨ M ⟩ g b))     ≡⟨ η (g a ·⟨ M ⟩ g b) ⟩
-           g a ·⟨ M ⟩ g b             ∎
-\end{code}
-
-Because these two notions are subsingleton types, we conclude that
-they are equivalent.
-
-\begin{code}
- magma-iso-charac : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
-                  → is-magma-iso M N f ≃ is-magma-equiv M N f
- magma-iso-charac M N f = logically-equivalent-subsingletons-are-equivalent
-                           (is-magma-iso M N f)
-                           (is-magma-equiv M N f)
-                           (being-magma-iso-is-a-subsingleton M N f)
-                           (being-magma-equiv-is-a-subsingleton M N f)
-                           (magma-isos-are-magma-equivs M N f ,
-                            magma-equivs-are-magma-isos M N f)
-\end{code}
-
-And hence they are equal by univalence.
-
-\begin{code}
- magma-iso-charac' : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
-                   → is-magma-iso M N f ≡ is-magma-equiv M N f
- magma-iso-charac' M N f = Eq→Id (ua (universe-of ⟨ M ⟩))
-                            (is-magma-iso M N f)
-                            (is-magma-equiv M N f)
-                            (magma-iso-charac M N f)
-\end{code}
-
-And by function extensionality the *properties* of being a magma
-isomorphism and a magma equivalence are the same:
-
-\begin{code}
- magma-iso-charac'' : (M N : Magma 𝓤)
-                    → is-magma-iso M N ≡ is-magma-equiv M N
- magma-iso-charac'' M N = dfe (magma-iso-charac' M N)
-\end{code}
-
-Hence the type of magma equivalences is equivalent, and therefore
-equal, to the type of magma isomorphisms.
-
-\begin{code}
- _≃ₘ_ : Magma 𝓤 → Magma 𝓤 → 𝓤 ̇
- M ≃ₘ N = Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-magma-equiv M N f
-
- ≅ₘ-charac : (M N : Magma 𝓤)
-           → (M ≅ₘ N) ≃ (M ≃ₘ N)
- ≅ₘ-charac M N = Σ-cong (magma-iso-charac M N)
-
- ≅ₘ-charac' : (M N : Magma 𝓤)
-            → (M ≅ₘ N) ≡ (M ≃ₘ N)
- ≅ₘ-charac' M N = ap Σ (magma-iso-charac'' M N)
-\end{code}
-
-To conclude, we characterize magma identity as magma equivalence. For
-this purpose, we first characterize transport of magma structure:
-
-\begin{code}
- magma-structure : 𝓤 ̇ → 𝓤 ̇
- magma-structure X = is-set X × (X → X → X)
-
- structure-of : (M : Magma 𝓤) → magma-structure ⟨ M ⟩
- structure-of (X , s) = s
-
- transport-of-magma-structure : (X Y : 𝓤 ̇ )
-                                (s : magma-structure X) (t : magma-structure Y)
-                                (p : X ≡ Y)
-                              → (transport magma-structure p s ≡ t)
-                              ≃ is-magma-hom (X , s) (Y , t) (Id→fun p)
- transport-of-magma-structure X X (i , _·_) (j , _*_) (refl X) =
-   ((i , _·_) ≡ (j , _*_))                       ≃⟨ a ⟩
-   (_·_ ≡ _*_)                                   ≃⟨ b ⟩
-   ((x : X) → (λ x' → x · x') ≡ (λ x' → x * x')) ≃⟨ c ⟩
-   ((x x' : X) → x · x' ≡ x * x')                ■
-  where
-   a = ≃-sym (embedding-criterion-converse pr₁
-               (pr₁-embedding (is-set X) (X → X → X)
-                 (being-set-is-a-subsingleton dfe))
-               (i , _·_)
-               (j , _*_))
-   b = happly _·_ _*_ , hfe _·_ _*_
-   c = Π-cong dfe dfe X _ _ (λ x → happly (x ·_) (x *_) , hfe (x ·_) (x *_))
-\end{code}
-
-Magma identity is equivalent to magma equivalence, and hence to magma isomorphism:
-
-\begin{code}
- magma-identity-is-equivalence : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≃ₘ N)
- magma-identity-is-equivalence {𝓤} M N =
-  (M ≡ N)                                                                    ≃⟨ a ⟩
-  (Σ \(p : ⟨ M ⟩ ≡ ⟨ N ⟩) → transport magma-structure p _·_ ≡ _*_)           ≃⟨ b ⟩
-  (Σ \(p : ⟨ M ⟩ ≡ ⟨ N ⟩) → is-magma-hom M N (Eq→fun (Id→Eq ⟨ M ⟩ ⟨ N ⟩ p))) ≃⟨ c ⟩
-  (Σ \(e : ⟨ M ⟩ ≃ ⟨ N ⟩) → is-magma-hom M N (Eq→fun e))                     ≃⟨ Σ-assoc ⟩
-  (Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-equiv f × is-magma-hom M N f)                 ■
-  where
-   _·_ = structure-of M
-   _*_ = structure-of N
-
-   a = Σ-≡-≃ M N
-   b = Σ-cong (transport-of-magma-structure ⟨ M ⟩ ⟨ N ⟩ _·_ _*_)
-   c = ≃-sym (Σ-change-of-variables-hae
-                (λ e → is-magma-hom M N (Eq→fun e))
-                (Id→Eq ⟨ M ⟩ ⟨ N ⟩)
-                (Id→Eq-is-hae (ua 𝓤)))
-
- magma-identity-is-isomorphism : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≅ₘ N)
- magma-identity-is-isomorphism M N =
-   (M ≡ N)  ≃⟨ magma-identity-is-equivalence M N ⟩
-   (M ≃ₘ N) ≃⟨ ≃-sym (≅ₘ-charac M N) ⟩
-   (M ≅ₘ N) ■
-\end{code}
-
-This characterization of the identity type of Magmas
-[generalizes](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-StructureIdentityPrinciple.html)
-to identity types of monoids, metric spaces, topological spaces and
-more, via a structure identity principle (see the HoTT book for more
-information).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="truncation"></a> Subsingleton truncation, disjunction and existence

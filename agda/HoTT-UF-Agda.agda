@@ -3566,6 +3566,169 @@ univalence-→-again {𝓤} ua Y = equiv-to-singleton (equiv-classification ua Y
                 (univalence-gives-propext (ua 𝓤))
                 (univalence-gives-dfunext (ua 𝓤)))
 
+module magma-equivalences (ua : Univalence) where
+
+ open magmas
+
+ dfe : global-dfunext
+ dfe = univalence-gives-global-dfunext ua
+
+ hfe : global-hfunext
+ hfe = univalence-gives-global-hfunext ua
+
+ being-magma-hom-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                                   → is-subsingleton (is-magma-hom M N f)
+ being-magma-hom-is-a-subsingleton M N f =
+  Π-is-subsingleton dfe
+    (λ x → Π-is-subsingleton dfe
+             (λ y → magma-is-set N (f (x ·⟨ M ⟩ y)) (f x ·⟨ N ⟩ f y)))
+
+ being-magma-iso-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                                   → is-subsingleton (is-magma-iso M N f)
+ being-magma-iso-is-a-subsingleton M N f (h , g , k , η , ε) (h' , g' , k' , η' , ε') = γ
+  where
+   p : h ≡ h'
+   p = being-magma-hom-is-a-subsingleton M N f h h'
+
+   q : g ≡ g'
+   q = dfe (λ y → g y          ≡⟨ (ap g (ε' y))⁻¹ ⟩
+                  g (f (g' y)) ≡⟨ η (g' y) ⟩
+                  g' y         ∎)
+
+   i : is-subsingleton (is-magma-hom N M g' × (g' ∘ f ∼ id) × (f ∘ g' ∼ id))
+   i = ×-is-subsingleton
+         (being-magma-hom-is-a-subsingleton N M g')
+         (×-is-subsingleton
+            (Π-is-subsingleton dfe (λ x → magma-is-set M (g' (f x)) x))
+            (Π-is-subsingleton dfe (λ y → magma-is-set N (f (g' y)) y)))
+
+   γ : (h , g , k , η , ε) ≡ (h' , g' , k' , η' , ε')
+   γ = to-×-≡ p (to-Σ-≡ (q , i _ _))
+
+ is-magma-equiv : (M N : Magma 𝓤) → (⟨ M ⟩ → ⟨ N ⟩) → 𝓤 ̇
+ is-magma-equiv M N f = is-equiv f × is-magma-hom M N f
+
+ being-magma-equiv-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                                     → is-subsingleton (is-magma-equiv M N f)
+ being-magma-equiv-is-a-subsingleton M N f =
+  ×-is-subsingleton
+   (being-equiv-is-a-subsingleton dfe dfe f)
+   (being-magma-hom-is-a-subsingleton M N f)
+
+ magma-isos-are-magma-equivs : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                             → is-magma-iso M N f
+                             → is-magma-equiv M N f
+ magma-isos-are-magma-equivs M N f (h , g , k , η , ε) = i , h
+  where
+   i : is-equiv f
+   i = invertibles-are-equivs f (g , η , ε)
+
+ magma-equivs-are-magma-isos : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                             → is-magma-equiv M N f
+                             → is-magma-iso M N f
+ magma-equivs-are-magma-isos M N f (i , h) = h , g , k , η , ε
+  where
+   g : ⟨ N ⟩ → ⟨ M ⟩
+   g = inverse f i
+
+   η : g ∘ f ∼ id
+   η = inverse-is-retraction f i
+
+   ε : f ∘ g ∼ id
+   ε = inverse-is-section f i
+
+   k : (a b : ⟨ N ⟩) → g (a ·⟨ N ⟩ b) ≡ g a ·⟨ M ⟩ g b
+   k a b = g (a ·⟨ N ⟩ b)             ≡⟨ ap₂ (λ a b → g (a ·⟨ N ⟩ b)) ((ε a)⁻¹)
+                                             ((ε b)⁻¹) ⟩
+           g (f (g a) ·⟨ N ⟩ f (g b)) ≡⟨ ap g ((h (g a) (g b))⁻¹) ⟩
+           g (f (g a ·⟨ M ⟩ g b))     ≡⟨ η (g a ·⟨ M ⟩ g b) ⟩
+           g a ·⟨ M ⟩ g b             ∎
+
+ magma-iso-charac : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                  → is-magma-iso M N f ≃ is-magma-equiv M N f
+ magma-iso-charac M N f = logically-equivalent-subsingletons-are-equivalent
+                           (is-magma-iso M N f)
+                           (is-magma-equiv M N f)
+                           (being-magma-iso-is-a-subsingleton M N f)
+                           (being-magma-equiv-is-a-subsingleton M N f)
+                           (magma-isos-are-magma-equivs M N f ,
+                            magma-equivs-are-magma-isos M N f)
+
+ magma-iso-charac' : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
+                   → is-magma-iso M N f ≡ is-magma-equiv M N f
+ magma-iso-charac' M N f = Eq→Id (ua (universe-of ⟨ M ⟩))
+                            (is-magma-iso M N f)
+                            (is-magma-equiv M N f)
+                            (magma-iso-charac M N f)
+
+ magma-iso-charac'' : (M N : Magma 𝓤)
+                    → is-magma-iso M N ≡ is-magma-equiv M N
+ magma-iso-charac'' M N = dfe (magma-iso-charac' M N)
+
+ _≃ₘ_ : Magma 𝓤 → Magma 𝓤 → 𝓤 ̇
+ M ≃ₘ N = Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-magma-equiv M N f
+
+ ≅ₘ-charac : (M N : Magma 𝓤)
+           → (M ≅ₘ N) ≃ (M ≃ₘ N)
+ ≅ₘ-charac M N = Σ-cong (magma-iso-charac M N)
+
+ ≅ₘ-charac' : (M N : Magma 𝓤)
+            → (M ≅ₘ N) ≡ (M ≃ₘ N)
+ ≅ₘ-charac' M N = ap Σ (magma-iso-charac'' M N)
+
+ magma-structure : 𝓤 ̇ → 𝓤 ̇
+ magma-structure X = is-set X × (X → X → X)
+
+ structure-of : (M : Magma 𝓤) → magma-structure ⟨ M ⟩
+ structure-of (X , s) = s
+
+ homomorphism-lemma : (X Y : 𝓤 ̇ )
+                      (s : magma-structure X) (t : magma-structure Y)
+                      (p : X ≡ Y)
+                    →
+                      (transport magma-structure p s ≡ t)
+                    ≃ is-magma-hom (X , s) (Y , t) (Id→fun p)
+
+ homomorphism-lemma X X (i , _·_) (j , _*_) (refl X) =
+
+   ((i , _·_) ≡ (j , _*_))                       ≃⟨ a ⟩
+   (_·_ ≡ _*_)                                   ≃⟨ b ⟩
+   ((x : X) → (λ x' → x · x') ≡ (λ x' → x * x')) ≃⟨ c ⟩
+   ((x x' : X) → x · x' ≡ x * x')                ■
+
+  where
+   a = ≃-sym (embedding-criterion-converse pr₁
+               (pr₁-embedding (is-set X) (X → X → X)
+                 (being-set-is-a-subsingleton dfe))
+               (i , _·_)
+               (j , _*_))
+   b = happly _·_ _*_ , hfe _·_ _*_
+   c = Π-cong dfe dfe X _ _ (λ x → happly (x ·_) (x *_) , hfe (x ·_) (x *_))
+
+ magma-identity-is-equivalence : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≃ₘ N)
+ magma-identity-is-equivalence {𝓤} M N =
+  (M ≡ N)                                                                    ≃⟨ a ⟩
+  (Σ \(p : ⟨ M ⟩ ≡ ⟨ N ⟩) → transport magma-structure p _·_ ≡ _*_)           ≃⟨ b ⟩
+  (Σ \(p : ⟨ M ⟩ ≡ ⟨ N ⟩) → is-magma-hom M N (Eq→fun (Id→Eq ⟨ M ⟩ ⟨ N ⟩ p))) ≃⟨ c ⟩
+  (Σ \(e : ⟨ M ⟩ ≃ ⟨ N ⟩) → is-magma-hom M N (Eq→fun e))                     ≃⟨ Σ-assoc ⟩
+  (Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-equiv f × is-magma-hom M N f)                 ■
+  where
+   _·_ = structure-of M
+   _*_ = structure-of N
+
+   a = Σ-≡-≃ M N
+   b = Σ-cong (homomorphism-lemma ⟨ M ⟩ ⟨ N ⟩ _·_ _*_)
+   c = ≃-sym (Σ-change-of-variables-hae
+                (λ e → is-magma-hom M N (Eq→fun e))
+                (Id→Eq ⟨ M ⟩ ⟨ N ⟩)
+                (Id→Eq-is-hae (ua 𝓤)))
+
+ magma-identity-is-isomorphism : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≅ₘ N)
+ magma-identity-is-isomorphism M N =
+   (M ≡ N)  ≃⟨ magma-identity-is-equivalence M N ⟩
+   (M ≃ₘ N) ≃⟨ ≃-sym (≅ₘ-charac M N) ⟩
+   (M ≅ₘ N) ■
+
 module sip where
 
  ⟨_⟩ : {S : 𝓤 ̇ → 𝓥 ̇ } → Σ S → 𝓤 ̇
@@ -3841,165 +4004,6 @@ module pointed-type-example (𝓤 : Universe) where
 
  characterization-of-pointed-type-≡ ua X Y x₀ y₀ =
    characterization-of-≡ ua S α (X , x₀) (Y , y₀)
-
-module magma-equivalences (ua : Univalence) where
-
- open magmas
-
- dfe : global-dfunext
- dfe = univalence-gives-global-dfunext ua
-
- hfe : global-hfunext
- hfe = univalence-gives-global-hfunext ua
-
- being-magma-hom-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
-                                   → is-subsingleton (is-magma-hom M N f)
- being-magma-hom-is-a-subsingleton M N f =
-  Π-is-subsingleton dfe
-    (λ x → Π-is-subsingleton dfe
-             (λ y → magma-is-set N (f (x ·⟨ M ⟩ y)) (f x ·⟨ N ⟩ f y)))
-
- being-magma-iso-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
-                                   → is-subsingleton (is-magma-iso M N f)
- being-magma-iso-is-a-subsingleton M N f (h , g , k , η , ε) (h' , g' , k' , η' , ε') = γ
-  where
-   p : h ≡ h'
-   p = being-magma-hom-is-a-subsingleton M N f h h'
-
-   q : g ≡ g'
-   q = dfe (λ y → g y          ≡⟨ (ap g (ε' y))⁻¹ ⟩
-                  g (f (g' y)) ≡⟨ η (g' y) ⟩
-                  g' y         ∎)
-
-   i : is-subsingleton (is-magma-hom N M g' × (g' ∘ f ∼ id) × (f ∘ g' ∼ id))
-   i = ×-is-subsingleton
-         (being-magma-hom-is-a-subsingleton N M g')
-         (×-is-subsingleton
-            (Π-is-subsingleton dfe (λ x → magma-is-set M (g' (f x)) x))
-            (Π-is-subsingleton dfe (λ y → magma-is-set N (f (g' y)) y)))
-
-   γ : (h , g , k , η , ε) ≡ (h' , g' , k' , η' , ε')
-   γ = to-×-≡ p (to-Σ-≡ (q , i _ _))
-
- is-magma-equiv : (M N : Magma 𝓤) → (⟨ M ⟩ → ⟨ N ⟩) → 𝓤 ̇
- is-magma-equiv M N f = is-equiv f × is-magma-hom M N f
-
- being-magma-equiv-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
-                                     → is-subsingleton (is-magma-equiv M N f)
- being-magma-equiv-is-a-subsingleton M N f =
-  ×-is-subsingleton
-   (being-equiv-is-a-subsingleton dfe dfe f)
-   (being-magma-hom-is-a-subsingleton M N f)
-
- magma-isos-are-magma-equivs : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
-                             → is-magma-iso M N f
-                             → is-magma-equiv M N f
- magma-isos-are-magma-equivs M N f (h , g , k , η , ε) = i , h
-  where
-   i : is-equiv f
-   i = invertibles-are-equivs f (g , η , ε)
-
- magma-equivs-are-magma-isos : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
-                             → is-magma-equiv M N f
-                             → is-magma-iso M N f
- magma-equivs-are-magma-isos M N f (i , h) = h , g , k , η , ε
-  where
-   g : ⟨ N ⟩ → ⟨ M ⟩
-   g = inverse f i
-
-   η : g ∘ f ∼ id
-   η = inverse-is-retraction f i
-
-   ε : f ∘ g ∼ id
-   ε = inverse-is-section f i
-
-   k : (a b : ⟨ N ⟩) → g (a ·⟨ N ⟩ b) ≡ g a ·⟨ M ⟩ g b
-   k a b = g (a ·⟨ N ⟩ b)             ≡⟨ ap₂ (λ a b → g (a ·⟨ N ⟩ b)) ((ε a)⁻¹)
-                                             ((ε b)⁻¹) ⟩
-           g (f (g a) ·⟨ N ⟩ f (g b)) ≡⟨ ap g ((h (g a) (g b))⁻¹) ⟩
-           g (f (g a ·⟨ M ⟩ g b))     ≡⟨ η (g a ·⟨ M ⟩ g b) ⟩
-           g a ·⟨ M ⟩ g b             ∎
-
- magma-iso-charac : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
-                  → is-magma-iso M N f ≃ is-magma-equiv M N f
- magma-iso-charac M N f = logically-equivalent-subsingletons-are-equivalent
-                           (is-magma-iso M N f)
-                           (is-magma-equiv M N f)
-                           (being-magma-iso-is-a-subsingleton M N f)
-                           (being-magma-equiv-is-a-subsingleton M N f)
-                           (magma-isos-are-magma-equivs M N f ,
-                            magma-equivs-are-magma-isos M N f)
-
- magma-iso-charac' : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
-                   → is-magma-iso M N f ≡ is-magma-equiv M N f
- magma-iso-charac' M N f = Eq→Id (ua (universe-of ⟨ M ⟩))
-                            (is-magma-iso M N f)
-                            (is-magma-equiv M N f)
-                            (magma-iso-charac M N f)
-
- magma-iso-charac'' : (M N : Magma 𝓤)
-                    → is-magma-iso M N ≡ is-magma-equiv M N
- magma-iso-charac'' M N = dfe (magma-iso-charac' M N)
-
- _≃ₘ_ : Magma 𝓤 → Magma 𝓤 → 𝓤 ̇
- M ≃ₘ N = Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-magma-equiv M N f
-
- ≅ₘ-charac : (M N : Magma 𝓤)
-           → (M ≅ₘ N) ≃ (M ≃ₘ N)
- ≅ₘ-charac M N = Σ-cong (magma-iso-charac M N)
-
- ≅ₘ-charac' : (M N : Magma 𝓤)
-            → (M ≅ₘ N) ≡ (M ≃ₘ N)
- ≅ₘ-charac' M N = ap Σ (magma-iso-charac'' M N)
-
- magma-structure : 𝓤 ̇ → 𝓤 ̇
- magma-structure X = is-set X × (X → X → X)
-
- structure-of : (M : Magma 𝓤) → magma-structure ⟨ M ⟩
- structure-of (X , s) = s
-
- transport-of-magma-structure : (X Y : 𝓤 ̇ )
-                                (s : magma-structure X) (t : magma-structure Y)
-                                (p : X ≡ Y)
-                              → (transport magma-structure p s ≡ t)
-                              ≃ is-magma-hom (X , s) (Y , t) (Id→fun p)
- transport-of-magma-structure X X (i , _·_) (j , _*_) (refl X) =
-   ((i , _·_) ≡ (j , _*_))                       ≃⟨ a ⟩
-   (_·_ ≡ _*_)                                   ≃⟨ b ⟩
-   ((x : X) → (λ x' → x · x') ≡ (λ x' → x * x')) ≃⟨ c ⟩
-   ((x x' : X) → x · x' ≡ x * x')                ■
-  where
-   a = ≃-sym (embedding-criterion-converse pr₁
-               (pr₁-embedding (is-set X) (X → X → X)
-                 (being-set-is-a-subsingleton dfe))
-               (i , _·_)
-               (j , _*_))
-   b = happly _·_ _*_ , hfe _·_ _*_
-   c = Π-cong dfe dfe X _ _ (λ x → happly (x ·_) (x *_) , hfe (x ·_) (x *_))
-
- magma-identity-is-equivalence : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≃ₘ N)
- magma-identity-is-equivalence {𝓤} M N =
-  (M ≡ N)                                                                    ≃⟨ a ⟩
-  (Σ \(p : ⟨ M ⟩ ≡ ⟨ N ⟩) → transport magma-structure p _·_ ≡ _*_)           ≃⟨ b ⟩
-  (Σ \(p : ⟨ M ⟩ ≡ ⟨ N ⟩) → is-magma-hom M N (Eq→fun (Id→Eq ⟨ M ⟩ ⟨ N ⟩ p))) ≃⟨ c ⟩
-  (Σ \(e : ⟨ M ⟩ ≃ ⟨ N ⟩) → is-magma-hom M N (Eq→fun e))                     ≃⟨ Σ-assoc ⟩
-  (Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-equiv f × is-magma-hom M N f)                 ■
-  where
-   _·_ = structure-of M
-   _*_ = structure-of N
-
-   a = Σ-≡-≃ M N
-   b = Σ-cong (transport-of-magma-structure ⟨ M ⟩ ⟨ N ⟩ _·_ _*_)
-   c = ≃-sym (Σ-change-of-variables-hae
-                (λ e → is-magma-hom M N (Eq→fun e))
-                (Id→Eq ⟨ M ⟩ ⟨ N ⟩)
-                (Id→Eq-is-hae (ua 𝓤)))
-
- magma-identity-is-isomorphism : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≅ₘ N)
- magma-identity-is-isomorphism M N =
-   (M ≡ N)  ≃⟨ magma-identity-is-equivalence M N ⟩
-   (M ≃ₘ N) ≃⟨ ≃-sym (≅ₘ-charac M N) ⟩
-   (M ≅ₘ N) ■
 
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
