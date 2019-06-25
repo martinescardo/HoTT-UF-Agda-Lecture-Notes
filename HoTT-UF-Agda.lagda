@@ -385,7 +385,7 @@ to practice univalent mathematics should consult the above references.
      1. [The hlevels are upper closed](HoTT-UF-Agda.html#hlevelsupper)
      1. [`ℕ` and `𝟚` are sets](HoTT-UF-Agda.html#naturalsset)
      1. [Retracts](HoTT-UF-Agda.html#retracts)
-     1. [Voevodsky' notion of type equivalence](HoTT-UF-Agda.html#fibersandequivalences)
+     1. [Voevodsky's notion of type equivalence](HoTT-UF-Agda.html#fibersandequivalences)
      1. [Voevodsky's univalence axiom](HoTT-UF-Agda.html#univalence)
      1. [Example of a type that is not a set under univalence](HoTT-UF-Agda.html#notsets)
      1. [Exercises](HoTT-UF-Agda.html#lefttothereader)
