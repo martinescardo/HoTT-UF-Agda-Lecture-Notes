@@ -1167,7 +1167,7 @@ definition says that an element of `Σ Y` has two `fields`, giving the
 types for them.
 
 *Remark.* Beginners may safely ignore this remark: Normally people
-will call these two fields something like `pr₁` and `pr₂`, or `fst`
+will call these two fields something like `pr₀` and `pr₁`, or `fst`
 and `snd`, for first and second projection, rather than `x` and `y`,
 and then do `open Σ public` and have the projections available as
 functions automatically. But we will deliberately not do that, and
@@ -1177,11 +1177,11 @@ they may be, in particular because it will not be immediately clear
 that the projections have the following types.
 
 \begin{code}
-pr₁ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → Σ Y → X
-pr₁ (x , y) = x
+pr₀ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → Σ Y → X
+pr₀ (x , y) = x
 
-pr₂ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → (z : Σ Y) → Y (pr₁ z)
-pr₂ (x , y) = y
+pr₁ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → (z : Σ Y) → Y (pr₀ z)
+pr₁ (x , y) = y
 \end{code}
 
 To prove that `A z` holds for all `z : Σ Y`, for a given
@@ -1730,10 +1730,10 @@ _⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ⇔ Y = (X → Y) × (Y → X)
 
 lr-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (X → Y)
-lr-implication = pr₁
+lr-implication = pr₀
 
 rl-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (Y → X)
-rl-implication = pr₂
+rl-implication = pr₁
 \end{code}
 
 then we can render Brouwer's argument in Agda as follows, where the
@@ -2089,10 +2089,10 @@ In both cases, we proceed by induction on both arguments.
     IH = ≤-gives-≼ x y l
 
     z : ℕ
-    z = pr₁ IH
+    z = pr₀ IH
 
     p : x ∔ z ≡ y
-    p = pr₂ IH
+    p = pr₁ IH
 
     γ : succ x ≼ succ y
     γ = z , (succ x ∔ z   ≡⟨ +-step-on-first x z ⟩
@@ -2637,19 +2637,19 @@ equality in `Σ` types as follows.
 
 \begin{code}
 to-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
-       → (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
+       → (Σ \(p : pr₀ σ ≡ pr₀ τ) → transport A p (pr₁ σ) ≡ pr₁ τ)
        → σ ≡ τ
 to-Σ-≡ (refl x , refl a) = refl (x , a)
 
 from-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
          → σ ≡ τ
-         → Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ
+         → Σ \(p : pr₀ σ ≡ pr₀ τ) → transport A p (pr₁ σ) ≡ pr₁ τ
 from-Σ-≡ (refl (x , a)) = (refl x , refl a)
 \end{code}
 
 The above gives
 
-   > `(σ ≡ τ) ⇔ Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ`.
+   > `(σ ≡ τ) ⇔ Σ \(p : pr₀ σ ≡ pr₀ τ) → transport A p (pr₁ σ) ≡ pr₁ τ`.
 
 But this is a very weak statement when the left- and right-hand
 identity types may have multiple elements, which is precisely the
@@ -2662,7 +2662,7 @@ Voevodsky](HoTT-UF-Agda.html#fibersandequivalences).
 Once we have defined this notion `_≃_` of type equivalence, this
 characterization will become an equivalence
 
-   > `(σ ≡ τ) ≃ Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p pr₂ σ ≡ pr₂ τ`.
+   > `(σ ≡ τ) ≃ Σ \(p : pr₀ σ ≡ pr₀ τ) → transport A p pr₁ σ ≡ pr₁ τ`.
 
 But even this is not sufficiently precise, because in general there are
 many equivalences between two types. For example, there are precisely
@@ -3511,10 +3511,10 @@ Here is the promised characterization of equality in `Σ` types:
 
 \begin{code}
 Σ-≡-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ τ : Σ A)
-      → (σ ≡ τ) ≃ (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
+      → (σ ≡ τ) ≃ (Σ \(p : pr₀ σ ≡ pr₀ τ) → transport A p (pr₁ σ) ≡ pr₁ τ)
 Σ-≡-≃ {𝓤} {𝓥} {X} {A}  σ τ = invertibility-gives-≃ from-Σ-≡ (to-Σ-≡ , ε , η)
  where
-  η : (w : Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
+  η : (w : Σ \(p : pr₀ σ ≡ pr₀ τ) → transport A p (pr₁ σ) ≡ pr₁ τ)
     → from-Σ-≡ (to-Σ-≡ w) ≡ w
   η (refl p , refl q) = refl (refl p , refl q)
 
@@ -3816,23 +3816,23 @@ equiv-to-singleton' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 subtypes-of-sets-are-sets : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                           → left-cancellable m → is-set Y → is-set X
 
-pr₁-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+pr₀-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
        → ((x : X) → is-subsingleton (A x))
-       → left-cancellable  (λ (t : Σ A) → pr₁ t)
+       → left-cancellable  (λ (t : Σ A) → pr₀ t)
 
 subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
                          → is-set X
                          → ((x : X) → is-subsingleton(A x))
                          → is-set(Σ \(x : X) → A x)
 
-pr₁-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+pr₀-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
           → ((x : X) → is-singleton (A x))
-          → is-equiv (λ (t : Σ A) → pr₁ t)
+          → is-equiv (λ (t : Σ A) → pr₀ t)
 
-pr₁-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+pr₀-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
       → ((x : X) → is-singleton (A x))
       → Σ A ≃ X
-pr₁-≃ i = pr₁ , pr₁-equiv i
+pr₀-≃ i = pr₀ , pr₀-equiv i
 
 ΠΣ-distr-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
            → (Π \(x : X) → Σ \(a : A x) → P x a)
@@ -3881,8 +3881,8 @@ NatΣ-equiv-gives-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X �
                   → is-subsingleton (X × Y)
 
 to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
+       → pr₀ z ≡ pr₀ t
        → pr₁ z ≡ pr₁ t
-       → pr₂ z ≡ pr₂ t
        → z ≡ t
 
 ×-is-subsingleton' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -4061,11 +4061,11 @@ subtypes-of-sets-are-sets = sol
     c : Id-collapsible X
     c x x' = f x x' , κ x x'
 
-pr₁-lc = sol
+pr₀-lc = sol
  where
   sol : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
       → ((x : X) → is-subsingleton (A x))
-      → left-cancellable  (λ (t : Σ A) → pr₁ t)
+      → left-cancellable  (λ (t : Σ A) → pr₀ t)
   sol i p = to-Σ-≡ (p , i _ _ _)
 
 subsets-of-sets-are-sets = sol
@@ -4074,22 +4074,22 @@ subsets-of-sets-are-sets = sol
      → is-set X
      → ((x : X) → is-subsingleton(A x))
      → is-set (Σ \(x : X) → A x)
-  sol X A h p = subtypes-of-sets-are-sets pr₁ (pr₁-lc p) h
+  sol X A h p = subtypes-of-sets-are-sets pr₀ (pr₀-lc p) h
 
-pr₁-equiv = sol
+pr₀-equiv = sol
  where
   sol : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
       → ((x : X) → is-singleton (A x))
-      → is-equiv (λ (t : Σ A) → pr₁ t)
-  sol {𝓤} {𝓥} {X} {A} s = invertibles-are-equivs pr₁ (g , η , ε)
+      → is-equiv (λ (t : Σ A) → pr₀ t)
+  sol {𝓤} {𝓥} {X} {A} s = invertibles-are-equivs pr₀ (g , η , ε)
    where
     g : X → Σ A
-    g x = x , pr₁(s x)
+    g x = x , pr₀(s x)
 
-    ε : (x : X) → pr₁ (g x) ≡ x
-    ε x = refl (pr₁ (g x))
+    ε : (x : X) → pr₀ (g x) ≡ x
+    ε x = refl (pr₀ (g x))
 
-    η : (σ : Σ A) → g (pr₁ σ) ≡ σ
+    η : (σ : Σ A) → g (pr₀ σ) ≡ σ
     η (x , a) = to-Σ-≡ (ε x , singletons-are-subsingletons (A x) (s x) _ a)
 
 ΠΣ-distr-≃ = sol
@@ -4101,7 +4101,7 @@ pr₁-equiv = sol
    where
     φ : (Π \(x : X) → Σ \(a : A x) → P x a)
       → Σ \(f : Π A) → Π \(x : X) → P x (f x)
-    φ g = ((λ x → pr₁ (g x)) , λ x → pr₂ (g x))
+    φ g = ((λ x → pr₀ (g x)) , λ x → pr₁ (g x))
 
     γ : (Σ \(f : Π A) → Π \(x : X) → P x (f x))
       → Π \(x : X) → Σ \(a : A x) → P x a
@@ -4242,7 +4242,7 @@ NatΣ-equiv-gives-fiberwise-equiv = sol
 to-×-≡ = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
-      → pr₁ z ≡ pr₁ t → pr₂ z ≡ pr₂ t → z ≡ t
+      → pr₀ z ≡ pr₀ t → pr₁ z ≡ pr₁ t → z ≡ t
   sol (refl x) (refl y) = refl (x , y)
 
 ×-is-subsingleton' = sol
@@ -4263,10 +4263,10 @@ to-×-≡ = sol
   sol {𝓤} {𝓥} {X} {Y} k = i , j
    where
     i : Y → is-subsingleton X
-    i y x x' = ap pr₁ (k (x , y) (x' , y))
+    i y x x' = ap pr₀ (k (x , y) (x' , y))
 
     j : X → is-subsingleton Y
-    j x y y' = ap pr₂ (k (x , y) (x , y'))
+    j x y y' = ap pr₁ (k (x , y) (x , y'))
 
 ap₂ = sol
  where
@@ -4916,10 +4916,10 @@ funext-gives-vvfunext : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → vvf
 funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
  where
   f : Σ A → X
-  f = pr₁
+  f = pr₀
 
   f-is-equiv : is-equiv f
-  f-is-equiv = pr₁-equiv φ
+  f-is-equiv = pr₀-equiv φ
 
   g : (X → Σ A) → (X → X)
   g h = f ∘ h
@@ -4931,7 +4931,7 @@ funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
   i = e (𝑖𝑑 X)
 
   r : (Σ \(h : X → Σ A) → f ∘ h ≡ 𝑖𝑑 X) → Π A
-  r (h , p) x = transport A (happly (f ∘ h) (𝑖𝑑 X) p x) (pr₂ (h x))
+  r (h , p) x = transport A (happly (f ∘ h) (𝑖𝑑 X) p x) (pr₁ (h x))
 
   s : Π A → (Σ \(h : X → Σ A) → f ∘ h ≡ 𝑖𝑑 X)
   s φ = (λ x → x , φ x) , refl (𝑖𝑑 X)
@@ -5037,7 +5037,7 @@ taking its total space and the first projection:
 
 \begin{code}
 T : (Y : 𝓤 ̇ ) → (Y → 𝓤 ̇ ) → 𝓤 / Y
-T Y A = Σ A , pr₁
+T Y A = Σ A , pr₀
 
 χη : is-univalent 𝓤
    → (Y : 𝓤 ̇ ) → (σ : 𝓤 / Y) → T Y (χ Y σ) ≡ σ
@@ -5052,21 +5052,21 @@ T Y A = Σ A , pr₁
   observation : Eq→fun (≃-sym e) ≡ (λ x → f x , x , refl (f x))
   observation = refl _
 
-  q = transport (λ - → - → Y) p pr₁ ≡⟨ transport-map-along-≃ ua e pr₁ ⟩
-      pr₁ ∘ Eq→fun (≃-sym e)        ≡⟨ refl _ ⟩
+  q = transport (λ - → - → Y) p pr₀ ≡⟨ transport-map-along-≃ ua e pr₀ ⟩
+      pr₀ ∘ Eq→fun (≃-sym e)        ≡⟨ refl _ ⟩
       f                             ∎
 
-  r : (Σ (fiber f) , pr₁) ≡ (X , f)
+  r : (Σ (fiber f) , pr₀) ≡ (X , f)
   r = to-Σ-≡ (p , q)
 
 χε : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
    → (Y : 𝓤 ̇ ) (A : Y → 𝓤 ̇ ) → χ Y (T Y A) ≡ A
 χε ua fe Y A = fe γ
  where
-  f : ∀ y → fiber pr₁ y → A y
+  f : ∀ y → fiber pr₀ y → A y
   f y ((y , a) , refl p) = a
 
-  g : ∀ y → A y → fiber pr₁ y
+  g : ∀ y → A y → fiber pr₀ y
   g y a = (y , a) , refl y
 
   η : ∀ y σ → g y (f y σ) ≡ σ
@@ -5075,7 +5075,7 @@ T Y A = Σ A , pr₁
   ε : ∀ y a → f y (g y a) ≡ a
   ε y a = refl a
 
-  γ : ∀ y → fiber pr₁ y ≡ A y
+  γ : ∀ y → fiber pr₀ y ≡ A y
   γ y = Eq→Id ua _ _ (invertibility-gives-≃ (f y) (g y , η y , ε y))
 
 universes-are-map-classifiers : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
@@ -5828,9 +5828,9 @@ For example, if `A` is a subsingleton, then the second projection `A ×
 X → X` is an embedding:
 
 \begin{code}
-pr₂-embedding : (A : 𝓤 ̇ ) (X : 𝓥 ̇ )
-              → is-subsingleton A → is-embedding (λ (z : A × X) → pr₂ z)
-pr₂-embedding A X i x ((a , x) , refl x) ((b , x) , refl x) = p
+pr₁-embedding : (A : 𝓤 ̇ ) (X : 𝓥 ̇ )
+              → is-subsingleton A → is-embedding (λ (z : A × X) → pr₁ z)
+pr₁-embedding A X i x ((a , x) , refl x) ((b , x) , refl x) = p
  where
   p : ((a , x) , refl x) ≡ ((b , x) , refl x)
   p = ap (λ - → ((- , x) , refl x)) (i a b)
@@ -5840,10 +5840,10 @@ More generally, with the arguments swapped, the projection `Σ A → X`
 is an embedding if `A x` is a subsingleton for every `x : X`:
 
 \begin{code}
-pr₁-embedding : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+pr₀-embedding : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
               → ((x : X) → is-subsingleton (A x))
-              → is-embedding (pr₁ {𝓤} {𝓥} {X} {A})
-pr₁-embedding i x ((x , a) , refl x) ((x , a') , refl x) = γ
+              → is-embedding (pr₀ {𝓤} {𝓥} {X} {A})
+pr₀-embedding i x ((x , a) , refl x) ((x , a') , refl x) = γ
  where
   γ : (x , a) , refl x ≡ (x , a') , refl x
   γ = ap (λ - → (x , -) , refl x) (i x a a')
@@ -5867,10 +5867,10 @@ id-is-embedding {𝓤} {X} = equivs-are-embeddings id (id-is-equiv X)
 ∘-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} d e = h
  where
   A : (z : Z) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-  A z = Σ \(w : fiber g z) → fiber f (pr₁ w)
+  A z = Σ \(w : fiber g z) → fiber f (pr₀ w)
 
   i : (z : Z) → is-subsingleton (A z)
-  i z = Σ-is-subsingleton (d z) (λ w → e (pr₁ w))
+  i z = Σ-is-subsingleton (d z) (λ w → e (pr₀ w))
 
   φ : (z : Z) → fiber (g ∘ f) z → A z
   φ z (x , p) = (f x , p) , x , refl (f x)
@@ -6231,7 +6231,7 @@ being-representable-is-a-subsingleton fe {X} A r₀ r₁ = γ
 
   ε : (x : X) → (𝓨 x ≃̇ A) ≃ A x
   ε x = ((y : X) → 𝓨 x y ≃ A y)                       ≃⟨ ΠΣ-distr-≃ ⟩
-        (Σ \(τ : Nat (𝓨 x) A) → is-fiberwise-equiv τ) ≃⟨ pr₁-≃ (i x) ⟩
+        (Σ \(τ : Nat (𝓨 x) A) → is-fiberwise-equiv τ) ≃⟨ pr₀-≃ (i x) ⟩
         Nat (𝓨 x) A                                   ≃⟨ Yoneda-Lemma fe fe A x ⟩
         A x                                           ■
 
@@ -7269,7 +7269,7 @@ embedding precisely because the axioms are subsingleton-valued:
      π (s , α) = s
 
      j : is-embedding π
-     j = pr₁-embedding (i X)
+     j = pr₀-embedding (i X)
 
      k : {s' t' : S' X} → is-equiv (ap π {s'} {t'})
      k {s'} {t'} = embedding-gives-ap-is-equiv π j s' t'
@@ -7567,8 +7567,8 @@ this purpose, we first characterize transport of magma structure:
    ((x : X) → (λ x' → x · x') ≡ (λ x' → x * x')) ≃⟨ c ⟩
    ((x x' : X) → x · x' ≡ x * x')                ■
   where
-   a = ≃-sym (embedding-criterion-converse pr₂
-               (pr₂-embedding (is-set X) (X → X → X)
+   a = ≃-sym (embedding-criterion-converse pr₁
+               (pr₁-embedding (is-set X) (X → X → X)
                  (being-set-is-a-subsingleton dfe))
                (i , _·_)
                (j , _*_))
@@ -8012,7 +8012,7 @@ extensionality):
     c = ac X Y i j R k g
 
     γ : ∥ Π Y ∥
-    γ = ∥∥-functor pr₁ c
+    γ = ∥∥-functor pr₀ c
 
   IChoice-gives-Choice : IChoice 𝓤 → Choice 𝓤
   IChoice-gives-Choice {𝓤} iac X A i j R k ψ = γ
@@ -8027,7 +8027,7 @@ extensionality):
     a = iac X Y i l ψ
 
     h : Π Y → Σ \(f : Π A) → (x : X) → R x (f x)
-    h g = (λ x → pr₁ (g x)) , (λ x → pr₂ (g x))
+    h g = (λ x → pr₀ (g x)) , (λ x → pr₁ (g x))
 
     γ : ∃ \(f : Π A) → (x : X) → R x (f x)
     γ = ∥∥-functor h a
@@ -8105,10 +8105,10 @@ middle. We begin with the following lemma.
       f (n , p) = n , to-Σ-≡ (p , ∥∥-is-a-subsingleton _ t)
 
     s : image α → 𝟚
-    s y = pr₁ (σ y)
+    s y = pr₀ (σ y)
 
     η : (y : image α) → r (s y) ≡ y
-    η y = pr₂ (σ y)
+    η y = pr₁ (σ y)
 
     l : left-cancellable s
     l = sections-are-lc s (r , η)
@@ -8117,7 +8117,7 @@ middle. We begin with the following lemma.
     αr p = to-Σ-≡ (p , ∥∥-is-a-subsingleton _ _)
 
     rα : {m n : 𝟚} → r m ≡ r n → α m ≡ α n
-    rα = ap pr₁
+    rα = ap pr₀
 
     αs : {m n : 𝟚} → α m ≡ α n → s (r m) ≡ s (r n)
     αs p = ap s (αr p)
@@ -8184,7 +8184,7 @@ Applying the above to the object of truth-values, we get excluded middle:
       γ (inl r) = inl (Id→fun s (lift ⋆))
        where
         s : Lift 𝓤 𝟙 ≡ P
-        s = ap pr₁ r
+        s = ap pr₀ r
 
       γ (inr n) = inr (contrapositive f n)
        where
@@ -8307,22 +8307,22 @@ We use the following to work with propositional resizing more abstractly:
 \begin{code}
 resize : propositional-resizing 𝓤 𝓥
        → (P : 𝓤 ̇ ) (i : is-subsingleton P) → 𝓥 ̇
-resize ρ P i = pr₁ (ρ P i)
+resize ρ P i = pr₀ (ρ P i)
 
 resize-is-a-subsingleton : (ρ : propositional-resizing 𝓤 𝓥)
                            (P : 𝓤 ̇ ) (i : is-subsingleton P)
                          → is-subsingleton (resize ρ P i)
-resize-is-a-subsingleton ρ P i = equiv-to-subsingleton (≃-sym (pr₂ (ρ P i))) i
+resize-is-a-subsingleton ρ P i = equiv-to-subsingleton (≃-sym (pr₁ (ρ P i))) i
 
 to-resize : (ρ : propositional-resizing 𝓤 𝓥)
             (P : 𝓤 ̇ ) (i : is-subsingleton P)
           → P → resize ρ P i
-to-resize ρ P i = Eq→fun (pr₂ (ρ P i))
+to-resize ρ P i = Eq→fun (pr₁ (ρ P i))
 
 from-resize : (ρ : propositional-resizing 𝓤 𝓥)
               (P : 𝓤 ̇ ) (i : is-subsingleton P)
             → resize ρ P i → P
-from-resize ρ P i = Eq→fun (≃-sym(pr₂ (ρ P i)))
+from-resize ρ P i = Eq→fun (≃-sym(pr₁ (ρ P i)))
 
 Propositional-resizing : 𝓤ω
 Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
@@ -8611,10 +8611,10 @@ establish the existence.
     𝓐 = λ (A : 𝓟 𝟙ᵤ) → P , i
 
     B : 𝓟 𝟙ᵤ
-    B = pr₁ (α 𝟙ᵤ 𝓐)
+    B = pr₀ (α 𝟙ᵤ 𝓐)
 
     φ : (x : 𝟙ᵤ) → (x ∈ B) ⇔ ∃ \(A : 𝓟 𝟙ᵤ) → (A ∈ 𝓐) × (x ∈ A)
-    φ = pr₂ (α 𝟙ᵤ 𝓐)
+    φ = pr₁ (α 𝟙ᵤ 𝓐)
 
     Q : 𝓤 ̇
     Q = ⋆ᵤ ∈ B
@@ -8683,11 +8683,11 @@ module basic-powerset-development
   open powerset-union-existence pt fe
 
   ⋃ : {X : 𝓤 ̇ } → 𝓟𝓟 X → 𝓟 X
-  ⋃ 𝓐 = pr₁ (PR-gives-existence-of-unions ρ _ 𝓐)
+  ⋃ 𝓐 = pr₀ (PR-gives-existence-of-unions ρ _ 𝓐)
 
   ⋃-property : {X : 𝓤 ̇ } (𝓐 : 𝓟𝓟 X)
              → (x : X) → (x ∈ ⋃ 𝓐) ⇔ ∃ \(A : 𝓟 X) → (A ∈ 𝓐) × (x ∈ A)
-  ⋃-property 𝓐 = pr₂ (PR-gives-existence-of-unions ρ _ 𝓐)
+  ⋃-property 𝓐 = pr₁ (PR-gives-existence-of-unions ρ _ 𝓐)
 \end{code}
 
 The construction of intersections is as that of unions using
@@ -8719,11 +8719,11 @@ propositional resizing:
     rl x = to-resize ρ (β x) (i x)
 
   ⋂ : {X : 𝓤 ̇ } → 𝓟𝓟 X → 𝓟 X
-  ⋂ {𝓤} {X} 𝓐 = pr₁ (intersections-exist X 𝓐)
+  ⋂ {𝓤} {X} 𝓐 = pr₀ (intersections-exist X 𝓐)
 
   ⋂-property : {X : 𝓤 ̇ } (𝓐 : 𝓟𝓟 X)
              → (x : X) → (x ∈ ⋂ 𝓐) ⇔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A)
-  ⋂-property {𝓤} {X} 𝓐 = pr₂ (intersections-exist X 𝓐)
+  ⋂-property {𝓤} {X} 𝓐 = pr₁ (intersections-exist X 𝓐)
 
   ∅ full : {X : 𝓤 ̇ } → 𝓟 X
   ∅    = λ x → (Lift _ 𝟘 , equiv-to-subsingleton (Lift-≃ 𝟘) 𝟘-is-subsingleton)
@@ -8927,13 +8927,13 @@ To prove the required universal property, we also need the fact that
 
 \begin{code}
  η-equal-equiv : {x y : X} → η x ≡ η y → x ≈ y
- η-equal-equiv {x} {y} p = equiv-rel-reflect (ap pr₁ p)
+ η-equal-equiv {x} {y} p = equiv-rel-reflect (ap pr₀ p)
   where
    equiv-rel-reflect : equiv-rel x ≡ equiv-rel y → x ≈ y
    equiv-rel-reflect q = b (≈r y)
     where
      a : (y ≈ y) ≡ (x ≈ y)
-     a = ap (λ - → pr₁(- y)) (q ⁻¹)
+     a = ap (λ - → pr₀(- y)) (q ⁻¹)
 
      b : y ≈ y → x ≈ y
      b = Id→fun a
@@ -8982,13 +8982,13 @@ into any set `A` of any universe `𝓦`.
      induction-step x = f x , ∣ x , refl (η x) , refl (f x) ∣
 
    f' : X/≈ → A
-   f' x' = pr₁ (k x')
+   f' x' = pr₀ (k x')
 
    r : f' ∘ η ≡ f
    r = fe h
     where
      g : (y : X) → ∃ \x → (η x ≡ η y) × (f x ≡ f' (η y))
-     g y = pr₂ (k (η y))
+     g y = pr₁ (k (η y))
 
      j : (y : X) → (Σ \x → (η x ≡ η y) × (f x ≡ f' (η y))) → f'(η y) ≡ f y
      j y (x , p , q) = f' (η y) ≡⟨ q ⁻¹ ⟩
@@ -9148,7 +9148,7 @@ the-subsingletons-are-the-subtypes-of-a-singleton' pe fe X = γ
                                 being-embedding-is-a-subsingleton fe f' _ e')
 
   γ : is-subsingleton X ≡ (X ↪ 𝟙)
-  γ = pe (being-subsingleton-is-a-subsingleton fe) b (pr₁ a) (pr₂ a)
+  γ = pe (being-subsingleton-is-a-subsingleton fe) b (pr₀ a) (pr₁ a)
 
 G↑-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
               → (X : 𝓤 ̇ )
@@ -9326,16 +9326,16 @@ cantors-diagonal = sol
   sol (e , γ) = c
    where
     α : ℕ → ℕ
-    α = pr₁ (positive-cantors-diagonal e)
+    α = pr₀ (positive-cantors-diagonal e)
 
     φ : (n : ℕ) → α ≢ e n
-    φ = pr₂ (positive-cantors-diagonal e)
+    φ = pr₁ (positive-cantors-diagonal e)
 
     b : Σ \(n : ℕ) → α ≡ e n
     b = γ α
 
     c : 𝟘
-    c = φ (pr₁ b) (pr₂ b)
+    c = φ (pr₀ b) (pr₁ b)
 
 𝟚-has-𝟚-automorphisms = sol
  where
@@ -9359,24 +9359,24 @@ cantors-diagonal = sol
                                                      ₀   ≡⟨ p ⁻¹ ⟩
                                                      h ₀ ∎)))
 
-      γ ₀ ₁ p q = to-Σ-≡ (fe (𝟚-induction (λ n → pr₁ (g (h ₀)) n ≡ h n)
-                               (pr₁ (g (h ₀)) ₀ ≡⟨ ap (λ - → pr₁ (g -) ₀) p ⟩
-                                pr₁ (g ₀) ₀     ≡⟨ refl ₀ ⟩
+      γ ₀ ₁ p q = to-Σ-≡ (fe (𝟚-induction (λ n → pr₀ (g (h ₀)) n ≡ h n)
+                               (pr₀ (g (h ₀)) ₀ ≡⟨ ap (λ - → pr₀ (g -) ₀) p ⟩
+                                pr₀ (g ₀) ₀     ≡⟨ refl ₀ ⟩
                                 ₀               ≡⟨ p ⁻¹ ⟩
                                 h ₀             ∎)
-                               (pr₁ (g (h ₀)) ₁ ≡⟨ ap (λ - → pr₁ (g -) ₁) p ⟩
-                                pr₁ (g ₀) ₁     ≡⟨ refl ₁ ⟩
+                               (pr₀ (g (h ₀)) ₁ ≡⟨ ap (λ - → pr₀ (g -) ₁) p ⟩
+                                pr₀ (g ₀) ₁     ≡⟨ refl ₁ ⟩
                                 ₁               ≡⟨ q ⁻¹ ⟩
                                 h ₁             ∎)),
                          being-equiv-is-a-subsingleton fe fe _ _ e)
 
-      γ ₁ ₀ p q = to-Σ-≡ (fe (𝟚-induction (λ n → pr₁ (g (h ₀)) n ≡ h n)
-                               (pr₁ (g (h ₀)) ₀ ≡⟨ ap (λ - → pr₁ (g -) ₀) p ⟩
-                                pr₁ (g ₁) ₀     ≡⟨ refl ₁ ⟩
+      γ ₁ ₀ p q = to-Σ-≡ (fe (𝟚-induction (λ n → pr₀ (g (h ₀)) n ≡ h n)
+                               (pr₀ (g (h ₀)) ₀ ≡⟨ ap (λ - → pr₀ (g -) ₀) p ⟩
+                                pr₀ (g ₁) ₀     ≡⟨ refl ₁ ⟩
                                 ₁               ≡⟨ p ⁻¹ ⟩
                                 h ₀             ∎)
-                               (pr₁ (g (h ₀)) ₁ ≡⟨ ap (λ - → pr₁ (g -) ₁) p ⟩
-                                pr₁ (g ₁) ₁     ≡⟨ refl ₀ ⟩
+                               (pr₀ (g (h ₀)) ₁ ≡⟨ ap (λ - → pr₀ (g -) ₁) p ⟩
+                                pr₀ (g ₁) ₁     ≡⟨ refl ₀ ⟩
                                 ₀               ≡⟨ q ⁻¹ ⟩
                                 h ₁             ∎)),
                          being-equiv-is-a-subsingleton fe fe _ _ e)
@@ -9440,13 +9440,13 @@ SN-gives-DNE = sol
   sol {𝓤} sn P i = h
    where
     X : 𝓤 ̇
-    X = pr₁ (sn P i)
+    X = pr₀ (sn P i)
 
     f : P → ¬ X
-    f = pr₁ (pr₂ (sn P i))
+    f = pr₀ (pr₁ (sn P i))
 
     g : ¬ X → P
-    g = pr₂ (pr₂ (sn P i))
+    g = pr₁ (pr₁ (sn P i))
 
     f' : ¬¬ P → ¬(¬¬ X)
     f' = contrapositive (contrapositive f)
