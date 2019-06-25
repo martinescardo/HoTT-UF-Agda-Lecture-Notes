@@ -406,7 +406,7 @@ to practice univalent mathematics should consult the above references.
      1. [Universe lifting](HoTT-UF-Agda.html#universelifting)
      1. [The subtype classifier and other classifiers](HoTT-UF-Agda.html#subtypeclassifier)
      1. [Magma equivalences](HoTT-UF-Agda.html#magmaequivalences)
-     1. [A structure identity principle](HoTT-UF-Agda.html#sip)
+     1. [Some structure identity principles](HoTT-UF-Agda.html#sip)
      1. [Subsingleton truncation, disjunction and existence](HoTT-UF-Agda.html#truncation)
      1. [The univalent axiom of choice](HoTT-UF-Agda.html#choice)
      1. [Propositional resizing, truncation and the powerset](HoTT-UF-Agda.html#resizing)
@@ -3512,15 +3512,38 @@ Here is the promised characterization of equality in `Σ` types:
 \begin{code}
 Σ-≡-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ τ : Σ A)
       → (σ ≡ τ) ≃ (Σ \(p : pr₀ σ ≡ pr₀ τ) → transport A p (pr₁ σ) ≡ pr₁ τ)
-Σ-≡-≃ {𝓤} {𝓥} {X} {A}  σ τ = invertibility-gives-≃ from-Σ-≡ (to-Σ-≡ , ε , η)
+Σ-≡-≃ {𝓤} {𝓥} {X} {A}  σ τ = invertibility-gives-≃ from-Σ-≡ (to-Σ-≡ , η , ε)
  where
-  η : (w : Σ \(p : pr₀ σ ≡ pr₀ τ) → transport A p (pr₁ σ) ≡ pr₁ τ)
-    → from-Σ-≡ (to-Σ-≡ w) ≡ w
-  η (refl p , refl q) = refl (refl p , refl q)
+  η : (q : σ ≡ τ) → to-Σ-≡ (from-Σ-≡ q) ≡ q
+  η (refl σ) = refl (refl σ)
 
-  ε : (q : σ ≡ τ) → to-Σ-≡ (from-Σ-≡ q) ≡ q
-  ε (refl σ) = refl (refl σ)
+  ε : (w : Σ \(p : pr₀ σ ≡ pr₀ τ) → transport A p (pr₁ σ) ≡ pr₁ τ)
+    → from-Σ-≡ (to-Σ-≡ w) ≡ w
+  ε (refl p , refl q) = refl (refl p , refl q)
 \end{code}
+
+Similarly we have:
+
+\begin{code}
+to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
+       → (pr₀ z ≡ pr₀ t) × (pr₁ z ≡ pr₁ t) → z ≡ t
+to-×-≡ (refl x , refl y) = refl (x , y)
+
+from-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
+         → z ≡ t → (pr₀ z ≡ pr₀ t) × (pr₁ z ≡ pr₁ t)
+from-×-≡ {𝓤} {𝓥} {X} {Y} (refl (x , y)) = (refl x , refl y)
+
+×-≡-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (z t : X × Y)
+      → (z ≡ t) ≃ (pr₀ z ≡ pr₀ t) × (pr₁ z ≡ pr₁ t)
+×-≡-≃ {𝓤} {𝓥} {X} {Y} z t = invertibility-gives-≃ from-×-≡ (to-×-≡ , η , ε)
+ where
+  η : (p : z ≡ t) → to-×-≡ (from-×-≡ p) ≡ p
+  η (refl z) = refl (refl z)
+
+  ε : (q : (pr₀ z ≡ pr₀ t) × (pr₁ z ≡ pr₁ t)) → from-×-≡ (to-×-≡ q) ≡ q
+  ε (refl x , refl y) = refl (refl x , refl y)
+\end{code}
+
 
 The following are often useful:
 
@@ -3880,11 +3903,6 @@ NatΣ-equiv-gives-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X �
                   → is-subsingleton Y
                   → is-subsingleton (X × Y)
 
-to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
-       → pr₀ z ≡ pr₀ t
-       → pr₁ z ≡ pr₁ t
-       → z ≡ t
-
 ×-is-subsingleton' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                    → ((Y → is-subsingleton X) × (X → is-subsingleton Y))
                    → is-subsingleton (X × Y)
@@ -4239,12 +4257,6 @@ NatΣ-equiv-gives-fiberwise-equiv = sol
       → is-subsingleton X → is-subsingleton Y → is-subsingleton (X × Y)
   sol i j = Σ-is-subsingleton i (λ _ → j)
 
-to-×-≡ = sol
- where
-  sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
-      → pr₀ z ≡ pr₀ t → pr₁ z ≡ pr₁ t → z ≡ t
-  sol (refl x) (refl y) = refl (x , y)
-
 ×-is-subsingleton' = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -4253,7 +4265,7 @@ to-×-≡ = sol
   sol {𝓤} {𝓥} {X} {Y} (i , j) = k
    where
     k : is-subsingleton (X × Y)
-    k (x , y) (x' , y') = to-×-≡ (i y x x') (j x y y')
+    k (x , y) (x' , y') = to-×-≡ (i y x x' , j x y y')
 
 ×-is-subsingleton'-back = sol
  where
@@ -6961,7 +6973,7 @@ sset by definition.
             (Π-is-subsingleton dfe (λ y → magma-is-set N (f (g' y)) y)))
 
    γ : (h , g , k , η , ε) ≡ (h' , g' , k' , η' , ε')
-   γ = to-×-≡ p (to-Σ-≡ (q , i _ _))
+   γ = to-×-≡ (p , to-Σ-≡ (q , i _ _))
 \end{code}
 
 By a magma equivalence we mean an equivalence which is a magma
@@ -7120,6 +7132,7 @@ Magma identity is equivalent to magma equivalence, and hence to magma isomorphis
 
  magma-identity-is-isomorphism : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≅ₘ N)
  magma-identity-is-isomorphism M N =
+
    (M ≡ N)  ≃⟨ magma-identity-is-equivalence M N ⟩
    (M ≃ₘ N) ≃⟨ ≃-sym (≅ₘ-charac M N) ⟩
    (M ≅ₘ N) ■
@@ -7128,7 +7141,7 @@ Magma identity is equivalent to magma equivalence, and hence to magma isomorphis
 We now generalize the above development.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="sip"></a> A structure identity principle
+### <a id="sip"></a> Some structure identity principles
 
 A *structure identity principle* describes equality of mathematical
 structures in terms of equivalences of their underlying types.  The
@@ -7211,7 +7224,7 @@ We first define the canonical map:
 
 \begin{code}
  canonical-map : {S : 𝓤 ̇ → 𝓥 ̇ }
-                 (ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇)
+                 (ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
                  (ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
                  {X : 𝓤 ̇ }
                  (s t : S X)
@@ -7279,7 +7292,7 @@ induction.
 
  homomorphism-lemma {𝓤} {𝓥} {𝓦} ua S (ι , ρ , ε) (X , s) (Y , t) e = γ s t
   where
-   C : (X Y : 𝓤 ̇) (e : X ≃ Y) → 𝓥 ⊔ 𝓦 ̇
+   C : (X Y : 𝓤 ̇ ) (e : X ≃ Y) → 𝓥 ⊔ 𝓦 ̇
    C X Y e = (s : S X) (t : S Y)
            → (transport S (Eq→Id ua X Y e) s ≡ t) ≃ ι (X , s) (Y , t) e
 
@@ -7483,7 +7496,7 @@ fact that the projection `S' X → S X` that forgets the axioms is an
 embedding precisely because the axioms are subsingleton-valued:
 
 \begin{code}
-   ε' : {X : 𝓤 ̇} (s t : S' X) → is-equiv (canonical-map ι' ρ' s t)
+   ε' : {X : 𝓤 ̇ } (s t : S' X) → is-equiv (canonical-map ι' ρ' s t)
    ε' {X} (s , α) (t , β) = γ
     where
      π : S' X → S X
@@ -7495,15 +7508,15 @@ embedding precisely because the axioms are subsingleton-valued:
      k : {s' t' : S' X} → is-equiv (ap π {s'} {t'})
      k {s'} {t'} = embedding-gives-ap-is-equiv π j s' t'
 
-     l : canonical-map ι ρ s t ∘ ap π {s , α} {t , β}
-       ∼ canonical-map ι' ρ' (s , α) (t , β)
+     l : canonical-map ι' ρ' (s , α) (t , β)
+       ∼ canonical-map ι ρ s t ∘ ap π {s , α} {t , β}
      l (refl (s , α)) = refl (ρ (X , s))
 
      e : is-equiv (canonical-map ι ρ s t ∘ ap π {s , α} {t , β})
      e = ∘-is-equiv (ε s t) k
 
      γ : is-equiv (canonical-map ι' ρ' (s , α) (t , β))
-     γ = equivs-closed-under-∼' _ _ e l
+     γ = equivs-closed-under-∼ _ _ e l
 \end{code}
 
 And this completess the construction.

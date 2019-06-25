@@ -3725,6 +3725,7 @@ module magma-equivalences (ua : Univalence) where
 
  magma-identity-is-isomorphism : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≅ₘ N)
  magma-identity-is-isomorphism M N =
+
    (M ≡ N)  ≃⟨ magma-identity-is-equivalence M N ⟩
    (M ≃ₘ N) ≃⟨ ≃-sym (≅ₘ-charac M N) ⟩
    (M ≅ₘ N) ■
@@ -3738,7 +3739,7 @@ module sip where
  structure (X , s) = s
 
  canonical-map : {S : 𝓤 ̇ → 𝓥 ̇ }
-                 (ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇)
+                 (ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
                  (ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
                  {X : 𝓤 ̇ }
                  (s t : S X)
@@ -3769,7 +3770,7 @@ module sip where
 
  homomorphism-lemma {𝓤} {𝓥} {𝓦} ua S (ι , ρ , ε) (X , s) (Y , t) e = γ s t
   where
-   C : (X Y : 𝓤 ̇) (e : X ≃ Y) → 𝓥 ⊔ 𝓦 ̇
+   C : (X Y : 𝓤 ̇ ) (e : X ≃ Y) → 𝓥 ⊔ 𝓦 ̇
    C X Y e = (s : S X) (t : S Y)
            → (transport S (Eq→Id ua X Y e) s ≡ t) ≃ ι (X , s) (Y , t) e
 
@@ -3900,7 +3901,7 @@ module sip-with-axioms where
    ρ' : (A : Σ S') → ι' A A (id-≃ ⟨ A ⟩)
    ρ' A = ρ [ A ]
 
-   ε' : {X : 𝓤 ̇} (s t : S' X) → is-equiv (canonical-map ι' ρ' s t)
+   ε' : {X : 𝓤 ̇ } (s t : S' X) → is-equiv (canonical-map ι' ρ' s t)
    ε' {X} (s , α) (t , β) = γ
     where
      π : S' X → S X
