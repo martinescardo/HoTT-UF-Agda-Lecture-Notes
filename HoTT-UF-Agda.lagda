@@ -7466,13 +7466,13 @@ equality:
    characterization-of-≡ ua S α (X , _·_) (Y , _⋆_)
 \end{code}
 
+#### Adding axioms
+
 Next we want to account for situations in which axioms are
 considered, for example that the underlying type is a set, or that the
 monoid structure satisfies the unit and associativity laws. We do this
 in a submodule, by reduction to the characterization of
 equality given in the module `sip`.
-
-#### Adding axioms
 
 \begin{code}
 module sip-with-axioms where
@@ -7554,7 +7554,7 @@ are subsingleton-valued:
      γ = equivs-closed-under-∼ _ _ e l
 \end{code}
 
-And this completess the construction of addition of axioms.
+And this completes the construction of addition of axioms.
 
 We now need a notion of equivalence of types equipped with
 structure and axioms:
@@ -7571,7 +7571,7 @@ structure and axioms:
 \end{code}
 
 And with this we can formulate and prove what the addition of axioms
-achieves, namely that the characterization of equality is the same,
+achieves, namely that the characterization of equality remains the same,
 ignoring the axioms:
 
 \begin{code}
@@ -7670,6 +7670,8 @@ module pointed-type-example (𝓤 : Universe) where
    characterization-of-≡ ua S α (X , x₀) (Y , y₀)
 \end{code}
 
+#### The structure identity principle for the join of two mathematical structures
+
 We now show how to join two mathematics structures, so as to obtain a
 characterization of equality of the join from the characterization of
 the equalities of the structures. For example, we build the
@@ -7678,8 +7680,6 @@ characterizations of the equality of pointed types and the
 characterization the equality of magmas. Moreover, adding axioms, we
 get a characterization of equality of monoids which amounts to the
 characterization of equality of pointed ∞-magmas:
-
-#### The structure identity principle for the join of two mathematical structures
 
 \begin{code}
 module sip-join where
@@ -7827,7 +7827,8 @@ We then can characterize equality of structures in the join by the following rel
                                         × is-homomorphism α₁ [ A ]₁ [ B ]₁ (f , i)
 \end{code}
 
-The following is then an immediate of the join construction:
+The following is then immediate from the join construction and the
+general structure identity principle:
 
 \begin{code}
  characterization-of-≡-join :
@@ -7869,9 +7870,9 @@ module pointed-∞-magma-example (𝓤 : Universe) where
      (pointed-type-example.α 𝓤) (∞-magma-example.α 𝓤) (X , x₀ , _·_) (Y , y₀ , _*_)
 \end{code}
 
-In the following example, we combine joins and addition of axioms.
-
 #### Example: monoids
+
+In the following example, we combine joins and addition of axioms.
 
 \begin{code}
 module monoid-example (𝓤 : Universe) (ua : is-univalent 𝓤) where
@@ -7931,7 +7932,6 @@ module monoid-example (𝓤 : Universe) (ua : is-univalent 𝓤) where
                               → (A ≡ B) ≃ (A ≃ₘ B)
 
  characterization-of-monoid-≡ ua = characterization-of-≡ ua (λ X → Σ (monoid-axioms X)) β
-
 \end{code}
 
 
