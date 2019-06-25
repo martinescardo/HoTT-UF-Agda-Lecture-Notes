@@ -4551,7 +4551,11 @@ is that of half adjoint equivalence. If we have a function
 
 with inversion data
 
-   > `g : Y → X` , `η : g ∘ f ∼ id` and `ε : f ∘ g ∼ id`,
+   > `g : Y → X` ,
+
+   > `η : g ∘ f ∼ id`, and
+
+   > `ε : f ∘ g ∼ id`,
 
 then for any `x : X` we have that
 
