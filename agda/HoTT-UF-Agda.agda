@@ -4300,21 +4300,21 @@ module generalized-metric-space-equality
    θ : {X : 𝓤 ̇ } (d e : S X) → is-equiv (canonical-map ι ρ d e)
    θ d e = equivs-closed-under-∼ (id-is-equiv (d ≡ e)) h
 
- TVRA : 𝓤 ⁺ ⊔ 𝓥  ̇
- TVRA = Σ \(X : 𝓤 ̇ ) → Σ \(d : X → X → R) → axioms X d
+ M : 𝓤 ⁺ ⊔ 𝓥  ̇
+ M = Σ \(X : 𝓤 ̇ ) → Σ \(d : X → X → R) → axioms X d
 
- _≅_  : TVRA → TVRA → 𝓤 ⊔ 𝓥 ̇
+ _≅_  : M → M → 𝓤 ⊔ 𝓥 ̇
  (X , d , a) ≅ (Y , e , b) = Σ \(f : X → Y) → is-equiv f
                                             × (d ≡ λ x x' → e (f x) (f x'))
 
- characterization-of-TVRA-≡ : is-univalent 𝓤
-                            → (A B : TVRA)
-                            → (A ≡ B) ≃ (A ≅ B)
+ characterization-of-M-≡ : is-univalent 𝓤
+                         → (A B : M)
+                         → (A ≡ B) ≃ (A ≅ B)
 
- characterization-of-TVRA-≡ ua = characterization-of-≡-with-axioms ua
-                                   (λ X → X → X → R)
-                                   sip-data
-                                   axioms axiomss
+ characterization-of-M-≡ ua = characterization-of-≡-with-axioms ua
+                               (λ X → X → X → R)
+                               sip-data
+                               axioms axiomss
 
 module generalized-topological-space-equality
         (𝓤 𝓥 : Universe)

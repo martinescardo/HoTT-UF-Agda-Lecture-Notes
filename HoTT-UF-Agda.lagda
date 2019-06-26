@@ -7982,32 +7982,32 @@ module generalized-metric-space-equality
    θ : {X : 𝓤 ̇ } (d e : S X) → is-equiv (canonical-map ι ρ d e)
    θ d e = equivs-closed-under-∼ (id-is-equiv (d ≡ e)) h
 
- TVRA : 𝓤 ⁺ ⊔ 𝓥  ̇
- TVRA = Σ \(X : 𝓤 ̇ ) → Σ \(d : X → X → R) → axioms X d
+ M : 𝓤 ⁺ ⊔ 𝓥  ̇
+ M = Σ \(X : 𝓤 ̇ ) → Σ \(d : X → X → R) → axioms X d
 
- _≅_  : TVRA → TVRA → 𝓤 ⊔ 𝓥 ̇
+ _≅_  : M → M → 𝓤 ⊔ 𝓥 ̇
  (X , d , a) ≅ (Y , e , b) = Σ \(f : X → Y) → is-equiv f
                                             × (d ≡ λ x x' → e (f x) (f x'))
 
- characterization-of-TVRA-≡ : is-univalent 𝓤
-                            → (A B : TVRA)
-                            → (A ≡ B) ≃ (A ≅ B)
+ characterization-of-M-≡ : is-univalent 𝓤
+                         → (A B : M)
+                         → (A ≡ B) ≃ (A ≅ B)
 
- characterization-of-TVRA-≡ ua = characterization-of-≡-with-axioms ua
-                                   (λ X → X → X → R)
-                                   sip-data
-                                   axioms axiomss
+ characterization-of-M-≡ ua = characterization-of-≡-with-axioms ua
+                               (λ X → X → X → R)
+                               sip-data
+                               axioms axiomss
 \end{code}
 
 We have the following particular cases of interest:
 
  * *Metric spaces*. If `R` is a type of real numbers, then the axioms
-   can be taken to be those for metric spaces, in which case `TVRA`
+   can be taken to be those for metric spaces, in which case `M`
    amounts to the type of metric spaces. Then the above characterizes
    metric space equality as isometry.
 
  * *Graphs*. If `R` is the type of truth values, and the `axioms`
-   function is constant with value *true*, then `TVRA` amounts to the
+   function is constant with value *true*, then `M` amounts to the
    type of directed graphs, and the above characterizes graph equality
    as graph isomorphism. We get undirected graphs by requiring the
    relation to be symmetric in the axioms.
