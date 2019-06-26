@@ -9025,6 +9025,8 @@ family of sets and that the relation `R` is subsingleton valued. For
 arbitrary higher groupoids, it is not in general possible to perform
 the choice functorially.
 
+#### A second formulation of choice
+
 The above is equivalent to another familiar formulation of choice,
 namely that a set-indexed product of non-empty sets is non-empty,
 where in a constructive setting we strengthen `non-empty` to
@@ -9087,7 +9089,7 @@ extensionality):
     γ = ∥∥-functor h a
 \end{code}
 
-A third formulation of choice is the following.
+#### A third formulation of choice
 
 \begin{code}
   TAC : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → is-set X → ((x : X) → is-set (A x)) → 𝓤 ⊔ 𝓥 ̇
@@ -9137,6 +9139,8 @@ following:
 
 *Exercise*. A fourth formulation of the axiom of choice is that every
  surjection of sets has an unspecified section.
+
+#### Choice implies excluded middle
 
 We apply the third formulation to show that choice implies excluded
 middle. We begin with the following lemma.
@@ -9253,7 +9257,9 @@ Applying the above to the object of truth-values, we get excluded middle:
 For more information with Agda code, see
 [this](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Choice.html).
 
-We take the opportunity to briefly address *global choice*.
+#### Global choice
+
+We take the opportunity to briefly address *global choice*, which was already mentioned above a couple of times.
 
 \begin{code}
   global-choice : (𝓤 : Universe) → 𝓤 ⁺ ̇
@@ -9335,6 +9341,8 @@ which is known to be validated by the simplicial-set model.
 It is also an open problem whether the resizing principles discussed
 below have a computational interpretation.
 
+#### Propositinal resizing
+
 We say that a type `X` has size `𝓥` if it is equivalent to a type in the
 universe `𝓥`:
 
@@ -9395,6 +9403,8 @@ Propositional-resizing : 𝓤ω
 Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
 \end{code}
 
+#### Excluded middle implies propositional resizing
+
 Propositional resizing is consistent, because it is implied by
 excluded middle, which is consistent (with or without univalence):
 
@@ -9423,6 +9433,8 @@ EM-gives-PR {𝓤} {𝓥} em P i = Q (em P i) , e
         P (Q (em P i)) i (j (em P i)) (f (em P i) , g (em P i))
 \end{code}
 
+#### The propositional resizing axiom is a subsingleton
+
 To show that the propositional resizing principle is a subsingleton,
 we use univalence here.
 
@@ -9446,6 +9458,8 @@ possible](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Resizing.html) to
 show that the propositional resizing principle is a subsingleton
 using propositional and functional extensionality instead of
 univalence.
+
+#### Propositional impredicativity
 
 We consider two notions of propositional impredicativity:
 
@@ -9582,6 +9596,8 @@ Impredicativity-gives-PR {𝓤} {𝓥} pe fe (O , e) P i = Q , ε
 [that](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Resizing.html) `Ω 𝓤`
 has size `𝓤₀`.
 
+#### Propositional resizing gives subsingleton truncation
+
 Using Voevodsky's [construction](HoTT-UF-Agda.html#truncation) and
 propositional resizing, we get that function extensionality implies
 that subsingleton truncations exist:
@@ -9625,6 +9641,8 @@ PR-gives-existence-of-truncations fe R =
                                     (inhabitation-is-a-subsingleton fe X) s))
  }
 \end{code}
+
+#### The powerset in the presence of propositional resizing
 
 As a second, important, use of resizing, we revisit the powerset.
 First, given a set of subsets, that is, an element of the double
@@ -9846,6 +9864,8 @@ propositional resizing:
   infix  2 _∩_
   infix  2 _∪_
 \end{code}
+
+#### Topological spaces in the presence of propositional resizing
 
 For example, with this we can define the type of topological spaces as
 follows, where `𝓞` consists of designated sets, conventionally called
