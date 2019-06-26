@@ -4671,6 +4671,7 @@ inhabited-computation : (fe : global-dfunext) {X : 𝓤 ̇ } {P : is-inhabited X
                       → (f : (x : X) → P (pointed-is-inhabited x))
                       → (x : X)
                       → inhabited-induction fe i f (pointed-is-inhabited x) ≡ f x
+
 inhabited-computation fe i f x = i (pointed-is-inhabited x)
                                    (inhabited-induction fe i f
                                      (pointed-is-inhabited x))

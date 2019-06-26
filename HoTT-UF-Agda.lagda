@@ -7529,19 +7529,21 @@ structure. We consider several versions:
 
  * One for raw structures subject to no axioms, such as ∞-magmas and pointed types.
 
- * One that adds axioms to a structure, so as to e.g. get a
-   characterization of magma equality from a characterization of
-   ∞-magma equalitty.
+ * One that adds axioms to a structure, so as to e.g. get a an
+   automatic characterization of magma equality from a
+   characterization of ∞-magma equalitty.
 
- * One that joins two kinds of structure, so as to e.g. get a
-   characterization of equality of pointed ∞-magmas from
+ * One that joins two kinds of structure, so as to e.g. get a an
+   automatic characterization of equality of pointed ∞-magmas from
    characterizations of equality for pointed types and for ∞-magmas.
 
- * In particular, adding axioms to pointed ∞-magmas we get monoids,
-   and we get an automatic characterization of equality of monoids in
-   terms of equivalences of underlying structure, in the expected way.
+ * In particular, adding axioms to pointed ∞-magmas we get monoids
+   with an automatic characterization of their equality.
 
-#### A general structure identity princple
+ * And then adding an axiom to monoids we get groups, again with
+   an automatic characterization of their equality.
+
+#### A general structure identity principle
 
 \begin{code}
 module sip where
@@ -7706,12 +7708,12 @@ With this we are ready to prove the promised characterization of equality on `Σ
 
 \begin{code}
  characterization-of-≡ : is-univalent 𝓤
-                       → (S : 𝓤 ̇ → 𝓥 ̇ ) (σ : SIP-data S 𝓦)
+                       → {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SIP-data S 𝓦)
                        → (A B : Σ S)
 
                        → (A ≡ B) ≃ (A ≃[ σ ] B)
 
- characterization-of-≡ {𝓤} {𝓥} {𝓦} ua S (ι , ρ , θ) A B = γ
+ characterization-of-≡ {𝓤} {𝓥} {𝓦} ua {S} (ι , ρ , θ) A B = γ
   where
    σ : SIP-data S 𝓦
    σ = ι , ρ , θ
@@ -7807,7 +7809,7 @@ module ∞-magma-equality (𝓤 : Universe) where
                                → (A B : ∞-Magma)
                                → (A ≡ B) ≃ (A ≅ B)
 
- characterization-of-∞-Magma-≡ ua = characterization-of-≡ ua S sip-data
+ characterization-of-∞-Magma-≡ ua = characterization-of-≡ ua sip-data
 \end{code}
 
 #### Adding axioms
@@ -7861,13 +7863,13 @@ In the following construction:
    axioms are subsingleton-valued.
 
 \begin{code}
- add-axioms : (S : 𝓤 ̇ → 𝓥 ̇ )
+ add-axioms : {S : 𝓤 ̇ → 𝓥 ̇ }
               (axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ )
             → ((X : 𝓤 ̇ ) (s : S X) → is-subsingleton (axioms X s))
             → SIP-data S 𝓦
             → SIP-data (λ X → Σ \(s : S X) → axioms X s) 𝓦
 
- add-axioms {𝓤} {𝓥} {𝓦} S axioms i (ι , ρ , θ) = ι' , ρ' , θ'
+ add-axioms {𝓤} {𝓥} {𝓦} {S} axioms i (ι , ρ , θ) = ι' , ρ' , θ'
   where
    S' : 𝓤 ̇ → 𝓥  ̇
    S' X = Σ \(s : S X) → axioms X s
@@ -7922,7 +7924,7 @@ ignoring the axioms:
  characterization-of-≡-with-axioms :
 
      is-univalent 𝓤
-   → (S : 𝓤 ̇ → 𝓥 ̇ )
+   → {S : 𝓤 ̇ → 𝓥 ̇ }
      (σ : SIP-data S 𝓦)
      (axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ )
    → ((X : 𝓤 ̇ ) (s : S X) → is-subsingleton (axioms X s))
@@ -7930,10 +7932,8 @@ ignoring the axioms:
    →
      (A ≡ B) ≃ (A ≃⟦ σ ⟧ B)
 
- characterization-of-≡-with-axioms ua S σ axioms i =
-   characterization-of-≡ ua
-     (λ X → Σ \(s : S X) → axioms X s)
-     (add-axioms S axioms i σ)
+ characterization-of-≡-with-axioms ua σ axioms i =
+   characterization-of-≡ ua (add-axioms axioms i σ)
 \end{code}
 
 And this concludes the module `sip-with-axioms`. We now consider some
@@ -7963,7 +7963,6 @@ module magma-equality (𝓤 : Universe) where
 
  characterization-of-Magma-≡ ua =
    characterization-of-≡-with-axioms ua
-    (λ X → X → X → X)
     (∞-magma-equality.sip-data 𝓤)
     (λ X s → is-set X)
     (λ X s → being-set-is-a-subsingleton (univalence-gives-dfunext ua))
@@ -8008,7 +8007,7 @@ module pointed-type-equality (𝓤 : Universe) where
                                     → (A B : Σ S)
                                     → (A ≡ B) ≃ (A ≅ B)
 
- characterization-of-pointed-type-≡ ua = characterization-of-≡ ua S sip-data
+ characterization-of-pointed-type-≡ ua = characterization-of-≡ ua sip-data
 \end{code}
 
 #### The structure identity principle for the join of two mathematical structures
@@ -8123,12 +8122,12 @@ S₀ X × S₁ X`
 The main construction in this submodule is this:
 
 \begin{code}
- join : (S₀ : 𝓤 ̇ → 𝓥₀ ̇ ) (S₁ : 𝓤 ̇ → 𝓥₁ ̇ )
+ join : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
       → SIP-data S₀ 𝓦₀
       → SIP-data S₁ 𝓦₁
       → SIP-data (λ X → S₀ X × S₁ X) (𝓦₀ ⊔ 𝓦₁)
 
- join {𝓤} {𝓥₀} {𝓥₁} {𝓦₀} {𝓦₁} S₀ S₁ (ι₀ , ρ₀ , θ₀) (ι₁ , ρ₁ , θ₁) = ι , ρ , θ
+ join {𝓤} {𝓥₀} {𝓥₁} {𝓦₀} {𝓦₁} {S₀} {S₁} (ι₀ , ρ₀ , θ₀) (ι₁ , ρ₁ , θ₁) = ι , ρ , θ
   where
    S : 𝓤 ̇ → 𝓥₀ ⊔ 𝓥₁  ̇
    S X = S₀ X × S₁ X
@@ -8173,7 +8172,6 @@ We then can characterize equality of structures in the join by the following rel
 
           → 𝓤 ⊔ 𝓦₀ ⊔ 𝓦₁ ̇
 
-
  A ≃⟦ σ₀ , σ₁ ⟧ B = Σ \(f : ⟪ A ⟫ → ⟪ B ⟫)
                   → Σ \(i : is-equiv f) → homomorphic σ₀ [ A ]₀ [ B ]₀ (f , i)
                                         × homomorphic σ₁ [ A ]₁ [ B ]₁ (f , i)
@@ -8184,16 +8182,14 @@ general structure identity principle:
 
 \begin{code}
  characterization-of-join-≡ : is-univalent 𝓤
-                            → (S₀ : 𝓤 ̇ → 𝓥 ̇ )     (S₁ : 𝓤 ̇ → 𝓥₁ ̇ )
+                            → {S₀ : 𝓤 ̇ → 𝓥 ̇ }     {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
                               (σ₀ : SIP-data S₀ 𝓦₀) (σ₁ : SIP-data S₁ 𝓦₁)
 
                               (A B : Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X)
                             →
                               (A ≡ B) ≃ (A ≃⟦ σ₀ , σ₁ ⟧ B)
 
- characterization-of-join-≡ ua S₀ S₁ σ₀ σ₁ = characterization-of-≡ ua
-                                              (λ X → S₀ X × S₁ X)
-                                              (join S₀ S₁ σ₀ σ₁)
+ characterization-of-join-≡ ua σ₀ σ₁ = characterization-of-≡ ua (join σ₀ σ₁)
 \end{code}
 
 This concludes the submodule. Some examples of uses of this follow.
@@ -8221,10 +8217,8 @@ module pointed-∞-magma-equality (𝓤 : Universe) where
                                      → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-pointed-magma-≡ ua = characterization-of-join-≡ ua
-                                            (λ X → X)
-                                            (λ X → X → X → X)
-                                            (pointed-type-equality.sip-data 𝓤)
-                                            (∞-magma-equality.sip-data 𝓤)
+                                           (pointed-type-equality.sip-data 𝓤)
+                                           (∞-magma-equality.sip-data 𝓤)
 \end{code}
 
 #### Monoids
@@ -8251,6 +8245,8 @@ module monoid-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
                            × monoids.right-neutral e _·_
                            × monoids.associative     _·_
 
+ Monoid : 𝓤 ⁺ ̇
+ Monoid = Σ \(X : 𝓤 ̇ ) → Σ \(s : monoid-structure X) → monoid-axioms X s
 
  monoid-axioms-subsingleton : (X : 𝓤 ̇ ) (s : monoid-structure X)
                             → is-subsingleton (monoid-axioms X s)
@@ -8269,16 +8265,12 @@ module monoid-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
                      (λ y → Π-is-subsingleton dfe
                              (λ z → i ((x · y) · z) (x · (y · z))))))))
 
-
  sip-data : SIP-data (λ X → Σ \(s : monoid-structure X) → monoid-axioms X s) 𝓤
  sip-data = add-axioms
-              monoid-structure monoid-axioms monoid-axioms-subsingleton
-              (join (λ X → X → X → X) (λ X → X)
+              monoid-axioms monoid-axioms-subsingleton
+              (join
                  (∞-magma-equality.sip-data 𝓤)
                  (pointed-type-equality.sip-data 𝓤))
-
- Monoid : 𝓤 ⁺ ̇
- Monoid = Σ \(X : 𝓤 ̇ ) → Σ \(s : monoid-structure X) → monoid-axioms X s
 
  _≅_ : Monoid → Monoid → 𝓤 ̇
 
@@ -8293,15 +8285,74 @@ module monoid-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
                               → (A B : Monoid)
                               → (A ≡ B) ≃ (A ≅ B)
 
- characterization-of-monoid-≡ ua = characterization-of-≡ ua
-                                    (λ X → Σ (monoid-axioms X))
-                                    sip-data
+ characterization-of-monoid-≡ ua = characterization-of-≡ ua sip-data
+\end{code}
+
+#### Groups
+
+We add an axiom to monoids to get groups.
+
+\begin{code}
+module group-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
+
+ open sip
+ open sip-with-axioms
+ open monoid-equality 𝓤 ua hiding (sip-data ; _≅_)
+
+ group-structure : 𝓤 ̇ → 𝓤 ̇
+ group-structure X = Σ \(s : monoid-structure X) → monoid-axioms X s
+
+ group-axiom : (X : 𝓤 ̇ ) → monoid-structure X → 𝓤 ̇
+ group-axiom X (_·_ , e) = (x : X) → Σ \(x' : X) → (x · x' ≡ e) × (x' · x ≡ e)
+
+ Group : 𝓤 ⁺ ̇
+ Group = Σ \(X : 𝓤 ̇ ) → Σ \(s : group-structure X) → group-axiom X (pr₁ s)
+
+ group-axiom-is-subsingleton : (X : 𝓤 ̇ )
+                             → (s : group-structure X)
+                             → is-subsingleton (group-axiom X (pr₁ s))
+
+ group-axiom-is-subsingleton X ((_·_ , e) , (s , l , r , a)) = γ
+  where
+   i : (x : X) → is-subsingleton (Σ \(x' : X) → (x · x' ≡ e) × (x' · x ≡ e))
+   i x (y , _ , q) (z , p , _) = u
+    where
+     t = y             ≡⟨ (r y)⁻¹ ⟩
+         (y · e)       ≡⟨ ap (y ·_) (p ⁻¹) ⟩
+         (y · (x · z)) ≡⟨ (a y x z)⁻¹ ⟩
+         ((y · x) · z) ≡⟨ ap (_· z) q ⟩
+         (e · z)       ≡⟨ l z ⟩
+         z ∎
+
+     u : (y , _ , q) ≡ (z , p , _)
+     u = to-Σ-≡ (t , to-×-≡ (s (x · z) e _ _ , s (z · x) e _ _))
+
+   γ : is-subsingleton (group-axiom X (_·_ , e))
+   γ = Π-is-subsingleton dfe i
+
+ sip-data : SIP-data (λ X → Σ \(s : group-structure X) → group-axiom X (pr₁ s)) 𝓤
+ sip-data = add-axioms
+              (λ X s → group-axiom X (pr₁ s)) group-axiom-is-subsingleton
+              (monoid-equality.sip-data 𝓤 ua)
+
+ _≅_ : Group → Group → 𝓤 ̇
+
+ (X , ((_·_ , d) , _) , _) ≅ (Y , ((_*_ , e) , _) , _) =
+
+            Σ \(f : X → Y) → is-equiv f
+                           × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+                           × (f d ≡ e)
+
+ characterization-of-group-≡ : is-univalent 𝓤
+                              → (A B : Group)
+                              → (A ≡ B) ≃ (A ≅ B)
+
+ characterization-of-group-≡ ua = characterization-of-≡ ua sip-data
 \end{code}
 
 #### The slice type
 
 \begin{code}
-
 module slice-equality
         (𝓤 : Universe)
         (R : 𝓤 ̇)
@@ -8336,8 +8387,7 @@ module slice-equality
                             → (A B : 𝓤 / R)
                             → (A ≡ B) ≃ (A ≅ B)
 
- characterization-of-/-≡ ua = characterization-of-≡ ua S sip-data
-
+ characterization-of-/-≡ ua = characterization-of-≡ ua sip-data
 \end{code}
 
 #### Metric spaces, graphs, and ordered structures
@@ -8384,7 +8434,6 @@ module generalized-metric-space-equality
                          → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-M-≡ ua = characterization-of-≡-with-axioms ua
-                               (λ X → X → X → R)
                                sip-data
                                axioms axiomss
 \end{code}
@@ -8485,10 +8534,10 @@ We introduce notation for the type of homeomorphisms:
 
 \begin{code}
  _≅_  : Space → Space → 𝓤 ⊔ 𝓥 ̇
- (X , 𝓞X , a) ≅ (Y , 𝓞Y , b)
+ (X , 𝓞X , a) ≅ (Y , 𝓞Y , b) =
 
-              = Σ \(f : X → Y) → is-equiv f
-                               × ((λ V → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y)
+              Σ \(f : X → Y) → is-equiv f
+                              × ((λ V → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y)
 
 
  characterization-of-Space-≡ : is-univalent 𝓤
@@ -8496,9 +8545,7 @@ We introduce notation for the type of homeomorphisms:
                              → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-Space-≡ ua = characterization-of-≡-with-axioms ua
-                                    (λ X → (X → R) → R) sip-data
-                                    axioms axiomss
-
+                                   sip-data axioms axiomss
 \end{code}
 
 But of course there are other choices for `R` that also make
@@ -8510,10 +8557,10 @@ rephrase the above as
 
 \begin{code}
  _≅'_  : Space → Space → 𝓤 ⊔ 𝓥 ̇
- (X , F , a) ≅' (Y , G , b)
+ (X , F , a) ≅' (Y , G , b) =
 
-              = Σ \(f : X → Y) → is-equiv f
-                               × ((λ (v : Y → R) → F (v ∘ f)) ≡ G)
+             Σ \(f : X → Y) → is-equiv f
+                            × ((λ (v : Y → R) → F (v ∘ f)) ≡ G)
 
 
  characterization-of-Space-≡' : is-univalent 𝓤
@@ -8563,10 +8610,10 @@ module selection-space-equality
 
 
  _≅_  :  SelectionSpace → SelectionSpace → 𝓤 ⊔ 𝓥 ̇
- (X , ε , a) ≅ (Y , δ , b)
+ (X , ε , a) ≅ (Y , δ , b) =
 
-             = Σ \(f : X → Y) → is-equiv f
-                              × ((λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ)
+             Σ \(f : X → Y) → is-equiv f
+                            × ((λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ)
 
 
  characterization-of-selection-space-≡ : is-univalent 𝓤
@@ -8574,7 +8621,6 @@ module selection-space-equality
                                        → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-selection-space-≡ ua = characterization-of-≡-with-axioms ua
-                                             (λ X → (X → R) → X)
                                              sip-data
                                              axioms axiomss
 \end{code}
@@ -8641,6 +8687,7 @@ inhabited-computation : (fe : global-dfunext) {X : 𝓤 ̇ } {P : is-inhabited X
                       → (f : (x : X) → P (pointed-is-inhabited x))
                       → (x : X)
                       → inhabited-induction fe i f (pointed-is-inhabited x) ≡ f x
+
 inhabited-computation fe i f x = i (pointed-is-inhabited x)
                                    (inhabited-induction fe i f
                                      (pointed-is-inhabited x))
@@ -9853,7 +9900,6 @@ have the same type
 and are defined by
 
 \begin{code}
-
 is-subsingleton-valued  _≈_ = ∀ x y → is-subsingleton (x ≈ y)
 reflexive               _≈_ = ∀ x → x ≈ x
 symmetric               _≈_ = ∀ x y → x ≈ y → y ≈ x
@@ -10045,7 +10091,6 @@ into any set `A` of any universe `𝓦`.
 
    e : ∃! \(f' : X/≈ → A) → f' ∘ η ≡ f
    e = (f' , r) , c
-
 \end{code}
 
 As mentioned above, if one so wishes, it is possible to resize down
@@ -10521,6 +10566,7 @@ infixl 2 _●_
 infixr 0 _≃⟨_⟩_
 infix  1 _■
 infix  3 _∈_
+
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
