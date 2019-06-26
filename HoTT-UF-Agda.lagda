@@ -143,7 +143,7 @@ we *prove* that the native notion of equality that comes with
 univalent type theory (inherited from Martin-Löf type theory) happens
 to coincide with monoid isomorphism. Largeness and smallness are taken
 as relative concepts, with type *universes* incorporated in the theory
-to account for this distinction.
+to account for the size distinction.
 
 Voevodsky's way to achieve this is to start with a Martin-Löf type
 theory (MLTT), including identity types and type universes, and
@@ -4553,7 +4553,7 @@ with inversion data
 
    > `g : Y → X` ,
 
-   > `η : g ∘ f ∼ id`, and
+   > `η : g ∘ f ∼ id`,
 
    > `ε : f ∘ g ∼ id`,
 
@@ -4724,7 +4724,6 @@ that the proof starts as that of
 
   γ : Σ A ≃ Σ (A ∘ f)
   γ = invertibility-gives-≃ φ (ψ , ψφ , φψ)
-
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -7242,7 +7241,7 @@ equivalence a homomorphism must be equal in a canonical way:
 
    > `refl t ↦ ρ (X , s)`
 
-   must be an equivalence for all `X : 𝓤 ` and `s t : S X` .
+   must be an equivalence for all `X : 𝓤 ` dnd `s t : S X` .
 
 This may sound a bit abstract at this point, but in practical examples
 of interest it is easy to fulfill these requirements, as we will
@@ -7262,42 +7261,42 @@ We first define the canonical map:
  canonical-map ι ρ {X} s s (refl s) = ρ (X , s)
 \end{code}
 
-We then collect the favourable data in the type `amnestic S 𝓦`:
+We then collect the favourable data in the type `SIP-data S 𝓦`:
 
 \begin{code}
- amnestic : (𝓤 ̇ → 𝓥 ̇ ) → (𝓦 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+ SIP-data : (𝓤 ̇ → 𝓥 ̇ ) → (𝓦 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
 
- amnestic {𝓤} {𝓥} S 𝓦 = Σ \(ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
-                       → Σ \(ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
-                       → {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
+ SIP-data {𝓤} {𝓥} S 𝓦 = Σ \(ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
+                      → Σ \(ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
+                      → {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
 \end{code}
 
-We write `is-homomorphism` for the first projection (we don't need
+We write `homomorphic` for the first projection (we don't need
 names for the other two projections):
 
 \begin{code}
- is-homomorphism : {S : 𝓤 ̇ → 𝓥 ̇ } → amnestic S 𝓦
-                 → (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇
- is-homomorphism (ι , ρ , ε) = ι
-\end{code}
-
-We then collect the homomorphic equivalences of `A B : Σ S`, assuming
-that `S` is amnestic, witnessed by `α`, in a type
-
-   > `A ≃[ α ] B`.
-
-Notice that only the first component of `α`, namely `is-homomorphism α`, is
-used in the definition:
-
-\begin{code}
- _≃[_]_ : {S : 𝓤 ̇ → 𝓥 ̇ } → Σ S → amnestic S 𝓦 → Σ S → 𝓤 ⊔ 𝓦 ̇
- A ≃[ α ] B = Σ \(f : ⟨ A ⟩ → ⟨ B ⟩)
-            → Σ \(i : is-equiv f) → is-homomorphism α A B (f , i)
+ homomorphic : {S : 𝓤 ̇ → 𝓥 ̇ } → SIP-data S 𝓦
+             → (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇
+ homomorphic (ι , ρ , ε) = ι
 \end{code}
 
 For example, when `S` specifies ∞-magma structure, we will have
-that `is-homorphism α A B (f , i)` amounts to `f` being a magma
+that `homomorphic σ A B (f , i)` amounts to `f` being a magma
 homomorphism.
+
+We then collect the homomorphic equivalences of `A B : Σ S`, assuming
+that `S` is SIP-data, witnessed by `σ`, in a type
+
+   > `A ≃[ σ ] B`.
+
+Notice that only the first component of `σ`, namely `homomorphic σ`, is
+used in the definition:
+
+\begin{code}
+ _≃[_]_ : {S : 𝓤 ̇ → 𝓥 ̇ } → Σ S → SIP-data S 𝓦 → Σ S → 𝓤 ⊔ 𝓦 ̇
+ A ≃[ σ ] B = Σ \(f : ⟨ A ⟩ → ⟨ B ⟩)
+            → Σ \(i : is-equiv f) → homomorphic σ A B (f , i)
+\end{code}
 
 The main lemma says that the homomorphism condition of an equivalence
 
@@ -7314,11 +7313,11 @@ induction.
 \begin{code}
  homomorphism-lemma :
 
-    (ua : is-univalent 𝓤) (S : 𝓤 ̇ → 𝓥 ̇ ) (α : amnestic S 𝓦)
+    (ua : is-univalent 𝓤) (S : 𝓤 ̇ → 𝓥 ̇ ) (σ : SIP-data S 𝓦)
     (A B : Σ S) (e : ⟨ A ⟩ ≃ ⟨ B ⟩)
   →
     (transport S (Eq→Id ua ⟨ A ⟩ ⟨ B ⟩ e) (structure A) ≡ structure B)
-  ≃ is-homomorphism α A B e
+  ≃ homomorphic σ A B e
 
  homomorphism-lemma {𝓤} {𝓥} {𝓦} ua S (ι , ρ , ε) (X , s) (Y , t) e = γ s t
   where
@@ -7349,15 +7348,15 @@ With this we are ready to prove the promised characterization of equality on `Σ
 
 \begin{code}
  characterization-of-≡ : is-univalent 𝓤
-                       → (S : 𝓤 ̇ → 𝓥 ̇ ) (α : amnestic S 𝓦)
+                       → (S : 𝓤 ̇ → 𝓥 ̇ ) (σ : SIP-data S 𝓦)
                        → (A B : Σ S)
 
-                       → (A ≡ B) ≃ (A ≃[ α ] B)
+                       → (A ≡ B) ≃ (A ≃[ σ ] B)
 
  characterization-of-≡ {𝓤} {𝓥} {𝓦} ua S (ι , ρ , ε) A B = γ
   where
-   α : amnestic S 𝓦
-   α = ι , ρ , ε
+   σ : SIP-data S 𝓦
+   σ = ι , ρ , ε
 \end{code}
 
 In summary, in the following chain of equivalences:
@@ -7375,7 +7374,7 @@ In summary, in the following chain of equivalences:
     (Σ \(p : ⟨ A ⟩ ≡ ⟨ B ⟩) → transport S (f p) (structure A) ≡ structure B) ≃⟨ iii ⟩
     (Σ \(e : ⟨ A ⟩ ≃ ⟨ B ⟩) → transport S (g e) (structure A) ≡ structure B) ≃⟨ iv  ⟩
     (Σ \(e : ⟨ A ⟩ ≃ ⟨ B ⟩) → ι A B e)                                       ≃⟨ v   ⟩
-    (A ≃[ α ] B)                                                             ■
+    (A ≃[ σ ] B)                                                             ■
     where
      i = Σ-≡-≃ A B
 
@@ -7398,13 +7397,13 @@ In summary, in the following chain of equivalences:
                    (λ - → transport S (g -) (structure A) ≡ structure B)
                    (Id→Eq ⟨ A ⟩ ⟨ B ⟩)
                    (Id→Eq-is-hae ua))
-     iv  = Σ-cong (homomorphism-lemma ua S α A B)
+     iv  = Σ-cong (homomorphism-lemma ua S σ A B)
      v   = Σ-assoc
 \end{code}
 
 And this completes the construction and is the end of the module `sip`
 
-*Exercise*. Describe the equivalence `A ≡ B → A ≃[ α ] B` constructed above by induction
+*Exercise*. Describe the equivalence `A ≡ B → A ≃[ σ ] B` constructed above by induction
  on identifications.
 
 We now consider some examples of uses of this.
@@ -7432,7 +7431,7 @@ The guess works because the identity function is a homomorphism,
 
 \begin{code}
  ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
- ρ (X , _·_) = refl (λ x x' → x · x')
+ ρ (X , _·_) = refl _·_
 \end{code}
 
 and because the canonical map is pointwise equal to the identity
@@ -7450,8 +7449,8 @@ function is an equivalence:
    γ = equivs-closed-under-∼
         id (canonical-map ι ρ _·_ _*_) (id-is-equiv (_·_ ≡ _*_)) h
 
- α : amnestic S 𝓤
- α = (ι , ρ , ε)
+ σ : SIP-data S 𝓤
+ σ = (ι , ρ , ε)
 \end{code}
 
 Hence we have the required data to apply the above characterization of
@@ -7467,7 +7466,7 @@ equality:
    ≃ Σ \(f : X → Y) → is-equiv f × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 
  characterization-of-∞-Magma-≡ ua X Y _·_ _⋆_ =
-   characterization-of-≡ ua S α (X , _·_) (Y , _⋆_)
+   characterization-of-≡ ua S σ (X , _·_) (Y , _⋆_)
 \end{code}
 
 #### Adding axioms
@@ -7498,17 +7497,17 @@ an underlying-type function `Σ S → 𝓤`:
 \begin{code}
  [_] : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ }
      → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s) → Σ S
- [ X , s , α ] = (X , s)
+ [ X , s , σ ] = (X , s)
 
  ⟪_⟫ : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ }
      → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s) → 𝓤 ̇
- ⟪ X , s , α ⟫ = X
+ ⟪ X , s , σ ⟫ = X
 
  add-axioms : (S : 𝓤 ̇ → 𝓥 ̇ )
               (axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ )
             → ((X : 𝓤 ̇ ) (s : S X) → is-subsingleton (axioms X s))
-            → amnestic S 𝓦
-            → amnestic (λ X → Σ \(s : S X) → axioms X s) 𝓦
+            → SIP-data S 𝓦
+            → SIP-data (λ X → Σ \(s : S X) → axioms X s) 𝓦
 
  add-axioms {𝓤} {𝓥} {𝓦} S axioms i (ι , ρ , ε) = ι' , ρ' , ε'
   where
@@ -7536,10 +7535,10 @@ are subsingleton-valued:
 
 \begin{code}
    ε' : {X : 𝓤 ̇ } (s t : S' X) → is-equiv (canonical-map ι' ρ' s t)
-   ε' {X} (s , α) (t , β) = γ
+   ε' {X} (s , σ) (t , τ) = γ
     where
      π : S' X → S X
-     π (s , α) = s
+     π (s , σ) = s
 
      j : is-embedding π
      j = pr₀-embedding (i X)
@@ -7547,14 +7546,14 @@ are subsingleton-valued:
      k : {s' t' : S' X} → is-equiv (ap π {s'} {t'})
      k {s'} {t'} = embedding-gives-ap-is-equiv π j s' t'
 
-     l : canonical-map ι' ρ' (s , α) (t , β)
-       ∼ canonical-map ι ρ s t ∘ ap π {s , α} {t , β}
-     l (refl (s , α)) = refl (ρ (X , s))
+     l : canonical-map ι' ρ' (s , σ) (t , τ)
+       ∼ canonical-map ι ρ s t ∘ ap π {s , σ} {t , τ}
+     l (refl (s , σ)) = refl (ρ (X , s))
 
-     e : is-equiv (canonical-map ι ρ s t ∘ ap π {s , α} {t , β})
+     e : is-equiv (canonical-map ι ρ s t ∘ ap π {s , σ} {t , τ})
      e = ∘-is-equiv (ε s t) k
 
-     γ : is-equiv (canonical-map ι' ρ' (s , α) (t , β))
+     γ : is-equiv (canonical-map ι' ρ' (s , σ) (t , τ))
      γ = equivs-closed-under-∼ _ _ e l
 \end{code}
 
@@ -7566,12 +7565,12 @@ structure and axioms:
 \begin{code}
  _≃⟦_⟧_ : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ }
         → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s)
-        → amnestic S 𝓦
+        → SIP-data S 𝓦
         → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s)
         → 𝓤 ⊔ 𝓦 ̇
 
- A ≃⟦ α ⟧ B = Σ \(f : ⟪ A ⟫ → ⟪ B ⟫)
-            → Σ \(i : is-equiv f) → is-homomorphism α [ A ] [ B ] (f , i)
+ A ≃⟦ σ ⟧ B = Σ \(f : ⟪ A ⟫ → ⟪ B ⟫)
+            → Σ \(i : is-equiv f) → homomorphic σ [ A ] [ B ] (f , i)
 \end{code}
 
 And with this we can formulate and prove what the addition of axioms
@@ -7582,14 +7581,14 @@ ignoring the axioms:
  characterization-of-≡-with-axioms :
 
      is-univalent 𝓤
-   → (S : 𝓤 ̇ → 𝓥 ̇ ) (α : amnestic S 𝓦) (axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ )
+   → (S : 𝓤 ̇ → 𝓥 ̇ ) (σ : SIP-data S 𝓦) (axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ )
    → ((X : 𝓤 ̇ ) (s : S X) → is-subsingleton (axioms X s))
    → (A B : Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s)
    →
-     (A ≡ B) ≃ (A ≃⟦ α ⟧ B)
+     (A ≡ B) ≃ (A ≃⟦ σ ⟧ B)
 
- characterization-of-≡-with-axioms {𝓤} {𝓥} {𝓦} ua S α axioms i =
-  characterization-of-≡ ua (λ X → Σ \(s : S X) → axioms X s) (add-axioms S axioms i α)
+ characterization-of-≡-with-axioms {𝓤} {𝓥} {𝓦} ua S σ axioms i =
+  characterization-of-≡ ua (λ X → Σ \(s : S X) → axioms X s) (add-axioms S axioms i σ)
 \end{code}
 
 And this concludes the module `sip-with-axioms`. We now consider some
@@ -7625,7 +7624,7 @@ module magma-example (𝓤 : Universe) where
   ≃ Σ \(f : X → Y) → is-equiv f × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 
  characterization-of-Magma-≡ ua X Y _·_ _⋆_ a b =
-   characterization-of-≡-with-axioms ua S α axioms (i ua) (X , _·_ , a) (Y , _⋆_ , b)
+   characterization-of-≡-with-axioms ua S σ axioms (i ua) (X , _·_ , a) (Y , _⋆_ , b)
 \end{code}
 
 *Exercise*. Characterize equality of monoids along the above lines. It
@@ -7660,8 +7659,8 @@ module pointed-type-example (𝓤 : Universe) where
    γ : is-equiv (canonical-map ι ρ x₀ x₁)
    γ = equivs-closed-under-∼ id (canonical-map ι ρ x₀ x₁) (id-is-equiv (x₀ ≡ x₁)) h
 
- α : amnestic S 𝓤
- α = (ι , ρ , ε)
+ σ : SIP-data S 𝓤
+ σ = (ι , ρ , ε)
 
  characterization-of-pointed-type-≡ :
 
@@ -7671,7 +7670,7 @@ module pointed-type-example (𝓤 : Universe) where
      ((X , x₀) ≡ (Y , y₀)) ≃ Σ \(f : X → Y) → is-equiv f × (f x₀ ≡ y₀)
 
  characterization-of-pointed-type-≡ ua X Y x₀ y₀ =
-   characterization-of-≡ ua S α (X , x₀) (Y , y₀)
+   characterization-of-≡ ua S σ (X , x₀) (Y , y₀)
 \end{code}
 
 #### The structure identity principle for the join of two mathematical structures
@@ -7782,9 +7781,9 @@ The main construction in this submodule is this:
 
 \begin{code}
  join : (S₀ : 𝓤 ̇ → 𝓥₀ ̇ ) (S₁ : 𝓤 ̇ → 𝓥₁ ̇ )
-      → amnestic S₀ 𝓦₀
-      → amnestic S₁ 𝓦₁
-      → amnestic (λ X → S₀ X × S₁ X) (𝓦₀ ⊔ 𝓦₁)
+      → SIP-data S₀ 𝓦₀
+      → SIP-data S₁ 𝓦₁
+      → SIP-data (λ X → S₀ X × S₁ X) (𝓦₀ ⊔ 𝓦₁)
 
  join {𝓤} {𝓥₀} {𝓥₁} {𝓦₀} {𝓦₁} S₀ S₁ (ι₀ , ρ₀ , ε₀) (ι₁ , ρ₁ , ε₁) = ι , ρ , ε
   where
@@ -7820,33 +7819,33 @@ We then can characterize equality of structures in the join by the following rel
  _≃⟦_,_⟧_ : {S₀ : 𝓤 ̇ → 𝓥 ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
 
           → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X)
-          → amnestic S₀ 𝓦₀
-          → amnestic S₁ 𝓦₁
+          → SIP-data S₀ 𝓦₀
+          → SIP-data S₁ 𝓦₁
           → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X)
 
           → 𝓤 ⊔ 𝓦₀ ⊔ 𝓦₁ ̇
 
- A ≃⟦ α₀ , α₁ ⟧ B = Σ \(f : ⟪ A ⟫ → ⟪ B ⟫)
-                  → Σ \(i : is-equiv f) → is-homomorphism α₀ [ A ]₀ [ B ]₀ (f , i)
-                                        × is-homomorphism α₁ [ A ]₁ [ B ]₁ (f , i)
+ A ≃⟦ σ₀ , σ₁ ⟧ B = Σ \(f : ⟪ A ⟫ → ⟪ B ⟫)
+                  → Σ \(i : is-equiv f) → homomorphic σ₀ [ A ]₀ [ B ]₀ (f , i)
+                                        × homomorphic σ₁ [ A ]₁ [ B ]₁ (f , i)
 \end{code}
 
 The following is then immediate from the join construction and the
 general structure identity principle:
 
 \begin{code}
- characterization-of-≡-join :
+ characterization-of-join-≡ :
 
         is-univalent 𝓤
 
       → (S₀ : 𝓤 ̇ → 𝓥 ̇ ) (S₁ : 𝓤 ̇ → 𝓥₁ ̇ )
-        (α₀ : amnestic S₀ 𝓦₀) ( α₁ : amnestic S₁ 𝓦₁)
+        (σ₀ : SIP-data S₀ 𝓦₀) ( σ₁ : SIP-data S₁ 𝓦₁)
         (A B : Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X)
       →
-        (A ≡ B) ≃ (A ≃⟦ α₀ , α₁ ⟧ B)
+        (A ≡ B) ≃ (A ≃⟦ σ₀ , σ₁ ⟧ B)
 
- characterization-of-≡-join ua S₀ S₁ α₀ α₁ =
-  characterization-of-≡ ua (λ X → S₀ X × S₁ X) (join S₀ S₁ α₀ α₁)
+ characterization-of-join-≡ ua S₀ S₁ σ₀ σ₁ =
+  characterization-of-≡ ua (λ X → S₀ X × S₁ X) (join S₀ S₁ σ₀ σ₁)
 \end{code}
 
 This concludes the submodule. Some examples of uses of this follow.
@@ -7870,8 +7869,8 @@ module pointed-∞-magma-example (𝓤 : Universe) where
                     × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 
  characterization-of-pointed-magma-≡ ua X Y x₀ y₀ _·_ _*_ =
-   characterization-of-≡-join ua (λ X → X) (λ X → X → X → X)
-     (pointed-type-example.α 𝓤) (∞-magma-example.α 𝓤) (X , x₀ , _·_) (Y , y₀ , _*_)
+   characterization-of-join-≡ ua (λ X → X) (λ X → X → X → X)
+     (pointed-type-example.σ 𝓤) (∞-magma-example.σ 𝓤) (X , x₀ , _·_) (Y , y₀ , _*_)
 \end{code}
 
 #### Example: monoids
@@ -7915,29 +7914,97 @@ module monoid-example (𝓤 : Universe) (ua : is-univalent 𝓤) where
                              (λ z → i ((x · y) · z) (x · (y · z))))))))
 
 
- α : amnestic monoid-structure 𝓤
- α = join (λ X → X → X → X) (λ X → X) (∞-magma-example.α 𝓤) (pointed-type-example.α 𝓤)
+ σ : SIP-data monoid-structure 𝓤
+ σ = join (λ X → X → X → X) (λ X → X)
+          (∞-magma-example.σ 𝓤)
+          (pointed-type-example.σ 𝓤)
 
- β : amnestic (λ X → Σ \(s : monoid-structure X) → monoid-axioms X s) 𝓤
- β = add-axioms monoid-structure monoid-axioms monoid-axioms-subsingleton α
+ τ : SIP-data (λ X → Σ \(s : monoid-structure X) → monoid-axioms X s) 𝓤
+ τ = add-axioms monoid-structure monoid-axioms monoid-axioms-subsingleton σ
 
  Monoid : 𝓤 ⁺ ̇
  Monoid = Σ \(X : 𝓤 ̇) → Σ \(s : monoid-structure X) → monoid-axioms X s
 
- _≃ₘ_ : Monoid → Monoid → 𝓤 ̇
+ _≅_ : Monoid → Monoid → 𝓤 ̇
 
- (X , (_·_ , d) , a) ≃ₘ (Y , (_*_ , e) , b) =
+ (X , (_·_ , d) , a) ≅ (Y , (_*_ , e) , b) =
 
-   Σ \(f : X → Y) → is-equiv f
-                  × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
-                  × (f d ≡ e)
+                     Σ \(f : X → Y) → is-equiv f
+                                    × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+                                    × (f d ≡ e)
 
- characterization-of-monoid-≡ : is-univalent 𝓤 → (A B : Monoid)
-                              → (A ≡ B) ≃ (A ≃ₘ B)
-
- characterization-of-monoid-≡ ua = characterization-of-≡ ua (λ X → Σ (monoid-axioms X)) β
+ characterization-of-monoid-≡ : is-univalent 𝓤 → (A B : Monoid) → (A ≡ B) ≃ (A ≅ B)
+ characterization-of-monoid-≡ ua =
+   characterization-of-≡ ua (λ X → Σ (monoid-axioms X)) τ
 \end{code}
 
+#### Equality of metric spaces, graphs, and ordered structures
+
+More generally, we work with type-valued relations subject to axioms.
+
+\begin{code}
+module type-valued-relation-with-axioms-example
+        (𝓤 𝓥 : Universe)
+        (ua : is-univalent 𝓤)
+        (R : 𝓥 ̇)
+        (axioms  : (X : 𝓤 ̇ ) → (X → X → R) → 𝓤 ⊔ 𝓥 ̇)
+        (axiomss : (X : 𝓤 ̇ ) (d : X → X → R) → is-subsingleton (axioms X d))
+       where
+
+ open sip
+ open sip-with-axioms
+
+ S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ S X = X → X → R
+
+ ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
+ ι (X , d) (Y , e) (f , i) = (d ≡ λ x x' → e (f x) (f x'))
+
+ ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
+ ρ (X , d) = refl d
+
+ ε : {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
+ ε {X} d e = γ
+  where
+   h : canonical-map ι ρ d e ∼ 𝑖𝑑 (d ≡ e)
+   h (refl d) = refl (refl d)
+
+   γ : is-equiv (canonical-map ι ρ d e)
+   γ = equivs-closed-under-∼
+        id (canonical-map ι ρ d e) (id-is-equiv (d ≡ e)) h
+
+ σ : SIP-data S (𝓤 ⊔ 𝓥)
+ σ = (ι , ρ , ε)
+
+ TVRA : 𝓤 ⁺ ⊔ 𝓥  ̇
+ TVRA = Σ \(X : 𝓤 ̇ ) → Σ \(d : X → X → R) → axioms X d
+
+ _≅_  : TVRA → TVRA → 𝓤 ⊔ 𝓥 ̇
+ (X , d , a) ≅ (Y , e , b) = Σ \(f : X → Y) → is-equiv f
+                                            × (d ≡ λ x x' → e (f x) (f x'))
+
+ characterization-of-type-valued-relations-≡ : (A B : TVRA) → (A ≡ B) ≃ (A ≅ B)
+ characterization-of-type-valued-relations-≡ =
+   characterization-of-≡-with-axioms ua (λ X → X → X → R) σ axioms axiomss
+\end{code}
+
+We have the following particular cases of interest:
+
+ * *Metric spaces*. If `R` is a type of real numbers, then the axioms
+   can be those for metric spaces, and `TVRA` amounts to the type of
+   metric spaces. Then the above characterizes metric space equality
+   as isometry.
+
+ * *Graphs*. If `R` is the type of truth values, and the `axioms`
+   function is constant with value *true*, then `TVRA` amounts to the
+   type of directed graphs, and the above characterizes graph equality
+   as graph isomorphism. We get undirected graphs by requiring the
+   relation to be symmetric in the axioms.
+
+ * *Partially ordered sets*. Again with `R` taken to be the type of
+   truth values and suitable axioms, we get posets and other ordered
+   structures, and the above says that their equality amounts to order
+   isomorphism.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="truncation"></a> Subsingleton truncation, disjunction and existence
