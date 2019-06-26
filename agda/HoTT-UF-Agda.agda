@@ -143,11 +143,11 @@ record Σ {𝓤 𝓥} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  wh
    x : X
    y : Y x
 
-pr₀ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → Σ Y → X
-pr₀ (x , y) = x
+pr₁ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → Σ Y → X
+pr₁ (x , y) = x
 
-pr₁ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → (z : Σ Y) → Y (pr₀ z)
-pr₁ (x , y) = y
+pr₂ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → (z : Σ Y) → Y (pr₁ z)
+pr₂ (x , y) = y
 
 Σ-induction : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : Σ Y → 𝓦 ̇ }
             → ((x : X) (y : Y x) → A(x , y))
@@ -285,10 +285,10 @@ _⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ⇔ Y = (X → Y) × (Y → X)
 
 lr-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (X → Y)
-lr-implication = pr₀
+lr-implication = pr₁
 
 rl-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (Y → X)
-rl-implication = pr₁
+rl-implication = pr₂
 
 absurdity³-is-absurdity : {A : 𝓤 ̇ } → ¬¬¬ A ⇔ ¬ A
 absurdity³-is-absurdity {𝓤} {A} = firstly , secondly
@@ -486,10 +486,10 @@ module BasicArithmetic where
     IH = ≤-gives-≼ x y l
 
     z : ℕ
-    z = pr₀ IH
+    z = pr₁ IH
 
     p : x ∔ z ≡ y
-    p = pr₁ IH
+    p = pr₂ IH
 
     γ : succ x ≼ succ y
     γ = z , (succ x ∔ z   ≡⟨ +-step-on-first x z ⟩
@@ -692,14 +692,14 @@ apd : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : (x : X) → A x) {x y : X}
 apd f (refl x) = refl (f x)
 
 to-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
-       → (Σ \(p : pr₀ σ ≡ pr₀ τ) → transport A p (pr₁ σ) ≡ pr₁ τ)
+       → (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
        → σ ≡ τ
 
 to-Σ-≡ (refl x , refl a) = refl (x , a)
 
 from-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
          → σ ≡ τ
-         → Σ \(p : pr₀ σ ≡ pr₀ τ) → transport A p (pr₁ σ) ≡ pr₁ τ
+         → Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ
 
 from-Σ-≡ (refl (x , a)) = (refl x , refl a)
 
@@ -1174,51 +1174,51 @@ transport-is-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
 transport-is-equiv A (refl x) = id-is-equiv (A x)
 
 Σ-≡-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ τ : Σ A)
-      → (σ ≡ τ) ≃ (Σ \(p : pr₀ σ ≡ pr₀ τ) → transport A p (pr₁ σ) ≡ pr₁ τ)
+      → (σ ≡ τ) ≃ (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
 
 Σ-≡-≃ {𝓤} {𝓥} {X} {A}  σ τ = invertibility-gives-≃ from-Σ-≡ (to-Σ-≡ , η , ε)
  where
   η : (q : σ ≡ τ) → to-Σ-≡ (from-Σ-≡ q) ≡ q
   η (refl σ) = refl (refl σ)
 
-  ε : (w : Σ \(p : pr₀ σ ≡ pr₀ τ) → transport A p (pr₁ σ) ≡ pr₁ τ)
+  ε : (w : Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
     → from-Σ-≡ (to-Σ-≡ w) ≡ w
   ε (refl p , refl q) = refl (refl p , refl q)
 
 to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
-       → (pr₀ z ≡ pr₀ t) × (pr₁ z ≡ pr₁ t) → z ≡ t
+       → (pr₁ z ≡ pr₁ t) × (pr₂ z ≡ pr₂ t) → z ≡ t
 
 to-×-≡ (refl x , refl y) = refl (x , y)
 
 from-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
-         → z ≡ t → (pr₀ z ≡ pr₀ t) × (pr₁ z ≡ pr₁ t)
+         → z ≡ t → (pr₁ z ≡ pr₁ t) × (pr₂ z ≡ pr₂ t)
 
 from-×-≡ {𝓤} {𝓥} {X} {Y} (refl (x , y)) = (refl x , refl y)
 
 ×-≡-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (z t : X × Y)
-      → (z ≡ t) ≃ (pr₀ z ≡ pr₀ t) × (pr₁ z ≡ pr₁ t)
+      → (z ≡ t) ≃ (pr₁ z ≡ pr₁ t) × (pr₂ z ≡ pr₂ t)
 
 ×-≡-≃ {𝓤} {𝓥} {X} {Y} z t = invertibility-gives-≃ from-×-≡ (to-×-≡ , η , ε)
  where
   η : (p : z ≡ t) → to-×-≡ (from-×-≡ p) ≡ p
   η (refl z) = refl (refl z)
 
-  ε : (q : (pr₀ z ≡ pr₀ t) × (pr₁ z ≡ pr₁ t)) → from-×-≡ (to-×-≡ q) ≡ q
+  ε : (q : (pr₁ z ≡ pr₁ t) × (pr₂ z ≡ pr₂ t)) → from-×-≡ (to-×-≡ q) ≡ q
   ε (refl x , refl y) = refl (refl x , refl y)
 
-ap-pr₀-to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
-              → (p₀ : pr₀ z ≡ pr₀ t)
-              → (p₁ : pr₁ z ≡ pr₁ t)
-              → ap pr₀ (to-×-≡ (p₀ , p₁)) ≡ p₀
-
-ap-pr₀-to-×-≡ (refl x) (refl y) = refl (refl x)
-
 ap-pr₁-to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
-              → (p₀ : pr₀ z ≡ pr₀ t)
               → (p₁ : pr₁ z ≡ pr₁ t)
-              → ap pr₁ (to-×-≡ (p₀ , p₁)) ≡ p₁
+              → (p₂ : pr₂ z ≡ pr₂ t)
+              → ap pr₁ (to-×-≡ (p₁ , p₂)) ≡ p₁
 
-ap-pr₁-to-×-≡ (refl x) (refl y) = refl (refl y)
+ap-pr₁-to-×-≡ (refl x) (refl y) = refl (refl x)
+
+ap-pr₂-to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
+              → (p₁ : pr₁ z ≡ pr₁ t)
+              → (p₂ : pr₂ z ≡ pr₂ t)
+              → ap pr₂ (to-×-≡ (p₁ , p₂)) ≡ p₂
+
+ap-pr₂-to-×-≡ (refl x) (refl y) = refl (refl y)
 
 Σ-cong : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
        → ((x : X) → A x ≃ B x) → Σ A ≃ Σ B
@@ -1409,23 +1409,23 @@ equiv-to-singleton' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 subtypes-of-sets-are-sets : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                           → left-cancellable m → is-set Y → is-set X
 
-pr₀-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+pr₁-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
        → ((x : X) → is-subsingleton (A x))
-       → left-cancellable  (λ (t : Σ A) → pr₀ t)
+       → left-cancellable  (λ (t : Σ A) → pr₁ t)
 
 subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
                          → is-set X
                          → ((x : X) → is-subsingleton(A x))
                          → is-set(Σ \(x : X) → A x)
 
-pr₀-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+pr₁-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
           → ((x : X) → is-singleton (A x))
-          → is-equiv (λ (t : Σ A) → pr₀ t)
+          → is-equiv (λ (t : Σ A) → pr₁ t)
 
-pr₀-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+pr₁-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
       → ((x : X) → is-singleton (A x))
       → Σ A ≃ X
-pr₀-≃ i = pr₀ , pr₀-equiv i
+pr₁-≃ i = pr₁ , pr₁-equiv i
 
 ΠΣ-distr-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
            → (Π \(x : X) → Σ \(a : A x) → P x a)
@@ -1635,11 +1635,11 @@ subtypes-of-sets-are-sets = sol
     c : Id-collapsible X
     c x x' = f x x' , κ x x'
 
-pr₀-lc = sol
+pr₁-lc = sol
  where
   sol : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
       → ((x : X) → is-subsingleton (A x))
-      → left-cancellable  (λ (t : Σ A) → pr₀ t)
+      → left-cancellable  (λ (t : Σ A) → pr₁ t)
   sol i p = to-Σ-≡ (p , i _ _ _)
 
 subsets-of-sets-are-sets = sol
@@ -1648,22 +1648,22 @@ subsets-of-sets-are-sets = sol
      → is-set X
      → ((x : X) → is-subsingleton(A x))
      → is-set (Σ \(x : X) → A x)
-  sol X A h p = subtypes-of-sets-are-sets pr₀ (pr₀-lc p) h
+  sol X A h p = subtypes-of-sets-are-sets pr₁ (pr₁-lc p) h
 
-pr₀-equiv = sol
+pr₁-equiv = sol
  where
   sol : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
       → ((x : X) → is-singleton (A x))
-      → is-equiv (λ (t : Σ A) → pr₀ t)
-  sol {𝓤} {𝓥} {X} {A} s = invertibles-are-equivs pr₀ (g , η , ε)
+      → is-equiv (λ (t : Σ A) → pr₁ t)
+  sol {𝓤} {𝓥} {X} {A} s = invertibles-are-equivs pr₁ (g , η , ε)
    where
     g : X → Σ A
-    g x = x , pr₀(s x)
+    g x = x , pr₁(s x)
 
-    ε : (x : X) → pr₀ (g x) ≡ x
-    ε x = refl (pr₀ (g x))
+    ε : (x : X) → pr₁ (g x) ≡ x
+    ε x = refl (pr₁ (g x))
 
-    η : (σ : Σ A) → g (pr₀ σ) ≡ σ
+    η : (σ : Σ A) → g (pr₁ σ) ≡ σ
     η (x , a) = to-Σ-≡ (ε x , singletons-are-subsingletons (A x) (s x) _ a)
 
 ΠΣ-distr-≃ = sol
@@ -1675,7 +1675,7 @@ pr₀-equiv = sol
    where
     φ : (Π \(x : X) → Σ \(a : A x) → P x a)
       → Σ \(f : Π A) → Π \(x : X) → P x (f x)
-    φ g = ((λ x → pr₀ (g x)) , λ x → pr₁ (g x))
+    φ g = ((λ x → pr₁ (g x)) , λ x → pr₂ (g x))
 
     γ : (Σ \(f : Π A) → Π \(x : X) → P x (f x))
       → Π \(x : X) → Σ \(a : A x) → P x a
@@ -1831,10 +1831,10 @@ NatΣ-equiv-gives-fiberwise-equiv = sol
   sol {𝓤} {𝓥} {X} {Y} k = i , j
    where
     i : Y → is-subsingleton X
-    i y x x' = ap pr₀ (k (x , y) (x' , y))
+    i y x x' = ap pr₁ (k (x , y) (x' , y))
 
     j : X → is-subsingleton Y
-    j x y y' = ap pr₁ (k (x , y) (x , y'))
+    j x y y' = ap pr₂ (k (x , y) (x , y'))
 
 ap₂ = sol
  where
@@ -2300,10 +2300,10 @@ funext-gives-vvfunext : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → vvf
 funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
  where
   f : Σ A → X
-  f = pr₀
+  f = pr₁
 
   f-is-equiv : is-equiv f
-  f-is-equiv = pr₀-equiv φ
+  f-is-equiv = pr₁-equiv φ
 
   g : (X → Σ A) → (X → X)
   g h = f ∘ h
@@ -2315,7 +2315,7 @@ funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
   i = e (𝑖𝑑 X)
 
   r : (Σ \(h : X → Σ A) → f ∘ h ≡ 𝑖𝑑 X) → Π A
-  r (h , p) x = transport A (happly (f ∘ h) (𝑖𝑑 X) p x) (pr₁ (h x))
+  r (h , p) x = transport A (happly (f ∘ h) (𝑖𝑑 X) p x) (pr₂ (h x))
 
   s : Π A → (Σ \(h : X → Σ A) → f ∘ h ≡ 𝑖𝑑 X)
   s φ = (λ x → x , φ x) , refl (𝑖𝑑 X)
@@ -2387,7 +2387,7 @@ is-map-classifier : (𝓤 : Universe) → 𝓤 ⁺ ̇
 is-map-classifier 𝓤 = (Y : 𝓤 ̇ ) → is-equiv (χ Y)
 
 T : (Y : 𝓤 ̇ ) → (Y → 𝓤 ̇ ) → 𝓤 / Y
-T Y A = Σ A , pr₀
+T Y A = Σ A , pr₁
 
 χη : is-univalent 𝓤
    → (Y : 𝓤 ̇ ) → (σ : 𝓤 / Y) → T Y (χ Y σ) ≡ σ
@@ -2403,11 +2403,11 @@ T Y A = Σ A , pr₀
   observation : Eq→fun (≃-sym e) ≡ (λ x → f x , x , refl (f x))
   observation = refl _
 
-  q = transport (λ - → - → Y) p pr₀ ≡⟨ transport-map-along-≃ ua e pr₀ ⟩
-      pr₀ ∘ Eq→fun (≃-sym e)        ≡⟨ refl _ ⟩
+  q = transport (λ - → - → Y) p pr₁ ≡⟨ transport-map-along-≃ ua e pr₁ ⟩
+      pr₁ ∘ Eq→fun (≃-sym e)        ≡⟨ refl _ ⟩
       f                             ∎
 
-  r : (Σ (fiber f) , pr₀) ≡ (X , f)
+  r : (Σ (fiber f) , pr₁) ≡ (X , f)
   r = to-Σ-≡ (p , q)
 
 χε : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
@@ -2415,10 +2415,10 @@ T Y A = Σ A , pr₀
 
 χε ua fe Y A = fe γ
  where
-  f : ∀ y → fiber pr₀ y → A y
+  f : ∀ y → fiber pr₁ y → A y
   f y ((y , a) , refl p) = a
 
-  g : ∀ y → A y → fiber pr₀ y
+  g : ∀ y → A y → fiber pr₁ y
   g y a = (y , a) , refl y
 
   η : ∀ y σ → g y (f y σ) ≡ σ
@@ -2427,7 +2427,7 @@ T Y A = Σ A , pr₀
   ε : ∀ y a → f y (g y a) ≡ a
   ε y a = refl a
 
-  γ : ∀ y → fiber pr₀ y ≡ A y
+  γ : ∀ y → fiber pr₁ y ≡ A y
   γ y = Eq→Id ua _ _ (invertibility-gives-≃ (f y) (g y , η y , ε y))
 
 universes-are-map-classifiers : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
@@ -3016,19 +3016,19 @@ being-embedding-is-a-subsingleton fe f =
  Π-is-subsingleton fe
   (λ x → being-subsingleton-is-a-subsingleton fe)
 
-pr₁-embedding : (A : 𝓤 ̇ ) (X : 𝓥 ̇ )
+pr₂-embedding : (A : 𝓤 ̇ ) (X : 𝓥 ̇ )
               → is-subsingleton A
-              → is-embedding (λ (z : A × X) → pr₁ z)
+              → is-embedding (λ (z : A × X) → pr₂ z)
 
-pr₁-embedding A X i x ((a , x) , refl x) ((b , x) , refl x) = p
+pr₂-embedding A X i x ((a , x) , refl x) ((b , x) , refl x) = p
  where
   p : ((a , x) , refl x) ≡ ((b , x) , refl x)
   p = ap (λ - → ((- , x) , refl x)) (i a b)
 
-pr₀-embedding : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+pr₁-embedding : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
               → ((x : X) → is-subsingleton (A x))
-              → is-embedding (pr₀ {𝓤} {𝓥} {X} {A})
-pr₀-embedding i x ((x , a) , refl x) ((x , a') , refl x) = γ
+              → is-embedding (pr₁ {𝓤} {𝓥} {X} {A})
+pr₁-embedding i x ((x , a) , refl x) ((x , a') , refl x) = γ
  where
   γ : (x , a) , refl x ≡ (x , a') , refl x
   γ = ap (λ - → (x , -) , refl x) (i x a a')
@@ -3049,10 +3049,10 @@ id-is-embedding {𝓤} {X} = equivs-are-embeddings id (id-is-equiv X)
 ∘-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} d e = h
  where
   A : (z : Z) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-  A z = Σ \(w : fiber g z) → fiber f (pr₀ w)
+  A z = Σ \(w : fiber g z) → fiber f (pr₁ w)
 
   i : (z : Z) → is-subsingleton (A z)
-  i z = Σ-is-subsingleton (d z) (λ w → e (pr₀ w))
+  i z = Σ-is-subsingleton (d z) (λ w → e (pr₁ w))
 
   φ : (z : Z) → fiber (g ∘ f) z → A z
   φ z (x , p) = (f x , p) , x , refl (f x)
@@ -3308,7 +3308,7 @@ being-representable-is-a-subsingleton fe {X} A r₀ r₁ = γ
 
   ε : (x : X) → (𝓨 x ≃̇ A) ≃ A x
   ε x = ((y : X) → 𝓨 x y ≃ A y)                       ≃⟨ ΠΣ-distr-≃ ⟩
-        (Σ \(τ : Nat (𝓨 x) A) → is-fiberwise-equiv τ) ≃⟨ pr₀-≃ (i x) ⟩
+        (Σ \(τ : Nat (𝓨 x) A) → is-fiberwise-equiv τ) ≃⟨ pr₁-≃ (i x) ⟩
         Nat (𝓨 x) A                                   ≃⟨ Yoneda-Lemma fe fe A x ⟩
         A x                                           ■
 
@@ -3904,8 +3904,8 @@ module magma-equivalences (ua : Univalence) where
    ((x x' : X) → x · x' ≡ x * x')                ■
 
   where
-   a = ≃-sym (embedding-criterion-converse pr₁
-               (pr₁-embedding (is-set X) (X → X → X)
+   a = ≃-sym (embedding-criterion-converse pr₂
+               (pr₂-embedding (is-set X) (X → X → X)
                  (being-set-is-a-subsingleton dfe))
                (i , _·_)
                (j , _*_))
@@ -4119,7 +4119,7 @@ module sip-with-axioms where
      π (s , σ) = s
 
      j : is-embedding π
-     j = pr₀-embedding (i X)
+     j = pr₁-embedding (i X)
 
      k : {s' t' : S' X} → is-equiv (ap π {s'} {t'})
      k {s'} {t'} = embedding-gives-ap-is-equiv π j s' t'
@@ -4227,13 +4227,13 @@ module sip-join where
    → ((x₀ x₁ : X) → is-equiv (f x₀ x₁))
    → ((y₀ y₁ : Y) → is-equiv (g y₀ y₁))
 
-   → (z₀ z₁ : X × Y) → is-equiv (λ (r : z₀ ≡ z₁) → f (pr₀ z₀) (pr₀ z₁) (ap pr₀ r) ,
-                                                   g (pr₁ z₀) (pr₁ z₁) (ap pr₁ r))
+   → (z₀ z₁ : X × Y) → is-equiv (λ (r : z₀ ≡ z₁) → f (pr₁ z₀) (pr₁ z₁) (ap pr₁ r) ,
+                                                   g (pr₂ z₀) (pr₂ z₁) (ap pr₂ r))
 
  technical-lemma {𝓤} {𝓥} {𝓦} {𝓣} {X} {A} {Y} {B} f g i j (x₀ , y₀) (x₁ , y₁) = γ
   where
    h : (x₀ , y₀) ≡ (x₁ , y₁) → A x₀ x₁ × B y₀ y₁
-   h r = f x₀ x₁ (ap pr₀ r) , g y₀ y₁ (ap pr₁ r)
+   h r = f x₀ x₁ (ap pr₁ r) , g y₀ y₁ (ap pr₂ r)
 
    f' : (a : A x₀ x₁) → x₀ ≡ x₁
    f' = inverse (f x₀ x₁) (i x₀ x₁)
@@ -4260,14 +4260,14 @@ module sip-join where
    θ (a , b) =
      h (k (a , b))                              ≡⟨ refl _ ⟩
      h (to-×-≡  (f' a , g' b))                  ≡⟨ refl _ ⟩
-     (f x₀ x₁ (ap pr₀ (to-×-≡ (f' a , g' b))) ,
-      g y₀ y₁ (ap pr₁ (to-×-≡ (f' a , g' b))))  ≡⟨ ii ⟩
+     (f x₀ x₁ (ap pr₁ (to-×-≡ (f' a , g' b))) ,
+      g y₀ y₁ (ap pr₂ (to-×-≡ (f' a , g' b))))  ≡⟨ ii ⟩
      (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ≡⟨ iii ⟩
      a , b                                      ∎
     where
      ii = ap₂ (λ l r → f x₀ x₁ l , g y₀ y₁ r)
-              (ap-pr₀-to-×-≡ (f' a) (g' b))
               (ap-pr₁-to-×-≡ (f' a) (g' b))
+              (ap-pr₂-to-×-≡ (f' a) (g' b))
      iii = to-×-≡ (inverse-is-section (f x₀ x₁) (i x₀ x₁) a ,
                    inverse-is-section (g y₀ y₁) (j y₀ y₁) b)
 
@@ -4316,8 +4316,8 @@ module sip-join where
      c : (p : s₀ , s₁ ≡ t₀ , t₁) → ι₀ (X , s₀) (X , t₀) (id-≃ X)
                                  × ι₁ (X , s₁) (X , t₁) (id-≃ X)
 
-     c p = (canonical-map ι₀ ρ₀ s₀ t₀ (ap pr₀ p) ,
-            canonical-map ι₁ ρ₁ s₁ t₁ (ap pr₁ p))
+     c p = (canonical-map ι₀ ρ₀ s₀ t₀ (ap pr₁ p) ,
+            canonical-map ι₁ ρ₁ s₁ t₁ (ap pr₂ p))
 
      i : is-equiv c
      i = technical-lemma
@@ -4404,7 +4404,7 @@ module monoid-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
  monoid-axioms-subsingleton X (_·_ , e) s = γ s
   where
    i : is-set X
-   i = pr₀ s
+   i = pr₁ s
 
    γ : is-subsingleton (monoid-axioms X (_·_ , e))
    γ = ×-is-subsingleton (being-set-is-a-subsingleton dfe)
@@ -4849,7 +4849,7 @@ module basic-truncation-development
     c = ac X Y i j R k g
 
     γ : ∥ Π Y ∥
-    γ = ∥∥-functor pr₀ c
+    γ = ∥∥-functor pr₁ c
 
   IChoice-gives-Choice : IChoice 𝓤 → Choice 𝓤
   IChoice-gives-Choice {𝓤} iac X A i j R k ψ = γ
@@ -4864,7 +4864,7 @@ module basic-truncation-development
     a = iac X Y i l ψ
 
     h : Π Y → Σ \(f : Π A) → (x : X) → R x (f x)
-    h g = (λ x → pr₀ (g x)) , (λ x → pr₁ (g x))
+    h g = (λ x → pr₁ (g x)) , (λ x → pr₂ (g x))
 
     γ : ∃ \(f : Π A) → (x : X) → R x (f x)
     γ = ∥∥-functor h a
@@ -4926,10 +4926,10 @@ module basic-truncation-development
       f (n , p) = n , to-Σ-≡ (p , ∥∥-is-a-subsingleton _ t)
 
     s : image α → 𝟚
-    s y = pr₀ (σ y)
+    s y = pr₁ (σ y)
 
     η : (y : image α) → r (s y) ≡ y
-    η y = pr₁ (σ y)
+    η y = pr₂ (σ y)
 
     l : left-cancellable s
     l = sections-are-lc s (r , η)
@@ -4938,7 +4938,7 @@ module basic-truncation-development
     αr p = to-Σ-≡ (p , ∥∥-is-a-subsingleton _ _)
 
     rα : {m n : 𝟚} → r m ≡ r n → α m ≡ α n
-    rα = ap pr₀
+    rα = ap pr₁
 
     αs : {m n : 𝟚} → α m ≡ α n → s (r m) ≡ s (r n)
     αs p = ap s (αr p)
@@ -4997,7 +4997,7 @@ module basic-truncation-development
       γ (inl r) = inl (Id→fun s (lift ⋆))
        where
         s : Lift 𝓤 𝟙 ≡ P
-        s = ap pr₀ r
+        s = ap pr₁ r
 
       γ (inr n) = inr (contrapositive f n)
        where
@@ -5059,24 +5059,24 @@ resize-up-subsingleton {𝓤} {𝓥} P i = resize-up {𝓤} {𝓥} P
 resize : propositional-resizing 𝓤 𝓥
        → (P : 𝓤 ̇ ) (i : is-subsingleton P) → 𝓥 ̇
 
-resize ρ P i = pr₀ (ρ P i)
+resize ρ P i = pr₁ (ρ P i)
 
 resize-is-a-subsingleton : (ρ : propositional-resizing 𝓤 𝓥)
                            (P : 𝓤 ̇ ) (i : is-subsingleton P)
                          → is-subsingleton (resize ρ P i)
 
-resize-is-a-subsingleton ρ P i = equiv-to-subsingleton (≃-sym (pr₁ (ρ P i))) i
+resize-is-a-subsingleton ρ P i = equiv-to-subsingleton (≃-sym (pr₂ (ρ P i))) i
 
 to-resize : (ρ : propositional-resizing 𝓤 𝓥)
             (P : 𝓤 ̇ ) (i : is-subsingleton P)
           → P → resize ρ P i
-to-resize ρ P i = Eq→fun (pr₁ (ρ P i))
+to-resize ρ P i = Eq→fun (pr₂ (ρ P i))
 
 from-resize : (ρ : propositional-resizing 𝓤 𝓥)
               (P : 𝓤 ̇ ) (i : is-subsingleton P)
             → resize ρ P i → P
 
-from-resize ρ P i = Eq→fun (≃-sym(pr₁ (ρ P i)))
+from-resize ρ P i = Eq→fun (≃-sym(pr₂ (ρ P i)))
 
 Propositional-resizing : 𝓤ω
 Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
@@ -5298,10 +5298,10 @@ module powerset-union-existence
     𝓐 = λ (A : 𝓟 𝟙ᵤ) → P , i
 
     B : 𝓟 𝟙ᵤ
-    B = pr₀ (α 𝟙ᵤ 𝓐)
+    B = pr₁ (α 𝟙ᵤ 𝓐)
 
     φ : (x : 𝟙ᵤ) → (x ∈ B) ⇔ ∃ \(A : 𝓟 𝟙ᵤ) → (A ∈ 𝓐) × (x ∈ A)
-    φ = pr₁ (α 𝟙ᵤ 𝓐)
+    φ = pr₂ (α 𝟙ᵤ 𝓐)
 
     Q : 𝓤 ̇
     Q = ⋆ᵤ ∈ B
@@ -5362,12 +5362,12 @@ module basic-powerset-development
   open powerset-union-existence pt fe
 
   ⋃ : {X : 𝓤 ̇ } → 𝓟𝓟 X → 𝓟 X
-  ⋃ 𝓐 = pr₀ (PR-gives-existence-of-unions ρ _ 𝓐)
+  ⋃ 𝓐 = pr₁ (PR-gives-existence-of-unions ρ _ 𝓐)
 
   ⋃-property : {X : 𝓤 ̇ } (𝓐 : 𝓟𝓟 X)
              → (x : X) → (x ∈ ⋃ 𝓐) ⇔ ∃ \(A : 𝓟 X) → (A ∈ 𝓐) × (x ∈ A)
 
-  ⋃-property 𝓐 = pr₁ (PR-gives-existence-of-unions ρ _ 𝓐)
+  ⋃-property 𝓐 = pr₂ (PR-gives-existence-of-unions ρ _ 𝓐)
 
   intersections-exist :
     (X : 𝓤 ̇ )
@@ -5395,11 +5395,11 @@ module basic-powerset-development
     rl x = to-resize ρ (β x) (i x)
 
   ⋂ : {X : 𝓤 ̇ } → 𝓟𝓟 X → 𝓟 X
-  ⋂ {𝓤} {X} 𝓐 = pr₀ (intersections-exist X 𝓐)
+  ⋂ {𝓤} {X} 𝓐 = pr₁ (intersections-exist X 𝓐)
 
   ⋂-property : {X : 𝓤 ̇ } (𝓐 : 𝓟𝓟 X)
              → (x : X) → (x ∈ ⋂ 𝓐) ⇔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A)
-  ⋂-property {𝓤} {X} 𝓐 = pr₁ (intersections-exist X 𝓐)
+  ⋂-property {𝓤} {X} 𝓐 = pr₂ (intersections-exist X 𝓐)
 
   ∅ full : {X : 𝓤 ̇ } → 𝓟 X
 
@@ -5509,13 +5509,13 @@ module quotient
      ∥∥-is-a-subsingleton _ _)
 
  η-equal-equiv : {x y : X} → η x ≡ η y → x ≈ y
- η-equal-equiv {x} {y} p = equiv-rel-reflect (ap pr₀ p)
+ η-equal-equiv {x} {y} p = equiv-rel-reflect (ap pr₁ p)
   where
    equiv-rel-reflect : equiv-rel x ≡ equiv-rel y → x ≈ y
    equiv-rel-reflect q = b (≈r y)
     where
      a : (y ≈ y) ≡ (x ≈ y)
-     a = ap (λ - → pr₀(- y)) (q ⁻¹)
+     a = ap (λ - → pr₁(- y)) (q ⁻¹)
 
      b : y ≈ y → x ≈ y
      b = Id→fun a
@@ -5558,13 +5558,13 @@ module quotient
      induction-step x = f x , ∣ x , refl (η x) , refl (f x) ∣
 
    f' : X/≈ → A
-   f' x' = pr₀ (k x')
+   f' x' = pr₁ (k x')
 
    r : f' ∘ η ≡ f
    r = fe h
     where
      g : (y : X) → ∃ \x → (η x ≡ η y) × (f x ≡ f' (η y))
-     g y = pr₁ (k (η y))
+     g y = pr₂ (k (η y))
 
      j : (y : X) → (Σ \x → (η x ≡ η y) × (f x ≡ f' (η y))) → f'(η y) ≡ f y
      j y (x , p , q) = f' (η y) ≡⟨ q ⁻¹ ⟩
@@ -5669,7 +5669,7 @@ the-subsingletons-are-the-subtypes-of-a-singleton' pe fe X = γ
                                 being-embedding-is-a-subsingleton fe f' _ e')
 
   γ : is-subsingleton X ≡ (X ↪ 𝟙)
-  γ = pe (being-subsingleton-is-a-subsingleton fe) b (pr₀ a) (pr₁ a)
+  γ = pe (being-subsingleton-is-a-subsingleton fe) b (pr₁ a) (pr₂ a)
 
 G↑-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
               → (X : 𝓤 ̇ )
@@ -5803,16 +5803,16 @@ cantors-diagonal = sol
   sol (e , γ) = c
    where
     α : ℕ → ℕ
-    α = pr₀ (positive-cantors-diagonal e)
+    α = pr₁ (positive-cantors-diagonal e)
 
     φ : (n : ℕ) → α ≢ e n
-    φ = pr₁ (positive-cantors-diagonal e)
+    φ = pr₂ (positive-cantors-diagonal e)
 
     b : Σ \(n : ℕ) → α ≡ e n
     b = γ α
 
     c : 𝟘
-    c = φ (pr₀ b) (pr₁ b)
+    c = φ (pr₁ b) (pr₂ b)
 
 𝟚-has-𝟚-automorphisms = sol
  where
@@ -5836,24 +5836,24 @@ cantors-diagonal = sol
                                                      ₀   ≡⟨ p ⁻¹ ⟩
                                                      h ₀ ∎)))
 
-      γ ₀ ₁ p q = to-Σ-≡ (fe (𝟚-induction (λ n → pr₀ (g (h ₀)) n ≡ h n)
-                               (pr₀ (g (h ₀)) ₀ ≡⟨ ap (λ - → pr₀ (g -) ₀) p ⟩
-                                pr₀ (g ₀) ₀     ≡⟨ refl ₀ ⟩
+      γ ₀ ₁ p q = to-Σ-≡ (fe (𝟚-induction (λ n → pr₁ (g (h ₀)) n ≡ h n)
+                               (pr₁ (g (h ₀)) ₀ ≡⟨ ap (λ - → pr₁ (g -) ₀) p ⟩
+                                pr₁ (g ₀) ₀     ≡⟨ refl ₀ ⟩
                                 ₀               ≡⟨ p ⁻¹ ⟩
                                 h ₀             ∎)
-                               (pr₀ (g (h ₀)) ₁ ≡⟨ ap (λ - → pr₀ (g -) ₁) p ⟩
-                                pr₀ (g ₀) ₁     ≡⟨ refl ₁ ⟩
+                               (pr₁ (g (h ₀)) ₁ ≡⟨ ap (λ - → pr₁ (g -) ₁) p ⟩
+                                pr₁ (g ₀) ₁     ≡⟨ refl ₁ ⟩
                                 ₁               ≡⟨ q ⁻¹ ⟩
                                 h ₁             ∎)),
                          being-equiv-is-a-subsingleton fe fe _ _ e)
 
-      γ ₁ ₀ p q = to-Σ-≡ (fe (𝟚-induction (λ n → pr₀ (g (h ₀)) n ≡ h n)
-                               (pr₀ (g (h ₀)) ₀ ≡⟨ ap (λ - → pr₀ (g -) ₀) p ⟩
-                                pr₀ (g ₁) ₀     ≡⟨ refl ₁ ⟩
+      γ ₁ ₀ p q = to-Σ-≡ (fe (𝟚-induction (λ n → pr₁ (g (h ₀)) n ≡ h n)
+                               (pr₁ (g (h ₀)) ₀ ≡⟨ ap (λ - → pr₁ (g -) ₀) p ⟩
+                                pr₁ (g ₁) ₀     ≡⟨ refl ₁ ⟩
                                 ₁               ≡⟨ p ⁻¹ ⟩
                                 h ₀             ∎)
-                               (pr₀ (g (h ₀)) ₁ ≡⟨ ap (λ - → pr₀ (g -) ₁) p ⟩
-                                pr₀ (g ₁) ₁     ≡⟨ refl ₀ ⟩
+                               (pr₁ (g (h ₀)) ₁ ≡⟨ ap (λ - → pr₁ (g -) ₁) p ⟩
+                                pr₁ (g ₁) ₁     ≡⟨ refl ₀ ⟩
                                 ₀               ≡⟨ q ⁻¹ ⟩
                                 h ₁             ∎)),
                          being-equiv-is-a-subsingleton fe fe _ _ e)
@@ -5917,13 +5917,13 @@ SN-gives-DNE = sol
   sol {𝓤} sn P i = h
    where
     X : 𝓤 ̇
-    X = pr₀ (sn P i)
+    X = pr₁ (sn P i)
 
     f : P → ¬ X
-    f = pr₀ (pr₁ (sn P i))
+    f = pr₁ (pr₂ (sn P i))
 
     g : ¬ X → P
-    g = pr₁ (pr₁ (sn P i))
+    g = pr₂ (pr₂ (sn P i))
 
     f' : ¬¬ P → ¬(¬¬ X)
     f' = contrapositive (contrapositive f)
