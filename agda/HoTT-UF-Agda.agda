@@ -4521,8 +4521,8 @@ module slice-equality
  (X , g) ≅ (Y , h) = Σ \(f : X → Y) → is-equiv f × (g ≡ h ∘ f )
 
  characterization-of-/-≡ : is-univalent 𝓤
-                            → (A B : 𝓤 / R)
-                            → (A ≡ B) ≃ (A ≅ B)
+                         → (A B : 𝓤 / R)
+                         → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-/-≡ ua = characterization-of-≡ ua sip-data
 
@@ -4613,7 +4613,7 @@ module generalized-topological-space-equality
  (X , 𝓞X , a) ≅ (Y , 𝓞Y , b) =
 
               Σ \(f : X → Y) → is-equiv f
-                              × ((λ V → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y)
+                             × ((λ V → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y)
 
  characterization-of-Space-≡ : is-univalent 𝓤
                              → (A B : Space)

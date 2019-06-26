@@ -7544,6 +7544,9 @@ structure. We consider several versions:
  * And then adding an axiom to monoids we get groups, again with
    an automatic characterization of their equality.
 
+We also discuss equality of metric spaces, topological spaces, graphs,
+partially ordered sets, and more.
+
 #### A general structure identity principle
 
 \begin{code}
@@ -8397,8 +8400,8 @@ module slice-equality
 
 
  characterization-of-/-≡ : is-univalent 𝓤
-                            → (A B : 𝓤 / R)
-                            → (A ≡ B) ≃ (A ≅ B)
+                         → (A B : 𝓤 / R)
+                         → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-/-≡ ua = characterization-of-≡ ua sip-data
 \end{code}
@@ -8550,7 +8553,7 @@ We introduce notation for the type of homeomorphisms:
  (X , 𝓞X , a) ≅ (Y , 𝓞Y , b) =
 
               Σ \(f : X → Y) → is-equiv f
-                              × ((λ V → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y)
+                             × ((λ V → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y)
 
 
  characterization-of-Space-≡ : is-univalent 𝓤
