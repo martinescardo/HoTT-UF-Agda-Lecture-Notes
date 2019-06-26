@@ -7277,7 +7277,7 @@ names for the other two projections):
 \begin{code}
  homomorphic : {S : 𝓤 ̇ → 𝓥 ̇ } → SIP-data S 𝓦
              → (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇
- homomorphic (ι , ρ , ε) = ι
+ homomorphic (ι , ρ , θ) = ι
 \end{code}
 
 For example, when `S` specifies ∞-magma structure, we will have
@@ -7319,7 +7319,7 @@ induction.
     (transport S (Eq→Id ua ⟨ A ⟩ ⟨ B ⟩ e) (structure A) ≡ structure B)
   ≃ homomorphic σ A B e
 
- homomorphism-lemma {𝓤} {𝓥} {𝓦} ua S (ι , ρ , ε) (X , s) (Y , t) e = γ s t
+ homomorphism-lemma {𝓤} {𝓥} {𝓦} ua S (ι , ρ , θ) (X , s) (Y , t) e = γ s t
   where
    C : (X Y : 𝓤 ̇ ) (e : X ≃ Y) → 𝓥 ⊔ 𝓦 ̇
    C X Y e = (s : S X) (t : S Y)
@@ -7337,7 +7337,7 @@ induction.
       q = ap (λ - → transport S - s ≡ t) p
 
       i  = Id→Eq _ _ q
-      ii = (canonical-map ι ρ s t , ε s t)
+      ii = (canonical-map ι ρ s t , θ s t)
 
    γ : (s : S X) (t : S Y) → (transport S (Eq→Id ua X Y e) s ≡ t)
                            ≃ ι (X , s) (Y , t) e
@@ -7353,10 +7353,10 @@ With this we are ready to prove the promised characterization of equality on `Σ
 
                        → (A ≡ B) ≃ (A ≃[ σ ] B)
 
- characterization-of-≡ {𝓤} {𝓥} {𝓦} ua S (ι , ρ , ε) A B = γ
+ characterization-of-≡ {𝓤} {𝓥} {𝓦} ua S (ι , ρ , θ) A B = γ
   where
    σ : SIP-data S 𝓦
-   σ = ι , ρ , ε
+   σ = ι , ρ , θ
 \end{code}
 
 In summary, in the following chain of equivalences:
@@ -7439,8 +7439,8 @@ function, by induction on identifications, and because the identity
 function is an equivalence:
 
 \begin{code}
- ε : {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
- ε _·_ _*_ = γ
+ θ : {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
+ θ _·_ _*_ = γ
   where
    h : canonical-map ι ρ _·_ _*_ ∼ 𝑖𝑑 (_·_ ≡ _*_)
    h (refl _·_) = refl (refl _·_)
@@ -7450,7 +7450,7 @@ function is an equivalence:
         id (canonical-map ι ρ _·_ _*_) (id-is-equiv (_·_ ≡ _*_)) h
 
  σ : SIP-data S 𝓤
- σ = (ι , ρ , ε)
+ σ = (ι , ρ , θ)
 \end{code}
 
 Hence we have the required data to apply the above characterization of
@@ -7509,7 +7509,7 @@ an underlying-type function `Σ S → 𝓤`:
             → SIP-data S 𝓦
             → SIP-data (λ X → Σ \(s : S X) → axioms X s) 𝓦
 
- add-axioms {𝓤} {𝓥} {𝓦} S axioms i (ι , ρ , ε) = ι' , ρ' , ε'
+ add-axioms {𝓤} {𝓥} {𝓦} S axioms i (ι , ρ , θ) = ι' , ρ' , θ'
   where
    S' : 𝓤 ̇ → 𝓥  ̇
    S' X = Σ \(s : S X) → axioms X s
@@ -7525,7 +7525,7 @@ For `ι'` and `ρ'` we use `ι` and `ρ` ignoring the axioms.
    ρ' A = ρ [ A ]
 \end{code}
 
-For `ε'` we need more work, but the essence of the construction is the
+For `θ'` we need more work, but the essence of the construction is the
 fact that the projection
 
    > `S' X → S X`
@@ -7534,8 +7534,8 @@ that forgets the axioms is an embedding precisely because the axioms
 are subsingleton-valued:
 
 \begin{code}
-   ε' : {X : 𝓤 ̇ } (s t : S' X) → is-equiv (canonical-map ι' ρ' s t)
-   ε' {X} (s , σ) (t , τ) = γ
+   θ' : {X : 𝓤 ̇ } (s t : S' X) → is-equiv (canonical-map ι' ρ' s t)
+   θ' {X} (s , σ) (t , τ) = γ
     where
      π : S' X → S X
      π (s , σ) = s
@@ -7551,7 +7551,7 @@ are subsingleton-valued:
      l (refl (s , σ)) = refl (ρ (X , s))
 
      e : is-equiv (canonical-map ι ρ s t ∘ ap π {s , σ} {t , τ})
-     e = ∘-is-equiv (ε s t) k
+     e = ∘-is-equiv (θ s t) k
 
      γ : is-equiv (canonical-map ι' ρ' (s , σ) (t , τ))
      γ = equivs-closed-under-∼ _ _ e l
@@ -7650,8 +7650,8 @@ module pointed-type-example (𝓤 : Universe) where
  ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
  ρ (X , x₀) = refl x₀
 
- ε : {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
- ε x₀ x₁ = γ
+ θ : {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
+ θ x₀ x₁ = γ
   where
    h : canonical-map ι ρ x₀ x₁ ∼ 𝑖𝑑 (x₀ ≡ x₁)
    h (refl x₀) = refl (refl x₀)
@@ -7660,7 +7660,7 @@ module pointed-type-example (𝓤 : Universe) where
    γ = equivs-closed-under-∼ id (canonical-map ι ρ x₀ x₁) (id-is-equiv (x₀ ≡ x₁)) h
 
  σ : SIP-data S 𝓤
- σ = (ι , ρ , ε)
+ σ = (ι , ρ , θ)
 
  characterization-of-pointed-type-≡ :
 
@@ -7730,8 +7730,8 @@ independently of structure identity principles:
             (inverse-is-retraction (f x₀ x₀) (i x₀ x₀) (refl x₀))
             (inverse-is-retraction (g y₀ y₀) (j y₀ y₀) (refl x₁))
 
-   ε : (c : A x₀ x₁ × B y₀ y₁) → h (k c) ≡ c
-   ε (a , b) =
+   θ : (c : A x₀ x₁ × B y₀ y₁) → h (k c) ≡ c
+   θ (a , b) =
      h (k (a , b))                              ≡⟨ refl _ ⟩
      h (to-×-≡  (f' a , g' b))                  ≡⟨ refl _ ⟩
      (f x₀ x₁ (ap pr₀ (to-×-≡ (f' a , g' b))) ,
@@ -7746,7 +7746,7 @@ independently of structure identity principles:
                    inverse-is-section (g y₀ y₁) (j y₀ y₁) b)
 
    γ : is-equiv h
-   γ = invertibles-are-equivs h (k , η , ε)
+   γ = invertibles-are-equivs h (k , η , θ)
 \end{code}
 
 *Exercise*. Try to find a shorter, more conceptual proof of the
@@ -7785,7 +7785,7 @@ The main construction in this submodule is this:
       → SIP-data S₁ 𝓦₁
       → SIP-data (λ X → S₀ X × S₁ X) (𝓦₀ ⊔ 𝓦₁)
 
- join {𝓤} {𝓥₀} {𝓥₁} {𝓦₀} {𝓦₁} S₀ S₁ (ι₀ , ρ₀ , ε₀) (ι₁ , ρ₁ , ε₁) = ι , ρ , ε
+ join {𝓤} {𝓥₀} {𝓥₁} {𝓦₀} {𝓦₁} S₀ S₁ (ι₀ , ρ₀ , θ₀) (ι₁ , ρ₁ , θ₁) = ι , ρ , θ
   where
    S : 𝓤 ̇ → 𝓥₀ ⊔ 𝓥₁  ̇
    S X = S₀ X × S₁ X
@@ -7796,15 +7796,15 @@ The main construction in this submodule is this:
    ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
    ρ A = (ρ₀ [ A ]₀ , ρ₁ [ A ]₁)
 
-   ε : {X : 𝓤 ̇} (s t : S X) → is-equiv (canonical-map ι ρ s t)
-   ε {X} (s₀ , s₁) (t₀ , t₁) = γ
+   θ : {X : 𝓤 ̇} (s t : S X) → is-equiv (canonical-map ι ρ s t)
+   θ {X} (s₀ , s₁) (t₀ , t₁) = γ
     where
      c : (p : s₀ , s₁ ≡ t₀ , t₁) → ι₀ (X , s₀) (X , t₀) (id-≃ X)
                                  × ι₁ (X , s₁) (X , t₁) (id-≃ X)
      c p = (canonical-map ι₀ ρ₀ s₀ t₀ (ap pr₀ p) , canonical-map ι₁ ρ₁ s₁ t₁ (ap pr₁ p))
 
      i : is-equiv c
-     i = technical-lemma (canonical-map ι₀ ρ₀) (canonical-map ι₁ ρ₁) ε₀ ε₁ (s₀ , s₁) (t₀ , t₁)
+     i = technical-lemma (canonical-map ι₀ ρ₀) (canonical-map ι₁ ρ₁) θ₀ θ₁ (s₀ , s₁) (t₀ , t₁)
 
      e : canonical-map ι ρ (s₀ , s₁) (t₀ , t₁) ∼ c
      e (refl (s₀ , s₁)) = refl (ρ₀ (X , s₀) , ρ₁ (X , s₁))
@@ -7963,8 +7963,8 @@ module type-valued-relation-with-axioms-example
  ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
  ρ (X , d) = refl d
 
- ε : {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
- ε {X} d e = γ
+ θ : {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
+ θ {X} d e = γ
   where
    h : canonical-map ι ρ d e ∼ 𝑖𝑑 (d ≡ e)
    h (refl d) = refl (refl d)
@@ -7974,7 +7974,7 @@ module type-valued-relation-with-axioms-example
         id (canonical-map ι ρ d e) (id-is-equiv (d ≡ e)) h
 
  σ : SIP-data S (𝓤 ⊔ 𝓥)
- σ = (ι , ρ , ε)
+ σ = (ι , ρ , θ)
 
  TVRA : 𝓤 ⁺ ⊔ 𝓥  ̇
  TVRA = Σ \(X : 𝓤 ̇ ) → Σ \(d : X → X → R) → axioms X d
@@ -8065,12 +8065,12 @@ What `ρ` says is that identity function is a homeomorphism, trivially:
  ρ (X , 𝓞) = refl 𝓞
 \end{code}
 
-Then `ε` amounts to the fact that two topologies on the same set must
+Then `θ` amounts to the fact that two topologies on the same set must
 be the same if they make the identity function into a homeomorphism.
 
 \begin{code}
- ε : {X : 𝓤 ̇ } (s t : ℙℙ X) → is-equiv (canonical-map ι ρ s t)
- ε {X} 𝓞 𝓞' = γ
+ θ : {X : 𝓤 ̇ } (s t : ℙℙ X) → is-equiv (canonical-map ι ρ s t)
+ θ {X} 𝓞 𝓞' = γ
   where
    h : canonical-map ι ρ 𝓞 𝓞' ∼ 𝑖𝑑 (𝓞 ≡ 𝓞')
    h (refl 𝓞) = refl (refl 𝓞)
@@ -8080,7 +8080,7 @@ be the same if they make the identity function into a homeomorphism.
         id (canonical-map ι ρ 𝓞 𝓞') (id-is-equiv (𝓞 ≡ 𝓞')) h
 
  σ : SIP-data ℙℙ (𝓤 ⊔ 𝓥)
- σ = (ι , ρ , ε)
+ σ = (ι , ρ , θ)
 \end{code}
 
 We introduce notation for the type of homeomorphisms:
