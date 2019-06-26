@@ -4328,10 +4328,10 @@ module generalized-topological-space-example
  σ = (ι , ρ , θ)
 
  _≅_  : Space → Space → 𝓤 ⊔ 𝓥 ̇
- (X , 𝓞X  , a) ≅ (Y , 𝓞Y , b)
+ (X , 𝓞X , a) ≅ (Y , 𝓞Y , b)
 
-               = Σ \(f : X → Y) → is-equiv f
-                                × ((λ V → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y)
+              = Σ \(f : X → Y) → is-equiv f
+                               × ((λ V → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y)
 
  characterization-of-type-valued-relations-≡ :
 
@@ -4339,6 +4339,55 @@ module generalized-topological-space-example
 
  characterization-of-type-valued-relations-≡ =
    characterization-of-≡-with-axioms ua (λ X → (X → R) → R) σ axioms axiomss
+
+module selection-space-example
+        (𝓤 𝓥 : Universe)
+        (ua : is-univalent 𝓤)
+        (R : 𝓥 ̇)
+        (axioms  : (X : 𝓤 ̇ ) → ((X → R) → X) → 𝓤 ⊔ 𝓥 ̇)
+        (axiomss : (X : 𝓤 ̇ ) (ε : (X → R) → X) → is-subsingleton (axioms X ε))
+       where
+
+ open sip
+ open sip-with-axioms
+
+ S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ S X = (X → R) → X
+
+ SelectionSpace : 𝓤 ⁺ ⊔ 𝓥  ̇
+ SelectionSpace = Σ \(X : 𝓤 ̇ ) → Σ \(ε : S X) → axioms X ε
+
+ ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
+ ι (X , ε) (Y , δ) (f , i) = (λ (q : Y → R) → f (ε (λ x → q (f x)))) ≡ δ
+
+ ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
+ ρ (X , ε) = refl ε
+
+ θ : {X : 𝓤 ̇ } (ε δ : S X) → is-equiv (canonical-map ι ρ ε δ)
+ θ {X} ε δ = γ
+  where
+   h : canonical-map ι ρ ε δ ∼ 𝑖𝑑 (ε ≡ δ)
+   h (refl ε) = refl (refl ε)
+
+   γ : is-equiv (canonical-map ι ρ ε δ)
+   γ = equivs-closed-under-∼
+        id (canonical-map ι ρ ε δ) (id-is-equiv (ε ≡ δ)) h
+
+ σ : SIP-data S (𝓤 ⊔ 𝓥)
+ σ = (ι , ρ , θ)
+
+ _≅_  :  SelectionSpace → SelectionSpace → 𝓤 ⊔ 𝓥 ̇
+ (X , ε , a) ≅ (Y , δ , b)
+
+             = Σ \(f : X → Y) → is-equiv f
+                              × ((λ (q : Y → R) → f (ε (λ x → q (f x)))) ≡ δ)
+
+ characterization-of-selection-space-≡ :
+
+     (A B : SelectionSpace) → (A ≡ B) ≃ (A ≅ B)
+
+ characterization-of-selection-space-≡ =
+   characterization-of-≡-with-axioms ua (λ X → (X → R) → X) σ axioms axiomss
 
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
