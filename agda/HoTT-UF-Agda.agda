@@ -1320,15 +1320,10 @@ invertibles-are-joyal-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 equivs-are-joyal-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                         → is-equiv f → is-joyal-equiv f
 
-equivs-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
+equivs-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y}
                       → is-equiv f
                       → g ∼ f
                       → is-equiv g
-
-equivs-closed-under-∼' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
-                       → is-equiv f
-                       → f ∼ g
-                       → is-equiv g
 
 equiv-to-singleton' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                     → X ≃ Y → is-singleton X → is-singleton Y
@@ -1533,19 +1528,13 @@ equivs-are-joyal-equivs = sol
 
 equivs-closed-under-∼ = sol
  where
-  sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
+  sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y}
       → is-equiv f → g ∼ f → is-equiv g
-  sol f g e h = joyal-equivs-are-equivs g
-                 (retractions-closed-under-∼ f g
-                   (equivs-have-sections f e) h ,
-                  sections-closed-under-∼ f g
-                   (equivs-have-retractions f e) h)
-
-equivs-closed-under-∼' = sol
- where
-  sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
-      → is-equiv f → f ∼ g → is-equiv g
-  sol f g e h = equivs-closed-under-∼ f g e (λ x → (h x)⁻¹)
+  sol {𝓤} {𝓥} {X} {Y} {f} {g} e h = joyal-equivs-are-equivs g
+                                      (retractions-closed-under-∼ f g
+                                       (equivs-have-sections f e) h ,
+                                      sections-closed-under-∼ f g
+                                       (equivs-have-retractions f e) h)
 
 equiv-to-singleton' = sol
  where
@@ -3771,8 +3760,8 @@ module sip where
  SIP-data : (𝓤 ̇ → 𝓥 ̇ ) → (𝓦 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
 
  SIP-data {𝓤} {𝓥} S 𝓦 = Σ \(ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
-                      → Σ \(ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
-                      → {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
+                       → Σ \(ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
+                       → {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
 
  homomorphic : {S : 𝓤 ̇ → 𝓥 ̇ } → SIP-data S 𝓦
              → (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇
@@ -3857,46 +3846,46 @@ module sip where
      iv  = Σ-cong (homomorphism-lemma ua S σ A B)
      v   = Σ-assoc
 
-module ∞-magma-example (𝓤 : Universe) where
+module ∞-magma-equality (𝓤 : Universe) where
 
  open sip
 
  S : 𝓤 ̇ → 𝓤 ̇
  S X = X → X → X
 
- ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
- ι (X , _·_) (Y , _*_) (f , i) = (λ x x' → f (x · x')) ≡ (λ x x' → f x * f x')
+ ∞-Magma : 𝓤 ⁺ ̇
+ ∞-Magma = Σ \(X : 𝓤 ̇ ) → S X
 
- ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
- ρ (X , _·_) = refl _·_
-
- θ : {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
- θ _·_ _*_ = γ
+ sip-data : SIP-data S 𝓤
+ sip-data = (ι , ρ , θ)
   where
-   h : canonical-map ι ρ _·_ _*_ ∼ 𝑖𝑑 (_·_ ≡ _*_)
+   ι : (A B : ∞-Magma) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
+   ι (X , _·_) (Y , _*_) (f , i) = (λ x x' → f (x · x')) ≡ (λ x x' → f x * f x')
+
+   ρ : (A : ∞-Magma) → ι A A (id-≃ ⟨ A ⟩)
+   ρ (X , _·_) = refl _·_
+
+   h : {X : 𝓤 ̇ } {_·_ _*_ : S X} → canonical-map ι ρ _·_ _*_ ∼ 𝑖𝑑 (_·_ ≡ _*_)
    h (refl _·_) = refl (refl _·_)
 
-   γ : is-equiv (canonical-map ι ρ _·_ _*_)
-   γ = equivs-closed-under-∼
-        id (canonical-map ι ρ _·_ _*_) (id-is-equiv (_·_ ≡ _*_)) h
+   θ : {X : 𝓤 ̇ } (_·_ _*_ : S X) → is-equiv (canonical-map ι ρ _·_ _*_)
+   θ _·_ _*_ = equivs-closed-under-∼ (id-is-equiv (_·_ ≡ _*_)) h
 
- σ : SIP-data S 𝓤
- σ = (ι , ρ , θ)
+ _≅_ : ∞-Magma → ∞-Magma → 𝓤 ̇
+ (X , _·_) ≅ (Y , _*_) =
 
- characterization-of-∞-Magma-≡ :
+           Σ \(f : X → Y) → is-equiv f
+                          × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 
-     is-univalent 𝓤
-   → (X Y : 𝓤 ̇ ) (_·_ : X → X → X) (_*_ : Y → Y → Y)
-   →
-     ((X , _·_) ≡ (Y , _*_))
-   ≃ Σ \(f : X → Y) → is-equiv f × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+ characterization-of-∞-Magma-≡ : is-univalent 𝓤
+                               → (A B : ∞-Magma)
+                               → (A ≡ B) ≃ (A ≅ B)
 
- characterization-of-∞-Magma-≡ ua X Y _·_ _⋆_ =
-   characterization-of-≡ ua S σ (X , _·_) (Y , _⋆_)
+ characterization-of-∞-Magma-≡ ua = characterization-of-≡ ua S sip-data
 
 module sip-with-axioms where
 
- open sip public
+ open sip
 
  [_] : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ }
      → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s) → Σ S
@@ -3943,12 +3932,14 @@ module sip-with-axioms where
      e = ∘-is-equiv (θ s t) k
 
      γ : is-equiv (canonical-map ι' ρ' (s , σ) (t , τ))
-     γ = equivs-closed-under-∼ _ _ e l
+     γ = equivs-closed-under-∼ e l
 
  _≃⟦_⟧_ : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ }
+
         → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s)
         → SIP-data S 𝓦
         → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s)
+
         → 𝓤 ⊔ 𝓦 ̇
 
  A ≃⟦ σ ⟧ B = Σ \(f : ⟪ A ⟫ → ⟪ B ⟫)
@@ -3957,76 +3948,73 @@ module sip-with-axioms where
  characterization-of-≡-with-axioms :
 
      is-univalent 𝓤
-   → (S : 𝓤 ̇ → 𝓥 ̇ ) (σ : SIP-data S 𝓦) (axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ )
+   → (S : 𝓤 ̇ → 𝓥 ̇ )
+     (σ : SIP-data S 𝓦)
+     (axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ )
    → ((X : 𝓤 ̇ ) (s : S X) → is-subsingleton (axioms X s))
    → (A B : Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s)
    →
      (A ≡ B) ≃ (A ≃⟦ σ ⟧ B)
 
- characterization-of-≡-with-axioms {𝓤} {𝓥} {𝓦} ua S σ axioms i =
-  characterization-of-≡ ua (λ X → Σ \(s : S X) → axioms X s) (add-axioms S axioms i σ)
+ characterization-of-≡-with-axioms ua S σ axioms i =
+   characterization-of-≡ ua
+     (λ X → Σ \(s : S X) → axioms X s)
+     (add-axioms S axioms i σ)
 
-module magma-example (𝓤 : Universe) where
+module magma-equality (𝓤 : Universe) where
 
- open ∞-magma-example 𝓤
  open sip-with-axioms
 
- axioms : (X : 𝓤 ̇ ) → S X → 𝓤 ̇
- axioms X s = is-set X
+ Magma : 𝓤 ⁺ ̇
+ Magma = Σ \(X : 𝓤 ̇ ) → (X → X → X) × is-set X
 
- S' : 𝓤 ̇ → 𝓤 ̇
- S' X = Σ \(s : S X) → axioms X s
+ _≅_ : Magma → Magma → 𝓤 ̇
+ (X , _·_ , i) ≅ (Y , _*_ , j) =
 
- i : is-univalent 𝓤 → ((X : 𝓤 ̇ ) (s : S X) → is-subsingleton (axioms X s))
- i ua X s = being-set-is-a-subsingleton (univalence-gives-dfunext ua)
+               Σ \(f : X → Y) → is-equiv f
+                              × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 
- characterization-of-Magma-≡ :
+ characterization-of-Magma-≡ : is-univalent 𝓤
+                             → (A B : Magma )
+                             → (A ≡ B) ≃ (A ≅ B)
 
-    is-univalent 𝓤
-  → (X Y : 𝓤 ̇ )
-    (_·_ : X → X → X) (_*_ : Y → Y → Y)
-    (a : axioms X _·_) (b : axioms Y _*_)
-  →
-    ((X , _·_ , a) ≡ (Y , _*_ , b))
-  ≃ Σ \(f : X → Y) → is-equiv f × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+ characterization-of-Magma-≡ ua =
+   characterization-of-≡-with-axioms ua
+    (λ X → X → X → X)
+    (∞-magma-equality.sip-data 𝓤)
+    (λ X s → is-set X)
+    (λ X s → being-set-is-a-subsingleton (univalence-gives-dfunext ua))
 
- characterization-of-Magma-≡ ua X Y _·_ _⋆_ a b =
-   characterization-of-≡-with-axioms ua S σ axioms (i ua) (X , _·_ , a) (Y , _⋆_ , b)
+module pointed-type-equality (𝓤 : Universe) where
 
-module pointed-type-example (𝓤 : Universe) where
-
- open sip public
+ open sip
 
  S : 𝓤 ̇ → 𝓤 ̇
  S X = X
 
- ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
- ι (X , x₀) (Y , y₀) (f , i) = (f x₀ ≡ y₀)
-
- ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
- ρ (X , x₀) = refl x₀
-
- θ : {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
- θ x₀ x₁ = γ
+ sip-data : SIP-data S 𝓤
+ sip-data = (ι , ρ , θ)
   where
-   h : canonical-map ι ρ x₀ x₁ ∼ 𝑖𝑑 (x₀ ≡ x₁)
-   h (refl x₀) = refl (refl x₀)
+   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
+   ι (X , x₀) (Y , y₀) (f , i) = (f x₀ ≡ y₀)
 
-   γ : is-equiv (canonical-map ι ρ x₀ x₁)
-   γ = equivs-closed-under-∼ id (canonical-map ι ρ x₀ x₁) (id-is-equiv (x₀ ≡ x₁)) h
+   ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
+   ρ (X , x₀) = refl x₀
 
- σ : SIP-data S 𝓤
- σ = (ι , ρ , θ)
+   θ : {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
+   θ x₀ x₁ = equivs-closed-under-∼ (id-is-equiv (x₀ ≡ x₁)) h
+    where
+     h : canonical-map ι ρ x₀ x₁ ∼ 𝑖𝑑 (x₀ ≡ x₁)
+     h (refl x₀) = refl (refl x₀)
 
- characterization-of-pointed-type-≡ :
+ _≅_ : Σ S → Σ S → 𝓤 ̇
+ (X , x₀) ≅ (Y , y₀) = Σ \(f : X → Y) → is-equiv f × (f x₀ ≡ y₀)
 
-     is-univalent 𝓤
-   → (X Y : 𝓤 ̇ ) (x₀ : X) (y₀ : Y)
-   →
-     ((X , x₀) ≡ (Y , y₀)) ≃ Σ \(f : X → Y) → is-equiv f × (f x₀ ≡ y₀)
+ characterization-of-pointed-type-≡ : is-univalent 𝓤
+                                    → (A B : Σ S)
+                                    → (A ≡ B) ≃ (A ≅ B)
 
- characterization-of-pointed-type-≡ ua X Y x₀ y₀ =
-   characterization-of-≡ ua S σ (X , x₀) (Y , y₀)
+ characterization-of-pointed-type-≡ ua = characterization-of-≡ ua S sip-data
 
 module sip-join where
 
@@ -4124,16 +4112,21 @@ module sip-join where
     where
      c : (p : s₀ , s₁ ≡ t₀ , t₁) → ι₀ (X , s₀) (X , t₀) (id-≃ X)
                                  × ι₁ (X , s₁) (X , t₁) (id-≃ X)
-     c p = (canonical-map ι₀ ρ₀ s₀ t₀ (ap pr₀ p) , canonical-map ι₁ ρ₁ s₁ t₁ (ap pr₁ p))
+
+     c p = (canonical-map ι₀ ρ₀ s₀ t₀ (ap pr₀ p) ,
+            canonical-map ι₁ ρ₁ s₁ t₁ (ap pr₁ p))
 
      i : is-equiv c
-     i = technical-lemma (canonical-map ι₀ ρ₀) (canonical-map ι₁ ρ₁) θ₀ θ₁ (s₀ , s₁) (t₀ , t₁)
+     i = technical-lemma
+          (canonical-map ι₀ ρ₀)
+          (canonical-map ι₁ ρ₁)
+          θ₀ θ₁ (s₀ , s₁) (t₀ , t₁)
 
      e : canonical-map ι ρ (s₀ , s₁) (t₀ , t₁) ∼ c
      e (refl (s₀ , s₁)) = refl (ρ₀ (X , s₀) , ρ₁ (X , s₁))
 
      γ : is-equiv (canonical-map ι ρ (s₀ , s₁) (t₀ , t₁))
-     γ = equivs-closed-under-∼ _ _ i e
+     γ = equivs-closed-under-∼ i e
 
  _≃⟦_,_⟧_ : {S₀ : 𝓤 ̇ → 𝓥 ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
 
@@ -4148,39 +4141,43 @@ module sip-join where
                   → Σ \(i : is-equiv f) → homomorphic σ₀ [ A ]₀ [ B ]₀ (f , i)
                                         × homomorphic σ₁ [ A ]₁ [ B ]₁ (f , i)
 
- characterization-of-join-≡ :
+ characterization-of-join-≡ : is-univalent 𝓤
+                            → (S₀ : 𝓤 ̇ → 𝓥 ̇ )     (S₁ : 𝓤 ̇ → 𝓥₁ ̇ )
+                              (σ₀ : SIP-data S₀ 𝓦₀) (σ₁ : SIP-data S₁ 𝓦₁)
 
-        is-univalent 𝓤
+                              (A B : Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X)
+                            →
+                              (A ≡ B) ≃ (A ≃⟦ σ₀ , σ₁ ⟧ B)
 
-      → (S₀ : 𝓤 ̇ → 𝓥 ̇ ) (S₁ : 𝓤 ̇ → 𝓥₁ ̇ )
-        (σ₀ : SIP-data S₀ 𝓦₀) ( σ₁ : SIP-data S₁ 𝓦₁)
-        (A B : Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X)
-      →
-        (A ≡ B) ≃ (A ≃⟦ σ₀ , σ₁ ⟧ B)
+ characterization-of-join-≡ ua S₀ S₁ σ₀ σ₁ = characterization-of-≡ ua
+                                              (λ X → S₀ X × S₁ X)
+                                              (join S₀ S₁ σ₀ σ₁)
 
- characterization-of-join-≡ ua S₀ S₁ σ₀ σ₁ =
-  characterization-of-≡ ua (λ X → S₀ X × S₁ X) (join S₀ S₁ σ₀ σ₁)
-
-module pointed-∞-magma-example (𝓤 : Universe) where
+module pointed-∞-magma-equality (𝓤 : Universe) where
 
  open sip-join
 
- characterization-of-pointed-magma-≡ :
+ ∞-Magma· : 𝓤 ⁺ ̇
+ ∞-Magma· = Σ \(X : 𝓤 ̇) → X × (X → X → X)
 
-     is-univalent 𝓤
-   → (X Y : 𝓤 ̇ ) (x₀ : X) (y₀ : Y)
-     (_·_ : X → X → X) (_*_ : Y → Y → Y)
-   →
-     ((X , x₀ , _·_) ≡ (Y , y₀ , _*_))
-   ≃ Σ \(f : X → Y) → is-equiv f
-                    × (f x₀ ≡ y₀)
-                    × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+ _≅_ : ∞-Magma· → ∞-Magma· → 𝓤 ̇
+ (X , x₀ , _·_) ≅ (Y , y₀ , _*_) =
 
- characterization-of-pointed-magma-≡ ua X Y x₀ y₀ _·_ _*_ =
-   characterization-of-join-≡ ua (λ X → X) (λ X → X → X → X)
-     (pointed-type-example.σ 𝓤) (∞-magma-example.σ 𝓤) (X , x₀ , _·_) (Y , y₀ , _*_)
+                Σ \(f : X → Y) → is-equiv f
+                               × (f x₀ ≡ y₀)
+                               × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 
-module monoid-example (𝓤 : Universe) (ua : is-univalent 𝓤) where
+ characterization-of-pointed-magma-≡ : is-univalent 𝓤
+                                     → (A B : ∞-Magma·)
+                                     → (A ≡ B) ≃ (A ≅ B)
+
+ characterization-of-pointed-magma-≡ ua = characterization-of-join-≡ ua
+                                            (λ X → X)
+                                            (λ X → X → X → X)
+                                            (pointed-type-equality.sip-data 𝓤)
+                                            (∞-magma-equality.sip-data 𝓤)
+
+module monoid-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
  dfe : dfunext 𝓤 𝓤
  dfe = univalence-gives-dfunext ua
@@ -4215,13 +4212,12 @@ module monoid-example (𝓤 : Universe) (ua : is-univalent 𝓤) where
                      (λ y → Π-is-subsingleton dfe
                              (λ z → i ((x · y) · z) (x · (y · z))))))))
 
- σ : SIP-data monoid-structure 𝓤
- σ = join (λ X → X → X → X) (λ X → X)
-          (∞-magma-example.σ 𝓤)
-          (pointed-type-example.σ 𝓤)
-
- τ : SIP-data (λ X → Σ \(s : monoid-structure X) → monoid-axioms X s) 𝓤
- τ = add-axioms monoid-structure monoid-axioms monoid-axioms-subsingleton σ
+ sip-data : SIP-data (λ X → Σ \(s : monoid-structure X) → monoid-axioms X s) 𝓤
+ sip-data = add-axioms
+              monoid-structure monoid-axioms monoid-axioms-subsingleton
+              (join (λ X → X → X → X) (λ X → X)
+                 (∞-magma-equality.sip-data 𝓤)
+                 (pointed-type-equality.sip-data 𝓤))
 
  Monoid : 𝓤 ⁺ ̇
  Monoid = Σ \(X : 𝓤 ̇ ) → Σ \(s : monoid-structure X) → monoid-axioms X s
@@ -4234,13 +4230,50 @@ module monoid-example (𝓤 : Universe) (ua : is-univalent 𝓤) where
                                     × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
                                     × (f d ≡ e)
 
- characterization-of-monoid-≡ : is-univalent 𝓤 → (A B : Monoid) → (A ≡ B) ≃ (A ≅ B)
- characterization-of-monoid-≡ ua =
-   characterization-of-≡ ua (λ X → Σ (monoid-axioms X)) τ
+ characterization-of-monoid-≡ : is-univalent 𝓤
+                              → (A B : Monoid)
+                              → (A ≡ B) ≃ (A ≅ B)
 
-module type-valued-relation-with-axioms-example
+ characterization-of-monoid-≡ ua = characterization-of-≡ ua
+                                    (λ X → Σ (monoid-axioms X))
+                                    sip-data
+
+module slice-equality
+        (𝓤 : Universe)
+        (R : 𝓤 ̇)
+       where
+
+ open sip
+
+ S : 𝓤 ̇ → 𝓤 ̇
+ S X = X → R
+
+ sip-data : SIP-data S 𝓤
+ sip-data = (ι , ρ , θ)
+  where
+   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
+   ι (X , g) (Y , h) (f , i) = (g ≡ h ∘ f)
+
+   ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
+   ρ (X , g) = refl g
+
+   k : {X : 𝓤 ̇ } {g h : S X} → canonical-map ι ρ g h ∼ 𝑖𝑑 (g ≡ h)
+   k (refl g) = refl (refl g)
+
+   θ : {X : 𝓤 ̇ } (g h : S X) → is-equiv (canonical-map ι ρ g h)
+   θ g h = equivs-closed-under-∼ (id-is-equiv (g ≡ h)) k
+
+ _≅_  : 𝓤 / R → 𝓤 / R → 𝓤 ̇
+ (X , g) ≅ (Y , h) = Σ \(f : X → Y) → is-equiv f × (g ≡ h ∘ f )
+
+ characterization-of-/-≡ : is-univalent 𝓤
+                            → (A B : 𝓤 / R)
+                            → (A ≡ B) ≃ (A ≅ B)
+
+ characterization-of-/-≡ ua = characterization-of-≡ ua S sip-data
+
+module generalized-metric-space-equality
         (𝓤 𝓥 : Universe)
-        (ua : is-univalent 𝓤)
         (R : 𝓥 ̇ )
         (axioms  : (X : 𝓤 ̇ ) → (X → X → R) → 𝓤 ⊔ 𝓥 ̇ )
         (axiomss : (X : 𝓤 ̇ ) (d : X → X → R) → is-subsingleton (axioms X d))
@@ -4252,24 +4285,20 @@ module type-valued-relation-with-axioms-example
  S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
  S X = X → X → R
 
- ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
- ι (X , d) (Y , e) (f , i) = (d ≡ λ x x' → e (f x) (f x'))
-
- ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
- ρ (X , d) = refl d
-
- θ : {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
- θ {X} d e = γ
+ sip-data : SIP-data S (𝓤 ⊔ 𝓥)
+ sip-data = (ι , ρ , θ)
   where
-   h : canonical-map ι ρ d e ∼ 𝑖𝑑 (d ≡ e)
+   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
+   ι (X , d) (Y , e) (f , i) = (d ≡ λ x x' → e (f x) (f x'))
+
+   ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
+   ρ (X , d) = refl d
+
+   h : {X : 𝓤 ̇ } {d e : S X} → canonical-map ι ρ d e ∼ 𝑖𝑑 (d ≡ e)
    h (refl d) = refl (refl d)
 
-   γ : is-equiv (canonical-map ι ρ d e)
-   γ = equivs-closed-under-∼
-        id (canonical-map ι ρ d e) (id-is-equiv (d ≡ e)) h
-
- σ : SIP-data S (𝓤 ⊔ 𝓥)
- σ = (ι , ρ , θ)
+   θ : {X : 𝓤 ̇ } (d e : S X) → is-equiv (canonical-map ι ρ d e)
+   θ d e = equivs-closed-under-∼ (id-is-equiv (d ≡ e)) h
 
  TVRA : 𝓤 ⁺ ⊔ 𝓥  ̇
  TVRA = Σ \(X : 𝓤 ̇ ) → Σ \(d : X → X → R) → axioms X d
@@ -4278,13 +4307,17 @@ module type-valued-relation-with-axioms-example
  (X , d , a) ≅ (Y , e , b) = Σ \(f : X → Y) → is-equiv f
                                             × (d ≡ λ x x' → e (f x) (f x'))
 
- characterization-of-type-valued-relations-≡ : (A B : TVRA) → (A ≡ B) ≃ (A ≅ B)
- characterization-of-type-valued-relations-≡ =
-   characterization-of-≡-with-axioms ua (λ X → X → X → R) σ axioms axiomss
+ characterization-of-TVRA-≡ : is-univalent 𝓤
+                            → (A B : TVRA)
+                            → (A ≡ B) ≃ (A ≅ B)
 
-module generalized-topological-space-example
+ characterization-of-TVRA-≡ ua = characterization-of-≡-with-axioms ua
+                                   (λ X → X → X → R)
+                                   sip-data
+                                   axioms axiomss
+
+module generalized-topological-space-equality
         (𝓤 𝓥 : Universe)
-        (ua : is-univalent 𝓤)
         (R : 𝓥 ̇)
         (axioms  : (X : 𝓤 ̇ ) → ((X → R) → R) → 𝓤 ⊔ 𝓥 ̇)
         (axiomss : (X : 𝓤 ̇ ) (𝓞 : (X → R) → R) → is-subsingleton (axioms X 𝓞))
@@ -4296,8 +4329,11 @@ module generalized-topological-space-example
  ℙ : 𝓦 ̇ → 𝓥 ⊔ 𝓦 ̇
  ℙ X = X → R
 
- _∊_ : {X : 𝓦 ̇ } → X → (X → R) → R
+ _∊_ : {X : 𝓦 ̇ } → X → ℙ X → R
  x ∊ A = A x
+
+ inverse-image : {X Y : 𝓤 ̇ } → (X → Y) → ℙ Y → ℙ X
+ inverse-image f B = λ x → f x ∊ B
 
  ℙℙ : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
  ℙℙ X = ℙ (ℙ X)
@@ -4305,27 +4341,20 @@ module generalized-topological-space-example
  Space : 𝓤 ⁺ ⊔ 𝓥  ̇
  Space = Σ \(X : 𝓤 ̇ ) → Σ \(𝓞 : ℙℙ X) → axioms X 𝓞
 
- inverse-image : {X Y : 𝓤 ̇ } → (X → Y) → ℙ Y → ℙ X
- inverse-image f B = λ x → f x ∊ B
-
- ι : (A B : Σ ℙℙ) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
- ι (X , 𝓞X) (Y , 𝓞Y) (f , i) = (λ (V : ℙ Y) → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y
-
- ρ : (A : Σ ℙℙ) → ι A A (id-≃ ⟨ A ⟩)
- ρ (X , 𝓞) = refl 𝓞
-
- θ : {X : 𝓤 ̇ } (s t : ℙℙ X) → is-equiv (canonical-map ι ρ s t)
- θ {X} 𝓞 𝓞' = γ
+ sip-data : SIP-data ℙℙ (𝓤 ⊔ 𝓥)
+ sip-data = (ι , ρ , θ)
   where
-   h : canonical-map ι ρ 𝓞 𝓞' ∼ 𝑖𝑑 (𝓞 ≡ 𝓞')
+   ι : (A B : Σ ℙℙ) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
+   ι (X , 𝓞X) (Y , 𝓞Y) (f , i) = (λ (V : ℙ Y) → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y
+
+   ρ : (A : Σ ℙℙ) → ι A A (id-≃ ⟨ A ⟩)
+   ρ (X , 𝓞) = refl 𝓞
+
+   h : {X : 𝓤 ̇ } {𝓞 𝓞' : ℙℙ X} → canonical-map ι ρ 𝓞 𝓞' ∼ 𝑖𝑑 (𝓞 ≡ 𝓞')
    h (refl 𝓞) = refl (refl 𝓞)
 
-   γ : is-equiv (canonical-map ι ρ 𝓞 𝓞')
-   γ = equivs-closed-under-∼
-        id (canonical-map ι ρ 𝓞 𝓞') (id-is-equiv (𝓞 ≡ 𝓞')) h
-
- σ : SIP-data ℙℙ (𝓤 ⊔ 𝓥)
- σ = (ι , ρ , θ)
+   θ : {X : 𝓤 ̇ } (𝓞 𝓞' : ℙℙ X) → is-equiv (canonical-map ι ρ 𝓞 𝓞')
+   θ {X} 𝓞 𝓞' = equivs-closed-under-∼ (id-is-equiv (𝓞 ≡ 𝓞')) h
 
  _≅_  : Space → Space → 𝓤 ⊔ 𝓥 ̇
  (X , 𝓞X , a) ≅ (Y , 𝓞Y , b)
@@ -4333,16 +4362,28 @@ module generalized-topological-space-example
               = Σ \(f : X → Y) → is-equiv f
                                × ((λ V → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y)
 
- characterization-of-type-valued-relations-≡ :
+ characterization-of-Space-≡ : is-univalent 𝓤
+                             → (A B : Space)
+                             → (A ≡ B) ≃ (A ≅ B)
 
-     (A B : Space) → (A ≡ B) ≃ (A ≅ B)
+ characterization-of-Space-≡ ua = characterization-of-≡-with-axioms ua
+                                    (λ X → (X → R) → R) sip-data
+                                    axioms axiomss
 
- characterization-of-type-valued-relations-≡ =
-   characterization-of-≡-with-axioms ua (λ X → (X → R) → R) σ axioms axiomss
+ _≅'_  : Space → Space → 𝓤 ⊔ 𝓥 ̇
+ (X , F , a) ≅' (Y , G , b)
 
-module selection-space-example
+              = Σ \(f : X → Y) → is-equiv f
+                               × ((λ (v : Y → R) → F (v ∘ f)) ≡ G)
+
+ characterization-of-Space-≡' : is-univalent 𝓤
+                             → (A B : Space)
+                             → (A ≡ B) ≃ (A ≅' B)
+
+ characterization-of-Space-≡' = characterization-of-Space-≡
+
+module selection-space-equality
         (𝓤 𝓥 : Universe)
-        (ua : is-univalent 𝓤)
         (R : 𝓥 ̇)
         (axioms  : (X : 𝓤 ̇ ) → ((X → R) → X) → 𝓤 ⊔ 𝓥 ̇)
         (axiomss : (X : 𝓤 ̇ ) (ε : (X → R) → X) → is-subsingleton (axioms X ε))
@@ -4357,37 +4398,38 @@ module selection-space-example
  SelectionSpace : 𝓤 ⁺ ⊔ 𝓥  ̇
  SelectionSpace = Σ \(X : 𝓤 ̇ ) → Σ \(ε : S X) → axioms X ε
 
- ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
- ι (X , ε) (Y , δ) (f , i) = (λ (q : Y → R) → f (ε (λ x → q (f x)))) ≡ δ
-
- ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
- ρ (X , ε) = refl ε
-
- θ : {X : 𝓤 ̇ } (ε δ : S X) → is-equiv (canonical-map ι ρ ε δ)
- θ {X} ε δ = γ
+ sip-data : SIP-data S (𝓤 ⊔ 𝓥)
+ sip-data = (ι , ρ , θ)
   where
-   h : canonical-map ι ρ ε δ ∼ 𝑖𝑑 (ε ≡ δ)
-   h (refl ε) = refl (refl ε)
+   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
+   ι (X , ε) (Y , δ) (f , i) = (λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ
 
-   γ : is-equiv (canonical-map ι ρ ε δ)
-   γ = equivs-closed-under-∼
-        id (canonical-map ι ρ ε δ) (id-is-equiv (ε ≡ δ)) h
+   ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
+   ρ (X , ε) = refl ε
 
- σ : SIP-data S (𝓤 ⊔ 𝓥)
- σ = (ι , ρ , θ)
+   θ : {X : 𝓤 ̇ } (ε δ : S X) → is-equiv (canonical-map ι ρ ε δ)
+   θ {X} ε δ = γ
+    where
+     h : canonical-map ι ρ ε δ ∼ 𝑖𝑑 (ε ≡ δ)
+     h (refl ε) = refl (refl ε)
+
+     γ : is-equiv (canonical-map ι ρ ε δ)
+     γ = equivs-closed-under-∼ (id-is-equiv (ε ≡ δ)) h
 
  _≅_  :  SelectionSpace → SelectionSpace → 𝓤 ⊔ 𝓥 ̇
  (X , ε , a) ≅ (Y , δ , b)
 
              = Σ \(f : X → Y) → is-equiv f
-                              × ((λ (q : Y → R) → f (ε (λ x → q (f x)))) ≡ δ)
+                              × ((λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ)
 
- characterization-of-selection-space-≡ :
+ characterization-of-selection-space-≡ : is-univalent 𝓤
+                                       → (A B : SelectionSpace)
+                                       → (A ≡ B) ≃ (A ≅ B)
 
-     (A B : SelectionSpace) → (A ≡ B) ≃ (A ≅ B)
-
- characterization-of-selection-space-≡ =
-   characterization-of-≡-with-axioms ua (λ X → (X → R) → X) σ axioms axiomss
+ characterization-of-selection-space-≡ ua = characterization-of-≡-with-axioms ua
+                                             (λ X → (X → R) → X)
+                                             sip-data
+                                             axioms axiomss
 
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
