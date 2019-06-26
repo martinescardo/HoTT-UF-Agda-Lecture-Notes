@@ -7527,9 +7527,10 @@ is attributed to Peter Aczel.
 Here we formulate and prove a variation for types equipped with
 structure. We consider several versions:
 
- * One for raw structures subject to no axioms, such as ∞-magmas and pointed types.
+ * One for raw structures subject to no axioms, such as ∞-magmas and
+   pointed types.
 
- * One that adds axioms to a structure, so as to e.g. get a an
+ * One that adds axioms to a structure, so as to e.g. get an
    automatic characterization of magma equality from a
    characterization of ∞-magma equalitty.
 
@@ -7775,15 +7776,13 @@ module ∞-magma-equality (𝓤 : Universe) where
 
  open sip
 
- S : 𝓤 ̇ → 𝓤 ̇
- S X = X → X → X
-
+ ∞-magma-structure : 𝓤 ̇ → 𝓤 ̇
+ ∞-magma-structure X = X → X → X
 
  ∞-Magma : 𝓤 ⁺ ̇
- ∞-Magma = Σ \(X : 𝓤 ̇ ) → S X
+ ∞-Magma = Σ \(X : 𝓤 ̇ ) → ∞-magma-structure X
 
-
- sip-data : SIP-data S 𝓤
+ sip-data : SIP-data ∞-magma-structure 𝓤
  sip-data = (ι , ρ , θ)
   where
    ι : (A B : ∞-Magma) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
@@ -7792,11 +7791,18 @@ module ∞-magma-equality (𝓤 : Universe) where
    ρ : (A : ∞-Magma) → ι A A (id-≃ ⟨ A ⟩)
    ρ (X , _·_) = refl _·_
 
-   h : {X : 𝓤 ̇ } {_·_ _*_ : S X} → canonical-map ι ρ _·_ _*_ ∼ 𝑖𝑑 (_·_ ≡ _*_)
+
+   h : {X : 𝓤 ̇ } {_·_ _*_ : ∞-magma-structure X}
+     → canonical-map ι ρ _·_ _*_ ∼ 𝑖𝑑 (_·_ ≡ _*_)
+
    h (refl _·_) = refl (refl _·_)
 
-   θ : {X : 𝓤 ̇ } (_·_ _*_ : S X) → is-equiv (canonical-map ι ρ _·_ _*_)
+
+   θ : {X : 𝓤 ̇ } (_·_ _*_ : ∞-magma-structure X)
+     → is-equiv (canonical-map ι ρ _·_ _*_)
+
    θ _·_ _*_ = equivs-closed-under-∼ (id-is-equiv (_·_ ≡ _*_)) h
+
 
  _≅_ : ∞-Magma → ∞-Magma → 𝓤 ̇
  (X , _·_) ≅ (Y , _*_) =
@@ -7949,7 +7955,6 @@ module magma-equality (𝓤 : Universe) where
  Magma : 𝓤 ⁺ ̇
  Magma = Σ \(X : 𝓤 ̇ ) → (X → X → X) × is-set X
 
-
  _≅_ : Magma → Magma → 𝓤 ̇
  (X , _·_ , i) ≅ (Y , _*_ , j) =
 
@@ -7980,53 +7985,53 @@ module pointed-type-equality (𝓤 : Universe) where
 
  open sip
 
- S : 𝓤 ̇ → 𝓤 ̇
- S X = X
+ Pointed : 𝓤 ̇ → 𝓤 ̇
+ Pointed X = X
 
- sip-data : SIP-data S 𝓤
+ sip-data : SIP-data Pointed 𝓤
  sip-data = (ι , ρ , θ)
   where
-   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
+   ι : (A B : Σ Pointed) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
    ι (X , x₀) (Y , y₀) (f , i) = (f x₀ ≡ y₀)
 
-   ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
+   ρ : (A : Σ Pointed) → ι A A (id-≃ ⟨ A ⟩)
    ρ (X , x₀) = refl x₀
 
-   θ : {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
+   θ : {X : 𝓤 ̇ } (s t : Pointed X) → is-equiv (canonical-map ι ρ s t)
    θ x₀ x₁ = equivs-closed-under-∼ (id-is-equiv (x₀ ≡ x₁)) h
     where
      h : canonical-map ι ρ x₀ x₁ ∼ 𝑖𝑑 (x₀ ≡ x₁)
      h (refl x₀) = refl (refl x₀)
 
 
- _≅_ : Σ S → Σ S → 𝓤 ̇
+ _≅_ : Σ Pointed → Σ Pointed → 𝓤 ̇
  (X , x₀) ≅ (Y , y₀) = Σ \(f : X → Y) → is-equiv f × (f x₀ ≡ y₀)
 
 
  characterization-of-pointed-type-≡ : is-univalent 𝓤
-                                    → (A B : Σ S)
+                                    → (A B : Σ Pointed)
                                     → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-pointed-type-≡ ua = characterization-of-≡ ua sip-data
 \end{code}
 
-#### The structure identity principle for the join of two mathematical structures
+#### Combining two mathematical structures
 
 We now show how to join two mathematics structures, so as to obtain a
 characterization of equality of the join from the characterization of
 the equalities of the structures. For example, we build the
 characterization of equality of pointed ∞-magmas from the
 characterizations of the equality of pointed types and the
-characterization of the equality of magmas. Moreover, adding axioms, we
-get a characterization of equality of monoids which amounts to the
-characterization of equality of pointed ∞-magmas:
+characterization of the equality of magmas. Moreover, adding axioms,
+we get a characterization of equality of monoids which amounts to the
+characterization of equality of pointed ∞-magmas. Further adding an
+axiom, we get an automatic characterization of group equality.
 
 \begin{code}
 module sip-join where
 \end{code}
 
-We begin with the following technical lemma which may be of interest
-independently of structure identity principles:
+We begin with the following technical lemma:
 
 \begin{code}
  technical-lemma :
@@ -8129,7 +8134,7 @@ The main construction in this submodule is this:
 
  join {𝓤} {𝓥₀} {𝓥₁} {𝓦₀} {𝓦₁} {S₀} {S₁} (ι₀ , ρ₀ , θ₀) (ι₁ , ρ₁ , θ₁) = ι , ρ , θ
   where
-   S : 𝓤 ̇ → 𝓥₀ ⊔ 𝓥₁  ̇
+   S : 𝓤 ̇ → 𝓥₀ ⊔ 𝓥₁ ̇
    S X = S₀ X × S₁ X
 
    ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦₀ ⊔ 𝓦₁ ̇
@@ -8342,7 +8347,15 @@ module group-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
             Σ \(f : X → Y) → is-equiv f
                            × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
                            × (f d ≡ e)
+\end{code}
 
+*Exercise*. In the case of groups, as opposed to monoids, the
+ preservation of the unit follows from the preservation of the
+ multiplication, and hence one can remove `f d ≡ e` from the above
+ definition. But then one has to add more steps to the following
+ proof.
+
+\begin{code}
  characterization-of-group-≡ : is-univalent 𝓤
                               → (A B : Group)
                               → (A ≡ B) ≃ (A ≅ B)
