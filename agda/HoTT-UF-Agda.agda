@@ -4224,7 +4224,7 @@ module monoid-example (𝓤 : Universe) (ua : is-univalent 𝓤) where
  τ = add-axioms monoid-structure monoid-axioms monoid-axioms-subsingleton σ
 
  Monoid : 𝓤 ⁺ ̇
- Monoid = Σ \(X : 𝓤 ̇) → Σ \(s : monoid-structure X) → monoid-axioms X s
+ Monoid = Σ \(X : 𝓤 ̇ ) → Σ \(s : monoid-structure X) → monoid-axioms X s
 
  _≅_ : Monoid → Monoid → 𝓤 ̇
 
@@ -4241,8 +4241,8 @@ module monoid-example (𝓤 : Universe) (ua : is-univalent 𝓤) where
 module type-valued-relation-with-axioms-example
         (𝓤 𝓥 : Universe)
         (ua : is-univalent 𝓤)
-        (R : 𝓥 ̇)
-        (axioms  : (X : 𝓤 ̇ ) → (X → X → R) → 𝓤 ⊔ 𝓥 ̇)
+        (R : 𝓥 ̇ )
+        (axioms  : (X : 𝓤 ̇ ) → (X → X → R) → 𝓤 ⊔ 𝓥 ̇ )
         (axiomss : (X : 𝓤 ̇ ) (d : X → X → R) → is-subsingleton (axioms X d))
        where
 
@@ -4281,6 +4281,64 @@ module type-valued-relation-with-axioms-example
  characterization-of-type-valued-relations-≡ : (A B : TVRA) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-type-valued-relations-≡ =
    characterization-of-≡-with-axioms ua (λ X → X → X → R) σ axioms axiomss
+
+module generalized-topological-space-example
+        (𝓤 𝓥 : Universe)
+        (ua : is-univalent 𝓤)
+        (R : 𝓥 ̇)
+        (axioms  : (X : 𝓤 ̇ ) → ((X → R) → R) → 𝓤 ⊔ 𝓥 ̇)
+        (axiomss : (X : 𝓤 ̇ ) (𝓞 : (X → R) → R) → is-subsingleton (axioms X 𝓞))
+       where
+
+ open sip
+ open sip-with-axioms
+
+ ℙ : 𝓦 ̇ → 𝓥 ⊔ 𝓦 ̇
+ ℙ X = X → R
+
+ _∊_ : {X : 𝓦 ̇ } → X → (X → R) → R
+ x ∊ A = A x
+
+ ℙℙ : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ ℙℙ X = ℙ (ℙ X)
+
+ Space : 𝓤 ⁺ ⊔ 𝓥  ̇
+ Space = Σ \(X : 𝓤 ̇ ) → Σ \(𝓞 : ℙℙ X) → axioms X 𝓞
+
+ inverse-image : {X Y : 𝓤 ̇ } → (X → Y) → ℙ Y → ℙ X
+ inverse-image f B = λ x → f x ∊ B
+
+ ι : (A B : Σ ℙℙ) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
+ ι (X , 𝓞X) (Y , 𝓞Y) (f , i) = (λ (V : ℙ Y) → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y
+
+ ρ : (A : Σ ℙℙ) → ι A A (id-≃ ⟨ A ⟩)
+ ρ (X , 𝓞) = refl 𝓞
+
+ ε : {X : 𝓤 ̇ } (s t : ℙℙ X) → is-equiv (canonical-map ι ρ s t)
+ ε {X} 𝓞 𝓞' = γ
+  where
+   h : canonical-map ι ρ 𝓞 𝓞' ∼ 𝑖𝑑 (𝓞 ≡ 𝓞')
+   h (refl 𝓞) = refl (refl 𝓞)
+
+   γ : is-equiv (canonical-map ι ρ 𝓞 𝓞')
+   γ = equivs-closed-under-∼
+        id (canonical-map ι ρ 𝓞 𝓞') (id-is-equiv (𝓞 ≡ 𝓞')) h
+
+ σ : SIP-data ℙℙ (𝓤 ⊔ 𝓥)
+ σ = (ι , ρ , ε)
+
+ _≅_  : Space → Space → 𝓤 ⊔ 𝓥 ̇
+ (X , 𝓞X  , a) ≅ (Y , 𝓞Y , b)
+
+               = Σ \(f : X → Y) → is-equiv f
+                                × ((λ V → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y)
+
+ characterization-of-type-valued-relations-≡ :
+
+     (A B : Space) → (A ≡ B) ≃ (A ≅ B)
+
+ characterization-of-type-valued-relations-≡ =
+   characterization-of-≡-with-axioms ua (λ X → (X → R) → R) σ axioms axiomss
 
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
@@ -5056,7 +5114,7 @@ module basic-powerset-development
         → is-set X
         × Σ \(𝓞 : 𝓟𝓟 X)
         → full ∈ 𝓞
-        × ((G G' : 𝓟 X) → G ∈ 𝓞 → G' ∈ 𝓞 → (G ∩ G') ∈ 𝓞)
+        × ((U V : 𝓟 X) → U ∈ 𝓞 → V ∈ 𝓞 → (U ∩ V) ∈ 𝓞)
         × ((𝓖 : 𝓟𝓟 X) → 𝓖 ⊆ 𝓞 → ⋃ 𝓖 ∈ 𝓞)
 
 is-subsingleton-valued

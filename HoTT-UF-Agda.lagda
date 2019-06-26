@@ -7923,7 +7923,7 @@ module monoid-example (𝓤 : Universe) (ua : is-univalent 𝓤) where
  τ = add-axioms monoid-structure monoid-axioms monoid-axioms-subsingleton σ
 
  Monoid : 𝓤 ⁺ ̇
- Monoid = Σ \(X : 𝓤 ̇) → Σ \(s : monoid-structure X) → monoid-axioms X s
+ Monoid = Σ \(X : 𝓤 ̇ ) → Σ \(s : monoid-structure X) → monoid-axioms X s
 
  _≅_ : Monoid → Monoid → 𝓤 ̇
 
@@ -7946,8 +7946,8 @@ More generally, we work with type-valued relations subject to axioms.
 module type-valued-relation-with-axioms-example
         (𝓤 𝓥 : Universe)
         (ua : is-univalent 𝓤)
-        (R : 𝓥 ̇)
-        (axioms  : (X : 𝓤 ̇ ) → (X → X → R) → 𝓤 ⊔ 𝓥 ̇)
+        (R : 𝓥 ̇ )
+        (axioms  : (X : 𝓤 ̇ ) → (X → X → R) → 𝓤 ⊔ 𝓥 ̇ )
         (axiomss : (X : 𝓤 ̇ ) (d : X → X → R) → is-subsingleton (axioms X d))
        where
 
@@ -7991,9 +7991,9 @@ module type-valued-relation-with-axioms-example
 We have the following particular cases of interest:
 
  * *Metric spaces*. If `R` is a type of real numbers, then the axioms
-   can be those for metric spaces, and `TVRA` amounts to the type of
-   metric spaces. Then the above characterizes metric space equality
-   as isometry.
+   can be taken to be those for metric spaces, in which case `TVRA`
+   amounts to the type of metric spaces. Then the above characterizes
+   metric space equality as isometry.
 
  * *Graphs*. If `R` is the type of truth values, and the `axioms`
    function is constant with value *true*, then `TVRA` amounts to the
@@ -8005,6 +8005,107 @@ We have the following particular cases of interest:
    truth values and suitable axioms, we get posets and other ordered
    structures, and the above says that their equality amounts to order
    isomorphism.
+
+#### Equality of topological spaces and of types of linear functionals
+
+We get a [type of topological spaces](HoTT-UF-Agda.html#Top) when `R`
+is the type of truth values and the axioms are appropriately chosen.
+
+\begin{code}
+module generalized-topological-space-example
+        (𝓤 𝓥 : Universe)
+        (ua : is-univalent 𝓤)
+        (R : 𝓥 ̇)
+        (axioms  : (X : 𝓤 ̇ ) → ((X → R) → R) → 𝓤 ⊔ 𝓥 ̇)
+        (axiomss : (X : 𝓤 ̇ ) (𝓞 : (X → R) → R) → is-subsingleton (axioms X 𝓞))
+       where
+
+ open sip
+ open sip-with-axioms
+\end{code}
+
+When `R` is the type of truth values, the type `(X → R)` is the
+powerset of `X`, and membership amounts to function application:
+
+\begin{code}
+ ℙ : 𝓦 ̇ → 𝓥 ⊔ 𝓦 ̇
+ ℙ X = X → R
+
+ _∊_ : {X : 𝓦 ̇ } → X → (X → R) → R
+ x ∊ A = A x
+
+ ℙℙ : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ ℙℙ X = ℙ (ℙ X)
+
+ Space : 𝓤 ⁺ ⊔ 𝓥  ̇
+ Space = Σ \(X : 𝓤 ̇ ) → Σ \(𝓞 : ℙℙ X) → axioms X 𝓞
+
+ inverse-image : {X Y : 𝓤 ̇ } → (X → Y) → ℙ Y → ℙ X
+ inverse-image f B = λ x → f x ∊ B
+\end{code}
+
+If `(X , 𝓞Y , a)` and `(Y , 𝓞Y , b)` are spaces, a
+[homeomorphism](https://en.wikipedia.org/wiki/Homeomorphism) can be
+described as a bijection `f : X → Y` such that the open sets of `Y` are precisely
+as those whose inverse images are open in `X`, which can be written as
+
+   > `(λ (V : ℙ Y) → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y`
+
+The `ι` expresses the fact that a given bijection is a homeomorphism:
+
+\begin{code}
+ ι : (A B : Σ ℙℙ) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
+ ι (X , 𝓞X) (Y , 𝓞Y) (f , i) = (λ (V : ℙ Y) → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y
+\end{code}
+
+What `ρ` says is that identity function is a homeomorphism, trivially:
+
+\begin{code}
+ ρ : (A : Σ ℙℙ) → ι A A (id-≃ ⟨ A ⟩)
+ ρ (X , 𝓞) = refl 𝓞
+\end{code}
+
+Then `ε` amounts to the fact that two topologies on the same set must
+be the same if they make the identity function into a homeomorphism.
+
+\begin{code}
+ ε : {X : 𝓤 ̇ } (s t : ℙℙ X) → is-equiv (canonical-map ι ρ s t)
+ ε {X} 𝓞 𝓞' = γ
+  where
+   h : canonical-map ι ρ 𝓞 𝓞' ∼ 𝑖𝑑 (𝓞 ≡ 𝓞')
+   h (refl 𝓞) = refl (refl 𝓞)
+
+   γ : is-equiv (canonical-map ι ρ 𝓞 𝓞')
+   γ = equivs-closed-under-∼
+        id (canonical-map ι ρ 𝓞 𝓞') (id-is-equiv (𝓞 ≡ 𝓞')) h
+
+ σ : SIP-data ℙℙ (𝓤 ⊔ 𝓥)
+ σ = (ι , ρ , ε)
+\end{code}
+
+We introduce notation for the type of homeomorphisms:
+
+\begin{code}
+ _≅_  : Space → Space → 𝓤 ⊔ 𝓥 ̇
+ (X , 𝓞X  , a) ≅ (Y , 𝓞Y , b)
+
+               = Σ \(f : X → Y) → is-equiv f
+                                × ((λ V → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y)
+
+ characterization-of-type-valued-relations-≡ :
+
+     (A B : Space) → (A ≡ B) ≃ (A ≅ B)
+
+ characterization-of-type-valued-relations-≡ =
+   characterization-of-≡-with-axioms ua (λ X → (X → R) → R) σ axioms axiomss
+
+\end{code}
+
+But of course there are choices for `R` that also make sense. For
+example, we can be `R` to a type of real numbers, with the axioms for
+`X` and `F : (X → R) → R` saying that `F` is a linear functional. Then
+the above gives a characterization of equality of the type of linear
+functionals.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="truncation"></a> Subsingleton truncation, disjunction and existence
@@ -9167,7 +9268,7 @@ sets.
         → is-set X
         × Σ \(𝓞 : 𝓟𝓟 X)
         → full ∈ 𝓞
-        × ((G G' : 𝓟 X) → G ∈ 𝓞 → G' ∈ 𝓞 → (G ∩ G') ∈ 𝓞)
+        × ((U V : 𝓟 X) → U ∈ 𝓞 → V ∈ 𝓞 → (U ∩ V) ∈ 𝓞)
         × ((𝓖 : 𝓟𝓟 X) → 𝓖 ⊆ 𝓞 → ⋃ 𝓖 ∈ 𝓞)
 \end{code}
 
