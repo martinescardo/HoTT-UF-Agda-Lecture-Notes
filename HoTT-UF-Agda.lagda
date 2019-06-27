@@ -8462,6 +8462,57 @@ prefer to rephrase the above as
  characterization-of-Space-≡' = characterization-of-Space-≡
 \end{code}
 
+module selection-space-identity
+        (𝓤 𝓥 : Universe)
+        (R : 𝓥 ̇)
+        (axioms  : (X : 𝓤 ̇ ) → ((X → R) → X) → 𝓤 ⊔ 𝓥 ̇)
+        (axiomss : (X : 𝓤 ̇ ) (ε : (X → R) → X) → is-subsingleton (axioms X ε))
+       where
+
+ open sip
+ open sip-with-axioms
+
+ S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ S X = (X → R) → X
+
+ SelectionSpace : 𝓤 ⁺ ⊔ 𝓥  ̇
+ SelectionSpace = Σ \(X : 𝓤 ̇ ) → Σ \(ε : S X) → axioms X ε
+
+ sns-data : SNS S (𝓤 ⊔ 𝓥)
+ sns-data = (ι , ρ , θ)
+  where
+   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
+   ι (X , ε) (Y , δ) (f , i) = (λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ
+
+   ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
+   ρ (X , ε) = refl ε
+
+   θ : {X : 𝓤 ̇ } (ε δ : S X) → is-equiv (canonical-map ι ρ ε δ)
+   θ {X} ε δ = γ
+    where
+     h : canonical-map ι ρ ε δ ∼ 𝑖𝑑 (ε ≡ δ)
+     h (refl ε) = refl (refl ε)
+
+     γ : is-equiv (canonical-map ι ρ ε δ)
+     γ = equivs-closed-under-∼ (id-is-equiv (ε ≡ δ)) h
+
+
+ _≅_  :  SelectionSpace → SelectionSpace → 𝓤 ⊔ 𝓥 ̇
+ (X , ε , a) ≅ (Y , δ , b) =
+
+             Σ \(f : X → Y) → is-equiv f
+                            × ((λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ)
+
+
+ characterization-of-selection-space-≡ : is-univalent 𝓤
+                                       → (A B : SelectionSpace)
+
+                                       → (A ≡ B) ≃ (A ≅ B)
+
+ characterization-of-selection-space-≡ ua = characterization-of-≡-with-axioms ua
+                                             sns-data
+                                             axioms axiomss
+
 #### A contrived example
 
 Here is an example where we need to refer to the inverse of the
@@ -8494,17 +8545,119 @@ module contrived-example-identity (𝓤 : Universe) where
 
 Many of the above examples can be written in such a concise form.
 
-#### Exercises
+#### Selection spaces
 
-Develop the following examples, adding hypotheses and/or axioms if necessary or desirable:
+\begin{code}
+module selection-space-identity
+        (𝓤 𝓥 : Universe)
+        (R : 𝓥 ̇)
+        (axioms  : (X : 𝓤 ̇ ) → ((X → R) → X) → 𝓤 ⊔ 𝓥 ̇)
+        (axiomss : (X : 𝓤 ̇ ) (ε : (X → R) → X) → is-subsingleton (axioms X ε))
+       where
 
-   > `S X = (X → X)` and in particular `S X = (X ≃ X)` by adding axioms.
+ open sip
+ open sip-with-axioms
 
-   > `S X = (X → X) × X`
+ S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ S X = (X → R) → X
 
-   > `S X = (F X → X)` for a given `F : 𝓤 ̇ → 𝓤 ̇ `.
+ SelectionSpace : 𝓤 ⁺ ⊔ 𝓥  ̇
+ SelectionSpace = Σ \(X : 𝓤 ̇ ) → Σ \(ε : S X) → axioms X ε
 
-   > `S X = (X → R) → X` for a for a given `R : 𝓥 ̇ `.
+ sns-data : SNS S (𝓤 ⊔ 𝓥)
+ sns-data = (ι , ρ , θ)
+  where
+   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
+   ι (X , ε) (Y , δ) (f , i) = (λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ
+
+   ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
+   ρ (X , ε) = refl ε
+
+   θ : {X : 𝓤 ̇ } (ε δ : S X) → is-equiv (canonical-map ι ρ ε δ)
+   θ {X} ε δ = γ
+    where
+     h : canonical-map ι ρ ε δ ∼ 𝑖𝑑 (ε ≡ δ)
+     h (refl ε) = refl (refl ε)
+
+     γ : is-equiv (canonical-map ι ρ ε δ)
+     γ = equivs-closed-under-∼ (id-is-equiv (ε ≡ δ)) h
+
+
+ _≅_  :  SelectionSpace → SelectionSpace → 𝓤 ⊔ 𝓥 ̇
+ (X , ε , a) ≅ (Y , δ , b) =
+
+             Σ \(f : X → Y) → is-equiv f
+                            × ((λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ)
+
+
+ characterization-of-selection-space-≡ : is-univalent 𝓤
+                                       → (A B : SelectionSpace)
+
+                                       → (A ≡ B) ≃ (A ≅ B)
+
+ characterization-of-selection-space-≡ ua = characterization-of-≡-with-axioms ua
+                                             sns-data
+                                             axioms axiomss
+\end{code}
+
+#### Functor algebras
+
+We don't need to know to know that the functor preserves composition.
+
+\begin{code}
+module generalized-functor-algebra-equality
+         {𝓤 : Universe}
+         (F : 𝓤 ̇ → 𝓤 ̇)
+         (𝓕 : {X Y : 𝓤 ̇ } → (X → Y) → F X → F Y)
+         (𝓕-id : {X : 𝓤 ̇ } → 𝓕 (𝑖𝑑 X) ≡ 𝑖𝑑 (F X))
+       where
+
+ open sip
+
+ S : 𝓤 ̇ → 𝓤 ̇
+ S X = F X → X
+
+ sns-data : SNS S 𝓤
+ sns-data = (ι , ρ , θ)
+  where
+   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
+   ι (X , α) (Y , β) (f , e) = f ∘ α ≡ β ∘ 𝓕 f
+
+   ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
+   ρ (X , α) = γ
+    where
+     γ : α ≡ α ∘ 𝓕 id
+     γ = ap (α ∘_) (𝓕-id ⁻¹)
+
+   θ : {X : 𝓤 ̇ } (α β : S X) → is-equiv (canonical-map ι ρ α β)
+   θ {X} α β = γ
+    where
+     c : α ≡ β → α ≡ β ∘ 𝓕 id
+     c p = p ∙ ρ (X , β)
+
+     i : is-equiv c
+     i = transport-is-equiv (α ≡_) (ρ (X , β))
+
+     h : canonical-map ι ρ α β ∼ c
+     h (refl _) = ρ (X , α)          ≡⟨ refl-left ⁻¹ ⟩
+                  refl α ∙ ρ (X , β) ∎
+
+     γ : is-equiv (canonical-map ι ρ α β)
+     γ = equivs-closed-under-∼ i h
+
+
+ _≅_  :  Σ S → Σ S → 𝓤 ̇
+ (X , α) ≅ (Y , β) =
+
+         Σ \(f : X → Y) → is-equiv f
+                        × (f ∘ α ≡ β ∘ 𝓕 f)
+
+ characterization-of-functor-algebra-≡ : is-univalent 𝓤
+                                       → (A B : Σ S)
+                                       → (A ≡ B) ≃ (A ≅ B)
+
+ characterization-of-functor-algebra-≡ ua = characterization-of-≡ ua sns-data
+\end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="truncation"></a> Subsingleton truncation, disjunction and existence
@@ -10203,57 +10356,6 @@ module surjection-classifier
   surjection-classifier {𝓤} ua = special-map-classifier (ua 𝓤)
                                   (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
                                   ∥_∥
-
-module selection-space-identity
-        (𝓤 𝓥 : Universe)
-        (R : 𝓥 ̇)
-        (axioms  : (X : 𝓤 ̇ ) → ((X → R) → X) → 𝓤 ⊔ 𝓥 ̇)
-        (axiomss : (X : 𝓤 ̇ ) (ε : (X → R) → X) → is-subsingleton (axioms X ε))
-       where
-
- open sip
- open sip-with-axioms
-
- S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
- S X = (X → R) → X
-
- SelectionSpace : 𝓤 ⁺ ⊔ 𝓥  ̇
- SelectionSpace = Σ \(X : 𝓤 ̇ ) → Σ \(ε : S X) → axioms X ε
-
- sns-data : SNS S (𝓤 ⊔ 𝓥)
- sns-data = (ι , ρ , θ)
-  where
-   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
-   ι (X , ε) (Y , δ) (f , i) = (λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ
-
-   ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
-   ρ (X , ε) = refl ε
-
-   θ : {X : 𝓤 ̇ } (ε δ : S X) → is-equiv (canonical-map ι ρ ε δ)
-   θ {X} ε δ = γ
-    where
-     h : canonical-map ι ρ ε δ ∼ 𝑖𝑑 (ε ≡ δ)
-     h (refl ε) = refl (refl ε)
-
-     γ : is-equiv (canonical-map ι ρ ε δ)
-     γ = equivs-closed-under-∼ (id-is-equiv (ε ≡ δ)) h
-
-
- _≅_  :  SelectionSpace → SelectionSpace → 𝓤 ⊔ 𝓥 ̇
- (X , ε , a) ≅ (Y , δ , b) =
-
-             Σ \(f : X → Y) → is-equiv f
-                            × ((λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ)
-
-
- characterization-of-selection-space-≡ : is-univalent 𝓤
-                                       → (A B : SelectionSpace)
-
-                                       → (A ≡ B) ≃ (A ≅ B)
-
- characterization-of-selection-space-≡ ua = characterization-of-≡-with-axioms ua
-                                             sns-data
-                                             axioms axiomss
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
