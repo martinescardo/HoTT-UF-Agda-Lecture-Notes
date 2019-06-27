@@ -7922,17 +7922,17 @@ We begin with the following technical lemma:
    → ((x₀ x₁ : X) → is-equiv (f x₀ x₁))
    → ((y₀ y₁ : Y) → is-equiv (g y₀ y₁))
 
-   → (z₀ z₁ : X × Y) → is-equiv (λ (r : z₀ ≡ z₁) → f (pr₁ z₀) (pr₁ z₁) (ap pr₁ r) ,
-                                                   g (pr₂ z₀) (pr₂ z₁) (ap pr₂ r))
+   → (z₀ z₁ : X × Y) → is-equiv (λ (p : z₀ ≡ z₁) → f (pr₁ z₀) (pr₁ z₁) (ap pr₁ p) ,
+                                                   g (pr₂ z₀) (pr₂ z₁) (ap pr₂ p))
 
  technical-lemma {𝓤} {𝓥} {𝓦} {𝓣} {X} {A} {Y} {B} f g i j (x₀ , y₀) = γ
   where
-   module _ (z : X × Y) where
-     x₁ = pr₁ z
-     y₁ = pr₂ z
+   module _ (z₁ : X × Y) where
+     x₁ = pr₁ z₁
+     y₁ = pr₂ z₁
 
-     h : (x₀ , y₀) ≡ (x₁ , y₁) → A x₀ x₁ × B y₀ y₁
-     h r = f x₀ x₁ (ap pr₁ r) , g y₀ y₁ (ap pr₂ r)
+     r : (x₀ , y₀) ≡ (x₁ , y₁) → A x₀ x₁ × B y₀ y₁
+     r p = f x₀ x₁ (ap pr₁ p) , g y₀ y₁ (ap pr₂ p)
 
      f' : (a : A x₀ x₁) → x₀ ≡ x₁
      f' = inverse (f x₀ x₁) (i x₀ x₁)
@@ -7943,24 +7943,24 @@ We begin with the following technical lemma:
      s : A x₀ x₁ × B y₀ y₁ → (x₀ , y₀) ≡ (x₁ , y₁)
      s (a , b) = to-×-≡ (f' a , g' b)
 
-     η : (c : A x₀ x₁ × B y₀ y₁) → h (s c) ≡ c
+     η : (c : A x₀ x₁ × B y₀ y₁) → r (s c) ≡ c
      η (a , b) =
-       h (s (a , b))                              ≡⟨ refl _ ⟩
-       h (to-×-≡  (f' a , g' b))                  ≡⟨ refl _ ⟩
+       r (s (a , b))                              ≡⟨ refl _ ⟩
+       r (to-×-≡  (f' a , g' b))                  ≡⟨ refl _ ⟩
        (f x₀ x₁ (ap pr₁ (to-×-≡ (f' a , g' b))) ,
         g y₀ y₁ (ap pr₂ (to-×-≡ (f' a , g' b))))  ≡⟨ ii ⟩
        (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ≡⟨ iii ⟩
        a , b                                      ∎
       where
-       ii = ap₂ (λ l r → f x₀ x₁ l , g y₀ y₁ r)
+       ii = ap₂ (λ p q → f x₀ x₁ p , g y₀ y₁ q)
                 (ap-pr₁-to-×-≡ (f' a) (g' b))
                 (ap-pr₂-to-×-≡ (f' a) (g' b))
        iii = to-×-≡ (inverse-is-section (f x₀ x₁) (i x₀ x₁) a ,
                      inverse-is-section (g y₀ y₁) (j y₀ y₁) b)
 
-   γ : ∀ z → is-equiv (h z)
-   γ = fiberwise-retractions-are-equivs (λ z → A x₀ (pr₁ z) × B y₀ (pr₂ z))
-         (x₀ , y₀) h (λ z → (s z , η z))
+   γ : ∀ z₁ → is-equiv (r z₁)
+   γ = fiberwise-retractions-are-equivs (λ z₁ → A x₀ (pr₁ z₁) × B y₀ (pr₂ z₁))
+         (x₀ , y₀) r (λ z₁ → (s z₁ , η z₁))
 \end{code}
 
 We consider two given mathematical structures specified by `S₀` and
