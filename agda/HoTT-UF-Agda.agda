@@ -3936,9 +3936,9 @@ module sip where
  characterization-of-≡ {𝓤} {𝓥} {𝓦} ua {S} (ι , ρ , θ) A B =
 
     (A ≡ B)                                                              ≃⟨ i   ⟩
-    (Σ \(p : ⟨ A ⟩ ≡ ⟨ B ⟩) → transport S p (structure A) ≡ structure B) ≃⟨ ii ⟩
+    (Σ \(p : ⟨ A ⟩ ≡ ⟨ B ⟩) → transport S p (structure A) ≡ structure B) ≃⟨ ii  ⟩
     (Σ \(p : ⟨ A ⟩ ≡ ⟨ B ⟩) → ι A B (Id→Eq ⟨ A ⟩ ⟨ B ⟩ p))               ≃⟨ iii ⟩
-    (Σ \(e : ⟨ A ⟩ ≃ ⟨ B ⟩) → ι A B e)                                   ≃⟨ iv   ⟩
+    (Σ \(e : ⟨ A ⟩ ≃ ⟨ B ⟩) → ι A B e)                                   ≃⟨ iv  ⟩
     (A ≃[ σ ] B)                                                         ■
 
   where
@@ -3950,7 +3950,7 @@ module sip where
    iii = ≃-sym (Σ-change-of-variables-hae (ι A B) (Id→Eq ⟨ A ⟩ ⟨ B ⟩) (Id→Eq-is-hae ua))
    iv  = Σ-assoc
 
-module ∞-magma-equality (𝓤 : Universe) where
+module ∞-magma-identity (𝓤 : Universe) where
 
  open sip
 
@@ -4070,7 +4070,7 @@ module sip-with-axioms where
  characterization-of-≡-with-axioms ua σ axioms i =
    characterization-of-≡ ua (add-axioms axioms i σ)
 
-module magma-equality (𝓤 : Universe) where
+module magma-identity (𝓤 : Universe) where
 
  open sip-with-axioms
 
@@ -4090,11 +4090,11 @@ module magma-equality (𝓤 : Universe) where
 
  characterization-of-Magma-≡ ua =
    characterization-of-≡-with-axioms ua
-    (∞-magma-equality.sns-data 𝓤)
+    (∞-magma-identity.sns-data 𝓤)
     (λ X s → is-set X)
     (λ X s → being-set-is-a-subsingleton (univalence-gives-dfunext ua))
 
-module pointed-type-equality (𝓤 : Universe) where
+module pointed-type-identity (𝓤 : Universe) where
 
  open sip
 
@@ -4163,7 +4163,7 @@ module sip-join where
        r (s (a , b))                              ≡⟨ refl _ ⟩
        r (to-×-≡  (f' a , g' b))                  ≡⟨ refl _ ⟩
        (f x₀ x₁ (ap pr₁ (to-×-≡ (f' a , g' b))) ,
-        g y₀ y₁ (ap pr₂ (to-×-≡ (f' a , g' b))))  ≡⟨ ii ⟩
+        g y₀ y₁ (ap pr₂ (to-×-≡ (f' a , g' b))))  ≡⟨ ii  ⟩
        (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ≡⟨ iii ⟩
        a , b                                      ∎
       where
@@ -4257,7 +4257,7 @@ module sip-join where
 
  characterization-of-join-≡ ua σ₀ σ₁ = characterization-of-≡ ua (join σ₀ σ₁)
 
-module pointed-∞-magma-equality (𝓤 : Universe) where
+module pointed-∞-magma-identity (𝓤 : Universe) where
 
  open sip-join
 
@@ -4277,10 +4277,10 @@ module pointed-∞-magma-equality (𝓤 : Universe) where
                                      → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-pointed-magma-≡ ua = characterization-of-join-≡ ua
-                                           (∞-magma-equality.sns-data 𝓤)
-                                           (pointed-type-equality.sns-data 𝓤)
+                                           (∞-magma-identity.sns-data 𝓤)
+                                           (pointed-type-identity.sns-data 𝓤)
 
-module monoid-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
+module monoid-identity (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
  dfe : dfunext 𝓤 𝓤
  dfe = univalence-gives-dfunext ua
@@ -4322,8 +4322,8 @@ module monoid-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
  sns-data = add-axioms
               monoid-axioms monoid-axioms-subsingleton
               (join
-                 (∞-magma-equality.sns-data 𝓤)
-                 (pointed-type-equality.sns-data 𝓤))
+                 (∞-magma-identity.sns-data 𝓤)
+                 (pointed-type-identity.sns-data 𝓤))
 
  _≅_ : Monoid → Monoid → 𝓤 ̇
 
@@ -4340,11 +4340,11 @@ module monoid-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
  characterization-of-monoid-≡ ua = characterization-of-≡ ua sns-data
 
-module group-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
+module group-identity (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
  open sip
  open sip-with-axioms
- open monoid-equality 𝓤 ua hiding (sns-data ; _≅_)
+ open monoid-identity 𝓤 ua hiding (sns-data ; _≅_)
 
  group-structure : 𝓤 ̇ → 𝓤 ̇
  group-structure X = Σ \(s : monoid-structure X) → monoid-axioms X s
@@ -4380,7 +4380,7 @@ module group-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
  sns-data : SNS (λ X → Σ \(s : group-structure X) → group-axiom X (pr₁ s)) 𝓤
  sns-data = add-axioms
              (λ X s → group-axiom X (pr₁ s)) group-axiom-is-subsingleton
-             (monoid-equality.sns-data 𝓤 ua)
+             (monoid-identity.sns-data 𝓤 ua)
 
  _≅_ : Group → Group → 𝓤 ̇
 
@@ -4397,7 +4397,7 @@ module group-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
  characterization-of-group-≡ ua = characterization-of-≡ ua sns-data
 
-module slice-equality
+module slice-identity
         (𝓤 : Universe)
         (R : 𝓤 ̇)
        where
@@ -4432,7 +4432,7 @@ module slice-equality
 
  characterization-of-/-≡ ua = characterization-of-≡ ua sns-data
 
-module generalized-metric-space-equality
+module generalized-metric-space-identity
         (𝓤 𝓥 : Universe)
         (R : 𝓥 ̇ )
         (axioms  : (X : 𝓤 ̇ ) → (X → X → R) → 𝓤 ⊔ 𝓥 ̇ )
@@ -4476,7 +4476,7 @@ module generalized-metric-space-equality
                                sns-data
                                axioms axiomss
 
-module generalized-topological-space-equality
+module generalized-topological-space-identity
         (𝓤 𝓥 : Universe)
         (R : 𝓥 ̇)
         (axioms  : (X : 𝓤 ̇ ) → ((X → R) → R) → 𝓤 ⊔ 𝓥 ̇)
@@ -4543,7 +4543,7 @@ module generalized-topological-space-equality
 
  characterization-of-Space-≡' = characterization-of-Space-≡
 
-module selection-space-equality
+module selection-space-identity
         (𝓤 𝓥 : Universe)
         (R : 𝓥 ̇)
         (axioms  : (X : 𝓤 ̇ ) → ((X → R) → X) → 𝓤 ⊔ 𝓥 ̇)
@@ -4592,7 +4592,7 @@ module selection-space-equality
                                              sns-data
                                              axioms axiomss
 
-module contrived-example-equality (𝓤 : Universe) where
+module contrived-example-identity (𝓤 : Universe) where
 
  open sip
 

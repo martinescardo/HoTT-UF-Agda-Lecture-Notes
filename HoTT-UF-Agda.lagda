@@ -7452,10 +7452,11 @@ amounts to magma isomorphism.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="sip"></a> Some structure identity principles
 
-A *structure identity principle* describes equality of mathematical
-structures in terms of equivalences of their underlying types, relying
-on univalence.  The first published *structure identity principle*,
-for a large class of algebraic structures, is [[Coquand and
+A *structure identity principle* describes the identity type of types
+of mathematical structures in terms of equivalences of
+underlying types, relying on univalence.  The first published
+*structure identity principle*, for a large class of algebraic
+structures, is [[Coquand and
 Danielsson]](https://www.sciencedirect.com/science/article/pii/S0019357713000694). The
 HoTT book (section 9.8) has a categorical version, whose formulation
 is attributed to Peter Aczel.
@@ -7466,22 +7467,23 @@ structure. We consider several versions:
  * One for raw structures subject to no axioms, such as ∞-magmas and
    pointed types.
 
- * One that adds axioms to a structure, so as to e.g. get an
-   automatic characterization of magma equality from a
-   characterization of ∞-magma equality.
+ * One that adds axioms to a structure, so as to e.g. get an automatic
+   characterization of magma identifications from a characterization
+   of ∞-magma identifications.
 
  * One that joins two kinds of structure, so as to e.g. get a an
-   automatic characterization of equality of pointed ∞-magmas from
-   characterizations of equality for pointed types and for ∞-magmas.
+   automatic characterization of identifications of pointed ∞-magmas
+   from characterizations of identifications for pointed types and for
+   ∞-magmas.
 
  * In particular, adding axioms to pointed ∞-magmas we get monoids
-   with an automatic characterization of their equality.
+   with an automatic characterization of their identifications.
 
  * And then adding an axiom to monoids we get groups, again with
-   an automatic characterization of their equality.
+   an automatic characterization of their identitifications.
 
-We also discuss equality of metric spaces, topological spaces, graphs,
-partially ordered sets, and more.
+We also discuss identifications of metric spaces, topological spaces,
+graphs, partially ordered sets, and more.
 
 #### A structure identity principle for a standard notion of structure
 
@@ -7600,7 +7602,7 @@ used in the definition:
 \end{code}
 
 With this we are ready to prove the promised characterization of
-equality on `Σ S`:
+identity on `Σ S`:
 
 \begin{code}
  homomorphism-lemma : {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
@@ -7624,9 +7626,9 @@ equality on `Σ S`:
  characterization-of-≡ {𝓤} {𝓥} {𝓦} ua {S} (ι , ρ , θ) A B =
 
     (A ≡ B)                                                              ≃⟨ i   ⟩
-    (Σ \(p : ⟨ A ⟩ ≡ ⟨ B ⟩) → transport S p (structure A) ≡ structure B) ≃⟨ ii ⟩
+    (Σ \(p : ⟨ A ⟩ ≡ ⟨ B ⟩) → transport S p (structure A) ≡ structure B) ≃⟨ ii  ⟩
     (Σ \(p : ⟨ A ⟩ ≡ ⟨ B ⟩) → ι A B (Id→Eq ⟨ A ⟩ ⟨ B ⟩ p))               ≃⟨ iii ⟩
-    (Σ \(e : ⟨ A ⟩ ≃ ⟨ B ⟩) → ι A B e)                                   ≃⟨ iv   ⟩
+    (Σ \(e : ⟨ A ⟩ ≃ ⟨ B ⟩) → ι A B e)                                   ≃⟨ iv  ⟩
     (A ≃[ σ ] B)                                                         ■
 
   where
@@ -7649,7 +7651,7 @@ We now consider some examples of uses of this.
 #### ∞-Magmas
 
 \begin{code}
-module ∞-magma-equality (𝓤 : Universe) where
+module ∞-magma-identity (𝓤 : Universe) where
 
  open sip
 
@@ -7701,7 +7703,7 @@ Next we want to account for situations in which axioms are
 considered, for example that the underlying type is a set, or that the
 monoid structure satisfies the unit and associativity laws. We do this
 in a submodule, by reduction to the characterization of
-equality given in the module `sip`.
+identifications given in the module `sip`.
 
 \begin{code}
 module sip-with-axioms where
@@ -7800,8 +7802,8 @@ In the following construction:
 \end{code}
 
 And with this we can formulate and prove what the addition of axioms
-achieves, namely that the characterization of equality remains the same,
-ignoring the axioms:
+achieves, namely that the characterization of identifications remains
+the same, ignoring the axioms:
 
 \begin{code}
  characterization-of-≡-with-axioms :
@@ -7825,7 +7827,7 @@ examples.
 #### Magmas
 
 \begin{code}
-module magma-equality (𝓤 : Universe) where
+module magma-identity (𝓤 : Universe) where
 
  open sip-with-axioms
 
@@ -7846,12 +7848,12 @@ module magma-equality (𝓤 : Universe) where
 
  characterization-of-Magma-≡ ua =
    characterization-of-≡-with-axioms ua
-    (∞-magma-equality.sns-data 𝓤)
+    (∞-magma-identity.sns-data 𝓤)
     (λ X s → is-set X)
     (λ X s → being-set-is-a-subsingleton (univalence-gives-dfunext ua))
 \end{code}
 
-*Exercise*. Characterize equality of monoids along the above lines. It
+*Exercise*. Characterize identifications of monoids along the above lines. It
  is convenient to redefine the type of monoids to an equivalent type
  in the above format of structure with axioms. The following
    developement solves this exercise.
@@ -7859,7 +7861,7 @@ module magma-equality (𝓤 : Universe) where
 #### Pointed types
 
 \begin{code}
-module pointed-type-equality (𝓤 : Universe) where
+module pointed-type-identity (𝓤 : Universe) where
 
  open sip
 
@@ -7897,14 +7899,15 @@ module pointed-type-equality (𝓤 : Universe) where
 #### Combining two mathematical structures
 
 We now show how to join two mathematics structures, so as to obtain a
-characterization of equality of the join from the characterization of
-the equalities of the structures. For example, we build the
-characterization of equality of pointed ∞-magmas from the
-characterizations of the equality of pointed types and the
-characterization of the equality of magmas. Moreover, adding axioms,
-we get a characterization of equality of monoids which amounts to the
-characterization of equality of pointed ∞-magmas. Further adding an
-axiom, we get an automatic characterization of group equality.
+characterization of identifications of the join from the
+characterization of the equalities of the structures. For example, we
+build the characterization of identifications of pointed ∞-magmas from
+the characterizations of the identifications of pointed types and the
+characterization of the identifications of magmas. Moreover, adding
+axioms, we get a characterization of identifications of monoids which
+amounts to the characterization of identifications of pointed
+∞-magmas. Further adding an axiom, we get an automatic
+characterization of group identifications.
 
 \begin{code}
 module sip-join where
@@ -7948,7 +7951,7 @@ We begin with the following technical lemma:
        r (s (a , b))                              ≡⟨ refl _ ⟩
        r (to-×-≡  (f' a , g' b))                  ≡⟨ refl _ ⟩
        (f x₀ x₁ (ap pr₁ (to-×-≡ (f' a , g' b))) ,
-        g y₀ y₁ (ap pr₂ (to-×-≡ (f' a , g' b))))  ≡⟨ ii ⟩
+        g y₀ y₁ (ap pr₂ (to-×-≡ (f' a , g' b))))  ≡⟨ ii  ⟩
        (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ≡⟨ iii ⟩
        a , b                                      ∎
       where
@@ -8034,7 +8037,8 @@ The main construction in this submodule is this:
      γ = equivs-closed-under-∼ i e
 \end{code}
 
-We then can characterize equality of structures in the join by the following relation:
+We then can characterize the identity type of structures in the join
+by the following relation:
 
 \begin{code}
  _≃⟦_,_⟧_ : {S₀ : 𝓤 ̇ → 𝓥 ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
@@ -8071,7 +8075,7 @@ This concludes the submodule. Some examples of uses of this follow.
 #### Pointed ∞-magmas
 
 \begin{code}
-module pointed-∞-magma-equality (𝓤 : Universe) where
+module pointed-∞-magma-identity (𝓤 : Universe) where
 
  open sip-join
 
@@ -8092,8 +8096,8 @@ module pointed-∞-magma-equality (𝓤 : Universe) where
                                      → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-pointed-magma-≡ ua = characterization-of-join-≡ ua
-                                           (∞-magma-equality.sns-data 𝓤)
-                                           (pointed-type-equality.sns-data 𝓤)
+                                           (∞-magma-identity.sns-data 𝓤)
+                                           (pointed-type-identity.sns-data 𝓤)
 \end{code}
 
 #### Monoids
@@ -8101,7 +8105,7 @@ module pointed-∞-magma-equality (𝓤 : Universe) where
 In the following example, we combine joins and addition of axioms.
 
 \begin{code}
-module monoid-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
+module monoid-identity (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
  dfe : dfunext 𝓤 𝓤
  dfe = univalence-gives-dfunext ua
@@ -8144,8 +8148,8 @@ module monoid-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
  sns-data = add-axioms
               monoid-axioms monoid-axioms-subsingleton
               (join
-                 (∞-magma-equality.sns-data 𝓤)
-                 (pointed-type-equality.sns-data 𝓤))
+                 (∞-magma-identity.sns-data 𝓤)
+                 (pointed-type-identity.sns-data 𝓤))
 
  _≅_ : Monoid → Monoid → 𝓤 ̇
 
@@ -8169,11 +8173,11 @@ module monoid-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
 We add an axiom to monoids to get groups.
 
 \begin{code}
-module group-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
+module group-identity (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
  open sip
  open sip-with-axioms
- open monoid-equality 𝓤 ua hiding (sns-data ; _≅_)
+ open monoid-identity 𝓤 ua hiding (sns-data ; _≅_)
 
  group-structure : 𝓤 ̇ → 𝓤 ̇
  group-structure X = Σ \(s : monoid-structure X) → monoid-axioms X s
@@ -8209,7 +8213,7 @@ module group-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
  sns-data : SNS (λ X → Σ \(s : group-structure X) → group-axiom X (pr₁ s)) 𝓤
  sns-data = add-axioms
              (λ X s → group-axiom X (pr₁ s)) group-axiom-is-subsingleton
-             (monoid-equality.sns-data 𝓤 ua)
+             (monoid-identity.sns-data 𝓤 ua)
 
  _≅_ : Group → Group → 𝓤 ̇
 
@@ -8238,7 +8242,7 @@ module group-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
 #### The slice type
 
 \begin{code}
-module slice-equality
+module slice-identity
         (𝓤 : Universe)
         (R : 𝓤 ̇)
        where
@@ -8279,7 +8283,7 @@ module slice-equality
 #### Metric spaces, graphs, and ordered structures
 
 \begin{code}
-module generalized-metric-space-equality
+module generalized-metric-space-identity
         (𝓤 𝓥 : Universe)
         (R : 𝓥 ̇ )
         (axioms  : (X : 𝓤 ̇ ) → (X → X → R) → 𝓤 ⊔ 𝓥 ̇ )
@@ -8330,18 +8334,18 @@ We have the following particular cases of interest:
  * *Metric spaces*. If `R` is a type of real numbers, then the axioms
    can be taken to be those for metric spaces, in which case `M`
    amounts to the type of metric spaces. Then the above characterizes
-   metric space equality as isometry.
+   metric space identification as isometry.
 
  * *Graphs*. If `R` is the type of truth values, and the `axioms`
    function is constant with value *true*, then `M` amounts to the
-   type of directed graphs, and the above characterizes graph equality
-   as graph isomorphism. We get undirected graphs by requiring the
-   relation to be symmetric in the axioms.
+   type of directed graphs, and the above characterizes graph
+   identification as graph isomorphism. We get undirected graphs by
+   requiring the relation to be symmetric in the axioms.
 
  * *Partially ordered sets*. Again with `R` taken to be the type of
    truth values and suitable axioms, we get posets and other ordered
-   structures, and the above says that their equality amounts to order
-   isomorphism.
+   structures, and the above says that their identifications amount to
+   order isomorphisms.
 
 #### Topological spaces
 
@@ -8349,7 +8353,7 @@ We get a [type of topological spaces](HoTT-UF-Agda.html#Top) when `R`
 is the type of truth values and the axioms are appropriately chosen.
 
 \begin{code}
-module generalized-topological-space-equality
+module generalized-topological-space-identity
         (𝓤 𝓥 : Universe)
         (R : 𝓥 ̇)
         (axioms  : (X : 𝓤 ̇ ) → ((X → R) → R) → 𝓤 ⊔ 𝓥 ̇)
@@ -8439,9 +8443,9 @@ We introduce notation for the type of homeomorphisms:
 But of course there are other choices for `R` that also make
 sense. For example, we can take `R` to be a type of real numbers, with
 the axioms for `X` and `F : (X → R) → R` saying that `F` is a linear
-functional. Then the above gives a characterization of equality of
-types equipped with linear functionals, in which case we may prefer to
-rephrase the above as
+functional. Then the above gives a characterization of the identity
+type of types equipped with linear functionals, in which case we may
+prefer to rephrase the above as
 
 \begin{code}
  _≅'_  : Space → Space → 𝓤 ⊔ 𝓥 ̇
@@ -8463,7 +8467,7 @@ rephrase the above as
 #### Selection spaces
 
 \begin{code}
-module selection-space-equality
+module selection-space-identity
         (𝓤 𝓥 : Universe)
         (R : 𝓥 ̇)
         (axioms  : (X : 𝓤 ̇ ) → ((X → R) → X) → 𝓤 ⊔ 𝓥 ̇)
@@ -8525,7 +8529,7 @@ can be avoided by defining `sns-data` on the fly, at the expense of
 readability:
 
 \begin{code}
-module contrived-example-equality (𝓤 : Universe) where
+module contrived-example-identity (𝓤 : Universe) where
 
  open sip
 
