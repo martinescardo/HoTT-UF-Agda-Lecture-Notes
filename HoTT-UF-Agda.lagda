@@ -7611,7 +7611,7 @@ identity on `Σ S`:
                       (transport S p (structure A) ≡ structure B)
                     ≃  homomorphic σ A B (Id→Eq ⟨ A ⟩ ⟨ B ⟩ p)
 
- homomorphism-lemma {𝓤} {𝓥} {𝓦} (ι , ρ , θ) (X , s) (X , t) (refl X) = γ
+ homomorphism-lemma (ι , ρ , θ) (X , s) (X , t) (refl X) = γ
   where
    γ : (s ≡ t) ≃ ι (X , s) (X , t) (id-≃ X)
    γ = (canonical-map ι ρ s t , θ s t)
@@ -7623,7 +7623,7 @@ identity on `Σ S`:
 
                        → (A ≡ B) ≃ (A ≃[ σ ] B)
 
- characterization-of-≡ {𝓤} {𝓥} {𝓦} ua {S} (ι , ρ , θ) A B =
+ characterization-of-≡ ua {S} σ A B =
 
     (A ≡ B)                                                              ≃⟨ i   ⟩
     (Σ \(p : ⟨ A ⟩ ≡ ⟨ B ⟩) → transport S p (structure A) ≡ structure B) ≃⟨ ii  ⟩
@@ -7632,9 +7632,7 @@ identity on `Σ S`:
     (A ≃[ σ ] B)                                                         ■
 
   where
-   σ : SNS S 𝓦
-   σ = ι , ρ , θ
-
+   ι   = homomorphic σ
    i   = Σ-≡-≃ A B
    ii  = Σ-cong (homomorphism-lemma σ A B)
    iii = ≃-sym (Σ-change-of-variables-hae (ι A B) (Id→Eq ⟨ A ⟩ ⟨ B ⟩) (Id→Eq-is-hae ua))
