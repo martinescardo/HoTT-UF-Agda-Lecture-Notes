@@ -7514,13 +7514,13 @@ types `⟨ A ⟩` and `⟨ B ⟩` of `A B : Σ S`.
 
 \begin{code}
  ⟨_⟩ : {S : 𝓤 ̇ → 𝓥 ̇ } → Σ S → 𝓤 ̇
- ⟨ X , _ ⟩ = X
+ ⟨ X , s ⟩ = X
 
  structure : {S : 𝓤 ̇ → 𝓥 ̇ } (A : Σ S) → S ⟨ A ⟩
- structure (_ , s) = s
+ structure (X , s) = s
 \end{code}
 
-The "favourable circumstances" will be given by data
+Our favourable circumstances will be given by data
 
    > `ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ `
 
@@ -7563,7 +7563,11 @@ We first define the canonical map:
 \end{code}
 
 We refer to such favourable data as a *standard notion of structure*
-and collect it in the type `SNS S 𝓦`:
+and collect them in the type
+
+   > `SNS S 𝓦`
+
+as follows:
 
 \begin{code}
  SNS : (𝓤 ̇ → 𝓥 ̇ ) → (𝓦 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
@@ -7979,21 +7983,21 @@ S₀ X × S₁ X`
  ⟪_⟫ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
      → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X) → 𝓤 ̇
 
- ⟪ X , _ , _ ⟫ = X
+ ⟪ X , s₀ , s₁ ⟫ = X
 
 
 
  [_]₀ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
       → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X) → Σ S₀
 
- [ X , s₀ , _ ]₀ = (X , s₀)
+ [ X , s₀ , s₁ ]₀ = (X , s₀)
 
 
 
  [_]₁ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
       → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X) → Σ S₁
 
- [ X , _ , s₁ ]₁ = (X , s₁)
+ [ X , s₀ , s₁ ]₁ = (X , s₁)
 \end{code}
 
 The main construction in this submodule is this:

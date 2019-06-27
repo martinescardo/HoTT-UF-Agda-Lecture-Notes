@@ -3886,10 +3886,10 @@ module magma-equivalences (ua : Univalence) where
 module sip where
 
  ⟨_⟩ : {S : 𝓤 ̇ → 𝓥 ̇ } → Σ S → 𝓤 ̇
- ⟨ X , _ ⟩ = X
+ ⟨ X , s ⟩ = X
 
  structure : {S : 𝓤 ̇ → 𝓥 ̇ } (A : Σ S) → S ⟨ A ⟩
- structure (_ , s) = s
+ structure (X , s) = s
 
  canonical-map : {S : 𝓤 ̇ → 𝓥 ̇ }
                  (ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
@@ -4185,17 +4185,17 @@ module sip-join where
  ⟪_⟫ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
      → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X) → 𝓤 ̇
 
- ⟪ X , _ , _ ⟫ = X
+ ⟪ X , s₀ , s₁ ⟫ = X
 
  [_]₀ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
       → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X) → Σ S₀
 
- [ X , s₀ , _ ]₀ = (X , s₀)
+ [ X , s₀ , s₁ ]₀ = (X , s₀)
 
  [_]₁ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
       → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X) → Σ S₁
 
- [ X , _ , s₁ ]₁ = (X , s₁)
+ [ X , s₀ , s₁ ]₁ = (X , s₁)
 
  join : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
       → SNS S₀ 𝓦₀
