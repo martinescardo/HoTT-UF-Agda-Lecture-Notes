@@ -4140,49 +4140,42 @@ module sip-join where
    → (z₀ z₁ : X × Y) → is-equiv (λ (r : z₀ ≡ z₁) → f (pr₁ z₀) (pr₁ z₁) (ap pr₁ r) ,
                                                    g (pr₂ z₀) (pr₂ z₁) (ap pr₂ r))
 
- technical-lemma {𝓤} {𝓥} {𝓦} {𝓣} {X} {A} {Y} {B} f g i j (x₀ , y₀) (x₁ , y₁) = γ
+ technical-lemma {𝓤} {𝓥} {𝓦} {𝓣} {X} {A} {Y} {B} f g i j (x₀ , y₀) = γ
   where
-   h : (x₀ , y₀) ≡ (x₁ , y₁) → A x₀ x₁ × B y₀ y₁
-   h r = f x₀ x₁ (ap pr₁ r) , g y₀ y₁ (ap pr₂ r)
+   module _ (z : X × Y) where
+     x₁ = pr₁ z
+     y₁ = pr₂ z
 
-   f' : (a : A x₀ x₁) → x₀ ≡ x₁
-   f' = inverse (f x₀ x₁) (i x₀ x₁)
+     h : (x₀ , y₀) ≡ (x₁ , y₁) → A x₀ x₁ × B y₀ y₁
+     h r = f x₀ x₁ (ap pr₁ r) , g y₀ y₁ (ap pr₂ r)
 
-   g' : (b : B y₀ y₁) → y₀ ≡ y₁
-   g' = inverse (g y₀ y₁) (j y₀ y₁)
+     f' : (a : A x₀ x₁) → x₀ ≡ x₁
+     f' = inverse (f x₀ x₁) (i x₀ x₁)
 
-   k : A x₀ x₁ × B y₀ y₁ → (x₀ , y₀) ≡ (x₁ , y₁)
-   k (a , b) = to-×-≡ (f' a , g' b)
+     g' : (b : B y₀ y₁) → y₀ ≡ y₁
+     g' = inverse (g y₀ y₁) (j y₀ y₁)
 
-   η : (q : (x₀ , y₀) ≡ (x₁ , y₁)) → k (h q) ≡ q
-   η (refl (x₀ , x₁)) =
-     k (h (refl (x₀ , x₁)))                                    ≡⟨ refl _ ⟩
-     to-×-≡ (inverse (f x₀ x₀) (i x₀ x₀) (f x₀ x₀ (refl x₀)) ,
-             inverse (g y₀ y₀) (j y₀ y₀) (g y₀ y₀ (refl y₀)))  ≡⟨ ii ⟩
-     to-×-≡ (refl x₀ , refl y₀)                                ≡⟨ refl _ ⟩
-     refl (x₀ , x₁)                                            ∎
-    where
-     ii = ap₂ (λ l r → to-×-≡ (l , r))
-            (inverse-is-retraction (f x₀ x₀) (i x₀ x₀) (refl x₀))
-            (inverse-is-retraction (g y₀ y₀) (j y₀ y₀) (refl x₁))
+     s : A x₀ x₁ × B y₀ y₁ → (x₀ , y₀) ≡ (x₁ , y₁)
+     s (a , b) = to-×-≡ (f' a , g' b)
 
-   θ : (c : A x₀ x₁ × B y₀ y₁) → h (k c) ≡ c
-   θ (a , b) =
-     h (k (a , b))                              ≡⟨ refl _ ⟩
-     h (to-×-≡  (f' a , g' b))                  ≡⟨ refl _ ⟩
-     (f x₀ x₁ (ap pr₁ (to-×-≡ (f' a , g' b))) ,
-      g y₀ y₁ (ap pr₂ (to-×-≡ (f' a , g' b))))  ≡⟨ ii ⟩
-     (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ≡⟨ iii ⟩
-     a , b                                      ∎
-    where
-     ii = ap₂ (λ l r → f x₀ x₁ l , g y₀ y₁ r)
-              (ap-pr₁-to-×-≡ (f' a) (g' b))
-              (ap-pr₂-to-×-≡ (f' a) (g' b))
-     iii = to-×-≡ (inverse-is-section (f x₀ x₁) (i x₀ x₁) a ,
-                   inverse-is-section (g y₀ y₁) (j y₀ y₁) b)
+     η : (c : A x₀ x₁ × B y₀ y₁) → h (s c) ≡ c
+     η (a , b) =
+       h (s (a , b))                              ≡⟨ refl _ ⟩
+       h (to-×-≡  (f' a , g' b))                  ≡⟨ refl _ ⟩
+       (f x₀ x₁ (ap pr₁ (to-×-≡ (f' a , g' b))) ,
+        g y₀ y₁ (ap pr₂ (to-×-≡ (f' a , g' b))))  ≡⟨ ii ⟩
+       (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ≡⟨ iii ⟩
+       a , b                                      ∎
+      where
+       ii = ap₂ (λ l r → f x₀ x₁ l , g y₀ y₁ r)
+                (ap-pr₁-to-×-≡ (f' a) (g' b))
+                (ap-pr₂-to-×-≡ (f' a) (g' b))
+       iii = to-×-≡ (inverse-is-section (f x₀ x₁) (i x₀ x₁) a ,
+                     inverse-is-section (g y₀ y₁) (j y₀ y₁) b)
 
-   γ : is-equiv h
-   γ = invertibles-are-equivs h (k , η , θ)
+   γ : ∀ z → is-equiv (h z)
+   γ = fiberwise-retractions-are-equivs (λ z → A x₀ (pr₁ z) × B y₀ (pr₂ z))
+         (x₀ , y₀) h (λ z → (s z , η z))
 
  variable
   𝓥₀ 𝓥₁ 𝓦₀ 𝓦₁ : Universe
