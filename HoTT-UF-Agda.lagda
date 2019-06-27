@@ -7663,110 +7663,44 @@ used in the definition:
             → Σ \(i : is-equiv f) → homomorphic σ A B (f , i)
 \end{code}
 
-The main lemma says that the homomorphism condition of an equivalence
-
-   > `e : ⟨ A ⟩ ≃ ⟨ B ⟩`
-
-is equivalent to the preservation of structure by transport along `S`
-using the identification
-
-   > `Eq→Id ua ⟨ A ⟩ ⟨ B ⟩ e : ⟨ A ⟩ ≡ ⟨ B ⟩`
-
-corresponding to `e` by univalence. We prove this by equivalence
-induction.
+With this we are ready to prove the promised characterization of
+equality on `Σ S`:
 
 \begin{code}
- homomorphism-lemma :
+ homomorphism-lemma : {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
+                      (A B : Σ S) (p : ⟨ A ⟩ ≡ ⟨ B ⟩)
+                    →
+                      (transport S p (structure A) ≡ structure B)
+                    ≃  homomorphic σ A B (Id→Eq ⟨ A ⟩ ⟨ B ⟩ p)
 
-    (ua : is-univalent 𝓤) (S : 𝓤 ̇ → 𝓥 ̇ ) (σ : SNS S 𝓦)
-    (A B : Σ S) (e : ⟨ A ⟩ ≃ ⟨ B ⟩)
-  →
-    (transport S (Eq→Id ua ⟨ A ⟩ ⟨ B ⟩ e) (structure A) ≡ structure B)
-  ≃ homomorphic σ A B e
-
- homomorphism-lemma {𝓤} {𝓥} {𝓦} ua S (ι , ρ , θ) (X , s) (Y , t) e = γ s t
+ homomorphism-lemma {𝓤} {𝓥} {𝓦} (ι , ρ , θ) (X , s) (X , t) (refl X) = γ
   where
-   C : (X Y : 𝓤 ̇ ) (e : X ≃ Y) → 𝓥 ⊔ 𝓦 ̇
-   C X Y e = (s : S X) (t : S Y)
-           → (transport S (Eq→Id ua X Y e) s ≡ t) ≃ ι (X , s) (Y , t) e
+   γ : (s ≡ t) ≃ ι (X , s) (X , t) (id-≃ X)
+   γ = (canonical-map ι ρ s t) , (θ s t)
 
-   c : (X : 𝓤 ̇ ) → C X X (id-≃ X)
-   c X s t = (transport S (Eq→Id ua X X (id-≃ X)) s ≡ t) ≃⟨ i ⟩
-             (transport S (refl X) s ≡ t)                ≃⟨ ii ⟩
-             ι (X , s) (X , t) (id-≃ X)                  ■
-     where
-      p : Eq→Id ua X X (id-≃ X) ≡ refl X
-      p = inverse-is-retraction (Id→Eq X X) (ua X X) (refl X)
-
-      q : (transport S (Eq→Id ua X X (id-≃ X)) s ≡ t) ≡ (transport S (refl X) s ≡ t)
-      q = ap (λ - → transport S - s ≡ t) p
-
-      i  = Id→Eq _ _ q
-      ii = (canonical-map ι ρ s t , θ s t)
-
-   γ : (s : S X) (t : S Y) → (transport S (Eq→Id ua X Y e) s ≡ t)
-                           ≃ ι (X , s) (Y , t) e
-   γ = J-≃ ua C c X Y e
-\end{code}
-
-With this we are ready to prove the promised characterization of equality on `Σ S`:
-
-\begin{code}
  characterization-of-≡ : is-univalent 𝓤
                        → {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
                        → (A B : Σ S)
 
                        → (A ≡ B) ≃ (A ≃[ σ ] B)
 
- characterization-of-≡ {𝓤} {𝓥} {𝓦} ua {S} (ι , ρ , θ) A B = γ
+ characterization-of-≡ {𝓤} {𝓥} {𝓦} ua {S} (ι , ρ , θ) A B =
+    (A ≡ B)                                                              ≃⟨ i   ⟩
+    (Σ \(p : ⟨ A ⟩ ≡ ⟨ B ⟩) → transport S p (structure A) ≡ structure B) ≃⟨ ii ⟩
+    (Σ \(p : ⟨ A ⟩ ≡ ⟨ B ⟩) → ι A B (Id→Eq ⟨ A ⟩ ⟨ B ⟩ p))               ≃⟨ iii ⟩
+    (Σ \(e : ⟨ A ⟩ ≃ ⟨ B ⟩) → ι A B e)                                   ≃⟨ iv   ⟩
+    (A ≃[ σ ] B)                                                         ■
   where
    σ : SNS S 𝓦
    σ = ι , ρ , θ
+
+   i   = Σ-≡-≃ A B
+   ii  = Σ-cong (homomorphism-lemma σ A B)
+   iii = ≃-sym (Σ-change-of-variables-hae (ι A B) (Id→Eq ⟨ A ⟩ ⟨ B ⟩) (Id→Eq-is-hae ua))
+   iv  = Σ-assoc
 \end{code}
 
-In summary, in the following chain of equivalences:
-
-  * (i) is the characterization of equality in `Σ` types.
-  * (ii) uses that `p = Eq→Id ua ⟨ A ⟩ ⟨ B ⟩ (Id→Eq ⟨ A ⟩ ⟨ B ⟩ p)` by univalence.
-  * (iii) then applies a change of variables in `Σ` using the fact that `Id→Eq ⟨ A ⟩ ⟨ B ⟩ p` is an equivalence by univalence.
-  * (iv) uses the `homomorphism-lemma`.
-  * (v) applies `Σ` associativity.
-
-\begin{code}
-   γ =
-    (A ≡ B)                                                                  ≃⟨ i   ⟩
-    (Σ \(p : ⟨ A ⟩ ≡ ⟨ B ⟩) → transport S p     (structure A) ≡ structure B) ≃⟨ ii  ⟩
-    (Σ \(p : ⟨ A ⟩ ≡ ⟨ B ⟩) → transport S (f p) (structure A) ≡ structure B) ≃⟨ iii ⟩
-    (Σ \(e : ⟨ A ⟩ ≃ ⟨ B ⟩) → transport S (g e) (structure A) ≡ structure B) ≃⟨ iv  ⟩
-    (Σ \(e : ⟨ A ⟩ ≃ ⟨ B ⟩) → ι A B e)                                       ≃⟨ v   ⟩
-    (A ≃[ σ ] B)                                                             ■
-    where
-     i = Σ-≡-≃ A B
-
-     g : ⟨ A ⟩ ≃ ⟨ B ⟩ → ⟨ A ⟩ ≡ ⟨ B ⟩
-     g = Eq→Id ua ⟨ A ⟩ ⟨ B ⟩
-
-     f : ⟨ A ⟩ ≡ ⟨ B ⟩ → ⟨ A ⟩ ≡ ⟨ B ⟩
-     f p = g (Id→Eq ⟨ A ⟩ ⟨ B ⟩ p)
-
-     q : (p : ⟨ A ⟩ ≡ ⟨ B ⟩) → p ≡ f p
-     q p = (inverse-is-retraction (Id→Eq ⟨ A ⟩ ⟨ B ⟩) (ua ⟨ A ⟩ ⟨ B ⟩) p)⁻¹
-
-     r : (p : ⟨ A ⟩ ≡ ⟨ B ⟩)
-        → (transport S p     (structure A) ≡ structure B)
-        ≡ (transport S (f p) (structure A) ≡ structure B)
-     r p = ap (λ - → transport S - (structure A) ≡ structure B) (q p)
-
-     ii  = Σ-cong (λ p → Id→Eq _ _ (r p))
-     iii = ≃-sym (Σ-change-of-variables-hae
-                   (λ - → transport S (g -) (structure A) ≡ structure B)
-                   (Id→Eq ⟨ A ⟩ ⟨ B ⟩)
-                   (Id→Eq-is-hae ua))
-     iv  = Σ-cong (homomorphism-lemma ua S σ A B)
-     v   = Σ-assoc
-\end{code}
-
-And this completes the construction and is the end of the module `sip`
+And this concludes the module `sip`
 
 *Exercise*. Describe the equivalence `A ≡ B → A ≃[ σ ] B` constructed above by induction
  on identifications.
