@@ -8210,14 +8210,14 @@ module pointed-∞-magma-equality (𝓤 : Universe) where
  open sip-join
 
  ∞-Magma· : 𝓤 ⁺ ̇
- ∞-Magma· = Σ \(X : 𝓤 ̇) → X × (X → X → X)
+ ∞-Magma· = Σ \(X : 𝓤 ̇) → (X → X → X) × X
 
  _≅_ : ∞-Magma· → ∞-Magma· → 𝓤 ̇
- (X , x₀ , _·_) ≅ (Y , y₀ , _*_) =
+ (X ,  _·_ , x₀) ≅ (Y ,  _*_ , y₀) =
 
                 Σ \(f : X → Y) → is-equiv f
-                               × (f x₀ ≡ y₀)
                                × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+                               × (f x₀ ≡ y₀)
 
 
  characterization-of-pointed-magma-≡ : is-univalent 𝓤
@@ -8225,8 +8225,8 @@ module pointed-∞-magma-equality (𝓤 : Universe) where
                                      → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-pointed-magma-≡ ua = characterization-of-join-≡ ua
-                                           (pointed-type-equality.sip-data 𝓤)
                                            (∞-magma-equality.sip-data 𝓤)
+                                           (pointed-type-equality.sip-data 𝓤)
 \end{code}
 
 #### Monoids
@@ -8360,8 +8360,8 @@ module group-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
 \begin{code}
  characterization-of-group-≡ : is-univalent 𝓤
-                              → (A B : Group)
-                              → (A ≡ B) ≃ (A ≅ B)
+                             → (A B : Group)
+                             → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-group-≡ ua = characterization-of-≡ ua sip-data
 \end{code}
@@ -8640,6 +8640,38 @@ module selection-space-equality
                                              sip-data
                                              axioms axiomss
 \end{code}
+
+#### A contrived example
+
+Here is an example where we need to refer to the inverse of the
+equivalence under consideration.
+
+We take the opportunity to illustrate how the above boiler-plate code
+can be avoided by defining `sip-data` on the fly, at the expense of
+readability:
+
+\begin{code}
+module contrived-example-equality (𝓤 : Universe) where
+
+ open sip
+
+ contrived-≡ : is-univalent 𝓤 →
+
+    (X Y : 𝓤 ̇ ) (φ : (X → X) → X) (γ : (Y → Y) → Y)
+  →
+    ((X , φ) ≡ (Y , γ)) ≃ Σ \(f : X → Y)
+                        → Σ \(i : is-equiv f)
+                        → ((λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ≡ γ)
+
+ contrived-≡ ua X Y φ γ =
+   characterization-of-≡ ua
+    ((λ {(X , φ) (Y , γ) (f , i) → (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ≡ γ}) ,
+     (λ {(X , φ) → refl φ}) ,
+     (λ {φ γ → equivs-closed-under-∼ (id-is-equiv (φ ≡ γ)) (λ {(refl φ) → refl (refl φ)})}))
+    (X , φ) (Y , γ)
+\end{code}
+
+Many of the above examples can be written in such a concise form.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="truncation"></a> Subsingleton truncation, disjunction and existence
@@ -9275,7 +9307,7 @@ can pick a point of every inhabited type:
   global-choice' 𝓤 = (X : 𝓤 ̇ ) → ∥ X ∥ → X
 \end{code}
 
-*Exercise* [Show](https://lmcs.episciences.org/3217) that these two
+*Exercise*. [Show](https://lmcs.episciences.org/3217) that these two
  forms of global choice are logically equivalent, and in turn
  logically equivalent to `(X : 𝓤 ̇ ) → ¬(is-empty X) → X`, so that we
  can choose a point of every nonempty type.
@@ -9299,6 +9331,7 @@ can pick a point of every inhabited type:
   global-choice'-inconsistent-with-univalence : global-choice' 𝓤₁
                                               → is-univalent 𝓤₀
                                               → 𝟘
+
   global-choice'-inconsistent-with-univalence g ua = c
    where
     a : (X : 𝓤₁ ̇ ) → has-decidable-equality X

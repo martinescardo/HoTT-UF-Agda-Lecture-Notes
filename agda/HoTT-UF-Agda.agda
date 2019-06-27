@@ -4360,22 +4360,22 @@ module pointed-∞-magma-equality (𝓤 : Universe) where
  open sip-join
 
  ∞-Magma· : 𝓤 ⁺ ̇
- ∞-Magma· = Σ \(X : 𝓤 ̇) → X × (X → X → X)
+ ∞-Magma· = Σ \(X : 𝓤 ̇) → (X → X → X) × X
 
  _≅_ : ∞-Magma· → ∞-Magma· → 𝓤 ̇
- (X , x₀ , _·_) ≅ (Y , y₀ , _*_) =
+ (X ,  _·_ , x₀) ≅ (Y ,  _*_ , y₀) =
 
                 Σ \(f : X → Y) → is-equiv f
-                               × (f x₀ ≡ y₀)
                                × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+                               × (f x₀ ≡ y₀)
 
  characterization-of-pointed-magma-≡ : is-univalent 𝓤
                                      → (A B : ∞-Magma·)
                                      → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-pointed-magma-≡ ua = characterization-of-join-≡ ua
-                                           (pointed-type-equality.sip-data 𝓤)
                                            (∞-magma-equality.sip-data 𝓤)
+                                           (pointed-type-equality.sip-data 𝓤)
 
 module monoid-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
@@ -4487,8 +4487,8 @@ module group-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
                            × (f d ≡ e)
 
  characterization-of-group-≡ : is-univalent 𝓤
-                              → (A B : Group)
-                              → (A ≡ B) ≃ (A ≅ B)
+                             → (A B : Group)
+                             → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-group-≡ ua = characterization-of-≡ ua sip-data
 
@@ -4681,6 +4681,25 @@ module selection-space-equality
  characterization-of-selection-space-≡ ua = characterization-of-≡-with-axioms ua
                                              sip-data
                                              axioms axiomss
+
+module contrived-example-equality (𝓤 : Universe) where
+
+ open sip
+
+ contrived-≡ : is-univalent 𝓤 →
+
+    (X Y : 𝓤 ̇ ) (φ : (X → X) → X) (γ : (Y → Y) → Y)
+  →
+    ((X , φ) ≡ (Y , γ)) ≃ Σ \(f : X → Y)
+                        → Σ \(i : is-equiv f)
+                        → ((λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ≡ γ)
+
+ contrived-≡ ua X Y φ γ =
+   characterization-of-≡ ua
+    ((λ {(X , φ) (Y , γ) (f , i) → (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ≡ γ}) ,
+     (λ {(X , φ) → refl φ}) ,
+     (λ {φ γ → equivs-closed-under-∼ (id-is-equiv (φ ≡ γ)) (λ {(refl φ) → refl (refl φ)})}))
+    (X , φ) (Y , γ)
 
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
@@ -5076,6 +5095,7 @@ module basic-truncation-development
   global-choice'-inconsistent-with-univalence : global-choice' 𝓤₁
                                               → is-univalent 𝓤₀
                                               → 𝟘
+
   global-choice'-inconsistent-with-univalence g ua = c
    where
     a : (X : 𝓤₁ ̇ ) → has-decidable-equality X
