@@ -8146,7 +8146,9 @@ module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
  sns-data : SNS (λ X → Σ \(s : monoid-structure X) → monoid-axioms X s) 𝓤
  sns-data = add-axioms
               monoid-axioms monoid-axioms-subsingleton
-              (join ∞-magma-identity.sns-data pointed-type-identity.sns-data)
+              (join
+                 ∞-magma-identity.sns-data
+                 pointed-type-identity.sns-data)
 
  _≅_ : Monoid → Monoid → 𝓤 ̇
 
@@ -8313,7 +8315,7 @@ module generalized-metric-space-identity
  M = Σ \(X : 𝓤 ̇ ) → Σ \(d : X → X → R) → axioms X d
 
  _≅_  : M → M → 𝓤 ⊔ 𝓥 ̇
- (X , d , a) ≅ (Y , e , b) = Σ \(f : X → Y) → is-equiv f
+ (X , d , _) ≅ (Y , e , _) = Σ \(f : X → Y) → is-equiv f
                                             × (d ≡ λ x x' → e (f x) (f x'))
 
  characterization-of-M-≡ : is-univalent 𝓤
@@ -8322,8 +8324,8 @@ module generalized-metric-space-identity
                          → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-M-≡ ua = characterization-of-≡-with-axioms ua
-                               sns-data
-                               axioms axiomss
+                                sns-data
+                                axioms axiomss
 \end{code}
 
 We have the following particular cases of interest:
@@ -8422,7 +8424,7 @@ We introduce notation for the type of homeomorphisms:
 
 \begin{code}
  _≅_  : Space → Space → 𝓤 ⊔ 𝓥 ̇
- (X , 𝓞X , a) ≅ (Y , 𝓞Y , b) =
+ (X , 𝓞X , _) ≅ (Y , 𝓞Y , _) =
 
               Σ \(f : X → Y) → is-equiv f
                              × ((λ V → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y)
@@ -8446,16 +8448,16 @@ prefer to rephrase the above as
 
 \begin{code}
  _≅'_  : Space → Space → 𝓤 ⊔ 𝓥 ̇
- (X , F , a) ≅' (Y , G , b) =
+ (X , F , _) ≅' (Y , G , _) =
 
              Σ \(f : X → Y) → is-equiv f
                             × ((λ (v : Y → R) → F (v ∘ f)) ≡ G)
 
 
  characterization-of-Space-≡' : is-univalent 𝓤
-                             → (A B : Space)
+                              → (A B : Space)
 
-                             → (A ≡ B) ≃ (A ≅' B)
+                              → (A ≡ B) ≃ (A ≅' B)
 
  characterization-of-Space-≡' = characterization-of-Space-≡
 \end{code}
@@ -8503,8 +8505,6 @@ Develop the following examples, adding hypotheses and/or axioms if necessary or 
    > `S X = (F X → X)` for a given `F : 𝓤 ̇ → 𝓤 ̇ `.
 
    > `S X = (X → R) → X` for a for a given `R : 𝓥 ̇ `.
-
-   > `S X = (X → X) → X`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="truncation"></a> Subsingleton truncation, disjunction and existence
