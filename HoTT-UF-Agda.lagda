@@ -8462,89 +8462,6 @@ prefer to rephrase the above as
  characterization-of-Space-≡' = characterization-of-Space-≡
 \end{code}
 
-module selection-space-identity
-        (𝓤 𝓥 : Universe)
-        (R : 𝓥 ̇)
-        (axioms  : (X : 𝓤 ̇ ) → ((X → R) → X) → 𝓤 ⊔ 𝓥 ̇)
-        (axiomss : (X : 𝓤 ̇ ) (ε : (X → R) → X) → is-subsingleton (axioms X ε))
-       where
-
- open sip
- open sip-with-axioms
-
- S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
- S X = (X → R) → X
-
- SelectionSpace : 𝓤 ⁺ ⊔ 𝓥  ̇
- SelectionSpace = Σ \(X : 𝓤 ̇ ) → Σ \(ε : S X) → axioms X ε
-
- sns-data : SNS S (𝓤 ⊔ 𝓥)
- sns-data = (ι , ρ , θ)
-  where
-   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
-   ι (X , ε) (Y , δ) (f , i) = (λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ
-
-   ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
-   ρ (X , ε) = refl ε
-
-   θ : {X : 𝓤 ̇ } (ε δ : S X) → is-equiv (canonical-map ι ρ ε δ)
-   θ {X} ε δ = γ
-    where
-     h : canonical-map ι ρ ε δ ∼ 𝑖𝑑 (ε ≡ δ)
-     h (refl ε) = refl (refl ε)
-
-     γ : is-equiv (canonical-map ι ρ ε δ)
-     γ = equivs-closed-under-∼ (id-is-equiv (ε ≡ δ)) h
-
-
- _≅_  :  SelectionSpace → SelectionSpace → 𝓤 ⊔ 𝓥 ̇
- (X , ε , a) ≅ (Y , δ , b) =
-
-             Σ \(f : X → Y) → is-equiv f
-                            × ((λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ)
-
-
- characterization-of-selection-space-≡ : is-univalent 𝓤
-                                       → (A B : SelectionSpace)
-
-                                       → (A ≡ B) ≃ (A ≅ B)
-
- characterization-of-selection-space-≡ ua = characterization-of-≡-with-axioms ua
-                                             sns-data
-                                             axioms axiomss
-
-#### A contrived example
-
-Here is an example where we need to refer to the inverse of the
-equivalence under consideration.
-
-We take the opportunity to illustrate how the above boiler-plate code
-can be avoided by defining `sns-data` on the fly, at the expense of
-readability:
-
-\begin{code}
-module contrived-example-identity (𝓤 : Universe) where
-
- open sip
-
- contrived-≡ : is-univalent 𝓤 →
-
-    (X Y : 𝓤 ̇ ) (φ : (X → X) → X) (γ : (Y → Y) → Y)
-  →
-    ((X , φ) ≡ (Y , γ)) ≃ Σ \(f : X → Y)
-                        → Σ \(i : is-equiv f)
-                        → (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ≡ γ
-
- contrived-≡ ua X Y φ γ =
-   characterization-of-≡ ua
-    ((λ {(X , φ) (Y , γ) (f , i) → (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ≡ γ}) ,
-     (λ {(X , φ) → refl φ}) ,
-     (λ {φ γ → equivs-closed-under-∼ (id-is-equiv (φ ≡ γ)) (λ {(refl φ) → refl (refl φ)})}))
-    (X , φ) (Y , γ)
-\end{code}
-
-Many of the above examples can be written in such a concise form.
-
 #### Selection spaces
 
 \begin{code}
@@ -8600,9 +8517,42 @@ module selection-space-identity
                                              axioms axiomss
 \end{code}
 
+
+#### A contrived example
+
+Here is an example where we need to refer to the inverse of the
+equivalence under consideration.
+
+We take the opportunity to illustrate how the above boiler-plate code
+can be avoided by defining `sns-data` on the fly, at the expense of
+readability:
+
+\begin{code}
+module contrived-example-identity (𝓤 : Universe) where
+
+ open sip
+
+ contrived-≡ : is-univalent 𝓤 →
+
+    (X Y : 𝓤 ̇ ) (φ : (X → X) → X) (γ : (Y → Y) → Y)
+  →
+    ((X , φ) ≡ (Y , γ)) ≃ Σ \(f : X → Y)
+                        → Σ \(i : is-equiv f)
+                        → (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ≡ γ
+
+ contrived-≡ ua X Y φ γ =
+   characterization-of-≡ ua
+    ((λ {(X , φ) (Y , γ) (f , i) → (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ≡ γ}) ,
+     (λ {(X , φ) → refl φ}) ,
+     (λ {φ γ → equivs-closed-under-∼ (id-is-equiv (φ ≡ γ)) (λ {(refl φ) → refl (refl φ)})}))
+    (X , φ) (Y , γ)
+\end{code}
+
+Many of the above examples can be written in such a concise form.
+
 #### Functor algebras
 
-We don't need to know to know that the functor preserves composition.
+We don't need to know that the functor preserves composition.
 
 \begin{code}
 module generalized-functor-algebra-equality
@@ -8651,6 +8601,7 @@ module generalized-functor-algebra-equality
 
          Σ \(f : X → Y) → is-equiv f
                         × (f ∘ α ≡ β ∘ 𝓕 f)
+
 
  characterization-of-functor-algebra-≡ : is-univalent 𝓤
                                        → (A B : Σ S)

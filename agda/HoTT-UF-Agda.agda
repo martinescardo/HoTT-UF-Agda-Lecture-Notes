@@ -4542,25 +4542,6 @@ module generalized-topological-space-identity
 
  characterization-of-Space-≡' = characterization-of-Space-≡
 
-module contrived-example-identity (𝓤 : Universe) where
-
- open sip
-
- contrived-≡ : is-univalent 𝓤 →
-
-    (X Y : 𝓤 ̇ ) (φ : (X → X) → X) (γ : (Y → Y) → Y)
-  →
-    ((X , φ) ≡ (Y , γ)) ≃ Σ \(f : X → Y)
-                        → Σ \(i : is-equiv f)
-                        → (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ≡ γ
-
- contrived-≡ ua X Y φ γ =
-   characterization-of-≡ ua
-    ((λ {(X , φ) (Y , γ) (f , i) → (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ≡ γ}) ,
-     (λ {(X , φ) → refl φ}) ,
-     (λ {φ γ → equivs-closed-under-∼ (id-is-equiv (φ ≡ γ)) (λ {(refl φ) → refl (refl φ)})}))
-    (X , φ) (Y , γ)
-
 module selection-space-identity
         (𝓤 𝓥 : Universe)
         (R : 𝓥 ̇)
@@ -4609,6 +4590,25 @@ module selection-space-identity
  characterization-of-selection-space-≡ ua = characterization-of-≡-with-axioms ua
                                              sns-data
                                              axioms axiomss
+
+module contrived-example-identity (𝓤 : Universe) where
+
+ open sip
+
+ contrived-≡ : is-univalent 𝓤 →
+
+    (X Y : 𝓤 ̇ ) (φ : (X → X) → X) (γ : (Y → Y) → Y)
+  →
+    ((X , φ) ≡ (Y , γ)) ≃ Σ \(f : X → Y)
+                        → Σ \(i : is-equiv f)
+                        → (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ≡ γ
+
+ contrived-≡ ua X Y φ γ =
+   characterization-of-≡ ua
+    ((λ {(X , φ) (Y , γ) (f , i) → (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ≡ γ}) ,
+     (λ {(X , φ) → refl φ}) ,
+     (λ {φ γ → equivs-closed-under-∼ (id-is-equiv (φ ≡ γ)) (λ {(refl φ) → refl (refl φ)})}))
+    (X , φ) (Y , γ)
 
 module generalized-functor-algebra-equality
          {𝓤 : Universe}
