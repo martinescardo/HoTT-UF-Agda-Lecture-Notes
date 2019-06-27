@@ -7280,10 +7280,10 @@ type `Σ \(A : 𝓤 ̇ ) → ∥ A ∥` of inhabited types.
 ### <a id="magmaequivalences"></a> Magma equivalences
 
 We now define magma equivalences and show that the type of magma
-equivalences is identified with the type of magma isomorphisms.  We
-apply this to characterize magma equality. We then [generalize
-this]((HoTT-UF-Agda.html#sip) by formulating a proving structure
-identity principles.
+equivalences is identified with the type of magma isomorphisms. In the
+next section, which proves a *structure identity principles, we apply
+this to characterize magma equality and equality of other mathematical
+structures in terms of equivalences of underlying types.
 
 For simplicity we assume global univalence here.
 
@@ -7446,72 +7446,8 @@ equal, to the type of magma isomorphisms.
  ≅ₘ-charac' M N = ap Σ (magma-iso-charac'' M N)
 \end{code}
 
-To conclude, we characterize magma identity as magma equivalence. For
-this purpose, we first characterize transport of magma structure:
-
-\begin{code}
- magma-structure : 𝓤 ̇ → 𝓤 ̇
- magma-structure X = is-set X × (X → X → X)
-
-
- structure-of : (M : Magma 𝓤) → magma-structure ⟨ M ⟩
- structure-of (X , s) = s
-
-
- homomorphism-lemma : (X Y : 𝓤 ̇ )
-                      (s : magma-structure X) (t : magma-structure Y)
-                      (p : X ≡ Y)
-                    →
-                      (transport magma-structure p s ≡ t)
-                    ≃ is-magma-hom (X , s) (Y , t) (Id→fun p)
-
- homomorphism-lemma X X (i , _·_) (j , _*_) (refl X) =
-
-   ((i , _·_) ≡ (j , _*_))                       ≃⟨ a ⟩
-   (_·_ ≡ _*_)                                   ≃⟨ b ⟩
-   ((x : X) → (λ x' → x · x') ≡ (λ x' → x * x')) ≃⟨ c ⟩
-   ((x x' : X) → x · x' ≡ x * x')                ■
-
-  where
-   a = ≃-sym (embedding-criterion-converse pr₂
-               (pr₂-embedding (is-set X) (X → X → X)
-                 (being-set-is-a-subsingleton dfe))
-               (i , _·_)
-               (j , _*_))
-   b = happly _·_ _*_ , hfe _·_ _*_
-   c = Π-cong dfe dfe X _ _ (λ x → happly (x ·_) (x *_) , hfe (x ·_) (x *_))
-\end{code}
-
-Magma identity is equivalent to magma equivalence, and hence to magma isomorphism:
-
-\begin{code}
- magma-identity-is-equivalence : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≃ₘ N)
- magma-identity-is-equivalence {𝓤} M N =
-  (M ≡ N)                                                                    ≃⟨ a ⟩
-  (Σ \(p : ⟨ M ⟩ ≡ ⟨ N ⟩) → transport magma-structure p _·_ ≡ _*_)           ≃⟨ b ⟩
-  (Σ \(p : ⟨ M ⟩ ≡ ⟨ N ⟩) → is-magma-hom M N (Eq→fun (Id→Eq ⟨ M ⟩ ⟨ N ⟩ p))) ≃⟨ c ⟩
-  (Σ \(e : ⟨ M ⟩ ≃ ⟨ N ⟩) → is-magma-hom M N (Eq→fun e))                     ≃⟨ Σ-assoc ⟩
-  (Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-equiv f × is-magma-hom M N f)                 ■
-  where
-   _·_ = structure-of M
-   _*_ = structure-of N
-
-   a = Σ-≡-≃ M N
-   b = Σ-cong (homomorphism-lemma ⟨ M ⟩ ⟨ N ⟩ _·_ _*_)
-   c = ≃-sym (Σ-change-of-variables-hae
-                (λ e → is-magma-hom M N (Eq→fun e))
-                (Id→Eq ⟨ M ⟩ ⟨ N ⟩)
-                (Id→Eq-is-hae (ua 𝓤)))
-
- magma-identity-is-isomorphism : (M N : Magma 𝓤) → (M ≡ N) ≃ (M ≅ₘ N)
- magma-identity-is-isomorphism M N =
-
-   (M ≡ N)  ≃⟨ magma-identity-is-equivalence M N ⟩
-   (M ≃ₘ N) ≃⟨ ≃-sym (≅ₘ-charac M N) ⟩
-   (M ≅ₘ N) ■
-\end{code}
-
-We now generalize the above development.
+It follows from the result of the next section that magma equality
+amounts to magma isomorphism.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="sip"></a> Some structure identity principles
@@ -7676,7 +7612,7 @@ equality on `Σ S`:
  homomorphism-lemma {𝓤} {𝓥} {𝓦} (ι , ρ , θ) (X , s) (X , t) (refl X) = γ
   where
    γ : (s ≡ t) ≃ ι (X , s) (X , t) (id-≃ X)
-   γ = (canonical-map ι ρ s t) , (θ s t)
+   γ = (canonical-map ι ρ s t , θ s t)
 
  characterization-of-≡ : is-univalent 𝓤
                        → {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
