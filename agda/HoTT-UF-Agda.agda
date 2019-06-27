@@ -3886,10 +3886,10 @@ module magma-equivalences (ua : Univalence) where
 module sip where
 
  ⟨_⟩ : {S : 𝓤 ̇ → 𝓥 ̇ } → Σ S → 𝓤 ̇
- ⟨ X , s ⟩ = X
+ ⟨ X , _ ⟩ = X
 
  structure : {S : 𝓤 ̇ → 𝓥 ̇ } (A : Σ S) → S ⟨ A ⟩
- structure (X , s) = s
+ structure (_ , s) = s
 
  canonical-map : {S : 𝓤 ̇ → 𝓥 ̇ }
                  (ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
@@ -4062,7 +4062,8 @@ module sip-with-axioms where
      (σ : SNS S 𝓦)
      (axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ )
    → ((X : 𝓤 ̇ ) (s : S X) → is-subsingleton (axioms X s))
-   → (A B : Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s)
+   →
+     (A B : Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s)
    →
      (A ≡ B) ≃ (A ≃⟦ σ ⟧ B)
 
@@ -4629,10 +4630,8 @@ module generalized-functor-algebra-equality
    ι (X , α) (Y , β) (f , e) = f ∘ α ≡ β ∘ 𝓕 f
 
    ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
-   ρ (X , α) = γ
-    where
-     γ : α ≡ α ∘ 𝓕 id
-     γ = ap (α ∘_) (𝓕-id ⁻¹)
+   ρ (X , α) = α        ≡⟨ ap (α ∘_) (𝓕-id ⁻¹) ⟩
+               α ∘ 𝓕 id ∎
 
    θ : {X : 𝓤 ̇ } (α β : S X) → is-equiv (canonical-map ι ρ α β)
    θ {X} α β = γ
@@ -4658,6 +4657,7 @@ module generalized-functor-algebra-equality
 
  characterization-of-functor-algebra-≡ : is-univalent 𝓤
                                        → (A B : Σ S)
+
                                        → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-functor-algebra-≡ ua = characterization-of-≡ ua sns-data
@@ -5429,6 +5429,7 @@ module basic-powerset-development
 
   ⋂-property : {X : 𝓤 ̇ } (𝓐 : 𝓟𝓟 X)
              → (x : X) → (x ∈ ⋂ 𝓐) ⇔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A)
+
   ⋂-property {𝓤} {X} 𝓐 = pr₂ (intersections-exist X 𝓐)
 
   ∅ full : {X : 𝓤 ̇ } → 𝓟 X
@@ -5453,7 +5454,7 @@ module basic-powerset-development
                     (∈-is-subsingleton x B)
 
   ∪-property : {X : 𝓤 ̇ } (A B : 𝓟 X)
-             → (x : X) → x ∈ (A ∪ B) ⇔ x ∈ A ∨ x ∈ B
+             → (x : X) → x ∈ (A ∪ B) ⇔ (x ∈ A) ∨ (x ∈ B)
 
   ∪-property {𝓤} {X} A B x = id , id
 
