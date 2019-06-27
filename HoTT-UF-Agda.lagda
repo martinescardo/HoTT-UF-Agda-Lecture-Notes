@@ -7579,6 +7579,7 @@ names for the other two projections):
 \begin{code}
  homomorphic : {S : 𝓤 ̇ → 𝓥 ̇ } → SNS S 𝓦
              → (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇
+
  homomorphic (ι , ρ , θ) = ι
 \end{code}
 
@@ -7649,7 +7650,7 @@ We now consider some examples of uses of this.
 #### ∞-Magmas
 
 \begin{code}
-module ∞-magma-identity (𝓤 : Universe) where
+module ∞-magma-identity {𝓤 : Universe} where
 
  open sip
 
@@ -7763,8 +7764,8 @@ In the following construction:
    ρ' : (A : Σ S') → ι' A A (id-≃ ⟨ A ⟩)
    ρ' A = ρ [ A ]
 
-   θ' : {X : 𝓤 ̇ } (s t : S' X) → is-equiv (canonical-map ι' ρ' s t)
-   θ' {X} (s , σ) (t , τ) = γ
+   θ' : {X : 𝓤 ̇ } (s' t' : S' X) → is-equiv (canonical-map ι' ρ' s' t')
+   θ' {X} (s , a) (t , b) = γ
     where
      π : S' X → S X
      π (s , _) = s
@@ -7775,14 +7776,14 @@ In the following construction:
      k : {s' t' : S' X} → is-equiv (ap π {s'} {t'})
      k {s'} {t'} = embedding-gives-ap-is-equiv π j s' t'
 
-     l : canonical-map ι' ρ' (s , σ) (t , τ)
-       ∼ canonical-map ι ρ s t ∘ ap π {s , σ} {t , τ}
-     l (refl (s , σ)) = refl (ρ (X , s))
+     l : canonical-map ι' ρ' (s , a) (t , b)
+       ∼ canonical-map ι ρ s t ∘ ap π {s , a} {t , b}
+     l (refl (s , a)) = refl (ρ (X , s))
 
-     e : is-equiv (canonical-map ι ρ s t ∘ ap π {s , σ} {t , τ})
+     e : is-equiv (canonical-map ι ρ s t ∘ ap π {s , a} {t , b})
      e = ∘-is-equiv (θ s t) k
 
-     γ : is-equiv (canonical-map ι' ρ' (s , σ) (t , τ))
+     γ : is-equiv (canonical-map ι' ρ' (s , a) (t , b))
      γ = equivs-closed-under-∼ e l
 
 
@@ -7800,8 +7801,8 @@ In the following construction:
 \end{code}
 
 And with this we can formulate and prove what the addition of axioms
-achieves, namely that the characterization of identifications remains
-the same, ignoring the axioms:
+achieves, namely that the characterization of the identity type
+remains the same, ignoring the axioms:
 
 \begin{code}
  characterization-of-≡-with-axioms :
@@ -7825,7 +7826,7 @@ examples.
 #### Magmas
 
 \begin{code}
-module magma-identity (𝓤 : Universe) where
+module magma-identity {𝓤 : Universe} where
 
  open sip-with-axioms
 
@@ -7833,7 +7834,7 @@ module magma-identity (𝓤 : Universe) where
  Magma = Σ \(X : 𝓤 ̇ ) → (X → X → X) × is-set X
 
  _≅_ : Magma → Magma → 𝓤 ̇
- (X , _·_ , i) ≅ (Y , _*_ , j) =
+ (X , _·_ , _) ≅ (Y , _*_ , _) =
 
                Σ \(f : X → Y) → is-equiv f
                               × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
@@ -7846,9 +7847,9 @@ module magma-identity (𝓤 : Universe) where
 
  characterization-of-Magma-≡ ua =
    characterization-of-≡-with-axioms ua
-    (∞-magma-identity.sns-data 𝓤)
-    (λ X s → is-set X)
-    (λ X s → being-set-is-a-subsingleton (univalence-gives-dfunext ua))
+     ∞-magma-identity.sns-data
+     (λ X s → is-set X)
+     (λ X s → being-set-is-a-subsingleton (univalence-gives-dfunext ua))
 \end{code}
 
 *Exercise*. Characterize identifications of monoids along the above lines. It
@@ -7859,7 +7860,7 @@ module magma-identity (𝓤 : Universe) where
 #### Pointed types
 
 \begin{code}
-module pointed-type-identity (𝓤 : Universe) where
+module pointed-type-identity {𝓤 : Universe} where
 
  open sip
 
@@ -7875,7 +7876,7 @@ module pointed-type-identity (𝓤 : Universe) where
    ρ : (A : Σ Pointed) → ι A A (id-≃ ⟨ A ⟩)
    ρ (X , x₀) = refl x₀
 
-   θ : {X : 𝓤 ̇ } (s t : Pointed X) → is-equiv (canonical-map ι ρ s t)
+   θ : {X : 𝓤 ̇ } (x₀ x₁ : Pointed X) → is-equiv (canonical-map ι ρ x₀ x₁)
    θ x₀ x₁ = equivs-closed-under-∼ (id-is-equiv (x₀ ≡ x₁)) h
     where
      h : canonical-map ι ρ x₀ x₁ ∼ 𝑖𝑑 (x₀ ≡ x₁)
@@ -7977,21 +7978,21 @@ S₀ X × S₁ X`
  ⟪_⟫ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
      → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X) → 𝓤 ̇
 
- ⟪ X , s₀ , s₁ ⟫ = X
+ ⟪ X , _ , _ ⟫ = X
 
 
 
  [_]₀ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
       → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X) → Σ S₀
 
- [ X , s₀ , s₁ ]₀ = (X , s₀)
+ [ X , s₀ , _ ]₀ = (X , s₀)
 
 
 
  [_]₁ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
       → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X) → Σ S₁
 
- [ X , s₀ , s₁ ]₁ = (X , s₁)
+ [ X , _ , s₁ ]₁ = (X , s₁)
 \end{code}
 
 The main construction in this submodule is this:
@@ -8058,8 +8059,8 @@ general structure identity principle:
 
 \begin{code}
  characterization-of-join-≡ : is-univalent 𝓤
-                            → {S₀ : 𝓤 ̇ → 𝓥 ̇ }     {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
-                              (σ₀ : SNS S₀ 𝓦₀) (σ₁ : SNS S₁ 𝓦₁)
+                            → {S₀ : 𝓤 ̇ → 𝓥 ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
+                              (σ₀ : SNS S₀ 𝓦₀)  (σ₁ : SNS S₁ 𝓦₁)
 
                               (A B : Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X)
                             →
@@ -8073,7 +8074,7 @@ This concludes the submodule. Some examples of uses of this follow.
 #### Pointed ∞-magmas
 
 \begin{code}
-module pointed-∞-magma-identity (𝓤 : Universe) where
+module pointed-∞-magma-identity {𝓤 : Universe} where
 
  open sip-join
 
@@ -8094,8 +8095,8 @@ module pointed-∞-magma-identity (𝓤 : Universe) where
                                      → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-pointed-magma-≡ ua = characterization-of-join-≡ ua
-                                           (∞-magma-identity.sns-data 𝓤)
-                                           (pointed-type-identity.sns-data 𝓤)
+                                            ∞-magma-identity.sns-data
+                                            pointed-type-identity.sns-data
 \end{code}
 
 #### Monoids
@@ -8103,7 +8104,7 @@ module pointed-∞-magma-identity (𝓤 : Universe) where
 In the following example, we combine joins and addition of axioms.
 
 \begin{code}
-module monoid-identity (𝓤 : Universe) (ua : is-univalent 𝓤) where
+module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  dfe : dfunext 𝓤 𝓤
  dfe = univalence-gives-dfunext ua
@@ -8145,9 +8146,7 @@ module monoid-identity (𝓤 : Universe) (ua : is-univalent 𝓤) where
  sns-data : SNS (λ X → Σ \(s : monoid-structure X) → monoid-axioms X s) 𝓤
  sns-data = add-axioms
               monoid-axioms monoid-axioms-subsingleton
-              (join
-                 (∞-magma-identity.sns-data 𝓤)
-                 (pointed-type-identity.sns-data 𝓤))
+              (join ∞-magma-identity.sns-data pointed-type-identity.sns-data)
 
  _≅_ : Monoid → Monoid → 𝓤 ̇
 
@@ -8171,11 +8170,11 @@ module monoid-identity (𝓤 : Universe) (ua : is-univalent 𝓤) where
 We add an axiom to monoids to get groups.
 
 \begin{code}
-module group-identity (𝓤 : Universe) (ua : is-univalent 𝓤) where
+module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  open sip
  open sip-with-axioms
- open monoid-identity 𝓤 ua hiding (sns-data ; _≅_)
+ open monoid-identity {𝓤} ua hiding (sns-data ; _≅_)
 
  group-structure : 𝓤 ̇ → 𝓤 ̇
  group-structure X = Σ \(s : monoid-structure X) → monoid-axioms X s
@@ -8211,7 +8210,7 @@ module group-identity (𝓤 : Universe) (ua : is-univalent 𝓤) where
  sns-data : SNS (λ X → Σ \(s : group-structure X) → group-axiom X (pr₁ s)) 𝓤
  sns-data = add-axioms
              (λ X s → group-axiom X (pr₁ s)) group-axiom-is-subsingleton
-             (monoid-identity.sns-data 𝓤 ua)
+             (monoid-identity.sns-data ua)
 
  _≅_ : Group → Group → 𝓤 ̇
 
@@ -8241,7 +8240,7 @@ module group-identity (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
 \begin{code}
 module slice-identity
-        (𝓤 : Universe)
+        {𝓤 : Universe}
         (R : 𝓤 ̇)
        where
 
@@ -8282,7 +8281,7 @@ module slice-identity
 
 \begin{code}
 module generalized-metric-space-identity
-        (𝓤 𝓥 : Universe)
+        {𝓤 𝓥 : Universe}
         (R : 𝓥 ̇ )
         (axioms  : (X : 𝓤 ̇ ) → (X → X → R) → 𝓤 ⊔ 𝓥 ̇ )
         (axiomss : (X : 𝓤 ̇ ) (d : X → X → R) → is-subsingleton (axioms X d))
