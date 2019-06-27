@@ -7471,7 +7471,7 @@ structure. We consider several versions:
    characterization of magma identifications from a characterization
    of ∞-magma identifications.
 
- * One that joins two kinds of structure, so as to e.g. get a an
+ * One that joins two kinds of structure, so as to e.g. get an
    automatic characterization of identifications of pointed ∞-magmas
    from characterizations of identifications for pointed types and for
    ∞-magmas.
@@ -8459,62 +8459,6 @@ prefer to rephrase the above as
                              → (A ≡ B) ≃ (A ≅' B)
 
  characterization-of-Space-≡' = characterization-of-Space-≡
-\end{code}
-
-
-#### Selection spaces
-
-\begin{code}
-module selection-space-identity
-        (𝓤 𝓥 : Universe)
-        (R : 𝓥 ̇)
-        (axioms  : (X : 𝓤 ̇ ) → ((X → R) → X) → 𝓤 ⊔ 𝓥 ̇)
-        (axiomss : (X : 𝓤 ̇ ) (ε : (X → R) → X) → is-subsingleton (axioms X ε))
-       where
-
- open sip
- open sip-with-axioms
-
- S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
- S X = (X → R) → X
-
- SelectionSpace : 𝓤 ⁺ ⊔ 𝓥  ̇
- SelectionSpace = Σ \(X : 𝓤 ̇ ) → Σ \(ε : S X) → axioms X ε
-
- sns-data : SNS S (𝓤 ⊔ 𝓥)
- sns-data = (ι , ρ , θ)
-  where
-   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
-   ι (X , ε) (Y , δ) (f , i) = (λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ
-
-   ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
-   ρ (X , ε) = refl ε
-
-   θ : {X : 𝓤 ̇ } (ε δ : S X) → is-equiv (canonical-map ι ρ ε δ)
-   θ {X} ε δ = γ
-    where
-     h : canonical-map ι ρ ε δ ∼ 𝑖𝑑 (ε ≡ δ)
-     h (refl ε) = refl (refl ε)
-
-     γ : is-equiv (canonical-map ι ρ ε δ)
-     γ = equivs-closed-under-∼ (id-is-equiv (ε ≡ δ)) h
-
-
- _≅_  :  SelectionSpace → SelectionSpace → 𝓤 ⊔ 𝓥 ̇
- (X , ε , a) ≅ (Y , δ , b) =
-
-             Σ \(f : X → Y) → is-equiv f
-                            × ((λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ)
-
-
- characterization-of-selection-space-≡ : is-univalent 𝓤
-                                       → (A B : SelectionSpace)
-
-                                       → (A ≡ B) ≃ (A ≅ B)
-
- characterization-of-selection-space-≡ ua = characterization-of-≡-with-axioms ua
-                                             sns-data
-                                             axioms axiomss
 \end{code}
 
 #### A contrived example
@@ -10260,6 +10204,57 @@ module surjection-classifier
   surjection-classifier {𝓤} ua = special-map-classifier (ua 𝓤)
                                   (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
                                   ∥_∥
+
+module selection-space-identity
+        (𝓤 𝓥 : Universe)
+        (R : 𝓥 ̇)
+        (axioms  : (X : 𝓤 ̇ ) → ((X → R) → X) → 𝓤 ⊔ 𝓥 ̇)
+        (axiomss : (X : 𝓤 ̇ ) (ε : (X → R) → X) → is-subsingleton (axioms X ε))
+       where
+
+ open sip
+ open sip-with-axioms
+
+ S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ S X = (X → R) → X
+
+ SelectionSpace : 𝓤 ⁺ ⊔ 𝓥  ̇
+ SelectionSpace = Σ \(X : 𝓤 ̇ ) → Σ \(ε : S X) → axioms X ε
+
+ sns-data : SNS S (𝓤 ⊔ 𝓥)
+ sns-data = (ι , ρ , θ)
+  where
+   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
+   ι (X , ε) (Y , δ) (f , i) = (λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ
+
+   ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
+   ρ (X , ε) = refl ε
+
+   θ : {X : 𝓤 ̇ } (ε δ : S X) → is-equiv (canonical-map ι ρ ε δ)
+   θ {X} ε δ = γ
+    where
+     h : canonical-map ι ρ ε δ ∼ 𝑖𝑑 (ε ≡ δ)
+     h (refl ε) = refl (refl ε)
+
+     γ : is-equiv (canonical-map ι ρ ε δ)
+     γ = equivs-closed-under-∼ (id-is-equiv (ε ≡ δ)) h
+
+
+ _≅_  :  SelectionSpace → SelectionSpace → 𝓤 ⊔ 𝓥 ̇
+ (X , ε , a) ≅ (Y , δ , b) =
+
+             Σ \(f : X → Y) → is-equiv f
+                            × ((λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ)
+
+
+ characterization-of-selection-space-≡ : is-univalent 𝓤
+                                       → (A B : SelectionSpace)
+
+                                       → (A ≡ B) ≃ (A ≅ B)
+
+ characterization-of-selection-space-≡ ua = characterization-of-≡-with-axioms ua
+                                             sns-data
+                                             axioms axiomss
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
