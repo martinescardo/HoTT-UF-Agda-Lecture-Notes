@@ -3912,6 +3912,7 @@ module sip where
  homomorphic (ι , ρ , θ) = ι
 
  _≃[_]_ : {S : 𝓤 ̇ → 𝓥 ̇ } → Σ S → SNS S 𝓦 → Σ S → 𝓤 ⊔ 𝓦 ̇
+
  A ≃[ σ ] B = Σ \(f : ⟨ A ⟩ → ⟨ B ⟩)
             → Σ \(i : is-equiv f) → homomorphic σ A B (f , i)
 
@@ -3933,11 +3934,13 @@ module sip where
                        → (A ≡ B) ≃ (A ≃[ σ ] B)
 
  characterization-of-≡ {𝓤} {𝓥} {𝓦} ua {S} (ι , ρ , θ) A B =
+
     (A ≡ B)                                                              ≃⟨ i   ⟩
     (Σ \(p : ⟨ A ⟩ ≡ ⟨ B ⟩) → transport S p (structure A) ≡ structure B) ≃⟨ ii ⟩
     (Σ \(p : ⟨ A ⟩ ≡ ⟨ B ⟩) → ι A B (Id→Eq ⟨ A ⟩ ⟨ B ⟩ p))               ≃⟨ iii ⟩
     (Σ \(e : ⟨ A ⟩ ≃ ⟨ B ⟩) → ι A B e)                                   ≃⟨ iv   ⟩
     (A ≃[ σ ] B)                                                         ■
+
   where
    σ : SNS S 𝓦
    σ = ι , ρ , θ
@@ -3984,6 +3987,7 @@ module ∞-magma-equality (𝓤 : Universe) where
 
  characterization-of-∞-Magma-≡ : is-univalent 𝓤
                                → (A B : ∞-Magma)
+
                                → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-∞-Magma-≡ ua = characterization-of-≡ ua sns-data
@@ -3995,12 +3999,12 @@ module sip-with-axioms where
  [_] : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ }
      → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s) → Σ S
 
- [ X , s , σ ] = (X , s)
+ [ X , s , _ ] = (X , s)
 
  ⟪_⟫ : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ }
      → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s) → 𝓤 ̇
 
- ⟪ X , s , σ ⟫ = X
+ ⟪ X , _ , _ ⟫ = X
 
  add-axioms : {S : 𝓤 ̇ → 𝓥 ̇ }
               (axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ )
@@ -4023,7 +4027,7 @@ module sip-with-axioms where
    θ' {X} (s , σ) (t , τ) = γ
     where
      π : S' X → S X
-     π (s , σ) = s
+     π (s , _) = s
 
      j : is-embedding π
      j = pr₁-embedding (i X)
@@ -4081,6 +4085,7 @@ module magma-equality (𝓤 : Universe) where
 
  characterization-of-Magma-≡ : is-univalent 𝓤
                              → (A B : Magma )
+
                              → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-Magma-≡ ua =
@@ -4116,6 +4121,7 @@ module pointed-type-equality (𝓤 : Universe) where
 
  characterization-of-pointed-type-≡ : is-univalent 𝓤
                                     → (A B : Σ Pointed)
+
                                     → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-pointed-type-≡ ua = characterization-of-≡ ua sns-data
@@ -4268,12 +4274,13 @@ module pointed-∞-magma-equality (𝓤 : Universe) where
  _≅_ : ∞-Magma· → ∞-Magma· → 𝓤 ̇
  (X ,  _·_ , x₀) ≅ (Y ,  _*_ , y₀) =
 
-                Σ \(f : X → Y) → is-equiv f
-                               × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
-                               × (f x₀ ≡ y₀)
+                 Σ \(f : X → Y) → is-equiv f
+                                × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+                                × (f x₀ ≡ y₀)
 
  characterization-of-pointed-magma-≡ : is-univalent 𝓤
                                      → (A B : ∞-Magma·)
+
                                      → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-pointed-magma-≡ ua = characterization-of-join-≡ ua
@@ -4327,7 +4334,7 @@ module monoid-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
  _≅_ : Monoid → Monoid → 𝓤 ̇
 
- (X , (_·_ , d) , a) ≅ (Y , (_*_ , e) , b) =
+ (X , (_·_ , d) , _) ≅ (Y , (_*_ , e) , _) =
 
                      Σ \(f : X → Y) → is-equiv f
                                     × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
@@ -4335,6 +4342,7 @@ module monoid-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
  characterization-of-monoid-≡ : is-univalent 𝓤
                               → (A B : Monoid)
+
                               → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-monoid-≡ ua = characterization-of-≡ ua sns-data
@@ -4391,6 +4399,7 @@ module group-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
  characterization-of-group-≡ : is-univalent 𝓤
                              → (A B : Group)
+
                              → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-group-≡ ua = characterization-of-≡ ua sns-data
@@ -4425,6 +4434,7 @@ module slice-equality
 
  characterization-of-/-≡ : is-univalent 𝓤
                          → (A B : 𝓤 / R)
+
                          → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-/-≡ ua = characterization-of-≡ ua sns-data
@@ -4466,6 +4476,7 @@ module generalized-metric-space-equality
 
  characterization-of-M-≡ : is-univalent 𝓤
                          → (A B : M)
+
                          → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-M-≡ ua = characterization-of-≡-with-axioms ua
@@ -4520,6 +4531,7 @@ module generalized-topological-space-equality
 
  characterization-of-Space-≡ : is-univalent 𝓤
                              → (A B : Space)
+
                              → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-Space-≡ ua = characterization-of-≡-with-axioms ua
@@ -4533,6 +4545,7 @@ module generalized-topological-space-equality
 
  characterization-of-Space-≡' : is-univalent 𝓤
                              → (A B : Space)
+
                              → (A ≡ B) ≃ (A ≅' B)
 
  characterization-of-Space-≡' = characterization-of-Space-≡
@@ -4579,6 +4592,7 @@ module selection-space-equality
 
  characterization-of-selection-space-≡ : is-univalent 𝓤
                                        → (A B : SelectionSpace)
+
                                        → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-selection-space-≡ ua = characterization-of-≡-with-axioms ua

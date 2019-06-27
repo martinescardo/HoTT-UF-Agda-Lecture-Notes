@@ -7446,7 +7446,7 @@ equal, to the type of magma isomorphisms.
  ≅ₘ-charac' M N = ap Σ (magma-iso-charac'' M N)
 \end{code}
 
-It follows from the result of the next section that magma equality
+It follows from the results of the next section that magma equality
 amounts to magma isomorphism.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -7468,7 +7468,7 @@ structure. We consider several versions:
 
  * One that adds axioms to a structure, so as to e.g. get an
    automatic characterization of magma equality from a
-   characterization of ∞-magma equalitty.
+   characterization of ∞-magma equality.
 
  * One that joins two kinds of structure, so as to e.g. get a an
    automatic characterization of equality of pointed ∞-magmas from
@@ -7514,7 +7514,6 @@ types `⟨ A ⟩` and `⟨ B ⟩` of `A B : Σ S`.
  ⟨_⟩ : {S : 𝓤 ̇ → 𝓥 ̇ } → Σ S → 𝓤 ̇
  ⟨ X , s ⟩ = X
 
-
  structure : {S : 𝓤 ̇ → 𝓥 ̇ } (A : Σ S) → S ⟨ A ⟩
  structure (X , s) = s
 \end{code}
@@ -7541,7 +7540,7 @@ equivalence a homomorphism must be equal in a canonical way:
 
    > `refl s ↦ ρ (X , s)`
 
-   must be an equivalence for all `X : 𝓤 ` dnd `s t : S X` .
+   must be an equivalence for all `X : 𝓤 ` and `s t : S X` .
 
 This may sound a bit abstract at this point, but in practical examples
 of interest it is easy to fulfill these requirements, as we will
@@ -7561,7 +7560,7 @@ We first define the canonical map:
  canonical-map ι ρ {X} s s (refl s) = ρ (X , s)
 \end{code}
 
-We refer to such favourable data as a "standard notion of structure"
+We refer to such favourable data as a *standard notion of structure*
 and collect it in the type `SNS S 𝓦`:
 
 \begin{code}
@@ -7595,6 +7594,7 @@ used in the definition:
 
 \begin{code}
  _≃[_]_ : {S : 𝓤 ̇ → 𝓥 ̇ } → Σ S → SNS S 𝓦 → Σ S → 𝓤 ⊔ 𝓦 ̇
+
  A ≃[ σ ] B = Σ \(f : ⟨ A ⟩ → ⟨ B ⟩)
             → Σ \(i : is-equiv f) → homomorphic σ A B (f , i)
 \end{code}
@@ -7614,6 +7614,7 @@ equality on `Σ S`:
    γ : (s ≡ t) ≃ ι (X , s) (X , t) (id-≃ X)
    γ = (canonical-map ι ρ s t , θ s t)
 
+
  characterization-of-≡ : is-univalent 𝓤
                        → {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
                        → (A B : Σ S)
@@ -7621,11 +7622,13 @@ equality on `Σ S`:
                        → (A ≡ B) ≃ (A ≃[ σ ] B)
 
  characterization-of-≡ {𝓤} {𝓥} {𝓦} ua {S} (ι , ρ , θ) A B =
+
     (A ≡ B)                                                              ≃⟨ i   ⟩
     (Σ \(p : ⟨ A ⟩ ≡ ⟨ B ⟩) → transport S p (structure A) ≡ structure B) ≃⟨ ii ⟩
     (Σ \(p : ⟨ A ⟩ ≡ ⟨ B ⟩) → ι A B (Id→Eq ⟨ A ⟩ ⟨ B ⟩ p))               ≃⟨ iii ⟩
     (Σ \(e : ⟨ A ⟩ ≃ ⟨ B ⟩) → ι A B e)                                   ≃⟨ iv   ⟩
     (A ≃[ σ ] B)                                                         ■
+
   where
    σ : SNS S 𝓦
    σ = ι , ρ , θ
@@ -7686,6 +7689,7 @@ module ∞-magma-equality (𝓤 : Universe) where
 
  characterization-of-∞-Magma-≡ : is-univalent 𝓤
                                → (A B : ∞-Magma)
+
                                → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-∞-Magma-≡ ua = characterization-of-≡ ua sns-data
@@ -7720,13 +7724,13 @@ an underlying-type function `Σ S → 𝓤`:
  [_] : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ }
      → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s) → Σ S
 
- [ X , s , σ ] = (X , s)
+ [ X , s , _ ] = (X , s)
 
 
  ⟪_⟫ : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ }
      → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s) → 𝓤 ̇
 
- ⟪ X , s , σ ⟫ = X
+ ⟪ X , _ , _ ⟫ = X
 \end{code}
 
 In the following construction:
@@ -7763,7 +7767,7 @@ In the following construction:
    θ' {X} (s , σ) (t , τ) = γ
     where
      π : S' X → S X
-     π (s , σ) = s
+     π (s , _) = s
 
      j : is-embedding π
      j = pr₁-embedding (i X)
@@ -7837,6 +7841,7 @@ module magma-equality (𝓤 : Universe) where
 
  characterization-of-Magma-≡ : is-univalent 𝓤
                              → (A B : Magma )
+
                              → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-Magma-≡ ua =
@@ -7883,6 +7888,7 @@ module pointed-type-equality (𝓤 : Universe) where
 
  characterization-of-pointed-type-≡ : is-univalent 𝓤
                                     → (A B : Σ Pointed)
+
                                     → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-pointed-type-≡ ua = characterization-of-≡ ua sns-data
@@ -7919,53 +7925,43 @@ We begin with the following technical lemma:
    → (z₀ z₁ : X × Y) → is-equiv (λ (r : z₀ ≡ z₁) → f (pr₁ z₀) (pr₁ z₁) (ap pr₁ r) ,
                                                    g (pr₂ z₀) (pr₂ z₁) (ap pr₂ r))
 
- technical-lemma {𝓤} {𝓥} {𝓦} {𝓣} {X} {A} {Y} {B} f g i j (x₀ , y₀) (x₁ , y₁) = γ
+ technical-lemma {𝓤} {𝓥} {𝓦} {𝓣} {X} {A} {Y} {B} f g i j (x₀ , y₀) = γ
   where
-   h : (x₀ , y₀) ≡ (x₁ , y₁) → A x₀ x₁ × B y₀ y₁
-   h r = f x₀ x₁ (ap pr₁ r) , g y₀ y₁ (ap pr₂ r)
+   module _ (z : X × Y) where
+     x₁ = pr₁ z
+     y₁ = pr₂ z
 
-   f' : (a : A x₀ x₁) → x₀ ≡ x₁
-   f' = inverse (f x₀ x₁) (i x₀ x₁)
+     h : (x₀ , y₀) ≡ (x₁ , y₁) → A x₀ x₁ × B y₀ y₁
+     h r = f x₀ x₁ (ap pr₁ r) , g y₀ y₁ (ap pr₂ r)
 
-   g' : (b : B y₀ y₁) → y₀ ≡ y₁
-   g' = inverse (g y₀ y₁) (j y₀ y₁)
+     f' : (a : A x₀ x₁) → x₀ ≡ x₁
+     f' = inverse (f x₀ x₁) (i x₀ x₁)
 
-   k : A x₀ x₁ × B y₀ y₁ → (x₀ , y₀) ≡ (x₁ , y₁)
-   k (a , b) = to-×-≡ (f' a , g' b)
+     g' : (b : B y₀ y₁) → y₀ ≡ y₁
+     g' = inverse (g y₀ y₁) (j y₀ y₁)
 
-   η : (q : (x₀ , y₀) ≡ (x₁ , y₁)) → k (h q) ≡ q
-   η (refl (x₀ , x₁)) =
-     k (h (refl (x₀ , x₁)))                                    ≡⟨ refl _ ⟩
-     to-×-≡ (inverse (f x₀ x₀) (i x₀ x₀) (f x₀ x₀ (refl x₀)) ,
-             inverse (g y₀ y₀) (j y₀ y₀) (g y₀ y₀ (refl y₀)))  ≡⟨ ii ⟩
-     to-×-≡ (refl x₀ , refl y₀)                                ≡⟨ refl _ ⟩
-     refl (x₀ , x₁)                                            ∎
-    where
-     ii = ap₂ (λ l r → to-×-≡ (l , r))
-            (inverse-is-retraction (f x₀ x₀) (i x₀ x₀) (refl x₀))
-            (inverse-is-retraction (g y₀ y₀) (j y₀ y₀) (refl x₁))
+     s : A x₀ x₁ × B y₀ y₁ → (x₀ , y₀) ≡ (x₁ , y₁)
+     s (a , b) = to-×-≡ (f' a , g' b)
 
-   θ : (c : A x₀ x₁ × B y₀ y₁) → h (k c) ≡ c
-   θ (a , b) =
-     h (k (a , b))                              ≡⟨ refl _ ⟩
-     h (to-×-≡  (f' a , g' b))                  ≡⟨ refl _ ⟩
-     (f x₀ x₁ (ap pr₁ (to-×-≡ (f' a , g' b))) ,
-      g y₀ y₁ (ap pr₂ (to-×-≡ (f' a , g' b))))  ≡⟨ ii ⟩
-     (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ≡⟨ iii ⟩
-     a , b                                      ∎
-    where
-     ii = ap₂ (λ l r → f x₀ x₁ l , g y₀ y₁ r)
-              (ap-pr₁-to-×-≡ (f' a) (g' b))
-              (ap-pr₂-to-×-≡ (f' a) (g' b))
-     iii = to-×-≡ (inverse-is-section (f x₀ x₁) (i x₀ x₁) a ,
-                   inverse-is-section (g y₀ y₁) (j y₀ y₁) b)
+     η : (c : A x₀ x₁ × B y₀ y₁) → h (s c) ≡ c
+     η (a , b) =
+       h (s (a , b))                              ≡⟨ refl _ ⟩
+       h (to-×-≡  (f' a , g' b))                  ≡⟨ refl _ ⟩
+       (f x₀ x₁ (ap pr₁ (to-×-≡ (f' a , g' b))) ,
+        g y₀ y₁ (ap pr₂ (to-×-≡ (f' a , g' b))))  ≡⟨ ii ⟩
+       (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ≡⟨ iii ⟩
+       a , b                                      ∎
+      where
+       ii = ap₂ (λ l r → f x₀ x₁ l , g y₀ y₁ r)
+                (ap-pr₁-to-×-≡ (f' a) (g' b))
+                (ap-pr₂-to-×-≡ (f' a) (g' b))
+       iii = to-×-≡ (inverse-is-section (f x₀ x₁) (i x₀ x₁) a ,
+                     inverse-is-section (g y₀ y₁) (j y₀ y₁) b)
 
-   γ : is-equiv h
-   γ = invertibles-are-equivs h (k , η , θ)
+   γ : ∀ z → is-equiv (h z)
+   γ = fiberwise-retractions-are-equivs (λ z → A x₀ (pr₁ z) × B y₀ (pr₂ z))
+         (x₀ , y₀) h (λ z → (s z , η z))
 \end{code}
-
-*Exercise*. Try to find a shorter, more conceptual proof of the
- technical lemma, maybe using the Yoneda machinery.
 
 We consider two given mathematical structures specified by `S₀` and
 `S₁`, and work with structures specified by their combination `λ X →
@@ -8085,13 +8081,14 @@ module pointed-∞-magma-equality (𝓤 : Universe) where
  _≅_ : ∞-Magma· → ∞-Magma· → 𝓤 ̇
  (X ,  _·_ , x₀) ≅ (Y ,  _*_ , y₀) =
 
-                Σ \(f : X → Y) → is-equiv f
-                               × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
-                               × (f x₀ ≡ y₀)
+                 Σ \(f : X → Y) → is-equiv f
+                                × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+                                × (f x₀ ≡ y₀)
 
 
  characterization-of-pointed-magma-≡ : is-univalent 𝓤
                                      → (A B : ∞-Magma·)
+
                                      → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-pointed-magma-≡ ua = characterization-of-join-≡ ua
@@ -8152,7 +8149,7 @@ module monoid-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
  _≅_ : Monoid → Monoid → 𝓤 ̇
 
- (X , (_·_ , d) , a) ≅ (Y , (_*_ , e) , b) =
+ (X , (_·_ , d) , _) ≅ (Y , (_*_ , e) , _) =
 
                      Σ \(f : X → Y) → is-equiv f
                                     × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
@@ -8161,6 +8158,7 @@ module monoid-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
  characterization-of-monoid-≡ : is-univalent 𝓤
                               → (A B : Monoid)
+
                               → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-monoid-≡ ua = characterization-of-≡ ua sns-data
@@ -8231,6 +8229,7 @@ module group-equality (𝓤 : Universe) (ua : is-univalent 𝓤) where
 \begin{code}
  characterization-of-group-≡ : is-univalent 𝓤
                              → (A B : Group)
+
                              → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-group-≡ ua = characterization-of-≡ ua sns-data
@@ -8271,6 +8270,7 @@ module slice-equality
 
  characterization-of-/-≡ : is-univalent 𝓤
                          → (A B : 𝓤 / R)
+
                          → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-/-≡ ua = characterization-of-≡ ua sns-data
@@ -8317,6 +8317,7 @@ module generalized-metric-space-equality
 
  characterization-of-M-≡ : is-univalent 𝓤
                          → (A B : M)
+
                          → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-M-≡ ua = characterization-of-≡-with-axioms ua
@@ -8428,6 +8429,7 @@ We introduce notation for the type of homeomorphisms:
 
  characterization-of-Space-≡ : is-univalent 𝓤
                              → (A B : Space)
+
                              → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-Space-≡ ua = characterization-of-≡-with-axioms ua
@@ -8451,6 +8453,7 @@ rephrase the above as
 
  characterization-of-Space-≡' : is-univalent 𝓤
                              → (A B : Space)
+
                              → (A ≡ B) ≃ (A ≅' B)
 
  characterization-of-Space-≡' = characterization-of-Space-≡
@@ -8504,6 +8507,7 @@ module selection-space-equality
 
  characterization-of-selection-space-≡ : is-univalent 𝓤
                                        → (A B : SelectionSpace)
+
                                        → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-selection-space-≡ ua = characterization-of-≡-with-axioms ua
@@ -8542,6 +8546,20 @@ module contrived-example-equality (𝓤 : Universe) where
 \end{code}
 
 Many of the above examples can be written in such a concise form.
+
+#### Exercises
+
+Develop the following examples, adding hypotheses and/or axioms if necessary or desirable:
+
+   > `S X = (X → X)` and in particular `S X = (X ≃ X)` by adding axioms.
+
+   > `S X = (X → X) × X`
+
+   > `S X = (F X → X)` for a given `F : 𝓤 ̇ → 𝓤 ̇ `.
+
+   > `S X = (X → R) → X` for a for a given `R : 𝓥 ̇ `.
+
+   > `S X = (X → X) → X`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="truncation"></a> Subsingleton truncation, disjunction and existence
