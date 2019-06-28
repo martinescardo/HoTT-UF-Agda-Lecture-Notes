@@ -3963,7 +3963,7 @@ module ∞-magma-identity {𝓤 : Universe} where
  sns-data = (ι , ρ , θ)
   where
    ι : (A B : ∞-Magma) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
-   ι (X , _·_) (Y , _*_) (f , i) = (λ x x' → f (x · x')) ≡ (λ x x' → f x * f x')
+   ι (X , _·_) (Y , _*_) (f , _) = (λ x x' → f (x · x')) ≡ (λ x x' → f x * f x')
 
    ρ : (A : ∞-Magma) → ι A A (id-≃ ⟨ A ⟩)
    ρ (X , _·_) = refl _·_
@@ -4105,7 +4105,7 @@ module pointed-type-identity {𝓤 : Universe} where
  sns-data = (ι , ρ , θ)
   where
    ι : (A B : Σ Pointed) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
-   ι (X , x₀) (Y , y₀) (f , i) = (f x₀ ≡ y₀)
+   ι (X , x₀) (Y , y₀) (f , _) = (f x₀ ≡ y₀)
 
    ρ : (A : Σ Pointed) → ι A A (id-≃ ⟨ A ⟩)
    ρ (X , x₀) = refl x₀
@@ -4213,7 +4213,7 @@ module sip-join where
    ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
    ρ A = (ρ₀ [ A ]₀ , ρ₁ [ A ]₁)
 
-   θ : {X : 𝓤 ̇} (s t : S X) → is-equiv (canonical-map ι ρ s t)
+   θ : {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
    θ {X} (s₀ , s₁) (t₀ , t₁) = γ
     where
      c : (p : s₀ , s₁ ≡ t₀ , t₁) → ι₀ (X , s₀) (X , t₀) (id-≃ X)
@@ -4262,7 +4262,7 @@ module pointed-∞-magma-identity {𝓤 : Universe} where
  open sip-join
 
  ∞-Magma· : 𝓤 ⁺ ̇
- ∞-Magma· = Σ \(X : 𝓤 ̇) → (X → X → X) × X
+ ∞-Magma· = Σ \(X : 𝓤 ̇ ) → (X → X → X) × X
 
  _≅_ : ∞-Magma· → ∞-Magma· → 𝓤 ̇
  (X ,  _·_ , x₀) ≅ (Y ,  _*_ , y₀) =
@@ -4399,7 +4399,7 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
 module slice-identity
         {𝓤 : Universe}
-        (R : 𝓤 ̇)
+        (R : 𝓤 ̇ )
        where
 
  open sip
@@ -4411,7 +4411,7 @@ module slice-identity
  sns-data = (ι , ρ , θ)
   where
    ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
-   ι (X , g) (Y , h) (f , i) = (g ≡ h ∘ f)
+   ι (X , g) (Y , h) (f , _) = (g ≡ h ∘ f)
 
    ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
    ρ (X , g) = refl g
@@ -4449,7 +4449,7 @@ module generalized-metric-space-identity
  sns-data = (ι , ρ , θ)
   where
    ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
-   ι (X , d) (Y , e) (f , i) = (d ≡ λ x x' → e (f x) (f x'))
+   ι (X , d) (Y , e) (f , _) = (d ≡ λ x x' → e (f x) (f x'))
 
    ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
    ρ (X , d) = refl d
@@ -4478,8 +4478,8 @@ module generalized-metric-space-identity
 
 module generalized-topological-space-identity
         (𝓤 𝓥 : Universe)
-        (R : 𝓥 ̇)
-        (axioms  : (X : 𝓤 ̇ ) → ((X → R) → R) → 𝓤 ⊔ 𝓥 ̇)
+        (R : 𝓥 ̇ )
+        (axioms  : (X : 𝓤 ̇ ) → ((X → R) → R) → 𝓤 ⊔ 𝓥 ̇ )
         (axiomss : (X : 𝓤 ̇ ) (𝓞 : (X → R) → R) → is-subsingleton (axioms X 𝓞))
        where
 
@@ -4505,7 +4505,7 @@ module generalized-topological-space-identity
  sns-data = (ι , ρ , θ)
   where
    ι : (A B : Σ ℙℙ) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
-   ι (X , 𝓞X) (Y , 𝓞Y) (f , i) = (λ (V : ℙ Y) → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y
+   ι (X , 𝓞X) (Y , 𝓞Y) (f , _) = (λ (V : ℙ Y) → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y
 
    ρ : (A : Σ ℙℙ) → ι A A (id-≃ ⟨ A ⟩)
    ρ (X , 𝓞) = refl 𝓞
@@ -4545,8 +4545,8 @@ module generalized-topological-space-identity
 
 module selection-space-identity
         (𝓤 𝓥 : Universe)
-        (R : 𝓥 ̇)
-        (axioms  : (X : 𝓤 ̇ ) → ((X → R) → X) → 𝓤 ⊔ 𝓥 ̇)
+        (R : 𝓥 ̇ )
+        (axioms  : (X : 𝓤 ̇ ) → ((X → R) → X) → 𝓤 ⊔ 𝓥 ̇ )
         (axiomss : (X : 𝓤 ̇ ) (ε : (X → R) → X) → is-subsingleton (axioms X ε))
        where
 
@@ -4563,7 +4563,7 @@ module selection-space-identity
  sns-data = (ι , ρ , θ)
   where
    ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
-   ι (X , ε) (Y , δ) (f , i) = (λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ
+   ι (X , ε) (Y , δ) (f , _) = (λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ
 
    ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
    ρ (X , ε) = refl ε
@@ -4613,7 +4613,7 @@ module contrived-example-identity (𝓤 : Universe) where
 
 module generalized-functor-algebra-equality
          {𝓤 : Universe}
-         (F : 𝓤 ̇ → 𝓤 ̇)
+         (F : 𝓤 ̇ → 𝓤 ̇ )
          (𝓕 : {X Y : 𝓤 ̇ } → (X → Y) → F X → F Y)
          (𝓕-id : {X : 𝓤 ̇ } → 𝓕 (𝑖𝑑 X) ≡ 𝑖𝑑 (F X))
        where
@@ -4627,7 +4627,7 @@ module generalized-functor-algebra-equality
  sns-data = (ι , ρ , θ)
   where
    ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
-   ι (X , α) (Y , β) (f , e) = f ∘ α ≡ β ∘ 𝓕 f
+   ι (X , α) (Y , β) (f , _) = f ∘ α ≡ β ∘ 𝓕 f
 
    ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
    ρ (X , α) = α        ≡⟨ ap (α ∘_) (𝓕-id ⁻¹) ⟩
@@ -4637,30 +4637,29 @@ module generalized-functor-algebra-equality
    θ {X} α β = γ
     where
      c : α ≡ β → α ≡ β ∘ 𝓕 id
-     c p = p ∙ ρ (X , β)
+     c = transport (α ≡_) (ρ (X , β))
 
      i : is-equiv c
      i = transport-is-equiv (α ≡_) (ρ (X , β))
 
      h : canonical-map ι ρ α β ∼ c
      h (refl _) = ρ (X , α)          ≡⟨ refl-left ⁻¹ ⟩
-                  refl α ∙ ρ (X , β) ∎
+                  refl α ∙ ρ (X , α) ∎
 
      γ : is-equiv (canonical-map ι ρ α β)
      γ = equivs-closed-under-∼ i h
 
- _≅_  :  Σ S → Σ S → 𝓤 ̇
- (X , α) ≅ (Y , β) =
+ characterization-of-functor-algebra-≡ : is-univalent 𝓤 →
 
-         Σ \(f : X → Y) → is-equiv f
-                        × (f ∘ α ≡ β ∘ 𝓕 f)
+     (X Y : 𝓤 ̇ ) (α : F X → X) (β : F Y → Y)
+   →
+     ((X , α) ≡ (Y , β))
+   ≃
+     Σ \(f : X → Y) → is-equiv f
+                    × (f ∘ α ≡ β ∘ 𝓕 f)
 
- characterization-of-functor-algebra-≡ : is-univalent 𝓤
-                                       → (A B : Σ S)
-
-                                       → (A ≡ B) ≃ (A ≅ B)
-
- characterization-of-functor-algebra-≡ ua = characterization-of-≡ ua sns-data
+ characterization-of-functor-algebra-≡ ua X Y α β =
+   characterization-of-≡ ua sns-data (X , α) (Y , β)
 
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
