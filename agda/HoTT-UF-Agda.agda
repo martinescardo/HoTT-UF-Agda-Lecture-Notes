@@ -1979,6 +1979,37 @@ J-invertible : is-univalent 𝓤
 
 J-invertible ua A φ X Y f i = J-equiv ua A φ X Y f (invertibles-are-equivs f i)
 
+automatic-equiv-functoriality :
+
+      {𝓤 : Universe}
+      (F : 𝓤 ̇ → 𝓤 ̇ )
+      (𝓕 : {X Y : 𝓤 ̇ }  → (X → Y) → F X → F Y)
+      (𝓕-id : {X : 𝓤 ̇ } → 𝓕 (𝑖𝑑 X) ≡ 𝑖𝑑 (F X))
+      {X Y Z : 𝓤 ̇ }
+      (f : X → Y)
+      (g : Y → Z)
+
+    → is-univalent 𝓤 → is-equiv f + is-equiv g → 𝓕 (g ∘ f) ≡ 𝓕 g ∘ 𝓕 f
+
+automatic-equiv-functoriality {𝓤} F 𝓕 𝓕-id {X} {Y} {Z} f g ua = γ
+  where
+   γ :  is-equiv f + is-equiv g → 𝓕 (g ∘ f) ≡ 𝓕 g ∘ 𝓕 f
+   γ (inl i) = H-equiv ua X A a Y f i g
+    where
+     A : (Y : 𝓤 ̇ ) → (X → Y) → 𝓤 ̇
+     A Y f = (g : Y → Z) → 𝓕 (g ∘ f) ≡ 𝓕 g ∘ 𝓕 f
+
+     a : (g : X → Z) → 𝓕 g ≡ 𝓕 g ∘ 𝓕 id
+     a g = ap (𝓕 g ∘_) (𝓕-id ⁻¹)
+
+   γ (inr j) = H-equiv ua Y B b Z g j f
+    where
+     B : (Z : 𝓤 ̇ ) → (Y → Z) → 𝓤 ̇
+     B Z g = (f : X → Y) → 𝓕 (g ∘ f) ≡ 𝓕 g ∘ 𝓕 f
+
+     b : (f : X → Y) → 𝓕 f ≡ 𝓕 (𝑖𝑑 Y) ∘ 𝓕 f
+     b f = ap (_∘ 𝓕 f) (𝓕-id ⁻¹)
+
 Σ-change-of-variables' : is-univalent 𝓤
                        → {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (f : X → Y)
                        → (i : is-equiv f)
@@ -4653,24 +4684,10 @@ module generalized-functor-algebra-equality
 
      (X Y : 𝓤 ̇ ) (α : F X → X) (β : F Y → Y)
    →
-     ((X , α) ≡ (Y , β))
-   ≃
-     Σ \(f : X → Y) → is-equiv f
-                    × (f ∘ α ≡ β ∘ 𝓕 f)
+     ((X , α) ≡ (Y , β))  ≃  Σ \(f : X → Y) → is-equiv f × (f ∘ α ≡ β ∘ 𝓕 f)
 
  characterization-of-functor-algebra-≡ ua X Y α β =
    characterization-of-≡ ua sns-data (X , α) (Y , β)
-
- remark : is-univalent 𝓤 →
-          {X Y Z : 𝓤 ̇ } (f : X → Y)
-        → is-equiv f → (g : Y → Z) → 𝓕 (g ∘ f) ≡ 𝓕 g ∘ 𝓕 f
- remark ua {X} {Y} {Z} f = H-equiv ua X A a Y f
-  where
-   A : (Y : 𝓤 ̇ ) → (X → Y) → 𝓤 ̇
-   A Y f = (g : Y → Z) → 𝓕 (g ∘ f) ≡ 𝓕 g ∘ 𝓕 f
-
-   a : (g : X → Z) → 𝓕 g ≡ 𝓕 g ∘ 𝓕 id
-   a g = ap (𝓕 g ∘_) (𝓕-id ⁻¹)
 
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
