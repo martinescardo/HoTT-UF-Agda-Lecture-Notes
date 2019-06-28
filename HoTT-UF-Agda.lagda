@@ -8613,6 +8613,21 @@ module generalized-functor-algebra-equality
    characterization-of-≡ ua sns-data (X , α) (Y , β)
 \end{code}
 
+We remark that actually `𝓕` does preserve composition of *equivalences*, automatically:
+
+\begin{code}
+ remark : is-univalent 𝓤 →
+          {X Y Z : 𝓤 ̇ } (f : X → Y)
+        → is-equiv f → (g : Y → Z) → 𝓕 (g ∘ f) ≡ 𝓕 g ∘ 𝓕 f
+ remark ua {X} {Y} {Z} f = H-equiv ua X A a Y f
+  where
+   A : (Y : 𝓤 ̇ ) → (X → Y) → 𝓤 ̇
+   A Y f = (g : Y → Z) → 𝓕 (g ∘ f) ≡ 𝓕 g ∘ 𝓕 f
+
+   a : (g : X → Z) → 𝓕 g ≡ 𝓕 g ∘ 𝓕 id
+   a g = ap (𝓕 g ∘_) (𝓕-id ⁻¹)
+\end{code}
+
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="truncation"></a> Subsingleton truncation, disjunction and existence
 
