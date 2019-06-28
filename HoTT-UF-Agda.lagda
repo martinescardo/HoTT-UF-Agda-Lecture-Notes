@@ -4661,9 +4661,15 @@ J-invertible : is-univalent 𝓤
 J-invertible ua A φ X Y f i = J-equiv ua A φ X Y f (invertibles-are-equivs f i)
 \end{code}
 
-For example, using `H-equiv` we see that any function `F : 𝓤 ̇ → 𝓤 ̇`
-that preserves identities automatically preserve composition of
-equivalences. More generally:
+For example, using `H-equiv` we see that for any pair of functions
+
+   > `F : 𝓤 ̇ → 𝓤 ̇ `,
+
+   > `𝓕 : {X Y : 𝓤 ̇ } → (X → Y) → F X → F Y`,
+
+if `𝓕` preserves identities then it automatically preserves
+composition of equivalences. More generally, it is enough that only
+one of the factors is an equivalence:
 
 \begin{code}
 automatic-equiv-functoriality :
@@ -4764,7 +4770,7 @@ transport-map-along-≃ {𝓤} ua {X} {Y} {Z} = J-≃ ua A a X Y
 
 An annoying feature of the use of `J` (rather than pattern matching on
 `refl`) or `J-≃` is that we have to repeat what we want to prove, as
-in the above example.
+in the above examples.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="haes"></a> Half adjoint equivalences
