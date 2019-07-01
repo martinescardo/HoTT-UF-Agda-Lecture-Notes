@@ -23,7 +23,7 @@ date : 2019-03-04
   * Warning: this file takes a long time to be checked by Agda.  We
     are avoiding a modular development so that a single pdf file with
     internal links, including to the Agda definitions, can be
-    produced. This works by first using Agda to generated html for the
+    produced. This works by first using Agda to generate html for the
     Agda code, then using jekyll to process the markdown code to
     generate html for everything else, and finally using google-chrome
     in headless mode to generate pdf from the html code.  See the makefile.
@@ -5621,10 +5621,10 @@ closed under equivalence first.)
 
 \begin{code}
 Π-cong : dfunext 𝓤 𝓥 → dfunext 𝓤 𝓦
-       → (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) (Y' : X → 𝓦 ̇ )
+       → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Y' : X → 𝓦 ̇ }
        → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
 
-Π-cong fe fe' X Y Y' φ = invertibility-gives-≃ F (G , GF , FG)
+Π-cong fe fe' {X} {Y} {Y'} φ = invertibility-gives-≃ F (G , GF , FG)
  where
   f : (x : X) → Y x → Y' x
   f x = Eq→fun (φ x)
@@ -5652,6 +5652,30 @@ closed under equivalence first.)
 
   GF : (φ : ((x : X) → Y x)) → G(F φ) ≡ φ
   GF φ = fe (λ x → gf x (φ x))
+\end{code}
+
+An application of `Π-cong` is `hfunext₂-≃`:
+
+\begin{code}
+hfunext-≃ : hfunext 𝓤 𝓥
+          → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f g : Π A)
+          → (f ≡ g) ≃ (f ∼ g)
+
+hfunext-≃ hfe f g = (happly f g , hfe f g)
+
+hfunext₂-≃ : hfunext 𝓤 (𝓥 ⊔ 𝓦) → hfunext 𝓥 𝓦
+           → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : (x : X) → Y x → 𝓦 ̇ }
+             (f g : (x : X) (y : Y x) → A x y)
+           → (f ≡ g) ≃ (∀ x y → f x y ≡ g x y)
+
+hfunext₂-≃ fe fe' {X} f g =
+
+ (f ≡ g)                  ≃⟨ hfunext-≃ fe f g ⟩
+ (∀ x → f x ≡ g x)        ≃⟨ Π-cong
+                              (hfunext-gives-dfunext fe)
+                              (hfunext-gives-dfunext fe)
+                              (λ x → hfunext-≃ fe' (f x) (g x))⟩
+ (∀ x y → f x y ≡ g x y)  ■
 
 
 precomp-invertible : dfunext 𝓥 𝓦 → dfunext 𝓤 𝓦
@@ -6637,14 +6661,14 @@ With this it is almost immediate that the Yoneda map is an embedding:
   dfe : global-dfunext
   dfe = univalence-gives-global-dfunext ua
 
+  p = λ x → (𝓨 x ≡ A)                 ≃⟨ (happly (𝓨 x) A , hfe (𝓨 x) A) ⟩
+            ((y : X) → 𝓨 x y ≡ A y)   ≃⟨ Π-cong dfe dfe
+                                           (λ y → is-univalent-≃ (ua 𝓤)
+                                           (𝓨 x y) (A y)) ⟩
+            ((y : X) → 𝓨 x y ≃ A y)   ■
+
   e : fiber 𝓨 A ≃ is-representable A
-  e = Σ-cong (λ x → (𝓨 x ≡ A)                 ≃⟨ (happly (𝓨 x) A) , hfe (𝓨 x) A ⟩
-                    ((y : X) → 𝓨 x y ≡ A y)   ≃⟨ Π-cong dfe dfe X
-                                                   (λ y → 𝓨 x y ≡ A y)
-                                                   (λ y → 𝓨 x y ≃ A y)
-                                                   (λ y → is-univalent-≃ (ua 𝓤)
-                                                           (𝓨 x y) (A y)) ⟩
-                    ((y : X) → 𝓨 x y ≃ A y)   ■)
+  e = Σ-cong p
 
   γ : is-subsingleton (fiber 𝓨 A)
   γ = equiv-to-subsingleton e (being-representable-is-a-subsingleton dfe A)

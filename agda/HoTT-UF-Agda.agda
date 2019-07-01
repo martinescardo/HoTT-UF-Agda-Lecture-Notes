@@ -2077,17 +2077,17 @@ haes-are-equivs f i = invertibles-are-equivs f (haes-are-invertible f i)
 id-is-hae : (X : 𝓤 ̇ ) → is-hae (𝑖𝑑 X)
 id-is-hae X = 𝑖𝑑 X , refl , refl , (λ x → refl (refl x))
 
-equivs-are-haes : is-univalent 𝓤
-                → {X Y : 𝓤 ̇ } (f : X → Y)
-                → is-equiv f → is-hae f
+ua-equivs-are-haes : is-univalent 𝓤
+                   → {X Y : 𝓤 ̇ } (f : X → Y)
+                   → is-equiv f → is-hae f
 
-equivs-are-haes ua {X} {Y} = J-equiv ua (λ X Y f → is-hae f) id-is-hae X Y
+ua-equivs-are-haes ua {X} {Y} = J-equiv ua (λ X Y f → is-hae f) id-is-hae X Y
 
 ua-invertibles-are-haes : is-univalent 𝓤
                         → {X Y : 𝓤 ̇ } (f : X → Y)
                         → invertible f → is-hae f
 
-ua-invertibles-are-haes ua f i = equivs-are-haes ua f (invertibles-are-equivs f i)
+ua-invertibles-are-haes ua f i = ua-equivs-are-haes ua f (invertibles-are-equivs f i)
 
 ~-naturality : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
                (f g : X → A) (H : f ∼ g) {x y : X} {p : x ≡ y}
@@ -2155,6 +2155,11 @@ invertibles-are-haes f (g , η , ε) = g , η , ε' , τ
      i   = ap (λ - → - ∙ ap f (η x)) ((⁻¹-left∙ (ε (f (g (f x)))))⁻¹)
      ii  = ∙assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η x))
      iii = ap (λ - → (ε (f (g (f x))))⁻¹ ∙ -) (q ⁻¹)
+
+equivs-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                → is-equiv f → is-hae f
+
+equivs-are-haes f i = invertibles-are-haes f (equivs-are-invertible f i)
 
 Σ-change-of-variables-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
                           → is-hae f → Σ A ≃ Σ (A ∘ f)
