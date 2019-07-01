@@ -2069,7 +2069,7 @@ Using this, the commutativity of addition can be proved by induction on the firs
      IH = +-comm x y
 \end{code}
 
-We now show that addition is cancellable in its right argument, by
+We now show that addition is cancellable in its left argument, by
 induction on the left argument:
 
 \begin{code}
