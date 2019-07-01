@@ -4834,18 +4834,18 @@ enough to give the constraint for identity maps:
 id-is-hae : (X : 𝓤 ̇ ) → is-hae (𝑖𝑑 X)
 id-is-hae X = 𝑖𝑑 X , refl , refl , (λ x → refl (refl x))
 
-equivs-are-haes : is-univalent 𝓤
-                → {X Y : 𝓤 ̇ } (f : X → Y)
-                → is-equiv f → is-hae f
+ua-equivs-are-haes : is-univalent 𝓤
+                   → {X Y : 𝓤 ̇ } (f : X → Y)
+                   → is-equiv f → is-hae f
 
-equivs-are-haes ua {X} {Y} = J-equiv ua (λ X Y f → is-hae f) id-is-hae X Y
+ua-equivs-are-haes ua {X} {Y} = J-equiv ua (λ X Y f → is-hae f) id-is-hae X Y
 
 
 ua-invertibles-are-haes : is-univalent 𝓤
                         → {X Y : 𝓤 ̇ } (f : X → Y)
                         → invertible f → is-hae f
 
-ua-invertibles-are-haes ua f i = equivs-are-haes ua f (invertibles-are-equivs f i)
+ua-invertibles-are-haes ua f i = ua-equivs-are-haes ua f (invertibles-are-equivs f i)
 \end{code}
 
 The above can be proved without univalence as follows, with a more
@@ -4931,6 +4931,12 @@ invertibles-are-haes f (g , η , ε) = g , η , ε' , τ
      i   = ap (λ - → - ∙ ap f (η x)) ((⁻¹-left∙ (ε (f (g (f x)))))⁻¹)
      ii  = ∙assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η x))
      iii = ap (λ - → (ε (f (g (f x))))⁻¹ ∙ -) (q ⁻¹)
+
+
+equivs-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                → is-equiv f → is-hae f
+
+equivs-are-haes f i = invertibles-are-haes f (equivs-are-invertible f i)
 \end{code}
 
 Here is a use of the half adjoint condition, where, compared to
@@ -7574,7 +7580,7 @@ The idea is that
   * `ι` describes favourable equivalences, which will be called homomorphisms, and
   * `ρ` then stipulates that all identity equivalences are homomorphisms.
 
-We require that two structures on the same type making the identity
+We require that any two structures on the same type making the identity
 equivalence a homomorphism must be equal in a canonical way:
 
  * The canonical map
@@ -7729,6 +7735,7 @@ module ∞-magma-identity {𝓤 : Universe} where
 
 
  _≅_ : ∞-Magma → ∞-Magma → 𝓤 ̇
+
  (X , _·_) ≅ (Y , _*_) =
 
            Σ \(f : X → Y) → is-equiv f
@@ -8269,21 +8276,36 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
             Σ \(f : X → Y) → is-equiv f
                            × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
                            × (f d ≡ e)
-\end{code}
 
-*Exercise*. In the case of groups, as opposed to monoids, the
- preservation of the unit follows from the preservation of the
- multiplication, and hence one can remove `f d ≡ e` from the above
- definition. But then one has to add more steps to the following
- proof.
 
-\begin{code}
  characterization-of-group-≡ : is-univalent 𝓤
                              → (A B : Group)
 
                              → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-group-≡ ua = characterization-of-≡ ua sns-data
+\end{code}
+
+*Exercise*. In the case of groups, as opposed to monoids, the
+ preservation of the unit follows from the preservation of the
+ multiplication, and hence one can remove `f d ≡ e` from the above
+ definition. Prove that
+
+   > `(A ≅ B) ≃ (A ≅' B)`
+
+ and hence, by transitivity,
+
+   > `(A ≡ B) ≃ (A ≅' B)`
+
+ where
+
+\begin{code}
+ _≅'_ : Group → Group → 𝓤 ̇
+
+ (X , ((_·_ , d) , _) , _) ≅' (Y , ((_*_ , e) , _) , _) =
+
+            Σ \(f : X → Y) → is-equiv f
+                           × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 \end{code}
 
 #### The slice type
@@ -8472,6 +8494,7 @@ We introduce notation for the type of homeomorphisms:
 
 \begin{code}
  _≅_  : Space → Space → 𝓤 ⊔ 𝓥 ̇
+
  (X , 𝓞X , _) ≅ (Y , 𝓞Y , _) =
 
               Σ \(f : X → Y) → is-equiv f
@@ -8496,6 +8519,7 @@ prefer to rephrase the above as
 
 \begin{code}
  _≅'_  : Space → Space → 𝓤 ⊔ 𝓥 ̇
+
  (X , F , _) ≅' (Y , G , _) =
 
              Σ \(f : X → Y) → is-equiv f
@@ -8549,6 +8573,7 @@ module selection-space-identity
 
 
  _≅_  :  SelectionSpace → SelectionSpace → 𝓤 ⊔ 𝓥 ̇
+
  (X , ε , a) ≅ (Y , δ , b) =
 
              Σ \(f : X → Y) → is-equiv f
@@ -9354,7 +9379,7 @@ which is known to be validated by the simplicial-set model.
 It is also an open problem whether the resizing principles discussed
 below have a computational interpretation.
 
-#### Propositinal resizing
+#### Propositional resizing
 
 We say that a type `X` has size `𝓥` if it is equivalent to a type in the
 universe `𝓥`:
@@ -9402,6 +9427,7 @@ resize-is-a-subsingleton ρ P i = equiv-to-subsingleton (≃-sym (pr₂ (ρ P i)
 to-resize : (ρ : propositional-resizing 𝓤 𝓥)
             (P : 𝓤 ̇ ) (i : is-subsingleton P)
           → P → resize ρ P i
+
 to-resize ρ P i = Eq→fun (pr₂ (ρ P i))
 
 

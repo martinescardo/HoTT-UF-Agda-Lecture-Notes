@@ -4010,6 +4010,7 @@ module ∞-magma-identity {𝓤 : Universe} where
    θ _·_ _*_ = equivs-closed-under-∼ (id-is-equiv (_·_ ≡ _*_)) h
 
  _≅_ : ∞-Magma → ∞-Magma → 𝓤 ̇
+
  (X , _·_) ≅ (Y , _*_) =
 
            Σ \(f : X → Y) → is-equiv f
@@ -4428,6 +4429,13 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  characterization-of-group-≡ ua = characterization-of-≡ ua sns-data
 
+ _≅'_ : Group → Group → 𝓤 ̇
+
+ (X , ((_·_ , d) , _) , _) ≅' (Y , ((_*_ , e) , _) , _) =
+
+            Σ \(f : X → Y) → is-equiv f
+                           × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+
 module slice-identity
         {𝓤 : Universe}
         (R : 𝓤 ̇ )
@@ -4548,6 +4556,7 @@ module generalized-topological-space-identity
    θ {X} 𝓞 𝓞' = equivs-closed-under-∼ (id-is-equiv (𝓞 ≡ 𝓞')) h
 
  _≅_  : Space → Space → 𝓤 ⊔ 𝓥 ̇
+
  (X , 𝓞X , _) ≅ (Y , 𝓞Y , _) =
 
               Σ \(f : X → Y) → is-equiv f
@@ -4562,6 +4571,7 @@ module generalized-topological-space-identity
                                    sns-data axioms axiomss
 
  _≅'_  : Space → Space → 𝓤 ⊔ 𝓥 ̇
+
  (X , F , _) ≅' (Y , G , _) =
 
              Σ \(f : X → Y) → is-equiv f
@@ -4609,6 +4619,7 @@ module selection-space-identity
      γ = equivs-closed-under-∼ (id-is-equiv (ε ≡ δ)) h
 
  _≅_  :  SelectionSpace → SelectionSpace → 𝓤 ⊔ 𝓥 ̇
+
  (X , ε , a) ≅ (Y , δ , b) =
 
              Σ \(f : X → Y) → is-equiv f
@@ -5127,6 +5138,7 @@ resize-is-a-subsingleton ρ P i = equiv-to-subsingleton (≃-sym (pr₂ (ρ P i)
 to-resize : (ρ : propositional-resizing 𝓤 𝓥)
             (P : 𝓤 ̇ ) (i : is-subsingleton P)
           → P → resize ρ P i
+
 to-resize ρ P i = Eq→fun (pr₂ (ρ P i))
 
 from-resize : (ρ : propositional-resizing 𝓤 𝓥)
