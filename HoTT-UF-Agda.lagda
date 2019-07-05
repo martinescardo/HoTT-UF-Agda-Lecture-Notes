@@ -4955,7 +4955,7 @@ equivs-are-haes f i = invertibles-are-haes f (equivs-are-invertible f i)
 \end{code}
 
 Here is a use of the half adjoint condition, where, compared to
-[`Σ-change-of-variable`](HoTT-UF-Agda.html#Σ-change-of-variable), we
+[`Σ-change-of-variable'`](HoTT-UF-Agda.html#Σ-change-of-variable), we
 remove univalence from the hypothesis, generalize the universe of the
 type `Y`, and weaken equality to equivalence in the conclusion. Notice
 that the proof starts as that of
