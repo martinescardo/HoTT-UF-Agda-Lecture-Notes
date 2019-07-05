@@ -7882,23 +7882,11 @@ In the following construction:
      γ : is-equiv (canonical-map ι' ρ' (s , a) (t , b))
      γ = equivs-closed-under-∼ e l
 
-
- _≃⟦_⟧_ : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ }
-
-        → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s)
-        → SNS S 𝓦
-        → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s)
-
-        → 𝓤 ⊔ 𝓦 ̇
-
-
- A ≃⟦ σ ⟧ B = Σ \(f : ⟪ A ⟫ → ⟪ B ⟫)
-            → Σ \(i : is-equiv f) → homomorphic σ [ A ] [ B ] (f , i)
 \end{code}
 
-And with this we can formulate and prove what the addition of axioms
-achieves, namely that the characterization of the identity type
-remains the same, ignoring the axioms:
+And with this we can formulate and prove what `add-axioms` achieves,
+namely that the characterization of the identity type remains the
+same, ignoring the axioms:
 
 \begin{code}
  characterization-of-≡-with-axioms :
@@ -7911,7 +7899,7 @@ remains the same, ignoring the axioms:
    →
      (A B : Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s)
    →
-     (A ≡ B) ≃ (A ≃⟦ σ ⟧ B)
+     (A ≡ B) ≃ ([ A ] ≃[ σ ] [ B ])
 
  characterization-of-≡-with-axioms ua σ axioms i =
    characterization-of-≡ ua (add-axioms axioms i σ)
