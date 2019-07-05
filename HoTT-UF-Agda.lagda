@@ -7818,13 +7818,13 @@ For that purpose we first define a forgetful map `Σ S' → Σ S` and
 an underlying-type function `Σ S → 𝓤`:
 
 \begin{code}
- [_] : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ }
+ [_] : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ }
      → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s) → Σ S
 
  [ X , s , _ ] = (X , s)
 
 
- ⟪_⟫ : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ }
+ ⟪_⟫ : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ }
      → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s) → 𝓤 ̇
 
  ⟪ X , _ , _ ⟫ = X
@@ -7844,17 +7844,17 @@ In the following construction:
 
 \begin{code}
  add-axioms : {S : 𝓤 ̇ → 𝓥 ̇ }
-              (axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ )
+              (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
             → ((X : 𝓤 ̇ ) (s : S X) → is-subsingleton (axioms X s))
-            → SNS S 𝓦
-            → SNS (λ X → Σ \(s : S X) → axioms X s) 𝓦
+            → SNS S 𝓣
+            → SNS (λ X → Σ \(s : S X) → axioms X s) 𝓣
 
- add-axioms {𝓤} {𝓥} {𝓦} {S} axioms i (ι , ρ , θ) = ι' , ρ' , θ'
+ add-axioms {𝓤} {𝓥} {𝓦} {𝓣} {S} axioms i (ι , ρ , θ) = ι' , ρ' , θ'
   where
-   S' : 𝓤 ̇ → 𝓥  ̇
+   S' : 𝓤 ̇ → 𝓥 ⊔ 𝓦  ̇
    S' X = Σ \(s : S X) → axioms X s
 
-   ι' : (A B : Σ S') → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇
+   ι' : (A B : Σ S') → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓣 ̇
    ι' A B = ι [ A ] [ B ]
 
    ρ' : (A : Σ S') → ι' A A (id-≃ ⟨ A ⟩)
@@ -7893,8 +7893,8 @@ same, ignoring the axioms:
 
      is-univalent 𝓤
    → {S : 𝓤 ̇ → 𝓥 ̇ }
-     (σ : SNS S 𝓦)
-     (axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ )
+     (σ : SNS S 𝓣)
+     (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
    → ((X : 𝓤 ̇ ) (s : S X) → is-subsingleton (axioms X s))
    →
      (A B : Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s)
