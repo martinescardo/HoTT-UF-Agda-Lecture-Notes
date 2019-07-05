@@ -8716,6 +8716,460 @@ module generalized-functor-algebra-equality
    characterization-of-≡ ua sns-data (X , α) (Y , β)
 \end{code}
 
+#### Type-valued preorders and categories
+
+This example is harder than the previous ones.
+
+A type-valued preorder on a type `X` is a type-valued relation which
+is reflexive and transitive. Type-valued preorder structure is defined
+as follows:
+
+\begin{code}
+type-valued-preorder-S : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
+type-valued-preorder-S {𝓤} {𝓥} X = Σ \(_≤_ : X → X → 𝓥 ̇)
+                                 → ((x : X) → x ≤ x)
+                                 × ((x y z : X) → x ≤ y → y ≤ z → x ≤ z)
+\end{code}
+
+A category, also known as a 1-category, is a type-valued preorder
+subject to suitable axioms, where `≤` is traditionally written `hom`,
+and where reflexivities give identities, and transitivity gives
+composition.
+
+We begin with type-valued preorders, using categorical notation and
+terminology for them.
+
+\begin{code}
+module type-valued-preorder-identity
+        (𝓤 𝓥 : Universe)
+        (ua : Univalence)
+       where
+
+ open sip
+
+ fe : global-dfunext
+ fe = univalence-gives-global-dfunext ua
+
+ hfe : global-hfunext
+ hfe = univalence-gives-global-hfunext ua
+
+ S : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
+ S = type-valued-preorder-S {𝓤} {𝓥}
+
+ Type-valued-preorder : (𝓤 ⊔ 𝓥) ⁺ ̇
+ Type-valued-preorder = Σ S
+
+\end{code}
+
+But we will use the shorter notation `Σ S` in this submodule.
+
+The type of objects of a type-valued preorder:
+
+\begin{code}
+ Ob : Σ S → 𝓤 ̇
+ Ob (X , homX , idX , compX ) = X
+\end{code}
+
+Its hom-types:
+
+\begin{code}
+ hom : (𝓧 : Σ S) → Ob 𝓧 → Ob 𝓧 → 𝓥 ̇
+ hom (X , homX , idX , compX) = homX
+\end{code}
+
+Its identities (or reflexivities):
+
+\begin{code}
+ 𝒾𝒹 : (𝓧 : Σ S) → (x : Ob 𝓧) → hom 𝓧 x x
+ 𝒾𝒹 (X , homX , idX , compX) = idX
+\end{code}
+
+Its composition law (or transitivity):
+
+\begin{code}
+ comp : (𝓧 : Σ S) → (x y z : Ob 𝓧) (f : hom 𝓧 x y) (g : hom 𝓧 y z) → hom 𝓧 x z
+ comp (X , homX , idX , compX) = compX
+\end{code}
+
+Notice that we choose the "diagramatic order" for composition.
+
+The functoriality of a pair `F` and `𝓕` (where in category theory the latter is also written `F`, by an [abuse of notation](https://en.wikipedia.org/wiki/Abuse_of_notation)) says that `𝓕` preserves identities and composition:
+
+\begin{code}
+ functorial : (𝓧 𝓐 : Σ S)
+            → (F : Ob 𝓧 → Ob 𝓐)
+            → (𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+            → 𝓤 ⊔ 𝓥 ̇
+ functorial 𝓧 𝓐 F 𝓕' = pidentity × pcomposition
+  where
+\end{code}
+
+In order to express the preservation of identities and composition in
+traditional form, we first define, locally, a symbol for composition
+in applicative order, making the objects implicit:
+
+\begin{code}
+
+   _o_ : {x y z : Ob 𝓧} → hom 𝓧 y z → hom 𝓧 x y → hom 𝓧 x z
+   g o f = comp 𝓧 _ _ _ f g
+
+   _□_ : {a b c : Ob 𝓐} → hom 𝓐 b c → hom 𝓐 a b → hom 𝓐 a c
+   g □ f = comp 𝓐 _ _ _ f g
+\end{code}
+
+And we also make the object parameters of the action of the function
+on arrows implicit:
+
+\begin{code}
+
+   𝓕 : {x y : Ob 𝓧} → hom 𝓧 x y → hom 𝓐 (F x) (F y)
+   𝓕 f = 𝓕' _ _ f
+\end{code}
+
+Preservation of identities:
+
+\begin{code}
+   pidentity = (λ x → 𝓕 (𝒾𝒹 𝓧 x)) ≡ (λ x → 𝒾𝒹 𝓐 (F x))
+\end{code}
+
+Preservation of composition:
+
+\begin{code}
+   pcomposition = (λ x y z (f : hom 𝓧 x y) (g : hom 𝓧 y z) → 𝓕 (g o f))
+                ≡ (λ x y z (f : hom 𝓧 x y) (g : hom 𝓧 y z) → 𝓕 g □ 𝓕 f)
+\end{code}
+
+This time we will need two steps to characterize equality of
+type-valued preorders. The first one is as above, by considering a
+standard notion of structure:
+
+\begin{code}
+ sns-data : SNS S (𝓤 ⊔ (𝓥 ⁺))
+ sns-data = (ι , ρ , θ)
+  where
+   ι : (𝓧 𝓐 : Σ S) → ⟨ 𝓧 ⟩ ≃ ⟨ 𝓐 ⟩ → 𝓤 ⊔ (𝓥 ⁺) ̇
+   ι 𝓧 𝓐 (F , _) = Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
+                          → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)
+
+   ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
+   ρ (X , hom , 𝟏 , _o_) = refl hom , refl 𝟏 , refl _o_
+
+   θ : {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
+   θ {X} (homX , idX , compX) (homA , idA , compA) = g
+    where
+     φ = canonical-map ι ρ (homX , idX , compX) (homA , idA , compA)
+
+     γ : codomain φ → domain φ
+     γ (refl _ , refl _ , refl _) = refl _
+
+     η : γ ∘ φ ∼ id
+     η (refl _) = refl _
+
+     ε : φ ∘ γ ∼ id
+     ε (refl _ , refl _ , refl _) = refl _
+
+     g : is-equiv φ
+     g = invertibles-are-equivs φ (γ , η , ε)
+\end{code}
+
+The above constructions are short thanks to
+computations-under-the-hood performed by Agda, and so may require some
+effort from the part of the reader to unravel them.
+
+The above automatically gives a characterization of equality of
+preorders. But this characterization uses another equality. The second
+step translates this equality into an equivalence:
+
+\begin{code}
+ lemma : (𝓧 𝓐 : Σ S) (F : Ob 𝓧 → Ob 𝓐)
+       →
+         (Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
+                → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p))
+       ≃
+         (Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                → (∀ x y → is-equiv (𝓕 x y))
+                × functorial 𝓧 𝓐 F 𝓕)
+
+ lemma 𝓧 𝓐 F = γ
+  where
+   e = (hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))                                         ≃⟨ i   ⟩
+       (∀ x y → hom 𝓧 x y ≡ hom 𝓐 (F x) (F y))                                     ≃⟨ ii  ⟩
+       (∀ x y → hom 𝓧 x y ≃ hom 𝓐 (F x) (F y))                                     ≃⟨ iii ⟩
+       (∀ x → Σ \(φ : ∀ y → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                    → ∀ y → is-equiv (φ y))                                         ≃⟨ iv  ⟩
+       (Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+              → (∀ x y → is-equiv (𝓕 x y)))                                        ■
+    where
+     i   = hfunext₂-≃ hfe hfe (hom 𝓧 )  λ x y → hom 𝓐 (F x) (F y)
+     ii  = Π-cong fe fe
+             (λ x → Π-cong fe fe
+                     (λ y → is-univalent-≃ (ua 𝓥) (hom 𝓧 x y) (hom 𝓐 (F x) (F y))))
+     iii = Π-cong fe fe (λ y → ΠΣ-distr-≃)
+     iv  = ΠΣ-distr-≃
+\end{code}
+
+Here Agda silently performs a laborious computation to accept the
+definition of item `v`:
+
+\begin{code}
+
+   v : (p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
+     → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)
+     ≃ functorial 𝓧 𝓐 F (pr₁ (Eq→fun e p))
+
+   v (refl _) = id-≃ _
+
+   γ =
+
+    (Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
+           → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p))   ≃⟨ vi   ⟩
+
+    (Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
+           → functorial 𝓧 𝓐 F (pr₁ (Eq→fun e p)))                    ≃⟨ vii  ⟩
+
+    (Σ \(σ : Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                   → (∀ x y → is-equiv (𝓕 x y)))
+           → functorial 𝓧 𝓐 F (pr₁ σ))                               ≃⟨ viii ⟩
+
+    (Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                  → (∀ x y → is-equiv (𝓕 x y))
+                  × functorial 𝓧 𝓐 F 𝓕)                              ■
+    where
+     vi   = Σ-cong v
+     vii  = ≃-sym (Σ-change-of-variable _ (Eq→fun e) (Eq→fun-is-equiv e))
+     viii = Σ-assoc
+\end{code}
+
+Combining the two steps, we get the following characterization of
+equality of type-valued preorders in terms of equivalences:
+
+\begin{code}
+ characterization-of-type-valued-preorder-≡ :
+
+      (𝓧 𝓐 : Σ S)
+    →
+      (𝓧 ≡ 𝓐)
+    ≃
+      (Σ \(F : Ob 𝓧 → Ob 𝓐)
+             → is-equiv F
+             × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                     → (∀ x y → is-equiv (𝓕 x y))
+                     × functorial 𝓧 𝓐 F 𝓕)
+
+ characterization-of-type-valued-preorder-≡ 𝓧 𝓐 =
+
+   (𝓧 ≡ 𝓐)                                                                ≃⟨ i ⟩
+   (Σ \(F : Ob 𝓧 → Ob 𝓐)
+          → is-equiv F
+          × Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
+                  → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)) ≃⟨ ii ⟩
+   _                                                                       ■
+  where
+   i  = characterization-of-≡ (ua 𝓤) sns-data 𝓧 𝓐
+   ii = Σ-cong (λ F → Σ-cong λ _ → lemma 𝓧 𝓐 F)
+\end{code}
+
+Now we consider type-valued preorders subject to arbitrary axioms. The
+only reason we need consider this explicitly is that again we need to
+combine two steps. The second step is the same, but the first step is
+modified to add axioms.
+
+\begin{code}
+module type-valued-preorder-with-axioms-identity
+        (𝓤 𝓥 𝓦 : Universe)
+        (ua : Univalence)
+        (axioms  : (X : 𝓤 ̇ ) → type-valued-preorder-S {𝓤} {𝓥} X → 𝓦 ̇ )
+        (axiomss : (X : 𝓤 ̇ ) (s : type-valued-preorder-S X) → is-subsingleton (axioms X s))
+      where
+
+ open sip
+ open sip-with-axioms
+ open type-valued-preorder-identity 𝓤 𝓥 ua
+
+ S' : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦 ̇
+ S' X = Σ \(s : S X) → axioms X s
+
+ sns-data' : SNS S' (𝓤 ⊔ (𝓥 ⁺))
+ sns-data' = add-axioms axioms axiomss sns-data
+\end{code}
+
+Recall that `[_]` is the map that forgets the axioms.
+
+\begin{code}
+ characterization-of-type-valued-preorder-≡-with-axioms :
+
+      (𝓧' 𝓐' : Σ S')
+    →
+      (𝓧' ≡ 𝓐')
+    ≃
+      (Σ \(F : Ob [ 𝓧' ] → Ob [ 𝓐' ])
+             → is-equiv F
+             × Σ \(𝓕 : (x y : Ob [ 𝓧' ]) → hom [ 𝓧' ] x y → hom [ 𝓐' ] (F x) (F y))
+                     → (∀ x y → is-equiv (𝓕 x y))
+                     × functorial [ 𝓧' ] [ 𝓐' ] F 𝓕)
+
+ characterization-of-type-valued-preorder-≡-with-axioms 𝓧' 𝓐' =
+
+  (𝓧' ≡ 𝓐')                     ≃⟨ i ⟩
+  ([ 𝓧' ] ≃[ sns-data ] [ 𝓐' ]) ≃⟨ ii ⟩
+  _                              ■
+
+  where
+   i  = characterization-of-≡-with-axioms (ua 𝓤) sns-data axioms axiomss 𝓧' 𝓐'
+   ii = Σ-cong (λ F → Σ-cong λ _ → lemma [ 𝓧' ] [ 𝓐' ] F)
+\end{code}
+
+By choosing suitable axioms, we get categories:
+
+\begin{code}
+module category-identity
+        (𝓤 𝓥 : Universe)
+        (ua : Univalence)
+      where
+
+ fe : global-dfunext
+ fe = univalence-gives-global-dfunext ua
+
+ hfe : global-hfunext
+ hfe = univalence-gives-global-hfunext ua
+
+ S : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
+ S = type-valued-preorder-S {𝓤} {𝓥}
+\end{code}
+
+The axioms say that
+
+  * The homs form sets, rather than arbitrary types.
+  * The identity is left and right neutral.
+  * Composition is associativity.
+
+\begin{code}
+ category-axioms : (X : 𝓤 ̇ ) → S X → 𝓤 ⊔ 𝓥 ̇
+ category-axioms X (homX , idX , compX) = hom-sets × identityl × identityr × associativity
+  where
+   _o_ : {x y z : X} → homX y z → homX x y → homX x z
+   g o f = compX _ _ _ f g
+
+   hom-sets      = ∀ x y → is-set (homX x y)
+   identityl     = ∀ x y (f : homX x y) → f o (idX x) ≡ f
+   identityr     = ∀ x y (f : homX x y) → (idX y) o f ≡ f
+   associativity = ∀ x y z t (f : homX x y) (g : homX y z) (h : homX z t)
+                 → (h o g) o f ≡ h o (g o f)
+\end{code}
+
+The first axiom is subsingleton valued because being a set is a
+subsingleton type. The second and the third axioms are subsingleton
+valued in the presence of the first axiom, because equations between
+elements of sets are subsingletons, by definition of set. And because
+subsingletons are closed under products, the category axioms form a
+subsingleton type.
+
+\begin{code}
+ category-axioms-subsingleton : (X : 𝓤 ̇ ) (s : S X) → is-subsingleton (category-axioms X s)
+ category-axioms-subsingleton X (homX , idX , compX) (s , l , r , a) = γ (s , l , r , a)
+  where
+   γ : is-subsingleton (category-axioms X (homX , idX , compX))
+   γ = ×-is-subsingleton ss (×-is-subsingleton ls (×-is-subsingleton rs as))
+    where
+     ss = Π-is-subsingleton fe
+           (λ x → Π-is-subsingleton fe
+           (λ y → being-set-is-a-subsingleton fe))
+
+     ls = Π-is-subsingleton fe
+           (λ x → Π-is-subsingleton fe
+           (λ y → Π-is-subsingleton fe
+           (λ f → s x y (compX x x y (idX x) f) f)))
+
+     rs = Π-is-subsingleton fe
+           (λ x → Π-is-subsingleton fe
+           (λ y → Π-is-subsingleton fe
+           (λ f → s x y (compX x y y f (idX y)) f)))
+
+     as = Π-is-subsingleton fe
+           (λ x → Π-is-subsingleton fe
+           (λ y → Π-is-subsingleton fe
+           (λ z → Π-is-subsingleton fe
+           (λ t → Π-is-subsingleton fe
+           (λ f → Π-is-subsingleton fe
+           (λ g → Π-is-subsingleton fe
+           (λ h → s x t (compX x y t f (compX y z t g h))
+                        (compX x z t (compX x y z f g) h))))))))
+\end{code}
+
+We are now ready to define the type of categories, as a subtype of
+that of type-valued preorders:
+
+\begin{code}
+ Category : (𝓤 ⊔ 𝓥)⁺ ̇
+ Category = Σ \(X : 𝓤 ̇) → Σ \(s : S X) → category-axioms X s
+\end{code}
+
+We reuse of above names in a slightly different way, taking into
+account that now we have axioms, which we simply ignore:
+
+\begin{code}
+ Ob : Category → 𝓤 ̇
+ Ob (X , (homX , idX , compX) , _) = X
+
+ hom : (𝓧 : Category) → Ob 𝓧 → Ob 𝓧 → 𝓥 ̇
+ hom (X , (homX , idX , compX) , _) = homX
+
+
+ 𝒾𝒹 : (𝓧 : Category) → (x : Ob 𝓧) → hom 𝓧 x x
+ 𝒾𝒹 (X , (homX , idX , compX) , _) = idX
+
+ comp : (𝓧 : Category) → (x y z : Ob 𝓧) (f : hom 𝓧 x y) (g : hom 𝓧 y z) → hom 𝓧 x z
+ comp (X , (homX , idX , compX) , _) = compX
+
+
+ functorial : (𝓧 𝓐 : Category)
+            → (F : Ob 𝓧 → Ob 𝓐)
+            → (𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+            → 𝓤 ⊔ 𝓥 ̇
+
+ functorial 𝓧 𝓐 F 𝓕' = pidentity × pcomposition
+  where
+   _o_ : {x y z : Ob 𝓧} → hom 𝓧 y z → hom 𝓧 x y → hom 𝓧 x z
+   g o f = comp 𝓧 _ _ _ f g
+
+   _□_ : {a b c : Ob 𝓐} → hom 𝓐 b c → hom 𝓐 a b → hom 𝓐 a c
+   g □ f = comp 𝓐 _ _ _ f g
+
+   𝓕 : {x y : Ob 𝓧} → hom 𝓧 x y → hom 𝓐 (F x) (F y)
+   𝓕 f = 𝓕' _ _ f
+
+   pidentity    = (λ x → 𝓕 (𝒾𝒹 𝓧 x)) ≡ (λ x → 𝒾𝒹 𝓐 (F x))
+
+   pcomposition = (λ x y z (f : hom 𝓧 x y) (g : hom 𝓧 y z) → 𝓕 (g o f))
+                ≡ (λ x y z (f : hom 𝓧 x y) (g : hom 𝓧 y z) → 𝓕 g □ 𝓕 f)
+\end{code}
+
+We now apply the module `type-valued-preorder-with-axioms-identity` to
+get the following characterization of identity of categories:
+
+\begin{code}
+ characterization-of-category-≃ :
+
+      (𝓧 𝓐 : Category)
+    →
+      (𝓧 ≡ 𝓐)
+    ≃
+      (Σ \(F : Ob 𝓧 → Ob 𝓐)
+             → is-equiv F
+             × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                     → (∀ x y → is-equiv (𝓕 x y))
+                     × functorial 𝓧 𝓐 F 𝓕)
+
+ characterization-of-category-≃ = characterization-of-type-valued-preorder-≡-with-axioms
+                                   category-axioms category-axioms-subsingleton
+  where
+   open type-valued-preorder-with-axioms-identity 𝓤 𝓥 (𝓤 ⊔ 𝓥) ua
+\end{code}
+
+The HoTT book has a characterization of identity of categories as
+equivalence of categories in the traditional sense of category theory,
+assuming that the categories are univalent in a certain sense.
+
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="truncation"></a> Subsingleton truncation, disjunction and existence
 
