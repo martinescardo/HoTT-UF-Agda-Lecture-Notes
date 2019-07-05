@@ -5463,7 +5463,7 @@ univalence-is-a-subsingleton {𝓤} ua⁺ ua ua' = p
   i : is-subsingleton (is-univalent 𝓤)
   i = Π-is-subsingleton dfe₂
        (λ X → Π-is-subsingleton dfe₂
-               (λ Y → being-equiv-is-a-subsingleton dfe₁ dfe₂ (Id→Eq X Y)))
+       (λ Y → being-equiv-is-a-subsingleton dfe₁ dfe₂ (Id→Eq X Y)))
 
   p : ua ≡ ua'
   p = i ua ua'
@@ -5580,7 +5580,7 @@ being-set-is-a-subsingleton : dfunext 𝓤 𝓤 → {X : 𝓤 ̇ }
 being-set-is-a-subsingleton fe =
  Π-is-subsingleton fe
   (λ x → Π-is-subsingleton fe
-       (λ y → being-subsingleton-is-a-subsingleton fe))
+  (λ y → being-subsingleton-is-a-subsingleton fe))
 \end{code}
 
 More generally:
@@ -5596,7 +5596,7 @@ hlevel-relation-is-a-subsingleton {𝓤} fe zero X =
 hlevel-relation-is-a-subsingleton fe (succ n) X =
  Π-is-subsingleton fe
   (λ x → Π-is-subsingleton fe
-          (λ x' → hlevel-relation-is-a-subsingleton fe n (x ≡ x')))
+  (λ x' → hlevel-relation-is-a-subsingleton fe n (x ≡ x')))
 \end{code}
 
 Composition of equivalences is associative:
@@ -6005,7 +6005,9 @@ powersets-are-sets : hfunext 𝓤 (𝓥 ⁺) → dfunext 𝓥 𝓥 → propext �
 powersets-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-a-set fe' pe)
 \end{code}
 
-The above considers `X : 𝓤` and `Ω 𝓥`. When the two universes `𝓤` and `𝓥` are the same, we adopt the usual notation `𝓟 X` for the powerset `X → Ω 𝓤` of `X`.
+The above considers `X : 𝓤` and `Ω 𝓥`. When the two universes `𝓤` and
+`𝓥` are the same, we adopt the usual notation `𝓟 X` for the powerset
+`X → Ω 𝓤` of `X`.
 
 \begin{code}
 𝓟 : 𝓤 ̇ → 𝓤 ⁺ ̇
@@ -6034,7 +6036,7 @@ A ⊆ B = ∀ x → x ∈ A → x ∈ B
 
 ⊆-is-subsingleton fe A B = Π-is-subsingleton fe
                             (λ x → Π-is-subsingleton fe
-                                     (λ _ → ∈-is-subsingleton x B))
+                            (λ _ → ∈-is-subsingleton x B))
 
 
 ⊆-refl : {X : 𝓤 ̇ } (A : 𝓟 X) → A ⊆ A
@@ -7400,8 +7402,8 @@ sset by definition.
 
  being-magma-hom-is-a-subsingleton M N f =
   Π-is-subsingleton dfe
-    (λ x → Π-is-subsingleton dfe
-             (λ y → magma-is-set N (f (x ·⟨ M ⟩ y)) (f x ·⟨ N ⟩ f y)))
+   (λ x → Π-is-subsingleton dfe
+   (λ y → magma-is-set N (f (x ·⟨ M ⟩ y)) (f x ·⟨ N ⟩ f y)))
 
 
  being-magma-iso-is-a-subsingleton : (M N : Magma 𝓤) (f : ⟨ M ⟩ → ⟨ N ⟩)
@@ -8220,13 +8222,19 @@ module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
    i = pr₁ s
 
    γ : is-subsingleton (monoid-axioms X (_·_ , e))
-   γ = ×-is-subsingleton (being-set-is-a-subsingleton dfe)
-       (×-is-subsingleton (Π-is-subsingleton dfe (λ x → i (e · x) x))
-         (×-is-subsingleton (Π-is-subsingleton dfe (λ x → i (x · e) x))
-           (Π-is-subsingleton dfe
-             (λ x → Π-is-subsingleton dfe
-                     (λ y → Π-is-subsingleton dfe
-                             (λ z → i ((x · y) · z) (x · (y · z))))))))
+   γ = ×-is-subsingleton
+         (being-set-is-a-subsingleton dfe)
+      (×-is-subsingleton
+         (Π-is-subsingleton dfe
+           (λ x → i (e · x) x))
+      (×-is-subsingleton
+         (Π-is-subsingleton dfe
+           (λ x → i (x · e) x))
+         (Π-is-subsingleton dfe
+           (λ x → Π-is-subsingleton dfe
+           (λ y → Π-is-subsingleton dfe
+           (λ z → i ((x · y) · z) (x · (y · z))))))))
+
 
  sns-data : SNS (λ X → Σ \(s : monoid-structure X) → monoid-axioms X s) 𝓤
  sns-data = add-axioms
@@ -8734,9 +8742,9 @@ inhabitation-is-a-subsingleton : global-dfunext → (X : 𝓤 ̇ )
 
 inhabitation-is-a-subsingleton fe X =
  Π-is-subsingleton fe
-   λ P → Π-is-subsingleton fe
-          (λ (s : is-subsingleton P)
-                → Π-is-subsingleton fe (λ (f : X → P) → s))
+   (λ P → Π-is-subsingleton fe
+   (λ (s : is-subsingleton P) → Π-is-subsingleton fe
+   (λ (f : X → P) → s)))
 
 pointed-is-inhabited : {X : 𝓤 ̇ } → X → is-inhabited X
 pointed-is-inhabited x = λ P s f → f x
@@ -9519,7 +9527,7 @@ PR-is-a-subsingleton : Univalence → is-subsingleton (propositional-resizing �
 PR-is-a-subsingleton {𝓤} {𝓥} ua =
  Π-is-subsingleton (univalence-gives-global-dfunext ua)
   (λ P → Π-is-subsingleton (univalence-gives-global-dfunext ua)
-          (λ i → has-size-is-a-subsingleton ua P 𝓥))
+  (λ i → has-size-is-a-subsingleton ua P 𝓥))
 \end{code}
 
 *Exercise.* [It is
@@ -9874,7 +9882,7 @@ propositional resizing:
     i : (x : X) → is-subsingleton (β x)
     i x = Π-is-subsingleton fe
            (λ A → Π-is-subsingleton fe
-                   (λ _ → ∈-is-subsingleton x A))
+           (λ _ → ∈-is-subsingleton x A))
 
     B : 𝓟 X
     B x = (resize ρ (β x) (i x) , resize-is-a-subsingleton ρ (β x) (i x))
