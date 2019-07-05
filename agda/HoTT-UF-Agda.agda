@@ -114,8 +114,8 @@ data _+_ {𝓤 𝓥} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
  inr : Y → X + Y
 
 +-induction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X + Y → 𝓦 ̇ )
-            → ((x : X) → A(inl x))
-            → ((y : Y) → A(inr y))
+            → ((x : X) → A (inl x))
+            → ((y : Y) → A (inr y))
             → (z : X + Y) → A z
 
 +-induction A f g (inl x) = f x
@@ -150,7 +150,7 @@ pr₂ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → (z : Σ Y) → Y (pr₁ z)
 pr₂ (x , y) = y
 
 Σ-induction : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : Σ Y → 𝓦 ̇ }
-            → ((x : X) (y : Y x) → A(x , y))
+            → ((x : X) (y : Y x) → A (x , y))
             → (z : Σ Y) → A z
 
 Σ-induction g (x , y) = g x y
@@ -1153,6 +1153,11 @@ invertibility-gives-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 
 invertibility-gives-≃ f i = f , invertibles-are-equivs f i
 
+Σ-induction-≃ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : Σ Y → 𝓦 ̇ }
+              → ((x : X) (y : Y x) → A (x , y)) ≃ ((z : Σ Y) → A z)
+
+Σ-induction-≃ = invertibility-gives-≃ Σ-induction (curry , refl , refl)
+
 id-≃ : (X : 𝓤 ̇ ) → X ≃ X
 id-≃ X = 𝑖𝑑 X , id-is-equiv X
 
@@ -2010,12 +2015,12 @@ automatic-equiv-functoriality {𝓤} F 𝓕 𝓕-id {X} {Y} {Z} f g ua = γ
      b : (f : X → Y) → 𝓕 f ≡ 𝓕 (𝑖𝑑 Y) ∘ 𝓕 f
      b f = ap (_∘ 𝓕 f) (𝓕-id ⁻¹)
 
-Σ-change-of-variables' : is-univalent 𝓤
-                       → {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (f : X → Y)
-                       → (i : is-equiv f)
-                       → (Σ \(x : X) → A x) ≡ (Σ \(y : Y) → A (inverse f i y))
+Σ-change-of-variable' : is-univalent 𝓤
+                      → {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (f : X → Y)
+                      → (i : is-equiv f)
+                      → (Σ \(x : X) → A x) ≡ (Σ \(y : Y) → A (inverse f i y))
 
-Σ-change-of-variables' {𝓤} {𝓥} ua {X} {Y} A f i = H-≃ ua X B b Y (f , i)
+Σ-change-of-variable' {𝓤} {𝓥} ua {X} {Y} A f i = H-≃ ua X B b Y (f , i)
  where
    B : (Y : 𝓤 ̇ ) → X ≃ Y →  (𝓤 ⊔ 𝓥)⁺ ̇
    B Y (f , i) = (Σ A) ≡ (Σ (A ∘ inverse f i))
@@ -2023,14 +2028,14 @@ automatic-equiv-functoriality {𝓤} F 𝓕 𝓕-id {X} {Y} {Z} f g ua = γ
    b : B X (id-≃ X)
    b = refl (Σ A)
 
-Σ-change-of-variables : is-univalent 𝓤
-                      → {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (A : Y → 𝓥 ̇ ) (f : X → Y)
-                      → is-equiv f
-                      → (Σ \(y : Y) → A y) ≡ (Σ \(x : X) → A (f x))
+Σ-change-of-variable'' : is-univalent 𝓤
+                       → {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (A : Y → 𝓥 ̇ ) (f : X → Y)
+                       → is-equiv f
+                       → (Σ \(y : Y) → A y) ≡ (Σ \(x : X) → A (f x))
 
-Σ-change-of-variables ua A f i = Σ-change-of-variables' ua A
-                                    (inverse f i)
-                                    (inverse-is-equiv f i)
+Σ-change-of-variable'' ua A f i = Σ-change-of-variable' ua A
+                                  (inverse f i)
+                                  (inverse-is-equiv f i)
 
 transport-map-along-≡ : {X Y Z : 𝓤 ̇ } (p : X ≡ Y) (g : X → Z)
                       → transport (λ - → - → Z) p g
@@ -2161,10 +2166,10 @@ equivs-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 
 equivs-are-haes f i = invertibles-are-haes f (equivs-are-invertible f i)
 
-Σ-change-of-variables-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
-                          → is-hae f → Σ A ≃ Σ (A ∘ f)
+Σ-change-of-variable-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+                         → is-hae f → Σ A ≃ Σ (A ∘ f)
 
-Σ-change-of-variables-hae A f (g , η , ε , τ) = γ
+Σ-change-of-variable-hae A f (g , η , ε , τ) = γ
  where
   φ : Σ A → Σ (A ∘ f)
   φ (y , a) = (g y , transport A ((ε y)⁻¹) a)
@@ -2188,6 +2193,11 @@ equivs-are-haes f i = invertibles-are-haes f (equivs-are-invertible f i)
 
   γ : Σ A ≃ Σ (A ∘ f)
   γ = invertibility-gives-≃ φ (ψ , ψφ , φψ)
+
+Σ-change-of-variable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+                     → is-equiv f → Σ A ≃ Σ (A ∘ f)
+
+Σ-change-of-variable A f i = Σ-change-of-variable-hae A f (equivs-are-haes f i)
 
 funext : ∀ 𝓤 𝓥 → (𝓤 ⊔ 𝓥)⁺ ̇
 funext 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y} → f ∼ g → f ≡ g
@@ -2636,10 +2646,10 @@ hlevel-relation-is-a-subsingleton fe (succ n) X =
                                  ≃-sym-involutive fe₁ fe₂)
 
 Π-cong : dfunext 𝓤 𝓥 → dfunext 𝓤 𝓦
-       → (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) (Y' : X → 𝓦 ̇ )
+       → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Y' : X → 𝓦 ̇ }
        → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
 
-Π-cong fe fe' X Y Y' φ = invertibility-gives-≃ F (G , GF , FG)
+Π-cong fe fe' {X} {Y} {Y'} φ = invertibility-gives-≃ F (G , GF , FG)
  where
   f : (x : X) → Y x → Y' x
   f x = Eq→fun (φ x)
@@ -2667,6 +2677,26 @@ hlevel-relation-is-a-subsingleton fe (succ n) X =
 
   GF : (φ : ((x : X) → Y x)) → G(F φ) ≡ φ
   GF φ = fe (λ x → gf x (φ x))
+
+hfunext-≃ : hfunext 𝓤 𝓥
+          → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f g : Π A)
+          → (f ≡ g) ≃ (f ∼ g)
+
+hfunext-≃ hfe f g = (happly f g , hfe f g)
+
+hfunext₂-≃ : hfunext 𝓤 (𝓥 ⊔ 𝓦) → hfunext 𝓥 𝓦
+           → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : (x : X) → Y x → 𝓦 ̇ }
+             (f g : (x : X) (y : Y x) → A x y)
+           → (f ≡ g) ≃ (∀ x y → f x y ≡ g x y)
+
+hfunext₂-≃ fe fe' {X} f g =
+
+ (f ≡ g)                  ≃⟨ hfunext-≃ fe f g ⟩
+ (∀ x → f x ≡ g x)        ≃⟨ Π-cong
+                              (hfunext-gives-dfunext fe)
+                              (hfunext-gives-dfunext fe)
+                              (λ x → hfunext-≃ fe' (f x) (g x))⟩
+ (∀ x y → f x y ≡ g x y)  ■
 
 precomp-invertible : dfunext 𝓥 𝓦 → dfunext 𝓤 𝓦
                    → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y)
@@ -3366,14 +3396,14 @@ being-representable-is-a-subsingleton fe {X} A r₀ r₁ = γ
   dfe : global-dfunext
   dfe = univalence-gives-global-dfunext ua
 
+  p = λ x → (𝓨 x ≡ A)                 ≃⟨ (happly (𝓨 x) A , hfe (𝓨 x) A) ⟩
+            ((y : X) → 𝓨 x y ≡ A y)   ≃⟨ Π-cong dfe dfe
+                                           (λ y → is-univalent-≃ (ua 𝓤)
+                                           (𝓨 x y) (A y)) ⟩
+            ((y : X) → 𝓨 x y ≃ A y)   ■
+
   e : fiber 𝓨 A ≃ is-representable A
-  e = Σ-cong (λ x → (𝓨 x ≡ A)                 ≃⟨ (happly (𝓨 x) A) , hfe (𝓨 x) A ⟩
-                    ((y : X) → 𝓨 x y ≡ A y)   ≃⟨ Π-cong dfe dfe X
-                                                   (λ y → 𝓨 x y ≡ A y)
-                                                   (λ y → 𝓨 x y ≃ A y)
-                                                   (λ y → is-univalent-≃ (ua 𝓤)
-                                                           (𝓨 x y) (A y)) ⟩
-                    ((y : X) → 𝓨 x y ≃ A y)   ■)
+  e = Σ-cong p
 
   γ : is-subsingleton (fiber 𝓨 A)
   γ = equiv-to-subsingleton e (being-representable-is-a-subsingleton dfe A)
@@ -3724,16 +3754,13 @@ mc-gives-sc : is-map-classifier 𝓤
 
 mc-gives-sc {𝓤} s P Y = γ
  where
-  h : is-hae (χ Y)
-  h = invertibles-are-haes (χ Y) (equivs-are-invertible (χ Y) (s Y))
-
   e = (𝓤 /[ P ] Y)                               ≃⟨ ≃-sym a ⟩
       (Σ \(σ : 𝓤 / Y) → (y : Y) → P ((χ Y) σ y)) ≃⟨ ≃-sym b ⟩
       (Σ \(A : Y → 𝓤 ̇ ) → (y : Y) → P (A y))     ≃⟨ ≃-sym c ⟩
       (Y → Σ P)                                  ■
    where
     a = Σ-assoc
-    b = Σ-change-of-variables-hae (λ A → Π (P ∘ A)) (χ Y) h
+    b = Σ-change-of-variable (λ A → Π (P ∘ A)) (χ Y) (s Y)
     c = ΠΣ-distr-≃
 
   observation : χ-special P Y ≡ Eq→fun e
@@ -3982,7 +4009,7 @@ module sip where
    ι   = homomorphic σ
    i   = Σ-≡-≃ A B
    ii  = Σ-cong (homomorphism-lemma σ A B)
-   iii = ≃-sym (Σ-change-of-variables-hae (ι A B) (Id→Eq ⟨ A ⟩ ⟨ B ⟩) (Id→Eq-is-hae ua))
+   iii = ≃-sym (Σ-change-of-variable (ι A B) (Id→Eq ⟨ A ⟩ ⟨ B ⟩) (ua ⟨ A ⟩ ⟨ B ⟩))
    iv  = Σ-assoc
 
 module ∞-magma-identity {𝓤 : Universe} where

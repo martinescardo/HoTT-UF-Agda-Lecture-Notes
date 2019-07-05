@@ -1049,13 +1049,13 @@ data _+_ {𝓤 𝓥} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
 \end{code}
 
 To prove that a property `A` of the sum holds for all `z : X + Y`, it is enough to
-prove that `A(inl x)` holds for all `x : X` and that `A(inr y)` holds for
+prove that `A (inl x)` holds for all `x : X` and that `A (inr y)` holds for
 all `y : Y`. This amounts to definition by cases:
 
 \begin{code}
 +-induction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X + Y → 𝓦 ̇ )
-            → ((x : X) → A(inl x))
-            → ((y : Y) → A(inr y))
+            → ((x : X) → A (inl x))
+            → ((y : Y) → A (inr y))
             → (z : X + Y) → A z
 
 +-induction A f g (inl x) = f x
@@ -1189,13 +1189,13 @@ pr₂ (x , y) = y
 \end{code}
 
 To prove that `A z` holds for all `z : Σ Y`, for a given
-property `A`, we just prove that we have `A(x , y)` for all `x :
+property `A`, we just prove that we have `A (x , y)` for all `x :
 X` and `y : Y x`.  This is called `Σ` induction or `Σ`
 elimination, or `uncurry`, after [Haskell
 Curry](https://en.wikipedia.org/wiki/Haskell_Curry).
 \begin{code}
 Σ-induction : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : Σ Y → 𝓦 ̇ }
-            → ((x : X) (y : Y x) → A(x , y))
+            → ((x : X) (y : Y x) → A (x , y))
             → (z : Σ Y) → A z
 
 Σ-induction g (x , y) = g x y
@@ -3565,6 +3565,15 @@ invertibility-gives-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 invertibility-gives-≃ f i = f , invertibles-are-equivs f i
 \end{code}
 
+Example:
+
+\begin{code}
+Σ-induction-≃ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : Σ Y → 𝓦 ̇ }
+              → ((x : X) (y : Y x) → A (x , y)) ≃ ((z : Σ Y) → A z)
+
+Σ-induction-≃ = invertibility-gives-≃ Σ-induction (curry , refl , refl)
+\end{code}
+
 Identity and composition of equivalences:
 
 \begin{code}
@@ -4704,15 +4713,17 @@ automatic-equiv-functoriality {𝓤} F 𝓕 𝓕-id {X} {Y} {Z} f g ua = γ
      b f = ap (_∘ 𝓕 f) (𝓕-id ⁻¹)
 \end{code}
 
-Here is another example:
+Here is another example (see
+[this](https://en.wikipedia.org/wiki/Change_of_variables) for the
+terminology):
 
 \begin{code}
-Σ-change-of-variables' : is-univalent 𝓤
-                       → {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (f : X → Y)
-                       → (i : is-equiv f)
-                       → (Σ \(x : X) → A x) ≡ (Σ \(y : Y) → A (inverse f i y))
+Σ-change-of-variable' : is-univalent 𝓤
+                      → {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (f : X → Y)
+                      → (i : is-equiv f)
+                      → (Σ \(x : X) → A x) ≡ (Σ \(y : Y) → A (inverse f i y))
 
-Σ-change-of-variables' {𝓤} {𝓥} ua {X} {Y} A f i = H-≃ ua X B b Y (f , i)
+Σ-change-of-variable' {𝓤} {𝓥} ua {X} {Y} A f i = H-≃ ua X B b Y (f , i)
  where
    B : (Y : 𝓤 ̇ ) → X ≃ Y →  (𝓤 ⊔ 𝓥)⁺ ̇
    B Y (f , i) = (Σ A) ≡ (Σ (A ∘ inverse f i))
@@ -4721,18 +4732,22 @@ Here is another example:
    b = refl (Σ A)
 \end{code}
 
+An unprimed version of this is given
+[below](HoTT-UF-Agda.html#Σ-change-of-variable), after we study half
+adjoint equivalences.
+
 The above version using the inverse of `f` can be proved directly by
 induction, but the following version is perhaps more natural.
 
 \begin{code}
-Σ-change-of-variables : is-univalent 𝓤
-                      → {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (A : Y → 𝓥 ̇ ) (f : X → Y)
-                      → is-equiv f
-                      → (Σ \(y : Y) → A y) ≡ (Σ \(x : X) → A (f x))
+Σ-change-of-variable'' : is-univalent 𝓤
+                       → {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (A : Y → 𝓥 ̇ ) (f : X → Y)
+                       → is-equiv f
+                       → (Σ \(y : Y) → A y) ≡ (Σ \(x : X) → A (f x))
 
-Σ-change-of-variables ua A f i = Σ-change-of-variables' ua A
-                                    (inverse f i)
-                                    (inverse-is-equiv f i)
+Σ-change-of-variable'' ua A f i = Σ-change-of-variable' ua A
+                                  (inverse f i)
+                                  (inverse-is-equiv f i)
 \end{code}
 
 This particular proof works only because inversion [is involutive on
@@ -4940,17 +4955,17 @@ equivs-are-haes f i = invertibles-are-haes f (equivs-are-invertible f i)
 \end{code}
 
 Here is a use of the half adjoint condition, where, compared to
-[`Σ-change-of-variables`](HoTT-UF-Agda.html#Σ-change-of-variables), we
+[`Σ-change-of-variable`](HoTT-UF-Agda.html#Σ-change-of-variable), we
 remove univalence from the hypothesis, generalize the universe of the
 type `Y`, and weaken equality to equivalence in the conclusion. Notice
 that the proof starts as that of
 [`Σ-reindexing-retract`](HoTT-UF-Agda.html#Σ-reindexing-retract).
 
 \begin{code}
-Σ-change-of-variables-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
-                          → is-hae f → Σ A ≃ Σ (A ∘ f)
+Σ-change-of-variable-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+                         → is-hae f → Σ A ≃ Σ (A ∘ f)
 
-Σ-change-of-variables-hae A f (g , η , ε , τ) = γ
+Σ-change-of-variable-hae A f (g , η , ε , τ) = γ
  where
   φ : Σ A → Σ (A ∘ f)
   φ (y , a) = (g y , transport A ((ε y)⁻¹) a)
@@ -4974,6 +4989,12 @@ that the proof starts as that of
 
   γ : Σ A ≃ Σ (A ∘ f)
   γ = invertibility-gives-≃ φ (ψ , ψφ , φψ)
+
+
+Σ-change-of-variable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+                     → is-equiv f → Σ A ≃ Σ (A ∘ f)
+
+Σ-change-of-variable A f i = Σ-change-of-variable-hae A f (equivs-are-haes f i)
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -7233,16 +7254,13 @@ mc-gives-sc : is-map-classifier 𝓤
 
 mc-gives-sc {𝓤} s P Y = γ
  where
-  h : is-hae (χ Y)
-  h = invertibles-are-haes (χ Y) (equivs-are-invertible (χ Y) (s Y))
-
   e = (𝓤 /[ P ] Y)                               ≃⟨ ≃-sym a ⟩
       (Σ \(σ : 𝓤 / Y) → (y : Y) → P ((χ Y) σ y)) ≃⟨ ≃-sym b ⟩
       (Σ \(A : Y → 𝓤 ̇ ) → (y : Y) → P (A y))     ≃⟨ ≃-sym c ⟩
       (Y → Σ P)                                  ■
    where
     a = Σ-assoc
-    b = Σ-change-of-variables-hae (λ A → Π (P ∘ A)) (χ Y) h
+    b = Σ-change-of-variable (λ A → Π (P ∘ A)) (χ Y) (s Y)
     c = ΠΣ-distr-≃
 
   observation : χ-special P Y ≡ Eq→fun e
@@ -7713,7 +7731,7 @@ identity on `Σ S`:
    ι   = homomorphic σ
    i   = Σ-≡-≃ A B
    ii  = Σ-cong (homomorphism-lemma σ A B)
-   iii = ≃-sym (Σ-change-of-variables-hae (ι A B) (Id→Eq ⟨ A ⟩ ⟨ B ⟩) (Id→Eq-is-hae ua))
+   iii = ≃-sym (Σ-change-of-variable (ι A B) (Id→Eq ⟨ A ⟩ ⟨ B ⟩) (ua ⟨ A ⟩ ⟨ B ⟩))
    iv  = Σ-assoc
 \end{code}
 
