@@ -3742,8 +3742,8 @@ what univalence is (like the type that says what the [twin-prime
 conjecture](HoTT-UF-Agda.html#twinprime) is).
 
 \begin{code}
-is-univalent-≃ : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
-is-univalent-≃ ua X Y = Id→Eq X Y , ua X Y
+univalence-≃ : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
+univalence-≃ ua X Y = Id→Eq X Y , ua X Y
 
 Eq→Id : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → X ≃ Y → X ≡ Y
 Eq→Id ua X Y = inverse (Id→Eq X Y) (ua X Y)
@@ -6686,7 +6686,7 @@ With this it is almost immediate that the Yoneda map is an embedding:
 
   p = λ x → (𝓨 x ≡ A)                 ≃⟨ (happly (𝓨 x) A , hfe (𝓨 x) A) ⟩
             ((y : X) → 𝓨 x y ≡ A y)   ≃⟨ Π-cong dfe dfe
-                                           (λ y → is-univalent-≃ (ua 𝓤)
+                                           (λ y → univalence-≃ (ua 𝓤)
                                            (𝓨 x y) (A y)) ⟩
             ((y : X) → 𝓨 x y ≃ A y)   ■
 
@@ -6817,10 +6817,10 @@ universe-embedding-criterion {𝓤} {𝓥} ua ua' f i = embedding-criterion f γ
   fe₁ = lower-dfunext 𝓥 𝓥 𝓤 (𝓤 ⊔ 𝓥) fe
 
   γ : (X X' : 𝓤 ̇ ) → (f X ≡ f X') ≃ (X ≡ X')
-  γ X X' =  (f X ≡ f X')  ≃⟨ is-univalent-≃ ua' (f X) (f X') ⟩
+  γ X X' =  (f X ≡ f X')  ≃⟨ univalence-≃ ua' (f X) (f X') ⟩
             (f X ≃ f X')  ≃⟨ Eq-Eq-cong' fe fe fe fe fe fe₀ fe₁ fe fe₀ fe₀ fe₀ fe₀
                               (i X) (i X') ⟩
-            (X ≃ X')      ≃⟨ ≃-sym (is-univalent-≃ ua X X') ⟩
+            (X ≃ X')      ≃⟨ ≃-sym (univalence-≃ ua X X') ⟩
             (X ≡ X')      ■
 \end{code}
 
@@ -6870,7 +6870,7 @@ module _ {𝓤 𝓥 : Universe}
      e Y = (X ≃ Y)                 ≃⟨ ≃-Sym fe₀ fe₁ fe ⟩
            (Y ≃ X)                 ≃⟨ Eq-Eq-cong' fe₁ fe fe₂ fe₁ fe fe fe fe₃ fe
                                        fe fe fe (≃-Lift Y) (≃-Lift X) ⟩
-           (Lift 𝓤 Y ≃ Lift 𝓥 X)   ≃⟨ ≃-sym (is-univalent-≃ ua'
+           (Lift 𝓤 Y ≃ Lift 𝓥 X)   ≃⟨ ≃-sym (univalence-≃ ua'
                                              (Lift 𝓤 Y) (Lift 𝓥 X)) ⟩
            (Lift 𝓤 Y ≡ Lift 𝓥 X)   ■
 
@@ -8905,7 +8905,7 @@ types. The second step translates this equality into an equivalence:
      i   = hfunext₂-≃ hfe hfe (hom 𝓧 )  λ x y → hom 𝓐 (F x) (F y)
      ii  = Π-cong fe fe
              (λ x → Π-cong fe fe
-                     (λ y → is-univalent-≃ (ua 𝓥) (hom 𝓧 x y) (hom 𝓐 (F x) (F y))))
+                     (λ y → univalence-≃ (ua 𝓥) (hom 𝓧 x y) (hom 𝓐 (F x) (F y))))
      iii = Π-cong fe fe (λ y → ΠΣ-distr-≃)
      iv  = ΠΣ-distr-≃
 \end{code}
