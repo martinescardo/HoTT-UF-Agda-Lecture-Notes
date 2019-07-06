@@ -8965,6 +8965,7 @@ equality of type-valued preorders in terms of equivalences:
           × Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
                   → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)) ≃⟨ ii ⟩
    _                                                                       ■
+
   where
    i  = characterization-of-≡ (ua 𝓤) sns-data 𝓧 𝓐
    ii = Σ-cong (λ F → Σ-cong (λ _ → lemma 𝓧 𝓐 F))
