@@ -406,7 +406,7 @@ to practice univalent mathematics should consult the above references.
      1. [Universe lifting](HoTT-UF-Agda.html#universelifting)
      1. [The subtype classifier and other classifiers](HoTT-UF-Agda.html#subtypeclassifier)
      1. [Magma equivalences](HoTT-UF-Agda.html#magmaequivalences)
-     1. [Some structure identity principles](HoTT-UF-Agda.html#sip)
+     1. [Equality of mathematical structures](HoTT-UF-Agda.html#sip)
      1. [Subsingleton truncation, disjunction and existence](HoTT-UF-Agda.html#truncation)
      1. [The univalent axiom of choice](HoTT-UF-Agda.html#choice)
      1. [Propositional resizing, truncation and the powerset](HoTT-UF-Agda.html#resizing)
@@ -7543,7 +7543,7 @@ It follows from the results of the next section that magma equality
 amounts to magma isomorphism.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="sip"></a> Some structure identity principles
+### <a id="sip"></a> Equality of mathematical structures
 
 A *structure identity principle* describes the identity type of types
 of mathematical structures in terms of equivalences of
@@ -9174,7 +9174,12 @@ The HoTT book has a characterization of identity of categories as
 equivalence of categories in the traditional sense of category theory,
 assuming that the categories are univalent in a certain sense. We have
 chosen not to include the univalence requirement in our notion of
-category.
+category, although it may be argued that *univalent category* is the
+correct notion of category for univalent mathematics (because a
+univalent category may be equivalently defined as a category object in
+a 1-groupoid). In any case, the characterization of equality given
+here is not affected by the univalence requirement, or any
+subsingleton-valued property of categories.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="truncation"></a> Subsingleton truncation, disjunction and existence
