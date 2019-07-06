@@ -4759,7 +4759,7 @@ module type-valued-preorder-identity
  𝒾𝒹 : (𝓧 : Σ S) → (x : Ob 𝓧) → hom 𝓧 x x
  𝒾𝒹 (X , homX , idX , compX) = idX
 
- comp : (𝓧 : Σ S) → (x y z : Ob 𝓧) (f : hom 𝓧 x y) (g : hom 𝓧 y z) → hom 𝓧 x z
+ comp : (𝓧 : Σ S) → (x y z : Ob 𝓧) → hom 𝓧 x y → hom 𝓧 y z → hom 𝓧 x z
  comp (X , homX , idX , compX) = compX
 
  functorial : (𝓧 𝓐 : Σ S)
@@ -4885,7 +4885,7 @@ module type-valued-preorder-identity
    _                                                                       ■
   where
    i  = characterization-of-≡ (ua 𝓤) sns-data 𝓧 𝓐
-   ii = Σ-cong (λ F → Σ-cong λ _ → lemma 𝓧 𝓐 F)
+   ii = Σ-cong (λ F → Σ-cong (λ _ → lemma 𝓧 𝓐 F))
 
 module type-valued-preorder-with-axioms-identity
         (𝓤 𝓥 𝓦 : Universe)
@@ -4924,18 +4924,17 @@ module type-valued-preorder-with-axioms-identity
 
   where
    i  = characterization-of-≡-with-axioms (ua 𝓤) sns-data axioms axiomss 𝓧' 𝓐'
-   ii = Σ-cong (λ F → Σ-cong λ _ → lemma [ 𝓧' ] [ 𝓐' ] F)
+   ii = Σ-cong (λ F → Σ-cong (λ _ → lemma [ 𝓧' ] [ 𝓐' ] F))
 
 module category-identity
         (𝓤 𝓥 : Universe)
         (ua : Univalence)
       where
 
+ open type-valued-preorder-with-axioms-identity 𝓤 𝓥 (𝓤 ⊔ 𝓥) ua
+
  fe : global-dfunext
  fe = univalence-gives-global-dfunext ua
-
- hfe : global-hfunext
- hfe = univalence-gives-global-hfunext ua
 
  S : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
  S = type-valued-preorder-S {𝓤} {𝓥}
@@ -5038,8 +5037,6 @@ module category-identity
 
  characterization-of-category-≃ = characterization-of-type-valued-preorder-≡-with-axioms
                                    category-axioms category-axioms-subsingleton
-  where
-   open type-valued-preorder-with-axioms-identity 𝓤 𝓥 (𝓤 ⊔ 𝓥) ua
 
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P

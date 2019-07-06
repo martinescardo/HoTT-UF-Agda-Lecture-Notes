@@ -8731,10 +8731,10 @@ type-valued-preorder-S {𝓤} {𝓥} X = Σ \(_≤_ : X → X → 𝓥 ̇)
                                  × ((x y z : X) → x ≤ y → y ≤ z → x ≤ z)
 \end{code}
 
-A category, also known as a 1-category, is a type-valued preorder
-subject to suitable axioms, where `≤` is traditionally written `hom`,
-and where reflexivities give identities, and transitivity gives
-composition.
+A category, also known as a `1`-category, is a type-valued preorder
+subject to suitable axioms, where the relation `_≤_` is traditionally
+written `hom`, and where identities are given by the reflexivity law,
+and composition is given by the transitivity law.
 
 We begin with type-valued preorders, using categorical notation and
 terminology for them.
@@ -8786,14 +8786,14 @@ Its identities (or reflexivities):
 Its composition law (or transitivity):
 
 \begin{code}
- comp : (𝓧 : Σ S) → (x y z : Ob 𝓧) (f : hom 𝓧 x y) (g : hom 𝓧 y z) → hom 𝓧 x z
+ comp : (𝓧 : Σ S) → (x y z : Ob 𝓧) → hom 𝓧 x y → hom 𝓧 y z → hom 𝓧 x z
  comp (X , homX , idX , compX) = compX
 \end{code}
 
 Notice that we choose the so-called *diagramatic order* for
 composition.
 
-The functoriality of a pair `F` and `𝓕` (where in category theory the
+The functoriality of a pair `F , 𝓕` (where in category theory the
 latter is also written `F`, by an [abuse of
 notation](https://en.wikipedia.org/wiki/Abuse_of_notation)) says that
 `𝓕` preserves identities and composition:
@@ -8821,7 +8821,7 @@ in applicative order, making the objects implicit:
 \end{code}
 
 And we also make implicit the object parameters of the action of the
-functor:
+functor on arrows:
 
 \begin{code}
    𝓕 : {x y : Ob 𝓧} → hom 𝓧 x y → hom 𝓐 (F x) (F y)
@@ -8875,8 +8875,8 @@ standard notion of structure:
 \end{code}
 
 The above constructions are short thanks to
-computations-under-the-hood performed by Agda, and so may require some
-effort from the part of the reader to unravel them.
+computations-under-the-hood performed by Agda, and may require some
+effort to unravel.
 
 The above automatically gives a characterization of equality of
 preorders. But this characterization uses another equality, of hom
@@ -8967,7 +8967,7 @@ equality of type-valued preorders in terms of equivalences:
    _                                                                       ■
   where
    i  = characterization-of-≡ (ua 𝓤) sns-data 𝓧 𝓐
-   ii = Σ-cong (λ F → Σ-cong λ _ → lemma 𝓧 𝓐 F)
+   ii = Σ-cong (λ F → Σ-cong (λ _ → lemma 𝓧 𝓐 F))
 \end{code}
 
 Now we consider type-valued preorders subject to arbitrary axioms. The
@@ -9017,7 +9017,7 @@ Recall that `[_]` is the map that forgets the axioms.
 
   where
    i  = characterization-of-≡-with-axioms (ua 𝓤) sns-data axioms axiomss 𝓧' 𝓐'
-   ii = Σ-cong (λ F → Σ-cong λ _ → lemma [ 𝓧' ] [ 𝓐' ] F)
+   ii = Σ-cong (λ F → Σ-cong (λ _ → lemma [ 𝓧' ] [ 𝓐' ] F))
 \end{code}
 
 By choosing suitable axioms, we get categories:
@@ -9028,11 +9028,10 @@ module category-identity
         (ua : Univalence)
       where
 
+ open type-valued-preorder-with-axioms-identity 𝓤 𝓥 (𝓤 ⊔ 𝓥) ua
+
  fe : global-dfunext
  fe = univalence-gives-global-dfunext ua
-
- hfe : global-hfunext
- hfe = univalence-gives-global-hfunext ua
 
  S : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
  S = type-valued-preorder-S {𝓤} {𝓥}
@@ -9169,8 +9168,6 @@ get the following characterization of identity of categories:
 
  characterization-of-category-≃ = characterization-of-type-valued-preorder-≡-with-axioms
                                    category-axioms category-axioms-subsingleton
-  where
-   open type-valued-preorder-with-axioms-identity 𝓤 𝓥 (𝓤 ⊔ 𝓥) ua
 \end{code}
 
 The HoTT book has a characterization of identity of categories as
