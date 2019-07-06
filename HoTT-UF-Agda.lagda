@@ -8726,7 +8726,7 @@ as follows:
 
 \begin{code}
 type-valued-preorder-S : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
-type-valued-preorder-S {𝓤} {𝓥} X = Σ \(_≤_ : X → X → 𝓥 ̇)
+type-valued-preorder-S {𝓤} {𝓥} X = Σ \(_≤_ : X → X → 𝓥 ̇ )
                                  → ((x : X) → x ≤ x)
                                  × ((x y z : X) → x ≤ y → y ≤ z → x ≤ z)
 \end{code}
@@ -9107,7 +9107,7 @@ that of type-valued preorders:
 
 \begin{code}
  Cat : (𝓤 ⊔ 𝓥)⁺ ̇
- Cat = Σ \(X : 𝓤 ̇) → Σ \(s : S X) → category-axioms X s
+ Cat = Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → category-axioms X s
 \end{code}
 
 We reuse of above names in a slightly different way, taking into

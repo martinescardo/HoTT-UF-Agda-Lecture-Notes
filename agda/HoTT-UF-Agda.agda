@@ -4727,7 +4727,7 @@ module generalized-functor-algebra-equality
    characterization-of-≡ ua sns-data (X , α) (Y , β)
 
 type-valued-preorder-S : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
-type-valued-preorder-S {𝓤} {𝓥} X = Σ \(_≤_ : X → X → 𝓥 ̇)
+type-valued-preorder-S {𝓤} {𝓥} X = Σ \(_≤_ : X → X → 𝓥 ̇ )
                                  → ((x : X) → x ≤ x)
                                  × ((x y z : X) → x ≤ y → y ≤ z → x ≤ z)
 
@@ -4988,7 +4988,7 @@ module category-identity
                         (compX x z t (compX x y z f g) h))))))))
 
  Cat : (𝓤 ⊔ 𝓥)⁺ ̇
- Cat = Σ \(X : 𝓤 ̇) → Σ \(s : S X) → category-axioms X s
+ Cat = Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → category-axioms X s
 
  Ob : Cat → 𝓤 ̇
  Ob (X , (homX , idX , compX) , _) = X
