@@ -8801,7 +8801,7 @@ notation](https://en.wikipedia.org/wiki/Abuse_of_notation)) says that
 \begin{code}
  functorial : (𝓧 𝓐 : Σ S)
             → (F : Ob 𝓧 → Ob 𝓐)
-            → (𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+            → ((x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
             → 𝓤 ⊔ 𝓥 ̇
 
  functorial 𝓧 𝓐 F 𝓕' = pidentity × pcomposition
@@ -9131,7 +9131,7 @@ account that now we have axioms, which we simply ignore:
 
  functorial : (𝓧 𝓐 : Cat)
             → (F : Ob 𝓧 → Ob 𝓐)
-            → (𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+            → ((x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
             → 𝓤 ⊔ 𝓥 ̇
 
  functorial 𝓧 𝓐 F 𝓕' = pidentity × pcomposition
