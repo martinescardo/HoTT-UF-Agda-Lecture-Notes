@@ -9155,7 +9155,7 @@ We now apply the module `type-valued-preorder-with-axioms-identity` to
 get the following characterization of identity of categories:
 
 \begin{code}
- characterization-of-category-≃ :
+ characterization-of-category-≡ :
 
       (𝓧 𝓐 : Cat)
     →
@@ -9167,7 +9167,7 @@ get the following characterization of identity of categories:
                     → (∀ x y → is-equiv (𝓕 x y))
                     × functorial 𝓧 𝓐 F 𝓕
 
- characterization-of-category-≃ = characterization-of-type-valued-preorder-≡-with-axioms
+ characterization-of-category-≡ = characterization-of-type-valued-preorder-≡-with-axioms
                                    category-axioms category-axioms-subsingleton
 \end{code}
 
