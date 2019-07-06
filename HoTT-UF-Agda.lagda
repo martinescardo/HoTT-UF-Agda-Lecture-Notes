@@ -7578,6 +7578,7 @@ structure. We consider several versions:
 We also apply theses ideas to characterize identifications of metric
 spaces, topological spaces, graphs, partially ordered sets, and more.
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### A structure identity principle for a standard notion of structure
 
 \begin{code}
@@ -7744,6 +7745,7 @@ And this concludes the module `sip`
 
 We now consider some examples of uses of this.
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### ∞-Magmas
 
 \begin{code}
@@ -7794,6 +7796,7 @@ module ∞-magma-identity {𝓤 : Universe} where
  characterization-of-∞-Magma-≡ ua = characterization-of-≡ ua sns-data
 \end{code}
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### Adding axioms
 
 Next we want to account for situations in which axioms are
@@ -7910,6 +7913,7 @@ same, ignoring the axioms:
 And this concludes the module `sip-with-axioms`. We now consider some
 examples.
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### Magmas
 
 \begin{code}
@@ -7944,6 +7948,7 @@ module magma-identity {𝓤 : Universe} where
  in the above format of structure with axioms. The following
    developement solves this exercise.
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### Pointed types
 
 \begin{code}
@@ -7982,6 +7987,7 @@ module pointed-type-identity {𝓤 : Universe} where
  characterization-of-pointed-type-≡ ua = characterization-of-≡ ua sns-data
 \end{code}
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### Combining two mathematical structures
 
 We now show how to join two mathematics structures so as to obtain a
@@ -8158,6 +8164,7 @@ general structure identity principle:
 
 This concludes the submodule. Some examples of uses of this follow.
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### Pointed ∞-magmas
 
 \begin{code}
@@ -8186,6 +8193,7 @@ module pointed-∞-magma-identity {𝓤 : Universe} where
                                             pointed-type-identity.sns-data
 \end{code}
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### Monoids
 
 In the following example, we combine joins and addition of axioms.
@@ -8260,6 +8268,7 @@ module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
  characterization-of-monoid-≡ ua = characterization-of-≡ ua sns-data
 \end{code}
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### Groups
 
 We add an axiom to monoids to get groups.
@@ -8346,6 +8355,7 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
                            × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 \end{code}
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### The slice type
 
 \begin{code}
@@ -8387,6 +8397,7 @@ module slice-identity
  characterization-of-/-≡ ua = characterization-of-≡ ua sns-data
 \end{code}
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### Metric spaces, graphs and ordered structures
 
 \begin{code}
@@ -8454,6 +8465,7 @@ We have the following particular cases of interest:
    structures, and the above says that their identifications amount to
    order isomorphisms.
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### Topological spaces
 
 We get a [type of topological spaces](HoTT-UF-Agda.html#Top) when `R`
@@ -8572,6 +8584,7 @@ prefer to rephrase the above as
  characterization-of-Space-≡' = characterization-of-Space-≡
 \end{code}
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### Selection spaces
 
 \begin{code}
@@ -8629,6 +8642,7 @@ module selection-space-identity
 \end{code}
 
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### A contrived example
 
 Here is an example where we need to refer to the inverse of the
@@ -8661,6 +8675,7 @@ module contrived-example-identity (𝓤 : Universe) where
 
 Many of the above examples can be written in such a concise form.
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### Functor algebras
 
 In the following, we don't need to know that the functor preserves
@@ -8716,6 +8731,7 @@ module generalized-functor-algebra-equality
    characterization-of-≡ ua sns-data (X , α) (Y , β)
 \end{code}
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### Type-valued preorders and categories
 
 This example is harder than the previous ones.
@@ -9570,6 +9586,7 @@ family of sets and that the relation `R` is subsingleton valued. For
 arbitrary higher groupoids, it is not in general possible to perform
 the choice functorially.
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### A second formulation of choice
 
 The above is equivalent to another familiar formulation of choice,
@@ -9634,6 +9651,7 @@ extensionality):
     γ = ∥∥-functor h a
 \end{code}
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### A third formulation of choice
 
 \begin{code}
@@ -9685,6 +9703,7 @@ following:
 *Exercise*. A fourth formulation of the axiom of choice is that every
  surjection of sets has an unspecified section.
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### Choice implies excluded middle
 
 We apply the third formulation to show that choice implies excluded
@@ -9802,6 +9821,7 @@ Applying the above to the object of truth-values, we get excluded middle:
 For more information with Agda code, see
 [this](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Choice.html).
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### Global choice
 
 We take the opportunity to briefly address *global choice*, which was already mentioned above a couple of times.
@@ -9887,6 +9907,7 @@ which is known to be validated by the simplicial-set model.
 It is also an open problem whether the resizing principles discussed
 below have a computational interpretation.
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### Propositional resizing
 
 We say that a type `X` has size `𝓥` if it is equivalent to a type in the
@@ -9950,6 +9971,7 @@ Propositional-resizing : 𝓤ω
 Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
 \end{code}
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### Excluded middle implies propositional resizing
 
 Propositional resizing is consistent, because it is implied by
@@ -9980,6 +10002,7 @@ EM-gives-PR {𝓤} {𝓥} em P i = Q (em P i) , e
         P (Q (em P i)) i (j (em P i)) (f (em P i) , g (em P i))
 \end{code}
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### The propositional resizing axiom is a subsingleton
 
 To show that the propositional resizing principle is a subsingleton,
@@ -10006,6 +10029,7 @@ show that the propositional resizing principle is a subsingleton
 using propositional and functional extensionality instead of
 univalence.
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### Propositional impredicativity
 
 We consider two notions of propositional impredicativity:
@@ -10143,6 +10167,7 @@ Impredicativity-gives-PR {𝓤} {𝓥} pe fe (O , e) P i = Q , ε
 [that](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Resizing.html) `Ω 𝓤`
 has size `𝓤₀`.
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### Propositional resizing gives subsingleton truncation
 
 Using Voevodsky's [construction](HoTT-UF-Agda.html#truncation) and
@@ -10189,6 +10214,7 @@ PR-gives-existence-of-truncations fe R =
  }
 \end{code}
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### The powerset in the presence of propositional resizing
 
 As a second, important, use of resizing, we revisit the powerset.
@@ -10414,6 +10440,7 @@ propositional resizing:
   infix  2 _∪_
 \end{code}
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### Topological spaces in the presence of propositional resizing
 
 For example, with this we can define the type of topological spaces as
