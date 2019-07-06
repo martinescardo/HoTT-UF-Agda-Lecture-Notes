@@ -8737,8 +8737,9 @@ module generalized-functor-algebra-equality
 This example is harder than the previous ones.
 
 A type-valued preorder on a type `X` is a type-valued relation which
-is reflexive and transitive. Type-valued preorder structure is defined
-as follows:
+is reflexive and transitive. A type-valued, as opposed to a
+subsingleton-valued, preorder could also be called an
+∞-preorder. Type-valued preorder structure is defined as follows:
 
 \begin{code}
 type-valued-preorder-S : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
