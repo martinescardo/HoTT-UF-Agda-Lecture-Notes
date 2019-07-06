@@ -4791,8 +4791,8 @@ module type-valued-preorder-identity
    ι 𝓧 𝓐 (F , _) = Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
                          → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)
 
-   ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
-   ρ (X , hom , 𝟏 , _o_) = refl hom , refl 𝟏 , refl _o_
+   ρ : (𝓧 : Σ S) → ι 𝓧 𝓧 (id-≃ ⟨ 𝓧 ⟩)
+   ρ 𝓧 = refl (hom 𝓧) , refl (𝒾𝒹 𝓧) , refl (comp 𝓧)
 
    θ : {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
    θ {X} (homX , idX , compX) (homA , idA , compA) = g
