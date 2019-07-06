@@ -8786,7 +8786,7 @@ The type of objects of a type-valued preorder:
  Ob (X , homX , idX , compX ) = X
 \end{code}
 
-Its hom-types:
+Its hom-types (or preorder):
 
 \begin{code}
  hom : (𝓧 : Σ S) → Ob 𝓧 → Ob 𝓧 → 𝓥 ̇
