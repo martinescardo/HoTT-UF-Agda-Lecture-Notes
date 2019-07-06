@@ -397,7 +397,6 @@ to practice univalent mathematics should consult the above references.
      1. [Variations of function extensionality and their logical equivalence](HoTT-UF-Agda.html#hfunext)
      1. [Universes are map classifiers](HoTT-UF-Agda.html#typeclassifier)
      1. [The univalence axiom is a (sub)singleton type](HoTT-UF-Agda.html#univalencesubsingleton)
-     1. [`hfunext` and `vvfunext` are subsingleton types](HoTT-UF-Agda.html#hfunextsubsingleton)
      1. [More consequences of function extensionality](HoTT-UF-Agda.html#morefunextuses)
      1. [Propositional extensionality and the powerset](HoTT-UF-Agda.html#propositionalextensionality)
      1. [Some constructions with types of equivalences](HoTT-UF-Agda.html#equivconstructions)
@@ -5540,18 +5539,13 @@ univalence-gives-global-hfunext ua {𝓤} {𝓥} = univalence-gives-hfunext'
                                                (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
 \end{code}
 
-[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="hfunextsubsingleton"></a> `hfunext` and `vvfunext` are subsingleton types
-
-This is left as an exercise. Like univalence, the proof that these two
-forms of function extensional extensionality require assumptions of
-function extensionality at higher universes. So perhaps it is more
-convenient to just assume global univalence. An inconvenience is that
-the natural tool to use, Π-is-subsingleton, needs products with
-explicit arguments, but we made some of the arguments of hfunext and
-vvfunext implicit. One way around this problem is to define equivalent
-versions with the arguments explicit, and establish an equivalence
-between the new version and the original version.
+*Exercise.* Assuming global univalence, show that `hfunext` and
+`vvfunext` are subsingletons (but `funext` and `dfunext` are not in
+general). An inconvenience is that the natural tool to use,
+`Π-is-subsingleton`, needs products with explicit arguments, but we
+made some of the arguments of `hfunext` and `vvfunext` implicit. This
+can be overcome by defining an alternative version
+`Π-is-subsingleton'`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="morefunextuses"></a> More consequences of function extensionality
