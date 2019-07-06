@@ -8758,7 +8758,6 @@ module type-valued-preorder-identity
 
  Type-valued-preorder : (𝓤 ⊔ 𝓥) ⁺ ̇
  Type-valued-preorder = Σ S
-
 \end{code}
 
 But we will use the shorter notation `Σ S` in this submodule.
@@ -8791,25 +8790,29 @@ Its composition law (or transitivity):
  comp (X , homX , idX , compX) = compX
 \end{code}
 
-Notice that we choose the "diagramatic order" for composition.
+Notice that we choose the so-called *diagramatic order* for
+composition.
 
-The functoriality of a pair `F` and `𝓕` (where in category theory the latter is also written `F`, by an [abuse of notation](https://en.wikipedia.org/wiki/Abuse_of_notation)) says that `𝓕` preserves identities and composition:
+The functoriality of a pair `F` and `𝓕` (where in category theory the
+latter is also written `F`, by an [abuse of
+notation](https://en.wikipedia.org/wiki/Abuse_of_notation)) says that
+`𝓕` preserves identities and composition:
 
 \begin{code}
  functorial : (𝓧 𝓐 : Σ S)
             → (F : Ob 𝓧 → Ob 𝓐)
             → (𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
             → 𝓤 ⊔ 𝓥 ̇
+
  functorial 𝓧 𝓐 F 𝓕' = pidentity × pcomposition
   where
 \end{code}
 
 In order to express the preservation of identities and composition in
-traditional form, we first define, locally, a symbol for composition
+traditional form, we first define, locally, symbols for composition
 in applicative order, making the objects implicit:
 
 \begin{code}
-
    _o_ : {x y z : Ob 𝓧} → hom 𝓧 y z → hom 𝓧 x y → hom 𝓧 x z
    g o f = comp 𝓧 _ _ _ f g
 
@@ -8817,11 +8820,10 @@ in applicative order, making the objects implicit:
    g □ f = comp 𝓐 _ _ _ f g
 \end{code}
 
-And we also make the object parameters of the action of the function
-on arrows implicit:
+And we also make implicit the object parameters of the action of the
+functor:
 
 \begin{code}
-
    𝓕 : {x y : Ob 𝓧} → hom 𝓧 x y → hom 𝓐 (F x) (F y)
    𝓕 f = 𝓕' _ _ f
 \end{code}
@@ -8849,7 +8851,7 @@ standard notion of structure:
   where
    ι : (𝓧 𝓐 : Σ S) → ⟨ 𝓧 ⟩ ≃ ⟨ 𝓐 ⟩ → 𝓤 ⊔ (𝓥 ⁺) ̇
    ι 𝓧 𝓐 (F , _) = Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
-                          → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)
+                         → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)
 
    ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
    ρ (X , hom , 𝟏 , _o_) = refl hom , refl 𝟏 , refl _o_
@@ -8877,8 +8879,8 @@ computations-under-the-hood performed by Agda, and so may require some
 effort from the part of the reader to unravel them.
 
 The above automatically gives a characterization of equality of
-preorders. But this characterization uses another equality. The second
-step translates this equality into an equivalence:
+preorders. But this characterization uses another equality, of hom
+types. The second step translates this equality into an equivalence:
 
 \begin{code}
  lemma : (𝓧 𝓐 : Σ S) (F : Ob 𝓧 → Ob 𝓐)
@@ -8896,7 +8898,7 @@ step translates this equality into an equivalence:
        (∀ x y → hom 𝓧 x y ≡ hom 𝓐 (F x) (F y))                                     ≃⟨ ii  ⟩
        (∀ x y → hom 𝓧 x y ≃ hom 𝓐 (F x) (F y))                                     ≃⟨ iii ⟩
        (∀ x → Σ \(φ : ∀ y → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                    → ∀ y → is-equiv (φ y))                                         ≃⟨ iv  ⟩
+                    → ∀ y → is-equiv (φ y))                                        ≃⟨ iv  ⟩
        (Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
               → (∀ x y → is-equiv (𝓕 x y)))                                        ■
     where
@@ -8912,7 +8914,6 @@ Here Agda silently performs a laborious computation to accept the
 definition of item `v`:
 
 \begin{code}
-
    v : (p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
      → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)
      ≃ functorial 𝓧 𝓐 F (pr₁ (Eq→fun e p))
@@ -8970,9 +8971,9 @@ equality of type-valued preorders in terms of equivalences:
 \end{code}
 
 Now we consider type-valued preorders subject to arbitrary axioms. The
-only reason we need consider this explicitly is that again we need to
-combine two steps. The second step is the same, but the first step is
-modified to add axioms.
+only reason we need to consider this explicitly is that again we need
+to combine two steps. The second step is the same, but the first step
+is modified to add axioms.
 
 \begin{code}
 module type-valued-preorder-with-axioms-identity
@@ -8980,7 +8981,7 @@ module type-valued-preorder-with-axioms-identity
         (ua : Univalence)
         (axioms  : (X : 𝓤 ̇ ) → type-valued-preorder-S {𝓤} {𝓥} X → 𝓦 ̇ )
         (axiomss : (X : 𝓤 ̇ ) (s : type-valued-preorder-S X) → is-subsingleton (axioms X s))
-      where
+       where
 
  open sip
  open sip-with-axioms
@@ -9039,9 +9040,9 @@ module category-identity
 
 The axioms say that
 
-  * The homs form sets, rather than arbitrary types.
-  * The identity is left and right neutral.
-  * Composition is associativity.
+  * the homs form sets, rather than arbitrary types,
+  * the identity is left and right neutral,
+  * composition is associative.
 
 \begin{code}
  category-axioms : (X : 𝓤 ̇ ) → S X → 𝓤 ⊔ 𝓥 ̇
@@ -9051,8 +9052,11 @@ The axioms say that
    g o f = compX _ _ _ f g
 
    hom-sets      = ∀ x y → is-set (homX x y)
+
    identityl     = ∀ x y (f : homX x y) → f o (idX x) ≡ f
+
    identityr     = ∀ x y (f : homX x y) → (idX y) o f ≡ f
+
    associativity = ∀ x y z t (f : homX x y) (g : homX y z) (h : homX z t)
                  → (h o g) o f ≡ h o (g o f)
 \end{code}
@@ -9062,12 +9066,15 @@ subsingleton type. The second and the third axioms are subsingleton
 valued in the presence of the first axiom, because equations between
 elements of sets are subsingletons, by definition of set. And because
 subsingletons are closed under products, the category axioms form a
-subsingleton type.
+subsingleton type:
 
 \begin{code}
  category-axioms-subsingleton : (X : 𝓤 ̇ ) (s : S X) → is-subsingleton (category-axioms X s)
- category-axioms-subsingleton X (homX , idX , compX) (s , l , r , a) = γ (s , l , r , a)
+ category-axioms-subsingleton X (homX , idX , compX) ca = γ ca
   where
+   s : ∀ x y → is-set (homX x y)
+   s = pr₁ ca
+
    γ : is-subsingleton (category-axioms X (homX , idX , compX))
    γ = ×-is-subsingleton ss (×-is-subsingleton ls (×-is-subsingleton rs as))
     where
@@ -9100,29 +9107,29 @@ We are now ready to define the type of categories, as a subtype of
 that of type-valued preorders:
 
 \begin{code}
- Category : (𝓤 ⊔ 𝓥)⁺ ̇
- Category = Σ \(X : 𝓤 ̇) → Σ \(s : S X) → category-axioms X s
+ Cat : (𝓤 ⊔ 𝓥)⁺ ̇
+ Cat = Σ \(X : 𝓤 ̇) → Σ \(s : S X) → category-axioms X s
 \end{code}
 
 We reuse of above names in a slightly different way, taking into
 account that now we have axioms, which we simply ignore:
 
 \begin{code}
- Ob : Category → 𝓤 ̇
+ Ob : Cat → 𝓤 ̇
  Ob (X , (homX , idX , compX) , _) = X
 
- hom : (𝓧 : Category) → Ob 𝓧 → Ob 𝓧 → 𝓥 ̇
+ hom : (𝓧 : Cat) → Ob 𝓧 → Ob 𝓧 → 𝓥 ̇
  hom (X , (homX , idX , compX) , _) = homX
 
 
- 𝒾𝒹 : (𝓧 : Category) → (x : Ob 𝓧) → hom 𝓧 x x
+ 𝒾𝒹 : (𝓧 : Cat) → (x : Ob 𝓧) → hom 𝓧 x x
  𝒾𝒹 (X , (homX , idX , compX) , _) = idX
 
- comp : (𝓧 : Category) → (x y z : Ob 𝓧) (f : hom 𝓧 x y) (g : hom 𝓧 y z) → hom 𝓧 x z
+ comp : (𝓧 : Cat) → (x y z : Ob 𝓧) (f : hom 𝓧 x y) (g : hom 𝓧 y z) → hom 𝓧 x z
  comp (X , (homX , idX , compX) , _) = compX
 
 
- functorial : (𝓧 𝓐 : Category)
+ functorial : (𝓧 𝓐 : Cat)
             → (F : Ob 𝓧 → Ob 𝓐)
             → (𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
             → 𝓤 ⊔ 𝓥 ̇
@@ -9150,7 +9157,7 @@ get the following characterization of identity of categories:
 \begin{code}
  characterization-of-category-≃ :
 
-      (𝓧 𝓐 : Category)
+      (𝓧 𝓐 : Cat)
     →
       (𝓧 ≡ 𝓐)
     ≃
@@ -9168,7 +9175,9 @@ get the following characterization of identity of categories:
 
 The HoTT book has a characterization of identity of categories as
 equivalence of categories in the traditional sense of category theory,
-assuming that the categories are univalent in a certain sense.
+assuming that the categories are univalent in a certain sense. We have
+chosen not to include the univalence requirement in our notion of
+category.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="truncation"></a> Subsingleton truncation, disjunction and existence

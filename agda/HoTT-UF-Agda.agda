@@ -4766,6 +4766,7 @@ module type-valued-preorder-identity
             → (F : Ob 𝓧 → Ob 𝓐)
             → (𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
             → 𝓤 ⊔ 𝓥 ̇
+
  functorial 𝓧 𝓐 F 𝓕' = pidentity × pcomposition
   where
 
@@ -4788,7 +4789,7 @@ module type-valued-preorder-identity
   where
    ι : (𝓧 𝓐 : Σ S) → ⟨ 𝓧 ⟩ ≃ ⟨ 𝓐 ⟩ → 𝓤 ⊔ (𝓥 ⁺) ̇
    ι 𝓧 𝓐 (F , _) = Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
-                          → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)
+                         → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)
 
    ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
    ρ (X , hom , 𝟏 , _o_) = refl hom , refl 𝟏 , refl _o_
@@ -4825,7 +4826,7 @@ module type-valued-preorder-identity
        (∀ x y → hom 𝓧 x y ≡ hom 𝓐 (F x) (F y))                                     ≃⟨ ii  ⟩
        (∀ x y → hom 𝓧 x y ≃ hom 𝓐 (F x) (F y))                                     ≃⟨ iii ⟩
        (∀ x → Σ \(φ : ∀ y → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                    → ∀ y → is-equiv (φ y))                                         ≃⟨ iv  ⟩
+                    → ∀ y → is-equiv (φ y))                                        ≃⟨ iv  ⟩
        (Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
               → (∀ x y → is-equiv (𝓕 x y)))                                        ■
     where
@@ -4891,7 +4892,7 @@ module type-valued-preorder-with-axioms-identity
         (ua : Univalence)
         (axioms  : (X : 𝓤 ̇ ) → type-valued-preorder-S {𝓤} {𝓥} X → 𝓦 ̇ )
         (axiomss : (X : 𝓤 ̇ ) (s : type-valued-preorder-S X) → is-subsingleton (axioms X s))
-      where
+       where
 
  open sip
  open sip-with-axioms
@@ -4946,14 +4947,20 @@ module category-identity
    g o f = compX _ _ _ f g
 
    hom-sets      = ∀ x y → is-set (homX x y)
+
    identityl     = ∀ x y (f : homX x y) → f o (idX x) ≡ f
+
    identityr     = ∀ x y (f : homX x y) → (idX y) o f ≡ f
+
    associativity = ∀ x y z t (f : homX x y) (g : homX y z) (h : homX z t)
                  → (h o g) o f ≡ h o (g o f)
 
  category-axioms-subsingleton : (X : 𝓤 ̇ ) (s : S X) → is-subsingleton (category-axioms X s)
- category-axioms-subsingleton X (homX , idX , compX) (s , l , r , a) = γ (s , l , r , a)
+ category-axioms-subsingleton X (homX , idX , compX) ca = γ ca
   where
+   s : ∀ x y → is-set (homX x y)
+   s = pr₁ ca
+
    γ : is-subsingleton (category-axioms X (homX , idX , compX))
    γ = ×-is-subsingleton ss (×-is-subsingleton ls (×-is-subsingleton rs as))
     where
@@ -4981,22 +4988,22 @@ module category-identity
            (λ h → s x t (compX x y t f (compX y z t g h))
                         (compX x z t (compX x y z f g) h))))))))
 
- Category : (𝓤 ⊔ 𝓥)⁺ ̇
- Category = Σ \(X : 𝓤 ̇) → Σ \(s : S X) → category-axioms X s
+ Cat : (𝓤 ⊔ 𝓥)⁺ ̇
+ Cat = Σ \(X : 𝓤 ̇) → Σ \(s : S X) → category-axioms X s
 
- Ob : Category → 𝓤 ̇
+ Ob : Cat → 𝓤 ̇
  Ob (X , (homX , idX , compX) , _) = X
 
- hom : (𝓧 : Category) → Ob 𝓧 → Ob 𝓧 → 𝓥 ̇
+ hom : (𝓧 : Cat) → Ob 𝓧 → Ob 𝓧 → 𝓥 ̇
  hom (X , (homX , idX , compX) , _) = homX
 
- 𝒾𝒹 : (𝓧 : Category) → (x : Ob 𝓧) → hom 𝓧 x x
+ 𝒾𝒹 : (𝓧 : Cat) → (x : Ob 𝓧) → hom 𝓧 x x
  𝒾𝒹 (X , (homX , idX , compX) , _) = idX
 
- comp : (𝓧 : Category) → (x y z : Ob 𝓧) (f : hom 𝓧 x y) (g : hom 𝓧 y z) → hom 𝓧 x z
+ comp : (𝓧 : Cat) → (x y z : Ob 𝓧) (f : hom 𝓧 x y) (g : hom 𝓧 y z) → hom 𝓧 x z
  comp (X , (homX , idX , compX) , _) = compX
 
- functorial : (𝓧 𝓐 : Category)
+ functorial : (𝓧 𝓐 : Cat)
             → (F : Ob 𝓧 → Ob 𝓐)
             → (𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
             → 𝓤 ⊔ 𝓥 ̇
@@ -5019,7 +5026,7 @@ module category-identity
 
  characterization-of-category-≃ :
 
-      (𝓧 𝓐 : Category)
+      (𝓧 𝓐 : Cat)
     →
       (𝓧 ≡ 𝓐)
     ≃
