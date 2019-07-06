@@ -7985,7 +7985,7 @@ module pointed-type-identity {𝓤 : Universe} where
 #### Combining two mathematical structures
 
 We now show how to join two mathematics structures so as to obtain a
-characterization of identifications of the join from the
+characterization of the identifications of the join from the
 characterization of the equalities of the structures. For example, we
 build the characterization of identifications of pointed ∞-magmas from
 the characterizations of the identifications of pointed types and the
@@ -8289,11 +8289,11 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
    i : (x : X) → is-subsingleton (Σ \(x' : X) → (x · x' ≡ e) × (x' · x ≡ e))
    i x (y , _ , q) (z , p , _) = u
     where
-     t = y             ≡⟨ (r y)⁻¹ ⟩
+     t = y             ≡⟨ (r y)⁻¹          ⟩
          (y · e)       ≡⟨ ap (y ·_) (p ⁻¹) ⟩
-         (y · (x · z)) ≡⟨ (a y x z)⁻¹ ⟩
-         ((y · x) · z) ≡⟨ ap (_· z) q ⟩
-         (e · z)       ≡⟨ l z ⟩
+         (y · (x · z)) ≡⟨ (a y x z)⁻¹      ⟩
+         ((y · x) · z) ≡⟨ ap (_· z) q      ⟩
+         (e · z)       ≡⟨ l z              ⟩
          z ∎
 
      u : (y , _ , q) ≡ (z , p , _)
@@ -8612,7 +8612,7 @@ module selection-space-identity
 
  _≅_  :  SelectionSpace → SelectionSpace → 𝓤 ⊔ 𝓥 ̇
 
- (X , ε , a) ≅ (Y , δ , b) =
+ (X , ε , _) ≅ (Y , δ , _) =
 
              Σ \(f : X → Y) → is-equiv f
                             × ((λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ)
@@ -8790,7 +8790,7 @@ Its composition law (or transitivity):
  comp (X , homX , idX , compX) = compX
 \end{code}
 
-Notice that we choose the so-called *diagramatic order* for
+Notice that we have the so-called *diagramatic order* for
 composition.
 
 The functoriality of a pair `F , 𝓕` (where in category theory the
@@ -9041,7 +9041,7 @@ module category-identity
 The axioms say that
 
   * the homs form sets, rather than arbitrary types,
-  * the identity is left and right neutral,
+  * the identity is a left and right neutral element of composition,
   * composition is associative.
 
 \begin{code}
@@ -9072,8 +9072,8 @@ subsingleton type:
  category-axioms-subsingleton : (X : 𝓤 ̇ ) (s : S X) → is-subsingleton (category-axioms X s)
  category-axioms-subsingleton X (homX , idX , compX) ca = γ ca
   where
-   s : ∀ x y → is-set (homX x y)
-   s = pr₁ ca
+   i : ∀ x y → is-set (homX x y)
+   i = pr₁ ca
 
    γ : is-subsingleton (category-axioms X (homX , idX , compX))
    γ = ×-is-subsingleton ss (×-is-subsingleton ls (×-is-subsingleton rs as))
@@ -9085,12 +9085,12 @@ subsingleton type:
      ls = Π-is-subsingleton fe
            (λ x → Π-is-subsingleton fe
            (λ y → Π-is-subsingleton fe
-           (λ f → s x y (compX x x y (idX x) f) f)))
+           (λ f → i x y (compX x x y (idX x) f) f)))
 
      rs = Π-is-subsingleton fe
            (λ x → Π-is-subsingleton fe
            (λ y → Π-is-subsingleton fe
-           (λ f → s x y (compX x y y f (idX y)) f)))
+           (λ f → i x y (compX x y y f (idX y)) f)))
 
      as = Π-is-subsingleton fe
            (λ x → Π-is-subsingleton fe
@@ -9099,7 +9099,7 @@ subsingleton type:
            (λ t → Π-is-subsingleton fe
            (λ f → Π-is-subsingleton fe
            (λ g → Π-is-subsingleton fe
-           (λ h → s x t (compX x y t f (compX y z t g h))
+           (λ h → i x t (compX x y t f (compX y z t g h))
                         (compX x z t (compX x y z f g) h))))))))
 \end{code}
 
@@ -9129,12 +9129,12 @@ account that now we have axioms, which we simply ignore:
  comp (X , (homX , idX , compX) , _) = compX
 
 
- functorial : (𝓧 𝓐 : Cat)
-            → (F : Ob 𝓧 → Ob 𝓐)
-            → ((x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-            → 𝓤 ⊔ 𝓥 ̇
+ is-functorial : (𝓧 𝓐 : Cat)
+               → (F : Ob 𝓧 → Ob 𝓐)
+               → ((x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+               → 𝓤 ⊔ 𝓥 ̇
 
- functorial 𝓧 𝓐 F 𝓕' = pidentity × pcomposition
+ is-functorial 𝓧 𝓐 F 𝓕' = pidentity × pcomposition
   where
    _o_ : {x y z : Ob 𝓧} → hom 𝓧 y z → hom 𝓧 x y → hom 𝓧 x z
    g o f = comp 𝓧 _ _ _ f g
@@ -9151,6 +9151,10 @@ account that now we have axioms, which we simply ignore:
                 ≡ (λ x y z (f : hom 𝓧 x y) (g : hom 𝓧 y z) → 𝓕 g □ 𝓕 f)
 \end{code}
 
+*Exercise.* For type-valued preorders, `functorial 𝓧 𝓐 F 𝓕` is not in
+ general a subsingleton, but for categories, `is-functorial 𝓧 𝓐 F 𝓕`
+ is always a subsingleton.
+
 We now apply the module `type-valued-preorder-with-axioms-identity` to
 get the following characterization of identity of categories:
 
@@ -9165,7 +9169,7 @@ get the following characterization of identity of categories:
             → is-equiv F
             × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
                     → (∀ x y → is-equiv (𝓕 x y))
-                    × functorial 𝓧 𝓐 F 𝓕
+                    × is-functorial 𝓧 𝓐 F 𝓕
 
  characterization-of-category-≡ = characterization-of-type-valued-preorder-≡-with-axioms
                                    category-axioms category-axioms-subsingleton

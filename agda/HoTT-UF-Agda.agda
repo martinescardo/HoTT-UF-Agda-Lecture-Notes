@@ -4422,11 +4422,11 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
    i : (x : X) → is-subsingleton (Σ \(x' : X) → (x · x' ≡ e) × (x' · x ≡ e))
    i x (y , _ , q) (z , p , _) = u
     where
-     t = y             ≡⟨ (r y)⁻¹ ⟩
+     t = y             ≡⟨ (r y)⁻¹          ⟩
          (y · e)       ≡⟨ ap (y ·_) (p ⁻¹) ⟩
-         (y · (x · z)) ≡⟨ (a y x z)⁻¹ ⟩
-         ((y · x) · z) ≡⟨ ap (_· z) q ⟩
-         (e · z)       ≡⟨ l z ⟩
+         (y · (x · z)) ≡⟨ (a y x z)⁻¹      ⟩
+         ((y · x) · z) ≡⟨ ap (_· z) q      ⟩
+         (e · z)       ≡⟨ l z              ⟩
          z ∎
 
      u : (y , _ , q) ≡ (z , p , _)
@@ -4646,7 +4646,7 @@ module selection-space-identity
 
  _≅_  :  SelectionSpace → SelectionSpace → 𝓤 ⊔ 𝓥 ̇
 
- (X , ε , a) ≅ (Y , δ , b) =
+ (X , ε , _) ≅ (Y , δ , _) =
 
              Σ \(f : X → Y) → is-equiv f
                             × ((λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ)
@@ -4958,8 +4958,8 @@ module category-identity
  category-axioms-subsingleton : (X : 𝓤 ̇ ) (s : S X) → is-subsingleton (category-axioms X s)
  category-axioms-subsingleton X (homX , idX , compX) ca = γ ca
   where
-   s : ∀ x y → is-set (homX x y)
-   s = pr₁ ca
+   i : ∀ x y → is-set (homX x y)
+   i = pr₁ ca
 
    γ : is-subsingleton (category-axioms X (homX , idX , compX))
    γ = ×-is-subsingleton ss (×-is-subsingleton ls (×-is-subsingleton rs as))
@@ -4971,12 +4971,12 @@ module category-identity
      ls = Π-is-subsingleton fe
            (λ x → Π-is-subsingleton fe
            (λ y → Π-is-subsingleton fe
-           (λ f → s x y (compX x x y (idX x) f) f)))
+           (λ f → i x y (compX x x y (idX x) f) f)))
 
      rs = Π-is-subsingleton fe
            (λ x → Π-is-subsingleton fe
            (λ y → Π-is-subsingleton fe
-           (λ f → s x y (compX x y y f (idX y)) f)))
+           (λ f → i x y (compX x y y f (idX y)) f)))
 
      as = Π-is-subsingleton fe
            (λ x → Π-is-subsingleton fe
@@ -4985,7 +4985,7 @@ module category-identity
            (λ t → Π-is-subsingleton fe
            (λ f → Π-is-subsingleton fe
            (λ g → Π-is-subsingleton fe
-           (λ h → s x t (compX x y t f (compX y z t g h))
+           (λ h → i x t (compX x y t f (compX y z t g h))
                         (compX x z t (compX x y z f g) h))))))))
 
  Cat : (𝓤 ⊔ 𝓥)⁺ ̇
@@ -5003,12 +5003,12 @@ module category-identity
  comp : (𝓧 : Cat) (x y z : Ob 𝓧) (f : hom 𝓧 x y) (g : hom 𝓧 y z) → hom 𝓧 x z
  comp (X , (homX , idX , compX) , _) = compX
 
- functorial : (𝓧 𝓐 : Cat)
-            → (F : Ob 𝓧 → Ob 𝓐)
-            → ((x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-            → 𝓤 ⊔ 𝓥 ̇
+ is-functorial : (𝓧 𝓐 : Cat)
+               → (F : Ob 𝓧 → Ob 𝓐)
+               → ((x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+               → 𝓤 ⊔ 𝓥 ̇
 
- functorial 𝓧 𝓐 F 𝓕' = pidentity × pcomposition
+ is-functorial 𝓧 𝓐 F 𝓕' = pidentity × pcomposition
   where
    _o_ : {x y z : Ob 𝓧} → hom 𝓧 y z → hom 𝓧 x y → hom 𝓧 x z
    g o f = comp 𝓧 _ _ _ f g
@@ -5034,7 +5034,7 @@ module category-identity
             → is-equiv F
             × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
                     → (∀ x y → is-equiv (𝓕 x y))
-                    × functorial 𝓧 𝓐 F 𝓕
+                    × is-functorial 𝓧 𝓐 F 𝓕
 
  characterization-of-category-≡ = characterization-of-type-valued-preorder-≡-with-axioms
                                    category-axioms category-axioms-subsingleton
