@@ -425,6 +425,13 @@ to practice univalent mathematics should consult the above references.
      1. [Subsingleton truncation, disjunction and existence](HoTT-UF-Agda.html#truncation)
      1. [The univalent axiom of choice](HoTT-UF-Agda.html#choice)
      1. [Propositional resizing, truncation and the powerset](HoTT-UF-Agda.html#resizing)
+        1. [Propositional resizing](HoTT-UF-Agda.html#prop-resizing)
+        1. [Excluded middle gives propositional resizing](HoTT-UF-Agda.html#em-resizing)
+        1. [The propositional resizing axiom is a subsingleton](HoTT-UF-Agda.html#resizing-subsingleton)
+        1. [Propositional impredicativity](HoTT-UF-Agda.html#prop-impred)
+        1. [Propositional resizing gives subsingleton truncation](HoTT-UF-Agda.html#trucation-resizing)
+        1. [The powerset in the presence of propositional resizing](HoTT-UF-Agda.html#powerset-resizing)
+        1. [Topological spaces in the presence of propositional resizing](HoTT-UF-Agda.html#topol-resizing)
      1. [Quotients](HoTT-UF-Agda.html#quotients)
      1. [Summary of consistent axioms for univalent mathematics](HoTT-UF-Agda.html#summary)
   1. [Appendix](HoTT-UF-Agda.html#appendix)
@@ -9919,7 +9926,7 @@ It is also an open problem whether the resizing principles discussed
 below have a computational interpretation.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### Propositional resizing
+#### <a id="prop-resizing"> Propositional resizing
 
 We say that a type `X` has size `𝓥` if it is equivalent to a type in the
 universe `𝓥`:
@@ -9983,7 +9990,7 @@ Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### Excluded middle implies propositional resizing
+#### <a id="em-resizing"> Excluded middle gives propositional resizing
 
 Propositional resizing is consistent, because it is implied by
 excluded middle, which is consistent (with or without univalence):
@@ -10014,7 +10021,7 @@ EM-gives-PR {𝓤} {𝓥} em P i = Q (em P i) , e
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### The propositional resizing axiom is a subsingleton
+#### <a id="resizing-subsingleton"> The propositional resizing axiom is a subsingleton
 
 To show that the propositional resizing principle is a subsingleton,
 we use univalence here.
@@ -10041,7 +10048,7 @@ using propositional and functional extensionality instead of
 univalence.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### Propositional impredicativity
+#### <a id="prop-impred"> Propositional impredicativity
 
 We consider two notions of propositional impredicativity:
 
@@ -10179,7 +10186,7 @@ Impredicativity-gives-PR {𝓤} {𝓥} pe fe (O , e) P i = Q , ε
 has size `𝓤₀`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### Propositional resizing gives subsingleton truncation
+#### <a id="truncation-resizing"> Propositional resizing gives subsingleton truncation
 
 Using Voevodsky's [construction](HoTT-UF-Agda.html#truncation) and
 propositional resizing, we get that function extensionality implies
@@ -10226,7 +10233,7 @@ PR-gives-existence-of-truncations fe R =
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### The powerset in the presence of propositional resizing
+#### <a id="powerset-resizing"> The powerset in the presence of propositional resizing
 
 As a second, important, use of resizing, we revisit the powerset.
 First, given a set of subsets, that is, an element of the double
@@ -10452,7 +10459,7 @@ propositional resizing:
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### Topological spaces in the presence of propositional resizing
+#### <a id="topol-resizing"> Topological spaces in the presence of propositional resizing
 
 For example, with this we can define the type of topological spaces as
 follows, where `𝓞` consists of designated sets, conventionally called
