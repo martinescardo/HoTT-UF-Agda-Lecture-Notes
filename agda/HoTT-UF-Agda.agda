@@ -538,6 +538,46 @@ is-truth-value = is-subsingleton
 is-set : 𝓤 ̇ → 𝓤 ̇
 is-set X = (x y : X) → is-subsingleton (x ≡ y)
 
+is-singleton : 𝓤 ̇ → 𝓤 ̇
+is-singleton X = Σ \(c : X) → (x : X) → c ≡ x
+
+𝟙-is-singleton : is-singleton 𝟙
+𝟙-is-singleton = ⋆ , 𝟙-induction (λ x → ⋆ ≡ x) (refl ⋆)
+
+center : (X : 𝓤 ̇ ) → is-singleton X → X
+center X (c , φ) = c
+
+centrality : (X : 𝓤 ̇ ) (i : is-singleton X) (x : X) → center X i ≡ x
+centrality X (c , φ) = φ
+
+singletons-are-subsingletons : (X : 𝓤 ̇ ) → is-singleton X → is-subsingleton X
+singletons-are-subsingletons X (c , φ) x y = x ≡⟨ (φ x)⁻¹ ⟩
+                                             c ≡⟨ φ y ⟩
+                                             y ∎
+
+pointed-subsingletons-are-singletons : (X : 𝓤 ̇ )
+                                     → X → is-subsingleton X → is-singleton X
+
+pointed-subsingletons-are-singletons X x s = (x , s x)
+
+EM EM' : ∀ 𝓤 → 𝓤 ⁺ ̇
+EM  𝓤 = (X : 𝓤 ̇ ) → is-subsingleton X → X + ¬ X
+EM' 𝓤 = (X : 𝓤 ̇ ) → is-subsingleton X → is-singleton X + is-empty X
+
+EM-gives-EM' : EM 𝓤 → EM' 𝓤
+EM-gives-EM' em X s = γ (em X s)
+ where
+  γ : X + ¬ X → is-singleton X + is-empty X
+  γ (inl x) = inl (pointed-subsingletons-are-singletons X x s)
+  γ (inr x) = inr x
+
+EM'-gives-EM : EM' 𝓤 → EM 𝓤
+EM'-gives-EM em' X s = γ (em' X s)
+ where
+  γ : is-singleton X + is-empty X → X + ¬ X
+  γ (inl i) = inl (center X i)
+  γ (inr x) = inr x
+
 module magmas where
 
  Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
@@ -708,49 +748,9 @@ to-Σ-≡' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x : X} {a a' : A x}
 
 to-Σ-≡' {𝓤} {𝓥} {X} {A} {x} = ap (λ - → (x , -))
 
-is-singleton : 𝓤 ̇ → 𝓤 ̇
-is-singleton X = Σ \(c : X) → (x : X) → c ≡ x
-
-𝟙-is-singleton : is-singleton 𝟙
-𝟙-is-singleton = ⋆ , 𝟙-induction (λ x → ⋆ ≡ x) (refl ⋆)
-
 _is-of-hlevel_ : 𝓤 ̇ → ℕ → 𝓤 ̇
 X is-of-hlevel 0        = is-singleton X
 X is-of-hlevel (succ n) = (x x' : X) → ((x ≡ x') is-of-hlevel n)
-
-center : (X : 𝓤 ̇ ) → is-singleton X → X
-center X (c , φ) = c
-
-centrality : (X : 𝓤 ̇ ) (i : is-singleton X) (x : X) → center X i ≡ x
-centrality X (c , φ) = φ
-
-singletons-are-subsingletons : (X : 𝓤 ̇ ) → is-singleton X → is-subsingleton X
-singletons-are-subsingletons X (c , φ) x y = x ≡⟨ (φ x)⁻¹ ⟩
-                                             c ≡⟨ φ y ⟩
-                                             y ∎
-
-pointed-subsingletons-are-singletons : (X : 𝓤 ̇ )
-                                     → X → is-subsingleton X → is-singleton X
-
-pointed-subsingletons-are-singletons X x s = (x , s x)
-
-EM EM' : ∀ 𝓤 → 𝓤 ⁺ ̇
-EM  𝓤 = (X : 𝓤 ̇ ) → is-subsingleton X → X + ¬ X
-EM' 𝓤 = (X : 𝓤 ̇ ) → is-subsingleton X → is-singleton X + is-empty X
-
-EM-gives-EM' : EM 𝓤 → EM' 𝓤
-EM-gives-EM' em X s = γ (em X s)
- where
-  γ : X + ¬ X → is-singleton X + is-empty X
-  γ (inl x) = inl (pointed-subsingletons-are-singletons X x s)
-  γ (inr x) = inr x
-
-EM'-gives-EM : EM' 𝓤 → EM 𝓤
-EM'-gives-EM em' X s = γ (em' X s)
- where
-  γ : is-singleton X + is-empty X → X + ¬ X
-  γ (inl i) = inl (center X i)
-  γ (inr x) = inr x
 
 wconstant : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 wconstant f = (x x' : domain f) → f x ≡ f x'

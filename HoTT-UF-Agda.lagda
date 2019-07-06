@@ -370,20 +370,20 @@ to practice univalent mathematics should consult the above references.
      1. [Remaining Peano axioms and basic arithmetic](HoTT-UF-Agda.html#basicarithmetic)
   1. [Univalent Mathematics in Agda](HoTT-UF-Agda.html#uminagda)
      1. [Our univalent type theory](HoTT-UF-Agda.html#axiomaticutt)
-     1. [Subsingletons (or propositions or truth values) and sets](HoTT-UF-Agda.html#subsingletonsandsets)
+     1. [Subsingletons (or propositions or truth values), sets and singletons](HoTT-UF-Agda.html#subsingletonsandsets)
+     1. [The univalent principle of excluded middle](HoTT-UF-Agda.html#em)
      1. [The types of magmas and monoids](HoTT-UF-Agda.html#magmasandmonoids)
      1. [The identity type in univalent mathematics](HoTT-UF-Agda.html#identitytypeuf)
      1. [Identifications that depend on identifications](HoTT-UF-Agda.html#dependentequality)
      1. [Equality in Σ types](HoTT-UF-Agda.html#sigmaequality)
      1. [Voevodsky's notion of hlevel](HoTT-UF-Agda.html#hlevel)
-     1. [The univalent principle of excluded middle](HoTT-UF-Agda.html#em)
-     1. [Hedberg's Theorem](HoTT-UF-Agda.html#hedberg)
-     1. [A characterization of sets](HoTT-UF-Agda.html#setscharacterization)
-     1. [Subsingletons are sets](HoTT-UF-Agda.html#subsingletonsaresets)
-     1. [The types of hlevel 1 are the subsingletons](HoTT-UF-Agda.html#hlevel1subsingleton)
-     1. [The types of hlevel 2 are the sets](HoTT-UF-Agda.html#hlevel2set)
-     1. [The hlevels are upper closed](HoTT-UF-Agda.html#hlevelsupper)
-     1. [`ℕ` and `𝟚` are sets](HoTT-UF-Agda.html#naturalsset)
+        1. [Hedberg's Theorem](HoTT-UF-Agda.html#hedberg)
+        1. [A characterization of sets](HoTT-UF-Agda.html#setscharacterization)
+        1. [Subsingletons are sets](HoTT-UF-Agda.html#subsingletonsaresets)
+        1. [The types of hlevel 1 are the subsingletons](HoTT-UF-Agda.html#hlevel1subsingleton)
+        1. [The types of hlevel 2 are the sets](HoTT-UF-Agda.html#hlevel2set)
+        1. [The hlevels are upper closed](HoTT-UF-Agda.html#hlevelsupper)
+        1. [`ℕ` and `𝟚` are sets](HoTT-UF-Agda.html#naturalsset)
      1. [Retracts](HoTT-UF-Agda.html#retracts)
      1. [Voevodsky's notion of type equivalence](HoTT-UF-Agda.html#fibersandequivalences)
      1. [Voevodsky's univalence axiom](HoTT-UF-Agda.html#univalence)
@@ -407,6 +407,22 @@ to practice univalent mathematics should consult the above references.
      1. [The subtype classifier and other classifiers](HoTT-UF-Agda.html#subtypeclassifier)
      1. [Magma equivalences](HoTT-UF-Agda.html#magmaequivalences)
      1. [Equality of mathematical structures](HoTT-UF-Agda.html#sip)
+        1. [A structure identity principle for a standard notion of structure](HoTT-UF-Agda.html#sns)
+        1. [∞-Magmas](HoTT-UF-Agda.html#infty-magmas)
+        1. [Adding axioms](HoTT-UF-Agda.html#adding-axioms)
+        1. [Magmas](HoTT-UF-Agda.html#magmas-sip)
+        1. [Pointed types](HoTT-UF-Agda.html#pointed-types)
+        1. [Combining two mathematical structures](HoTT-UF-Agda.html#combining-structures)
+        1. [Pointed ∞-magmas](HoTT-UF-Agda.html#pointed-infty-magmas)
+        1. [Monoids](HoTT-UF-Agda.html#monoids-sip)
+        1. [Groups](HoTT-UF-Agda.html#groups-sip)
+        1. [The slice type](HoTT-UF-Agda.html#slice-sip)
+        1. [Metric spaces, graphs and ordered structures](HoTT-UF-Agda.html#metric-sip)
+        1. [Topological spaces](HoTT-UF-Agda.html#topological-sip)
+        1. [Selection spaces](HoTT-UF-Agda.html#selection-sip)
+        1. [A contrived example](HoTT-UF-Agda.html#contrived-sip)
+        1. [Functor algebras](HoTT-UF-Agda.html#functor-algebras-sip)
+        1. [Type-valued preorders and categories](HoTT-UF-Agda.html#infty-preorders-sip)
      1. [Subsingleton truncation, disjunction and existence](HoTT-UF-Agda.html#truncation)
      1. [The univalent axiom of choice](HoTT-UF-Agda.html#choice)
      1. [Propositional resizing, truncation and the powerset](HoTT-UF-Agda.html#resizing)
@@ -2169,7 +2185,7 @@ cubical type theory, which has a version available in Agda, called
 Agda](https://homotopytypetheory.org/2018/12/06/cubical-agda/).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="subsingletonsandsets"></a> Subsingletons (or propositions or truth values) and sets
+### <a id="subsingletonsandsets"></a> Subsingletons (or propositions or truth values), sets and singletons
 
 A type is a subsingleton (or a truth value or a proposition) if it has
 at most one element, that is, any two of its elements are equal, or identified.
@@ -2212,9 +2228,85 @@ is-set : 𝓤 ̇ → 𝓤 ̇
 is-set X = (x y : X) → is-subsingleton (x ≡ y)
 \end{code}
 
+Voevodsky defined a notion of *contractible type*, which we
+refer to here as *singleton type*.
+
+\begin{code}
+is-singleton : 𝓤 ̇ → 𝓤 ̇
+is-singleton X = Σ \(c : X) → (x : X) → c ≡ x
+\end{code}
+
+Such an element `c` is called a center of contraction of `X`.
+
+\begin{code}
+𝟙-is-singleton : is-singleton 𝟙
+𝟙-is-singleton = ⋆ , 𝟙-induction (λ x → ⋆ ≡ x) (refl ⋆)
+\end{code}
+
+When working with singleton types, it will be convenient to have
+distinguished names for the two projections:
+
+\begin{code}
+center : (X : 𝓤 ̇ ) → is-singleton X → X
+center X (c , φ) = c
+
+centrality : (X : 𝓤 ̇ ) (i : is-singleton X) (x : X) → center X i ≡ x
+centrality X (c , φ) = φ
+\end{code}
+
+\begin{code}
+singletons-are-subsingletons : (X : 𝓤 ̇ ) → is-singleton X → is-subsingleton X
+singletons-are-subsingletons X (c , φ) x y = x ≡⟨ (φ x)⁻¹ ⟩
+                                             c ≡⟨ φ y ⟩
+                                             y ∎
+
+
+pointed-subsingletons-are-singletons : (X : 𝓤 ̇ )
+                                     → X → is-subsingleton X → is-singleton X
+
+pointed-subsingletons-are-singletons X x s = (x , s x)
+\end{code}
+
 At this point, with the definition of these notions, we are entering
 the realm of univalent mathematics, but not yet needing the univalence
 axiom.
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="em"></a> The univalent principle of excluded middle
+
+Under excluded middle, the only two subsingletons, up to equivalence,
+are `𝟘` and `𝟙`. In fact, excluded middle in univalent mathematics
+says precisely that.
+
+\begin{code}
+EM EM' : ∀ 𝓤 → 𝓤 ⁺ ̇
+EM  𝓤 = (X : 𝓤 ̇ ) → is-subsingleton X → X + ¬ X
+EM' 𝓤 = (X : 𝓤 ̇ ) → is-subsingleton X → is-singleton X + is-empty X
+\end{code}
+
+Notice that the above don't assert excluded middle, but instead say
+what excluded middle is (like when we said what the twin-prime
+conjecture is), in two logically equivalent versions:
+
+\begin{code}
+EM-gives-EM' : EM 𝓤 → EM' 𝓤
+EM-gives-EM' em X s = γ (em X s)
+ where
+  γ : X + ¬ X → is-singleton X + is-empty X
+  γ (inl x) = inl (pointed-subsingletons-are-singletons X x s)
+  γ (inr x) = inr x
+
+
+EM'-gives-EM : EM' 𝓤 → EM 𝓤
+EM'-gives-EM em' X s = γ (em' X s)
+ where
+  γ : is-singleton X + is-empty X → X + ¬ X
+  γ (inl i) = inl (center X i)
+  γ (inr x) = inr x
+\end{code}
+
+We will not assume or deny excluded middle, which is an independent
+statement (it can't be proved or disproved).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="magmasandmonoids"></a> The types of magmas and monoids
@@ -2744,22 +2836,7 @@ Voevodsky's hlevels `0,1,2,3,...` are shifted by `2` with respect to
 the `n`-groupoid numbering convention, and correspond to `-2`-groupoids
 (singletons), `-1`-groupoids (subsingletons), `0`-groupoids (sets),...
 
-First Voevodsky defined a notion of *contractible type*, which we
-refer to here as *singleton type*.
-
-\begin{code}
-is-singleton : 𝓤 ̇ → 𝓤 ̇
-is-singleton X = Σ \(c : X) → (x : X) → c ≡ x
-\end{code}
-
-Such an element `c` is called a center of contraction of `X`.
-
-\begin{code}
-𝟙-is-singleton : is-singleton 𝟙
-𝟙-is-singleton = ⋆ , 𝟙-induction (λ x → ⋆ ≡ x) (refl ⋆)
-\end{code}
-
-Then the hlevel relation is defined by induction on `ℕ`, with the
+The hlevel relation is defined by induction on `ℕ`, with the
 induction step working with the identity types of the elements of the
 type in question:
 
@@ -2773,69 +2850,8 @@ It is often convenient in practice to have equivalent formulations of
 the hlevels `1` (as subsingletons) and `2` (as sets), which we will
 develop [soon](HoTT-UF-Agda.html#setscharacterization).
 
-When working with singleton types, it will be convenient to have
-distinguished names for the two projections:
-
-\begin{code}
-center : (X : 𝓤 ̇ ) → is-singleton X → X
-center X (c , φ) = c
-
-centrality : (X : 𝓤 ̇ ) (i : is-singleton X) (x : X) → center X i ≡ x
-centrality X (c , φ) = φ
-\end{code}
-
-\begin{code}
-singletons-are-subsingletons : (X : 𝓤 ̇ ) → is-singleton X → is-subsingleton X
-singletons-are-subsingletons X (c , φ) x y = x ≡⟨ (φ x)⁻¹ ⟩
-                                             c ≡⟨ φ y ⟩
-                                             y ∎
-
-
-pointed-subsingletons-are-singletons : (X : 𝓤 ̇ )
-                                     → X → is-subsingleton X → is-singleton X
-
-pointed-subsingletons-are-singletons X x s = (x , s x)
-\end{code}
-
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="em"></a> The univalent principle of excluded middle
-
-Under excluded middle, the only two subsingletons, up to equivalence,
-are `𝟘` and `𝟙`. In fact, excluded middle in univalent mathematics
-says precisely that.
-
-\begin{code}
-EM EM' : ∀ 𝓤 → 𝓤 ⁺ ̇
-EM  𝓤 = (X : 𝓤 ̇ ) → is-subsingleton X → X + ¬ X
-EM' 𝓤 = (X : 𝓤 ̇ ) → is-subsingleton X → is-singleton X + is-empty X
-\end{code}
-
-Notice that the above don't assert excluded middle, but instead say
-what excluded middle is (like when we said what the twin-prime
-conjecture is), in two logically equivalent versions:
-
-\begin{code}
-EM-gives-EM' : EM 𝓤 → EM' 𝓤
-EM-gives-EM' em X s = γ (em X s)
- where
-  γ : X + ¬ X → is-singleton X + is-empty X
-  γ (inl x) = inl (pointed-subsingletons-are-singletons X x s)
-  γ (inr x) = inr x
-
-
-EM'-gives-EM : EM' 𝓤 → EM 𝓤
-EM'-gives-EM em' X s = γ (em' X s)
- where
-  γ : is-singleton X + is-empty X → X + ¬ X
-  γ (inl i) = inl (center X i)
-  γ (inr x) = inr x
-\end{code}
-
-We will not assume or deny excluded middle, which is an independent
-statement (it can't be proved or disproved).
-
-[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="hedberg"></a> Hedberg's Theorem
+#### <a id="hedberg"></a> Hedberg's Theorem
 
 To characterize sets as the types of hlevel 2, we first need to show
 that subsingletons are sets, and this is not easy. We use an argument
@@ -2898,7 +2914,7 @@ Hedberg {𝓤} {X} x c y p q =
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="setscharacterization"></a> A characterization of sets
+#### <a id="setscharacterization"></a> A characterization of sets
 
 The following is immediate from the definitions:
 
@@ -2926,7 +2942,7 @@ Id-collapsibles-are-sets X c x = Hedberg x
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="subsingletonsaresets"></a> Subsingletons are sets
+#### <a id="subsingletonsaresets"></a> Subsingletons are sets
 
 In the following definition of the auxiliary function `f`, we ignore
 the argument `p`, using the fact that `X` is a subsingleton instead,
@@ -2954,7 +2970,7 @@ subsingletons-are-sets X s = Id-collapsibles-are-sets X
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="hlevel1subsingleton"></a> The types of hlevel 1 are the subsingletons
+#### <a id="hlevel1subsingleton"></a> The types of hlevel 1 are the subsingletons
 
 Then with the above we get our desired characterization of the types of
 hlevel `1` as an immediate consequence:
@@ -2986,7 +3002,7 @@ because the types under consideration are
 [subsingletons](HoTT-UF-Agda.html#subsingletonsandsets).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="hlevel2set"></a> The types of hlevel 2 are the sets
+#### <a id="hlevel2set"></a> The types of hlevel 2 are the sets
 
 The same comments as for the previous section apply.
 
@@ -3006,7 +3022,7 @@ types-of-hlevel-2-are-sets X = f
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="hlevelsupper"></a> The hlevels are upper closed
+#### <a id="hlevelsupper"></a> The hlevels are upper closed
 
 A singleton is a subsingleton, a subsingleton is a set, ... , a type
 of hlevel `n` is of hlevel `n+1` too, ...
@@ -3054,7 +3070,7 @@ next section. More ambitiously, after
 type of monoids has minimal hlevel `3`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="naturalsset"></a> `ℕ` and `𝟚` are sets
+#### <a id="naturalsset"></a> `ℕ` and `𝟚` are sets
 
 If a type has decidability of equality we can define a `wconstant`
 function `x ≡ y → x ≡ y` and hence conclude that it is a set. This
@@ -7579,7 +7595,7 @@ We also apply theses ideas to characterize identifications of metric
 spaces, topological spaces, graphs, partially ordered sets, and more.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### A structure identity principle for a standard notion of structure
+#### <a id="sns"> A structure identity principle for a standard notion of structure
 
 \begin{code}
 module sip where
@@ -7746,7 +7762,7 @@ And this concludes the module `sip`
 We now consider some examples of uses of this.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### ∞-Magmas
+#### <a id="infty-magmas"> ∞-Magmas
 
 \begin{code}
 module ∞-magma-identity {𝓤 : Universe} where
@@ -7797,7 +7813,7 @@ module ∞-magma-identity {𝓤 : Universe} where
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### Adding axioms
+#### <a id="adding-axioms"> Adding axioms
 
 Next we want to account for situations in which axioms are
 considered, for example that the underlying type is a set, or that the
@@ -7914,7 +7930,7 @@ And this concludes the module `sip-with-axioms`. We now consider some
 examples.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### Magmas
+#### <a id="magmas-sip"> Magmas
 
 \begin{code}
 module magma-identity {𝓤 : Universe} where
@@ -7949,7 +7965,7 @@ module magma-identity {𝓤 : Universe} where
    developement solves this exercise.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### Pointed types
+#### <a id="pointed-types"> Pointed types
 
 \begin{code}
 module pointed-type-identity {𝓤 : Universe} where
@@ -7988,7 +8004,7 @@ module pointed-type-identity {𝓤 : Universe} where
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### Combining two mathematical structures
+#### <a id="combining-structures"> Combining two mathematical structures
 
 We now show how to join two mathematics structures so as to obtain a
 characterization of the identifications of the join from the
@@ -8165,7 +8181,7 @@ general structure identity principle:
 This concludes the submodule. Some examples of uses of this follow.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### Pointed ∞-magmas
+#### <a id="pointed-infty-magmas"> Pointed ∞-magmas
 
 \begin{code}
 module pointed-∞-magma-identity {𝓤 : Universe} where
@@ -8194,7 +8210,7 @@ module pointed-∞-magma-identity {𝓤 : Universe} where
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### Monoids
+#### <a id="monoids-sip"> Monoids
 
 In the following example, we combine joins and addition of axioms.
 
@@ -8269,7 +8285,7 @@ module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### Groups
+#### <a id="groups-sip"> Groups
 
 We add an axiom to monoids to get groups.
 
@@ -8356,7 +8372,7 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### The slice type
+#### <a id="slice-sip"> The slice type
 
 \begin{code}
 module slice-identity
@@ -8398,7 +8414,7 @@ module slice-identity
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### Metric spaces, graphs and ordered structures
+#### <a id="metric-sip"> Metric spaces, graphs and ordered structures
 
 \begin{code}
 module generalized-metric-space-identity
@@ -8466,7 +8482,7 @@ We have the following particular cases of interest:
    order isomorphisms.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### Topological spaces
+#### <a id="topological-sip"> Topological spaces
 
 We get a [type of topological spaces](HoTT-UF-Agda.html#Top) when `R`
 is the type of truth values and the axioms are appropriately chosen.
@@ -8585,7 +8601,7 @@ prefer to rephrase the above as
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### Selection spaces
+#### <a id="selection-sip"> Selection spaces
 
 \begin{code}
 module selection-space-identity
@@ -8643,7 +8659,7 @@ module selection-space-identity
 
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### A contrived example
+#### <a id="contrived-sip"> A contrived example
 
 Here is an example where we need to refer to the inverse of the
 equivalence under consideration.
@@ -8676,7 +8692,7 @@ module contrived-example-identity (𝓤 : Universe) where
 Many of the above examples can be written in such a concise form.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### Functor algebras
+#### <a id="functor-algebras-sip"> Functor algebras
 
 In the following, we don't need to know that the functor preserves
 composition or give coherence data for the identification `𝓕-id`.
@@ -8732,7 +8748,7 @@ module generalized-functor-algebra-equality
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### Type-valued preorders and categories
+#### <a id="infty-preorders-sip"> Type-valued preorders and categories
 
 This example is harder than the previous ones.
 
