@@ -5024,7 +5024,7 @@ module category-identity
    pcomposition = (λ x y z (f : hom 𝓧 x y) (g : hom 𝓧 y z) → 𝓕 (g o f))
                 ≡ (λ x y z (f : hom 𝓧 x y) (g : hom 𝓧 y z) → 𝓕 g □ 𝓕 f)
 
- characterization-of-category-≃ :
+ characterization-of-category-≡ :
 
       (𝓧 𝓐 : Cat)
     →
@@ -5036,7 +5036,7 @@ module category-identity
                     → (∀ x y → is-equiv (𝓕 x y))
                     × functorial 𝓧 𝓐 F 𝓕
 
- characterization-of-category-≃ = characterization-of-type-valued-preorder-≡-with-axioms
+ characterization-of-category-≡ = characterization-of-type-valued-preorder-≡-with-axioms
                                    category-axioms category-axioms-subsingleton
 
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
