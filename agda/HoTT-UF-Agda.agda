@@ -4756,10 +4756,10 @@ module type-valued-preorder-identity
  hom : (𝓧 : Σ S) → Ob 𝓧 → Ob 𝓧 → 𝓥 ̇
  hom (X , homX , idX , compX) = homX
 
- 𝒾𝒹 : (𝓧 : Σ S) → (x : Ob 𝓧) → hom 𝓧 x x
+ 𝒾𝒹 : (𝓧 : Σ S) (x : Ob 𝓧) → hom 𝓧 x x
  𝒾𝒹 (X , homX , idX , compX) = idX
 
- comp : (𝓧 : Σ S) → (x y z : Ob 𝓧) → hom 𝓧 x y → hom 𝓧 y z → hom 𝓧 x z
+ comp : (𝓧 : Σ S) (x y z : Ob 𝓧) → hom 𝓧 x y → hom 𝓧 y z → hom 𝓧 x z
  comp (X , homX , idX , compX) = compX
 
  functorial : (𝓧 𝓐 : Σ S)
@@ -4816,9 +4816,9 @@ module type-valued-preorder-identity
          (Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
                 → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p))
        ≃
-         (Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                → (∀ x y → is-equiv (𝓕 x y))
-                × functorial 𝓧 𝓐 F 𝓕)
+         Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+               → (∀ x y → is-equiv (𝓕 x y))
+               × functorial 𝓧 𝓐 F 𝓕
 
  lemma 𝓧 𝓐 F = γ
   where
@@ -4869,11 +4869,11 @@ module type-valued-preorder-identity
     →
       (𝓧 ≡ 𝓐)
     ≃
-      (Σ \(F : Ob 𝓧 → Ob 𝓐)
-             → is-equiv F
-             × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                     → (∀ x y → is-equiv (𝓕 x y))
-                     × functorial 𝓧 𝓐 F 𝓕)
+      Σ \(F : Ob 𝓧 → Ob 𝓐)
+            → is-equiv F
+            × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                    → (∀ x y → is-equiv (𝓕 x y))
+                    × functorial 𝓧 𝓐 F 𝓕
 
  characterization-of-type-valued-preorder-≡ 𝓧 𝓐 =
 
@@ -4910,11 +4910,11 @@ module type-valued-preorder-with-axioms-identity
     →
       (𝓧' ≡ 𝓐')
     ≃
-      (Σ \(F : Ob [ 𝓧' ] → Ob [ 𝓐' ])
-             → is-equiv F
-             × Σ \(𝓕 : (x y : Ob [ 𝓧' ]) → hom [ 𝓧' ] x y → hom [ 𝓐' ] (F x) (F y))
-                     → (∀ x y → is-equiv (𝓕 x y))
-                     × functorial [ 𝓧' ] [ 𝓐' ] F 𝓕)
+      Σ \(F : Ob [ 𝓧' ] → Ob [ 𝓐' ])
+            → is-equiv F
+            × Σ \(𝓕 : (x y : Ob [ 𝓧' ]) → hom [ 𝓧' ] x y → hom [ 𝓐' ] (F x) (F y))
+                    → (∀ x y → is-equiv (𝓕 x y))
+                    × functorial [ 𝓧' ] [ 𝓐' ] F 𝓕
 
  characterization-of-type-valued-preorder-≡-with-axioms 𝓧' 𝓐' =
 
@@ -4996,10 +4996,10 @@ module category-identity
  hom : (𝓧 : Cat) → Ob 𝓧 → Ob 𝓧 → 𝓥 ̇
  hom (X , (homX , idX , compX) , _) = homX
 
- 𝒾𝒹 : (𝓧 : Cat) → (x : Ob 𝓧) → hom 𝓧 x x
+ 𝒾𝒹 : (𝓧 : Cat) (x : Ob 𝓧) → hom 𝓧 x x
  𝒾𝒹 (X , (homX , idX , compX) , _) = idX
 
- comp : (𝓧 : Cat) → (x y z : Ob 𝓧) (f : hom 𝓧 x y) (g : hom 𝓧 y z) → hom 𝓧 x z
+ comp : (𝓧 : Cat) (x y z : Ob 𝓧) (f : hom 𝓧 x y) (g : hom 𝓧 y z) → hom 𝓧 x z
  comp (X , (homX , idX , compX) , _) = compX
 
  functorial : (𝓧 𝓐 : Cat)
@@ -5029,11 +5029,11 @@ module category-identity
     →
       (𝓧 ≡ 𝓐)
     ≃
-      (Σ \(F : Ob 𝓧 → Ob 𝓐)
-             → is-equiv F
-             × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                     → (∀ x y → is-equiv (𝓕 x y))
-                     × functorial 𝓧 𝓐 F 𝓕)
+      Σ \(F : Ob 𝓧 → Ob 𝓐)
+            → is-equiv F
+            × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                    → (∀ x y → is-equiv (𝓕 x y))
+                    × functorial 𝓧 𝓐 F 𝓕
 
  characterization-of-category-≃ = characterization-of-type-valued-preorder-≡-with-axioms
                                    category-axioms category-axioms-subsingleton

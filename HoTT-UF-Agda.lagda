@@ -8779,14 +8779,14 @@ Its hom-types:
 Its identities (or reflexivities):
 
 \begin{code}
- 𝒾𝒹 : (𝓧 : Σ S) → (x : Ob 𝓧) → hom 𝓧 x x
+ 𝒾𝒹 : (𝓧 : Σ S) (x : Ob 𝓧) → hom 𝓧 x x
  𝒾𝒹 (X , homX , idX , compX) = idX
 \end{code}
 
 Its composition law (or transitivity):
 
 \begin{code}
- comp : (𝓧 : Σ S) → (x y z : Ob 𝓧) → hom 𝓧 x y → hom 𝓧 y z → hom 𝓧 x z
+ comp : (𝓧 : Σ S) (x y z : Ob 𝓧) → hom 𝓧 x y → hom 𝓧 y z → hom 𝓧 x z
  comp (X , homX , idX , compX) = compX
 \end{code}
 
@@ -8888,9 +8888,9 @@ types. The second step translates this equality into an equivalence:
          (Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
                 → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p))
        ≃
-         (Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                → (∀ x y → is-equiv (𝓕 x y))
-                × functorial 𝓧 𝓐 F 𝓕)
+         Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+               → (∀ x y → is-equiv (𝓕 x y))
+               × functorial 𝓧 𝓐 F 𝓕
 
  lemma 𝓧 𝓐 F = γ
   where
@@ -8951,11 +8951,11 @@ equality of type-valued preorders in terms of equivalences:
     →
       (𝓧 ≡ 𝓐)
     ≃
-      (Σ \(F : Ob 𝓧 → Ob 𝓐)
-             → is-equiv F
-             × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                     → (∀ x y → is-equiv (𝓕 x y))
-                     × functorial 𝓧 𝓐 F 𝓕)
+      Σ \(F : Ob 𝓧 → Ob 𝓐)
+            → is-equiv F
+            × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                    → (∀ x y → is-equiv (𝓕 x y))
+                    × functorial 𝓧 𝓐 F 𝓕
 
  characterization-of-type-valued-preorder-≡ 𝓧 𝓐 =
 
@@ -9003,11 +9003,11 @@ Recall that `[_]` is the map that forgets the axioms.
     →
       (𝓧' ≡ 𝓐')
     ≃
-      (Σ \(F : Ob [ 𝓧' ] → Ob [ 𝓐' ])
-             → is-equiv F
-             × Σ \(𝓕 : (x y : Ob [ 𝓧' ]) → hom [ 𝓧' ] x y → hom [ 𝓐' ] (F x) (F y))
-                     → (∀ x y → is-equiv (𝓕 x y))
-                     × functorial [ 𝓧' ] [ 𝓐' ] F 𝓕)
+      Σ \(F : Ob [ 𝓧' ] → Ob [ 𝓐' ])
+            → is-equiv F
+            × Σ \(𝓕 : (x y : Ob [ 𝓧' ]) → hom [ 𝓧' ] x y → hom [ 𝓐' ] (F x) (F y))
+                    → (∀ x y → is-equiv (𝓕 x y))
+                    × functorial [ 𝓧' ] [ 𝓐' ] F 𝓕
 
  characterization-of-type-valued-preorder-≡-with-axioms 𝓧' 𝓐' =
 
@@ -9121,10 +9121,10 @@ account that now we have axioms, which we simply ignore:
  hom (X , (homX , idX , compX) , _) = homX
 
 
- 𝒾𝒹 : (𝓧 : Cat) → (x : Ob 𝓧) → hom 𝓧 x x
+ 𝒾𝒹 : (𝓧 : Cat) (x : Ob 𝓧) → hom 𝓧 x x
  𝒾𝒹 (X , (homX , idX , compX) , _) = idX
 
- comp : (𝓧 : Cat) → (x y z : Ob 𝓧) (f : hom 𝓧 x y) (g : hom 𝓧 y z) → hom 𝓧 x z
+ comp : (𝓧 : Cat) (x y z : Ob 𝓧) (f : hom 𝓧 x y) (g : hom 𝓧 y z) → hom 𝓧 x z
  comp (X , (homX , idX , compX) , _) = compX
 
 
@@ -9160,11 +9160,11 @@ get the following characterization of identity of categories:
     →
       (𝓧 ≡ 𝓐)
     ≃
-      (Σ \(F : Ob 𝓧 → Ob 𝓐)
-             → is-equiv F
-             × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                     → (∀ x y → is-equiv (𝓕 x y))
-                     × functorial 𝓧 𝓐 F 𝓕)
+      Σ \(F : Ob 𝓧 → Ob 𝓐)
+            → is-equiv F
+            × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                    → (∀ x y → is-equiv (𝓕 x y))
+                    × functorial 𝓧 𝓐 F 𝓕
 
  characterization-of-category-≃ = characterization-of-type-valued-preorder-≡-with-axioms
                                    category-axioms category-axioms-subsingleton
