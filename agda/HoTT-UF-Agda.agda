@@ -5056,6 +5056,19 @@ module category-identity
  characterization-of-category-≡ = characterization-of-type-valued-preorder-≡-with-axioms
                                    category-axioms category-axioms-subsingleton
 
+ characterization-of-characterization-of-category-≡ :
+
+     (𝓧 : Cat)
+   → Eq→fun (characterization-of-category-≡ 𝓧 𝓧) (refl 𝓧)
+   ≡ 𝑖𝑑 (Ob 𝓧 ) ,
+     id-is-equiv (Ob 𝓧) ,
+     (λ x y → 𝑖𝑑 (hom 𝓧 x y)) ,
+     (λ x y → id-is-equiv (hom 𝓧 x y)) ,
+     (refl (λ x → 𝑖𝑑 (hom 𝓧 x x) (𝒾𝒹 𝓧 x)) ,
+      refl (λ x y z f g → 𝑖𝑑 (hom 𝓧 x z) (comp 𝓧 x y z f g)))
+
+ characterization-of-characterization-of-category-≡ 𝓧 = refl _
+
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
 
