@@ -7833,6 +7833,20 @@ module ∞-magma-identity {𝓤 : Universe} where
  characterization-of-∞-Magma-≡ ua = characterization-of-≡ ua sns-data
 \end{code}
 
+The above equivalence is characterized by induction on identifications
+as the function that maps the reflexive identification to the identity
+equivalence:
+
+\begin{code}
+ characterization-of-characterization-of-∞-Magma-≡ :
+
+    (ua : is-univalent 𝓤) (A : ∞-Magma)
+  → Eq→fun (characterization-of-∞-Magma-≡ ua A A) (refl A)
+  ≡ (𝑖𝑑 ⟨ A ⟩ , id-is-equiv ⟨ A ⟩ , refl _)
+
+ characterization-of-characterization-of-∞-Magma-≡ ua A = refl _
+\end{code}
+
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="adding-axioms"> Adding axioms
 
@@ -7980,6 +7994,10 @@ module magma-identity {𝓤 : Universe} where
      (λ X s → being-set-is-a-subsingleton (univalence-gives-dfunext ua))
 \end{code}
 
+*Exercise*. The above equivalence is characterized by induction on
+identifications as the function that maps the reflexive identification
+to the identity equivalence.
+
 *Exercise*. Characterize identifications of monoids along the above lines. It
  is convenient to redefine the type of monoids to an equivalent type
  in the above format of structure with axioms. The following
@@ -8023,6 +8041,10 @@ module pointed-type-identity {𝓤 : Universe} where
 
  characterization-of-pointed-type-≡ ua = characterization-of-≡ ua sns-data
 \end{code}
+
+*Exercise*. The above equivalence is characterized by induction on
+identifications as the function that maps the reflexive identification
+to the identity equivalence.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="combining-structures"> Combining two mathematical structures
@@ -8230,6 +8252,10 @@ module pointed-∞-magma-identity {𝓤 : Universe} where
                                             pointed-type-identity.sns-data
 \end{code}
 
+*Exercise*. The above equivalence is characterized by induction on
+identifications as the function that maps the reflexive identification
+to the identity equivalence.
+
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="monoids-sip"> Monoids
 
@@ -8305,6 +8331,10 @@ module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
  characterization-of-monoid-≡ ua = characterization-of-≡ ua sns-data
 \end{code}
 
+*Exercise*. The above equivalence is characterized by induction on
+identifications as the function that maps the reflexive identification
+to the identity equivalence.
+
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="groups-sip"> Groups
 
@@ -8370,6 +8400,10 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
  characterization-of-group-≡ ua = characterization-of-≡ ua sns-data
 \end{code}
 
+*Exercise*. The above equivalence is characterized by induction on
+identifications as the function that maps the reflexive identification
+to the identity equivalence.
+
 *Exercise*. In the case of groups, as opposed to monoids, the
  preservation of the unit follows from the preservation of the
  multiplication, and hence one can remove `f d ≡ e` from the above
@@ -8434,6 +8468,10 @@ module slice-identity
  characterization-of-/-≡ ua = characterization-of-≡ ua sns-data
 \end{code}
 
+*Exercise*. The above equivalence is characterized by induction on
+identifications as the function that maps the reflexive identification
+to the identity equivalence.
+
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="metric-sip"> Metric spaces, graphs and ordered structures
 
@@ -8483,6 +8521,10 @@ module generalized-metric-space-identity
                                 sns-data
                                 axioms axiomss
 \end{code}
+
+*Exercise*. The above equivalence is characterized by induction on
+identifications as the function that maps the reflexive identification
+to the identity equivalence.
 
 We have the following particular cases of interest:
 
@@ -8597,6 +8639,10 @@ We introduce notation for the type of homeomorphisms:
                                    sns-data axioms axiomss
 \end{code}
 
+*Exercise*. The above equivalence is characterized by induction on
+identifications as the function that maps the reflexive identification
+to the identity equivalence.
+
 But of course there are other choices for `R` that also make
 sense. For example, we can take `R` to be a type of real numbers, with
 the axioms for `X` and `F : (X → R) → R` saying that `F` is a linear
@@ -8678,6 +8724,9 @@ module selection-space-identity
                                              axioms axiomss
 \end{code}
 
+*Exercise*. The above equivalence is characterized by induction on
+identifications as the function that maps the reflexive identification
+to the identity equivalence.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="contrived-sip"> A contrived example
@@ -8767,6 +8816,10 @@ module generalized-functor-algebra-equality
  characterization-of-functor-algebra-≡ ua X Y α β =
    characterization-of-≡ ua sns-data (X , α) (Y , β)
 \end{code}
+
+*Exercise*. The above equivalence is characterized by induction on
+identifications as the function that maps the reflexive identification
+to the identity equivalence.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="infty-preorders-sip"> Type-valued preorders
@@ -9026,6 +9079,10 @@ equality of type-valued preorders in terms of equivalences:
    ii = Σ-cong (λ F → Σ-cong (λ _ → lemma 𝓧 𝓐 F))
 \end{code}
 
+*Exercise*. The above equivalence is characterized by induction on
+identifications as the function that maps the reflexive identification
+to the identity functor.
+
 Now we consider type-valued preorders subject to arbitrary axioms. The
 only reason we need to consider this explicitly is that again we need
 to combine two steps. The second step is the same, but the first step
@@ -9242,17 +9299,15 @@ identification to the identity functor:
 
      (𝓧 : Cat)
    → Eq→fun (characterization-of-category-≡ 𝓧 𝓧) (refl 𝓧)
-   ≡ 𝑖𝑑 (Ob 𝓧 ) ,
-     id-is-equiv (Ob 𝓧) ,
-     (λ x y → 𝑖𝑑 (hom 𝓧 x y)) ,
-     (λ x y → id-is-equiv (hom 𝓧 x y)) ,
-     (refl (λ x → 𝑖𝑑 (hom 𝓧 x x) (𝒾𝒹 𝓧 x)) ,
-      refl (λ x y z f g → 𝑖𝑑 (hom 𝓧 x z) (comp 𝓧 x y z f g)))
+   ≡ (𝑖𝑑 (Ob 𝓧 ) ,
+      id-is-equiv (Ob 𝓧) ,
+      (λ x y → 𝑖𝑑 (hom 𝓧 x y)) ,
+      (λ x y → id-is-equiv (hom 𝓧 x y)) ,
+      (refl (λ x → 𝑖𝑑 (hom 𝓧 x x) (𝒾𝒹 𝓧 x)) ,
+       refl (λ x y z f g → 𝑖𝑑 (hom 𝓧 x z) (comp 𝓧 x y z f g))))
 
  characterization-of-characterization-of-category-≡ 𝓧 = refl _
 \end{code}
-
-
 
 The HoTT book has a characterization of identity of categories as
 equivalence of categories in the traditional sense of category theory,
