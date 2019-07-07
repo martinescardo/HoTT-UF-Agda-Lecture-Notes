@@ -9119,12 +9119,12 @@ The axioms say that
                  → (h o g) o f ≡ h o (g o f)
 \end{code}
 
-The first axiom is subsingleton valued because being a set is a
-subsingleton type. The second and the third axioms are subsingleton
-valued in the presence of the first axiom, because equations between
-elements of sets are subsingletons, by definition of set. And because
-subsingletons are closed under products, the category axioms form a
-subsingleton type:
+The first axiom is subsingleton valued because the property of being a
+set is a subsingleton type. The second and the third axioms are
+subsingleton valued in the presence of the first axiom, because
+equations between elements of sets are subsingletons, by definition of
+set. And because subsingletons are closed under products, the category
+axioms form a subsingleton type:
 
 \begin{code}
  category-axioms-subsingleton : (X : 𝓤 ̇ ) (s : S X) → is-subsingleton (category-axioms X s)
