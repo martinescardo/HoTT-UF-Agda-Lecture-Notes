@@ -421,7 +421,8 @@ to practice univalent mathematics should consult the above references.
         1. [Selection spaces](HoTT-UF-Agda.html#selection-sip)
         1. [A contrived example](HoTT-UF-Agda.html#contrived-sip)
         1. [Functor algebras](HoTT-UF-Agda.html#functor-algebras-sip)
-        1. [Type-valued preorders and categories](HoTT-UF-Agda.html#infty-preorders-sip)
+        1. [Type-valued preorders](HoTT-UF-Agda.html#infty-preorders-sip)
+        1. [Categories](HoTT-UF-Agda.html#categories-sip)
      1. [Subsingleton truncation, disjunction and existence](HoTT-UF-Agda.html#truncation)
      1. [The univalent axiom of choice](HoTT-UF-Agda.html#choice)
      1. [Propositional resizing, truncation and the powerset](HoTT-UF-Agda.html#resizing)
@@ -8768,7 +8769,7 @@ module generalized-functor-algebra-equality
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="infty-preorders-sip"> Type-valued preorders and categories
+#### <a id="infty-preorders-sip"> Type-valued preorders
 
 This example is harder than the previous ones.
 
@@ -8784,13 +8785,14 @@ type-valued-preorder-S {𝓤} {𝓥} X = Σ \(_≤_ : X → X → 𝓥 ̇ )
                                  × ((x y z : X) → x ≤ y → y ≤ z → x ≤ z)
 \end{code}
 
-A category, also known as a `1`-category, is a type-valued preorder
-subject to suitable axioms, where the relation `_≤_` is traditionally
-written `hom`, and where identities are given by the reflexivity law,
-and composition is given by the transitivity law.
+A [category](HoTT-UF-Agda.html#categories-sip), also known as a
+`1`-category, is a type-valued preorder subject to suitable axioms,
+where the relation `_≤_` is traditionally written `hom`, and where
+identities are given by the reflexivity law, and composition is given
+by the transitivity law.
 
-We begin with type-valued preorders, using categorical notation and
-terminology for them.
+We choose to use categorical notation and terminology for type-valued
+preorders.
 
 \begin{code}
 module type-valued-preorder-identity
@@ -8941,9 +8943,9 @@ types. The second step translates this equality into an equivalence:
          (Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
                 → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p))
        ≃
-         Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-               → (∀ x y → is-equiv (𝓕 x y))
-               × functorial 𝓧 𝓐 F 𝓕
+          Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                → (∀ x y → is-equiv (𝓕 x y))
+                × functorial 𝓧 𝓐 F 𝓕
 
  lemma 𝓧 𝓐 F = γ
   where
@@ -9074,7 +9076,10 @@ Recall that `[_]` is the map that forgets the axioms.
    ii = Σ-cong (λ F → Σ-cong (λ _ → lemma [ 𝓧' ] [ 𝓐' ] F))
 \end{code}
 
-By choosing suitable axioms, we get categories:
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+#### <a id="categories-sip"> Categories
+
+By choosing suitable axioms for type-valued preorders, we get categories:
 
 \begin{code}
 module category-identity

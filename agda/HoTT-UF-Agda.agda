@@ -4833,9 +4833,9 @@ module type-valued-preorder-identity
          (Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
                 → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p))
        ≃
-         Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-               → (∀ x y → is-equiv (𝓕 x y))
-               × functorial 𝓧 𝓐 F 𝓕
+          Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                → (∀ x y → is-equiv (𝓕 x y))
+                × functorial 𝓧 𝓐 F 𝓕
 
  lemma 𝓧 𝓐 F = γ
   where
