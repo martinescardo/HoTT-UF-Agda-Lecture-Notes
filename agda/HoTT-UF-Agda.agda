@@ -3980,6 +3980,11 @@ module sip where
  A ≃[ σ ] B = Σ \(f : ⟨ A ⟩ → ⟨ B ⟩)
             → Σ \(i : is-equiv f) → homomorphic σ A B (f , i)
 
+ Id→homEq : {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
+          → (A B : Σ S) → (A ≡ B) → (A ≃[ σ ] B)
+
+ Id→homEq (_ , ρ , _) A A (refl A) = id , id-is-equiv ⟨ A ⟩ , ρ A
+
  homomorphism-lemma : {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
                       (A B : Σ S) (p : ⟨ A ⟩ ≡ ⟨ B ⟩)
                     →
@@ -4011,6 +4016,18 @@ module sip where
    ii  = Σ-cong (homomorphism-lemma σ A B)
    iii = ≃-sym (Σ-change-of-variable (ι A B) (Id→Eq ⟨ A ⟩ ⟨ B ⟩) (ua ⟨ A ⟩ ⟨ B ⟩))
    iv  = Σ-assoc
+
+ Id→homEq-charac : (ua : is-univalent 𝓤) {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦) (A B : Σ S)
+                 → Id→homEq σ A B ∼ Eq→fun (characterization-of-≡ ua σ A B)
+
+ Id→homEq-charac ua σ A A (refl A) = refl _
+
+ Id→homEq-is-equiv : (ua : is-univalent 𝓤) {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
+                   → (A B : Σ S) → is-equiv (Id→homEq σ A B)
+
+ Id→homEq-is-equiv ua σ A B = equivs-closed-under-∼
+                               (Eq→fun-is-equiv (characterization-of-≡ ua σ A B))
+                               (Id→homEq-charac ua σ A B)
 
 module ∞-magma-identity {𝓤 : Universe} where
 

@@ -7715,6 +7715,12 @@ used in the definition:
 
  A ≃[ σ ] B = Σ \(f : ⟨ A ⟩ → ⟨ B ⟩)
             → Σ \(i : is-equiv f) → homomorphic σ A B (f , i)
+
+
+ Id→homEq : {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
+          → (A B : Σ S) → (A ≡ B) → (A ≃[ σ ] B)
+
+ Id→homEq (_ , ρ , _) A A (refl A) = id , id-is-equiv ⟨ A ⟩ , ρ A
 \end{code}
 
 With this we are ready to prove the promised characterization of
@@ -7755,12 +7761,25 @@ identity on `Σ S`:
    iv  = Σ-assoc
 \end{code}
 
-And this concludes the module `sip`
+This equivalence is pointwise equal to `Id→homEq`, and hence `Id→homEq`
+is itself an equivalence:
 
-*Exercise*. Describe the equivalence `A ≡ B → A ≃[ σ ] B` constructed above by induction
- on identifications.
+\begin{code}
+ Id→homEq-charac : (ua : is-univalent 𝓤) {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦) (A B : Σ S)
+                 → Id→homEq σ A B ∼ Eq→fun (characterization-of-≡ ua σ A B)
 
-We now consider some examples of uses of this.
+ Id→homEq-charac ua σ A A (refl A) = refl _
+
+
+ Id→homEq-is-equiv : (ua : is-univalent 𝓤) {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
+                   → (A B : Σ S) → is-equiv (Id→homEq σ A B)
+
+ Id→homEq-is-equiv ua σ A B = equivs-closed-under-∼
+                               (Eq→fun-is-equiv (characterization-of-≡ ua σ A B))
+                               (Id→homEq-charac ua σ A B)
+\end{code}
+
+This concludes the module `sip`, and we now consider some examples of uses of this.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="infty-magmas"> ∞-Magmas
