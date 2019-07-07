@@ -9274,39 +9274,36 @@ We now apply the module `type-valued-preorder-with-axioms-identity` to
 get the following characterization of identity of categories:
 
 \begin{code}
- characterization-of-category-≡ :
+ _≃ᶜᵃᵗ_ : Cat → Cat → 𝓤 ⊔ 𝓥 ̇
 
-      (𝓧 𝓐 : Cat)
-    →
-      (𝓧 ≡ 𝓐)
-    ≃
-      Σ \(F : Ob 𝓧 → Ob 𝓐)
-            → is-equiv F
-            × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                    → (∀ x y → is-equiv (𝓕 x y))
-                    × is-functorial 𝓧 𝓐 F 𝓕
+ 𝓧 ≃ᶜᵃᵗ 𝓐 = Σ \(F : Ob 𝓧 → Ob 𝓐)
+                  → is-equiv F
+                  × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                          → (∀ x y → is-equiv (𝓕 x y))
+                          × is-functorial 𝓧 𝓐 F 𝓕
 
+
+ Id→EqCat : (𝓧 𝓐 : Cat) → 𝓧 ≡ 𝓐 → 𝓧 ≃ᶜᵃᵗ 𝓐
+ Id→EqCat 𝓧 𝓧 (refl 𝓧) = 𝑖𝑑 (Ob 𝓧 ) ,
+                         id-is-equiv (Ob 𝓧 ) ,
+                         (λ x y → 𝑖𝑑 (hom 𝓧 x y)) ,
+                         (λ x y → id-is-equiv (hom 𝓧 x y)) ,
+                         refl (𝒾𝒹 𝓧) ,
+                         refl (comp 𝓧)
+
+
+ characterization-of-category-≡ : (𝓧 𝓐 : Cat) → (𝓧 ≡ 𝓐) ≃ 𝓧 ≃ᶜᵃᵗ 𝓐
  characterization-of-category-≡ = characterization-of-type-valued-preorder-≡-with-axioms
                                    category-axioms category-axioms-subsingleton
-\end{code}
 
-As one would expect, the above equivalence is characterized by
-induction on identifications as the function that maps the reflexive
-identification to the identity functor:
 
-\begin{code}
- characterization-of-characterization-of-category-≡ :
-
-     (𝓧 : Cat)
-   → Eq→fun (characterization-of-category-≡ 𝓧 𝓧) (refl 𝓧)
-   ≡ (𝑖𝑑 (Ob 𝓧 ) ,
-      id-is-equiv (Ob 𝓧) ,
-      (λ x y → 𝑖𝑑 (hom 𝓧 x y)) ,
-      (λ x y → id-is-equiv (hom 𝓧 x y)) ,
-      (refl (λ x → 𝑖𝑑 (hom 𝓧 x x) (𝒾𝒹 𝓧 x)) ,
-       refl (λ x y z f g → 𝑖𝑑 (hom 𝓧 x z) (comp 𝓧 x y z f g))))
-
- characterization-of-characterization-of-category-≡ 𝓧 = refl _
+ Id→EqCat-is-equiv : (𝓧 𝓐 : Cat) → is-equiv (Id→EqCat 𝓧 𝓐)
+ Id→EqCat-is-equiv 𝓧 𝓐 = equivs-closed-under-∼
+                           (Eq→fun-is-equiv (characterization-of-category-≡ 𝓧 𝓐))
+                           (γ 𝓧 𝓐)
+  where
+   γ : (𝓧 𝓐 : Cat) → Id→EqCat 𝓧 𝓐 ∼ Eq→fun (characterization-of-category-≡ 𝓧 𝓐)
+   γ 𝓧 𝓧 (refl 𝓧) = refl _
 \end{code}
 
 The HoTT book has a characterization of identity of categories as
