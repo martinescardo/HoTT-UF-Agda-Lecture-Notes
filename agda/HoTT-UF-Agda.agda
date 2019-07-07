@@ -4072,6 +4072,14 @@ module ∞-magma-identity {𝓤 : Universe} where
 
  characterization-of-∞-Magma-≡ ua = characterization-of-≡ ua sns-data
 
+ characterization-of-characterization-of-∞-Magma-≡ :
+
+    (ua : is-univalent 𝓤) (A : ∞-Magma)
+  → Eq→fun (characterization-of-∞-Magma-≡ ua A A) (refl A)
+  ≡ (𝑖𝑑 ⟨ A ⟩ , id-is-equiv ⟨ A ⟩ , refl _)
+
+ characterization-of-characterization-of-∞-Magma-≡ ua A = refl _
+
 module sip-with-axioms where
 
  open sip
@@ -5060,12 +5068,12 @@ module category-identity
 
      (𝓧 : Cat)
    → Eq→fun (characterization-of-category-≡ 𝓧 𝓧) (refl 𝓧)
-   ≡ 𝑖𝑑 (Ob 𝓧 ) ,
-     id-is-equiv (Ob 𝓧) ,
-     (λ x y → 𝑖𝑑 (hom 𝓧 x y)) ,
-     (λ x y → id-is-equiv (hom 𝓧 x y)) ,
-     (refl (λ x → 𝑖𝑑 (hom 𝓧 x x) (𝒾𝒹 𝓧 x)) ,
-      refl (λ x y z f g → 𝑖𝑑 (hom 𝓧 x z) (comp 𝓧 x y z f g)))
+   ≡ (𝑖𝑑 (Ob 𝓧 ) ,
+      id-is-equiv (Ob 𝓧) ,
+      (λ x y → 𝑖𝑑 (hom 𝓧 x y)) ,
+      (λ x y → id-is-equiv (hom 𝓧 x y)) ,
+      (refl (λ x → 𝑖𝑑 (hom 𝓧 x x) (𝒾𝒹 𝓧 x)) ,
+       refl (λ x y z f g → 𝑖𝑑 (hom 𝓧 x z) (comp 𝓧 x y z f g))))
 
  characterization-of-characterization-of-category-≡ 𝓧 = refl _
 
