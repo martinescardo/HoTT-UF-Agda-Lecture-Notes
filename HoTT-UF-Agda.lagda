@@ -7874,8 +7874,8 @@ as follows:
  SNS : (𝓤 ̇ → 𝓥 ̇ ) → (𝓦 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
 
  SNS {𝓤} {𝓥} S 𝓦 = Σ \(ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
-                  → Σ \(ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
-                  → {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
+                 → Σ \(ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
+                 → {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
 \end{code}
 
 We write `homomorphic` for the first projection (we don't need
@@ -7955,18 +7955,18 @@ This equivalence is pointwise equal to `Id→homEq`, and hence `Id→homEq`
 is itself an equivalence:
 
 \begin{code}
- Id→homEq-charac : (ua : is-univalent 𝓤) {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦) (A B : Σ S)
-                 → Id→homEq σ A B ∼ Eq→fun (characterization-of-≡ ua σ A B)
-
- Id→homEq-charac ua σ A A (refl A) = refl _
-
-
  Id→homEq-is-equiv : (ua : is-univalent 𝓤) {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
                    → (A B : Σ S) → is-equiv (Id→homEq σ A B)
 
- Id→homEq-is-equiv ua σ A B = equivs-closed-under-∼
-                               (Eq→fun-is-equiv (characterization-of-≡ ua σ A B))
-                               (Id→homEq-charac ua σ A B)
+ Id→homEq-is-equiv ua {S} σ A B = γ
+  where
+   h : (A B : Σ S) → Id→homEq σ A B ∼ Eq→fun (characterization-of-≡ ua σ A B)
+   h A A (refl A) = refl _
+
+   γ : is-equiv (Id→homEq σ A B)
+   γ = equivs-closed-under-∼
+       (Eq→fun-is-equiv (characterization-of-≡ ua σ A B))
+       (h A B)
 \end{code}
 
 This concludes the module `sip`, and we now consider some examples of uses of this.
@@ -8030,8 +8030,10 @@ equivalence:
  characterization-of-characterization-of-∞-Magma-≡ :
 
     (ua : is-univalent 𝓤) (A : ∞-Magma)
-  → Eq→fun (characterization-of-∞-Magma-≡ ua A A) (refl A)
-  ≡ (𝑖𝑑 ⟨ A ⟩ , id-is-equiv ⟨ A ⟩ , refl _)
+  →
+    Eq→fun (characterization-of-∞-Magma-≡ ua A A) (refl A)
+  ≡
+    (𝑖𝑑 ⟨ A ⟩ , id-is-equiv ⟨ A ⟩ , refl _)
 
  characterization-of-characterization-of-∞-Magma-≡ ua A = refl _
 \end{code}
@@ -8165,6 +8167,7 @@ module magma-identity {𝓤 : Universe} where
  Magma = Σ \(X : 𝓤 ̇ ) → (X → X → X) × is-set X
 
  _≅_ : Magma → Magma → 𝓤 ̇
+
  (X , _·_ , _) ≅ (Y , _*_ , _) =
 
                Σ \(f : X → Y) → is-equiv f
@@ -8423,7 +8426,9 @@ module pointed-∞-magma-identity {𝓤 : Universe} where
  ∞-Magma· : 𝓤 ⁺ ̇
  ∞-Magma· = Σ \(X : 𝓤 ̇ ) → (X → X → X) × X
 
+
  _≅_ : ∞-Magma· → ∞-Magma· → 𝓤 ̇
+
  (X ,  _·_ , x₀) ≅ (Y ,  _*_ , y₀) =
 
                  Σ \(f : X → Y) → is-equiv f
@@ -9201,8 +9206,8 @@ types. The second step translates this equality into an equivalence:
     where
      i   = hfunext₂-≃ hfe hfe (hom 𝓧 )  λ x y → hom 𝓐 (F x) (F y)
      ii  = Π-cong fe fe
-             (λ x → Π-cong fe fe
-                     (λ y → univalence-≃ (ua 𝓥) (hom 𝓧 x y) (hom 𝓐 (F x) (F y))))
+            (λ x → Π-cong fe fe
+            (λ y → univalence-≃ (ua 𝓥) (hom 𝓧 x y) (hom 𝓐 (F x) (F y))))
      iii = Π-cong fe fe (λ y → ΠΣ-distr-≃)
      iv  = ΠΣ-distr-≃
 \end{code}
@@ -9261,7 +9266,7 @@ equality of type-valued preorders in terms of equivalences:
           → is-equiv F
           × Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
                   → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)) ≃⟨ ii ⟩
-   _                                                                       ■
+   _                                                                      ■
 
   where
    i  = characterization-of-≡ (ua 𝓤) sns-data 𝓧 𝓐
@@ -9481,7 +9486,7 @@ get the following characterization of identity of categories:
                          refl (comp 𝓧)
 
 
- characterization-of-category-≡ : (𝓧 𝓐 : Cat) → (𝓧 ≡ 𝓐) ≃ 𝓧 ⋍ 𝓐
+ characterization-of-category-≡ : (𝓧 𝓐 : Cat) → (𝓧 ≡ 𝓐) ≃ (𝓧 ⋍ 𝓐)
  characterization-of-category-≡ = characterization-of-type-valued-preorder-≡-with-axioms
                                    category-axioms category-axioms-subsingleton
 
