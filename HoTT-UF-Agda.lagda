@@ -2454,7 +2454,7 @@ The isomorphisms can be collected in a type:
  M ≅ₘ N = Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-magma-iso M N f
 \end{code}
 
-The following function [will be](HoTT-UF-Agda.html#magmaequivalences) a bijection in the presence of
+The following function [will be](HoTT-UF-Agda.html#sns) a bijection in the presence of
 univalence, so that the identifications of magmas are in one-to-one
 correspondence with the magma isomorphisms:
 
@@ -3155,7 +3155,7 @@ hedberg {𝓤} {X} d = Id-collapsibles-are-sets X ic
 \end{code}
 
 Notice that excluded middle implies directly that all sets have
-decidable equality, so that it in its presence a type is a set if and
+decidable equality, so that in its presence a type is a set if and
 only if it has decidable equality.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
