@@ -39,7 +39,6 @@ date : 2019-03-04
 UK.
 
 [<sub>Table of contents ⇓</sub>](HoTT-UF-Agda.html#contents)
-
 **Abstract.** We introduce [Voevodsky](https://www.math.ias.edu/Voevodsky/)'s [univalent foundations](https://www.ams.org/journals/bull/2018-55-04/S0273-0979-2018-01616-9/) and
 [univalent mathematics](https://github.com/UniMath/UniMath/blob/master/README.md), and explain how to develop them with the
 computer system [Agda](https://wiki.portal.chalmers.se/agda/pmwiki.php), which is based on [Martin-Löf type theory](https://github.com/michaelt/martin-lof).
@@ -7597,7 +7596,7 @@ We also apply theses ideas to characterize identifications of metric
 spaces, topological spaces, graphs, partially ordered sets, and more.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="sns"> A structure identity principle for a standard notion of structure
+#### <a id="sns"></a> A structure identity principle for a standard notion of structure
 
 \begin{code}
 module sip where
@@ -7783,7 +7782,7 @@ is itself an equivalence:
 This concludes the module `sip`, and we now consider some examples of uses of this.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="infty-magmas"> ∞-Magmas
+#### <a id="infty-magmas"></a> ∞-Magmas
 
 \begin{code}
 module ∞-magma-identity {𝓤 : Universe} where
@@ -7848,7 +7847,7 @@ equivalence:
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="adding-axioms"> Adding axioms
+#### <a id="adding-axioms"></a> Adding axioms
 
 Next we want to account for situations in which axioms are
 considered, for example that the underlying type is a set, or that the
@@ -7965,7 +7964,7 @@ And this concludes the module `sip-with-axioms`. We now consider some
 examples.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="magmas-sip"> Magmas
+#### <a id="magmas-sip"></a> Magmas
 
 \begin{code}
 module magma-identity {𝓤 : Universe} where
@@ -8004,7 +8003,7 @@ to the identity equivalence.
    developement solves this exercise.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="pointed-types"> Pointed types
+#### <a id="pointed-types"></a> Pointed types
 
 \begin{code}
 module pointed-type-identity {𝓤 : Universe} where
@@ -8047,7 +8046,7 @@ identifications as the function that maps the reflexive identification
 to the identity equivalence.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="combining-structures"> Combining two mathematical structures
+#### <a id="combining-structures"></a> Combining two mathematical structures
 
 We now show how to join two mathematics structures so as to obtain a
 characterization of the identifications of the join from the
@@ -8224,7 +8223,7 @@ general structure identity principle:
 This concludes the submodule. Some examples of uses of this follow.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="pointed-infty-magmas"> Pointed ∞-magmas
+#### <a id="pointed-infty-magmas"></a> Pointed ∞-magmas
 
 \begin{code}
 module pointed-∞-magma-identity {𝓤 : Universe} where
@@ -8257,7 +8256,7 @@ identifications as the function that maps the reflexive identification
 to the identity equivalence.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="monoids-sip"> Monoids
+#### <a id="monoids-sip"></a> Monoids
 
 In the following example, we combine joins and addition of axioms.
 
@@ -8336,7 +8335,7 @@ identifications as the function that maps the reflexive identification
 to the identity equivalence.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="groups-sip"> Groups
+#### <a id="groups-sip"></a> Groups
 
 We add an axiom to monoids to get groups.
 
@@ -8427,7 +8426,7 @@ to the identity equivalence.
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="slice-sip"> The slice type
+#### <a id="slice-sip"></a> The slice type
 
 \begin{code}
 module slice-identity
@@ -8473,7 +8472,7 @@ identifications as the function that maps the reflexive identification
 to the identity equivalence.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="metric-sip"> Metric spaces, graphs and ordered structures
+#### <a id="metric-sip"></a> Metric spaces, graphs and ordered structures
 
 \begin{code}
 module generalized-metric-space-identity
@@ -8545,7 +8544,7 @@ We have the following particular cases of interest:
    order isomorphisms.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="topological-sip"> Topological spaces
+#### <a id="topological-sip"></a> Topological spaces
 
 We get a [type of topological spaces](HoTT-UF-Agda.html#Top) when `R`
 is the type of truth values and the axioms are appropriately chosen.
@@ -8668,7 +8667,7 @@ prefer to rephrase the above as
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="selection-sip"> Selection spaces
+#### <a id="selection-sip"></a> Selection spaces
 
 \begin{code}
 module selection-space-identity
@@ -8729,7 +8728,7 @@ identifications as the function that maps the reflexive identification
 to the identity equivalence.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="contrived-sip"> A contrived example
+#### <a id="contrived-sip"></a> A contrived example
 
 Here is an example where we need to refer to the inverse of the
 equivalence under consideration.
@@ -8762,7 +8761,7 @@ module contrived-example-identity (𝓤 : Universe) where
 Many of the above examples can be written in such a concise form.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="functor-algebras-sip"> Functor algebras
+#### <a id="functor-algebras-sip"></a> Functor algebras
 
 In the following, we don't need to know that the functor preserves
 composition or give coherence data for the identification `𝓕-id`.
@@ -8822,7 +8821,7 @@ identifications as the function that maps the reflexive identification
 to the identity equivalence.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="infty-preorders-sip"> Type-valued preorders
+#### <a id="infty-preorders-sip"></a> Type-valued preorders
 
 This example is harder than the previous ones.
 
@@ -9134,7 +9133,7 @@ Recall that `[_]` is the map that forgets the axioms.
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="categories-sip"> Categories
+#### <a id="categories-sip"></a> Categories
 
 By choosing suitable axioms for type-valued preorders, we get categories:
 
@@ -10023,7 +10022,7 @@ It is also an open problem whether the resizing principles discussed
 below have a computational interpretation.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="prop-resizing"> Propositional resizing
+#### <a id="prop-resizing"></a> Propositional resizing
 
 We say that a type `X` has size `𝓥` if it is equivalent to a type in the
 universe `𝓥`:
@@ -10087,7 +10086,7 @@ Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="em-resizing"> Excluded middle gives propositional resizing
+#### <a id="em-resizing"></a> Excluded middle gives propositional resizing
 
 Propositional resizing is consistent, because it is implied by
 excluded middle, which is consistent (with or without univalence):
@@ -10118,7 +10117,7 @@ EM-gives-PR {𝓤} {𝓥} em P i = Q (em P i) , e
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="resizing-subsingleton"> The propositional resizing axiom is a subsingleton
+#### <a id="resizing-subsingleton"></a> The propositional resizing axiom is a subsingleton
 
 To show that the propositional resizing principle is a subsingleton,
 we use univalence here.
@@ -10145,7 +10144,7 @@ using propositional and functional extensionality instead of
 univalence.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="prop-impred"> Propositional impredicativity
+#### <a id="prop-impred"></a> Propositional impredicativity
 
 We consider two notions of propositional impredicativity:
 
@@ -10283,7 +10282,7 @@ Impredicativity-gives-PR {𝓤} {𝓥} pe fe (O , e) P i = Q , ε
 has size `𝓤₀`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="truncation-resizing"> Propositional resizing gives subsingleton truncation
+#### <a id="truncation-resizing"></a> Propositional resizing gives subsingleton truncation
 
 Using Voevodsky's [construction](HoTT-UF-Agda.html#truncation) and
 propositional resizing, we get that function extensionality implies
@@ -10330,7 +10329,7 @@ PR-gives-existence-of-truncations fe R =
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="powerset-resizing"> The powerset in the presence of propositional resizing
+#### <a id="powerset-resizing"></a> The powerset in the presence of propositional resizing
 
 As a second, important, use of resizing, we revisit the powerset.
 First, given a set of subsets, that is, an element of the double
@@ -10556,7 +10555,7 @@ propositional resizing:
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="topol-resizing"> Topological spaces in the presence of propositional resizing
+#### <a id="topol-resizing"></a> Topological spaces in the presence of propositional resizing
 
 For example, with this we can define the type of topological spaces as
 follows, where `𝓞` consists of designated sets, conventionally called
@@ -10869,8 +10868,7 @@ namely (1)-(7) above.
 ## <a id="appendix"></a> Appendix
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-
-### <a id="someexercisessol"></a>Solutions to some exercises
+### <a id="someexercisessol"></a> Solutions to some exercises
 
 \begin{code}
 module ℕ-order-exercise-solution where
