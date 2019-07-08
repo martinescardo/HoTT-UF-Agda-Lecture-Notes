@@ -369,7 +369,7 @@ to practice univalent mathematics should consult the above references.
      1. [Remaining Peano axioms and basic arithmetic](HoTT-UF-Agda.html#basicarithmetic)
   1. [Univalent Mathematics in Agda](HoTT-UF-Agda.html#uminagda)
      1. [Our univalent type theory](HoTT-UF-Agda.html#axiomaticutt)
-     1. [Singletons, subsingletons (or propositions or truth values), and sets](HoTT-UF-Agda.html#subsingletonsandsets)
+     1. [Singletons, subsingletons and sets](HoTT-UF-Agda.html#subsingletonsandsets)
         1. [Singleton (or contractible) types](HoTT-UF-Agda.html#singleton-types)
         1. [Subsingletons (or propositions or truth values)](HoTT-UF-Agda.html#subsingleton-types)
         1. [Sets](HoTT-UF-Agda.html#set-types)
@@ -2194,7 +2194,7 @@ cubical type theory, which has a version available in Agda, called
 Agda](https://homotopytypetheory.org/2018/12/06/cubical-agda/).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="subsingletonsandsets"></a> Singletons, subsingletons (or propositions or truth values), and sets
+### <a id="subsingletonsandsets"></a> Singletons, subsingletons and sets
 
 #### <a id="singleton-types"></a> Singleton (or contractible) types
 
