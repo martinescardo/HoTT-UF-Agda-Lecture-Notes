@@ -369,7 +369,10 @@ to practice univalent mathematics should consult the above references.
      1. [Remaining Peano axioms and basic arithmetic](HoTT-UF-Agda.html#basicarithmetic)
   1. [Univalent Mathematics in Agda](HoTT-UF-Agda.html#uminagda)
      1. [Our univalent type theory](HoTT-UF-Agda.html#axiomaticutt)
-     1. [Subsingletons (or propositions or truth values), sets and singletons](HoTT-UF-Agda.html#subsingletonsandsets)
+     1. [Singletons, subsingletons (or propositions or truth values), and sets](HoTT-UF-Agda.html#subsingletonsandsets)
+        1. [Singleton (or contractible) types](HoTT-UF-Agda.html#singleton-types)
+        1. [Subsingletons (or propositions or truth values)](HoTT-UF-Agda.html#subsingleton-types)
+        1. [Sets](HoTT-UF-Agda.html#set-types)
      1. [The univalent principle of excluded middle](HoTT-UF-Agda.html#em)
      1. [The types of magmas and monoids](HoTT-UF-Agda.html#magmasandmonoids)
      1. [The identity type in univalent mathematics](HoTT-UF-Agda.html#identitytypeuf)
@@ -2191,48 +2194,9 @@ cubical type theory, which has a version available in Agda, called
 Agda](https://homotopytypetheory.org/2018/12/06/cubical-agda/).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="subsingletonsandsets"></a> Subsingletons (or propositions or truth values), sets and singletons
+### <a id="subsingletonsandsets"></a> Singletons, subsingletons (or propositions or truth values), and sets
 
-A type is a subsingleton (or a truth value or a proposition) if it has
-at most one element, that is, any two of its elements are equal, or identified.
-
-\begin{code}
-is-subsingleton : 𝓤 ̇ → 𝓤 ̇
-is-subsingleton X = (x y : X) → x ≡ y
-
-𝟘-is-subsingleton : is-subsingleton 𝟘
-𝟘-is-subsingleton x y = !𝟘 (x ≡ y) x
-
-𝟙-is-subsingleton : is-subsingleton 𝟙
-𝟙-is-subsingleton = 𝟙-induction
-                     (λ x → ∀ y → x ≡ y)
-                     (𝟙-induction (λ y → ⋆ ≡ y) (refl ⋆))
-
-𝟙-is-subsingleton' : is-subsingleton 𝟙
-𝟙-is-subsingleton' ⋆ ⋆  = refl ⋆
-\end{code}
-
-The following are more logic-oriented terminologies for the notion.
-
-\begin{code}
-is-prop is-truth-value : 𝓤 ̇ → 𝓤 ̇
-is-prop        = is-subsingleton
-is-truth-value = is-subsingleton
-\end{code}
-
-The terminology `is-subsingleton` is more mathematical and avoids the
-clash with the slogan [propositions as
-types](https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence),
-which is based on the interpretation of mathematical propositions as
-arbitrary types, rather than just subsingletons.
-
-A type is defined to be a set if there is at most one way for any two of its
-elements to be equal:
-
-\begin{code}
-is-set : 𝓤 ̇ → 𝓤 ̇
-is-set X = (x y : X) → is-subsingleton (x ≡ y)
-\end{code}
+#### <a id="singleton-types"></a> Singleton (or contractible) types
 
 Voevodsky defined a notion of *contractible type*, which we
 refer to here as *singleton type*.
@@ -2249,6 +2213,10 @@ Such an element `c` is called a center of contraction of `X`.
 𝟙-is-singleton = ⋆ , 𝟙-induction (λ x → ⋆ ≡ x) (refl ⋆)
 \end{code}
 
+Once we have defined the notion of [type
+equivalence](HoTT-UF-Agda.html#fibersandequivalences), we will have
+that a type is a singleton if and only if it is equivalent to `𝟙`.
+
 When working with singleton types, it will be convenient to have
 distinguished names for the two projections:
 
@@ -2260,7 +2228,26 @@ centrality : (X : 𝓤 ̇ ) (i : is-singleton X) (x : X) → center X i ≡ x
 centrality X (c , φ) = φ
 \end{code}
 
+#### <a id="subsingleton-types"></a> Subsingletons (or propositions or truth values)
+
+A type is a subsingleton if it has at most one element, that is, any
+two of its elements are equal, or identified.
+
 \begin{code}
+is-subsingleton : 𝓤 ̇ → 𝓤 ̇
+is-subsingleton X = (x y : X) → x ≡ y
+
+𝟘-is-subsingleton : is-subsingleton 𝟘
+𝟘-is-subsingleton x y = !𝟘 (x ≡ y) x
+
+𝟙-is-subsingleton : is-subsingleton 𝟙
+𝟙-is-subsingleton = 𝟙-induction
+                     (λ x → ∀ y → x ≡ y)
+                     (𝟙-induction (λ y → ⋆ ≡ y) (refl ⋆))
+
+𝟙-is-subsingleton' : is-subsingleton 𝟙
+𝟙-is-subsingleton' ⋆ ⋆  = refl ⋆
+
 singletons-are-subsingletons : (X : 𝓤 ̇ ) → is-singleton X → is-subsingleton X
 singletons-are-subsingletons X (c , φ) x y = x ≡⟨ (φ x)⁻¹ ⟩
                                              c ≡⟨ φ y ⟩
@@ -2273,6 +2260,69 @@ pointed-subsingletons-are-singletons : (X : 𝓤 ̇ )
 pointed-subsingletons-are-singletons X x s = (x , s x)
 \end{code}
 
+The terminology stands for *[subtype](HoTT-UF-Agda.html#subtypes-of)
+of a singleton* and is
+[justified](HoTT-UF-Agda.html#the-subsingletons-are-the-subtypes-of-a-singleton)
+by the fact that a type `X` is a subsingleton according to the above
+definition if and only if the map `X → 𝟙` is an
+[embedding](HoTT-UF-Agda.html#embeddings), if and only if `X` is
+embedded into a singleton.
+
+Under [univalent excluded
+middle](HoTT-UF-Agda.html#em), the empty type `𝟘` and the singleton
+type `𝟙` are the only subsingletons, up to equivalence, or up to
+identity if we further assume univalence.
+
+Subsingletons are also called propositions or truth values:
+
+\begin{code}
+is-prop is-truth-value : 𝓤 ̇ → 𝓤 ̇
+is-prop        = is-subsingleton
+is-truth-value = is-subsingleton
+\end{code}
+
+The terminology `is-subsingleton` is more mathematical and avoids the
+clash with the slogan [propositions as
+types](https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence),
+which is based on the interpretation of mathematical statements as
+arbitrary types, rather than just subsingletons. In these notes we
+prefer the terminology *subsingleton*, but we occasionally use the
+terminologies *proposition* and *truth value*. When we wish to
+emphasize this notion of proposition adopted in univalent mathematics,
+as opposed to "propositions as (arbitrary) types", we may say
+*univalent proposition*.
+
+In some formal systems, for example set theory based on first-order
+logic, one can tell that something is a proposition by looking at its
+syntactical form, e.g. "there are infinitely many prime numbers" is a
+proposition, by construction, in such a theory.
+
+In univalent mathematics, however, propositions are mathematical,
+rather than meta-mathematical, objects, and the fact that a type turns
+out to be a proposition requires mathematical proof.  Moreover, such a
+proof may be subtle and not immediate and require significant
+preparation. An [example](HoTT-UF-Agda.html#univalencesubsingleton) is
+the proof that the univalence axiom is a proposition, which relies on
+the fact that univalence [implies](HoTT-UF-Agda.html#funextfromua)
+function extensionality, which in turn
+[implies](HoTT-UF-Agda.html#being-equiv-is-a-subsingleton) that the
+statement that a map is an equivalence is a proposition. Another
+non-trivial example, which again relies on univalence or at least
+function extensionality, is the proof that the statement that a type
+`X` is a proposition [is itself a
+proposition](HoTT-UF-Agda.html#being-subsingleton-is-a-subsingleton),
+which can be written as `is-prop (is-prop X)`.
+
+#### <a id="set-types"></a> Sets
+
+A type is defined to be a set if there is at most one way for any two of its
+elements to be equal:
+
+\begin{code}
+is-set : 𝓤 ̇ → 𝓤 ̇
+is-set X = (x y : X) → is-subsingleton (x ≡ y)
+\end{code}
+
 At this point, with the definition of these notions, we are entering
 the realm of univalent mathematics, but not yet needing the univalence
 axiom.
@@ -2280,9 +2330,9 @@ axiom.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="em"></a> The univalent principle of excluded middle
 
-Under excluded middle, the only two subsingletons, up to equivalence,
-are `𝟘` and `𝟙`. In fact, excluded middle in univalent mathematics
-says precisely that.
+As mentioned above, under excluded middle, the only two subsingletons,
+up to equivalence, are `𝟘` and `𝟙`. In fact, excluded middle in
+univalent mathematics says precisely that.
 
 \begin{code}
 EM EM' : ∀ 𝓤 → 𝓤 ⁺ ̇
@@ -9276,10 +9326,10 @@ get the following characterization of identity of categories:
  _⋍_ : Cat → Cat → 𝓤 ⊔ 𝓥 ̇
 
  𝓧 ⋍ 𝓐 = Σ \(F : Ob 𝓧 → Ob 𝓐)
-                → is-equiv F
-                × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                        → (∀ x y → is-equiv (𝓕 x y))
-                        × is-functorial 𝓧 𝓐 F 𝓕
+               → is-equiv F
+               × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                       → (∀ x y → is-equiv (𝓕 x y))
+                       × is-functorial 𝓧 𝓐 F 𝓕
 
 
  Id→EqCat : (𝓧 𝓐 : Cat) → 𝓧 ≡ 𝓐 → 𝓧 ⋍ 𝓐

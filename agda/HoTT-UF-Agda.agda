@@ -517,6 +517,18 @@ module BasicArithmetic where
     IH : x ≤ y
     IH = ≼-gives-≤ x y (z , succ-lc q)
 
+is-singleton : 𝓤 ̇ → 𝓤 ̇
+is-singleton X = Σ \(c : X) → (x : X) → c ≡ x
+
+𝟙-is-singleton : is-singleton 𝟙
+𝟙-is-singleton = ⋆ , 𝟙-induction (λ x → ⋆ ≡ x) (refl ⋆)
+
+center : (X : 𝓤 ̇ ) → is-singleton X → X
+center X (c , φ) = c
+
+centrality : (X : 𝓤 ̇ ) (i : is-singleton X) (x : X) → center X i ≡ x
+centrality X (c , φ) = φ
+
 is-subsingleton : 𝓤 ̇ → 𝓤 ̇
 is-subsingleton X = (x y : X) → x ≡ y
 
@@ -531,25 +543,6 @@ is-subsingleton X = (x y : X) → x ≡ y
 𝟙-is-subsingleton' : is-subsingleton 𝟙
 𝟙-is-subsingleton' ⋆ ⋆  = refl ⋆
 
-is-prop is-truth-value : 𝓤 ̇ → 𝓤 ̇
-is-prop        = is-subsingleton
-is-truth-value = is-subsingleton
-
-is-set : 𝓤 ̇ → 𝓤 ̇
-is-set X = (x y : X) → is-subsingleton (x ≡ y)
-
-is-singleton : 𝓤 ̇ → 𝓤 ̇
-is-singleton X = Σ \(c : X) → (x : X) → c ≡ x
-
-𝟙-is-singleton : is-singleton 𝟙
-𝟙-is-singleton = ⋆ , 𝟙-induction (λ x → ⋆ ≡ x) (refl ⋆)
-
-center : (X : 𝓤 ̇ ) → is-singleton X → X
-center X (c , φ) = c
-
-centrality : (X : 𝓤 ̇ ) (i : is-singleton X) (x : X) → center X i ≡ x
-centrality X (c , φ) = φ
-
 singletons-are-subsingletons : (X : 𝓤 ̇ ) → is-singleton X → is-subsingleton X
 singletons-are-subsingletons X (c , φ) x y = x ≡⟨ (φ x)⁻¹ ⟩
                                              c ≡⟨ φ y ⟩
@@ -559,6 +552,13 @@ pointed-subsingletons-are-singletons : (X : 𝓤 ̇ )
                                      → X → is-subsingleton X → is-singleton X
 
 pointed-subsingletons-are-singletons X x s = (x , s x)
+
+is-prop is-truth-value : 𝓤 ̇ → 𝓤 ̇
+is-prop        = is-subsingleton
+is-truth-value = is-subsingleton
+
+is-set : 𝓤 ̇ → 𝓤 ̇
+is-set X = (x y : X) → is-subsingleton (x ≡ y)
 
 EM EM' : ∀ 𝓤 → 𝓤 ⁺ ̇
 EM  𝓤 = (X : 𝓤 ̇ ) → is-subsingleton X → X + ¬ X
@@ -5052,10 +5052,10 @@ module category-identity
  _⋍_ : Cat → Cat → 𝓤 ⊔ 𝓥 ̇
 
  𝓧 ⋍ 𝓐 = Σ \(F : Ob 𝓧 → Ob 𝓐)
-                → is-equiv F
-                × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                        → (∀ x y → is-equiv (𝓕 x y))
-                        × is-functorial 𝓧 𝓐 F 𝓕
+               → is-equiv F
+               × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                       → (∀ x y → is-equiv (𝓕 x y))
+                       × is-functorial 𝓧 𝓐 F 𝓕
 
  Id→EqCat : (𝓧 𝓐 : Cat) → 𝓧 ≡ 𝓐 → 𝓧 ⋍ 𝓐
  Id→EqCat 𝓧 𝓧 (refl 𝓧) = 𝑖𝑑 (Ob 𝓧 ) ,
