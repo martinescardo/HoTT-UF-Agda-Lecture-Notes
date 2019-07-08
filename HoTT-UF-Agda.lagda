@@ -9273,16 +9273,16 @@ We now apply the module `type-valued-preorder-with-axioms-identity` to
 get the following characterization of identity of categories:
 
 \begin{code}
- _≃ᶜᵃᵗ_ : Cat → Cat → 𝓤 ⊔ 𝓥 ̇
+ _⋍_ : Cat → Cat → 𝓤 ⊔ 𝓥 ̇
 
- 𝓧 ≃ᶜᵃᵗ 𝓐 = Σ \(F : Ob 𝓧 → Ob 𝓐)
-                  → is-equiv F
-                  × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                          → (∀ x y → is-equiv (𝓕 x y))
-                          × is-functorial 𝓧 𝓐 F 𝓕
+ 𝓧 ⋍ 𝓐 = Σ \(F : Ob 𝓧 → Ob 𝓐)
+                → is-equiv F
+                × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                        → (∀ x y → is-equiv (𝓕 x y))
+                        × is-functorial 𝓧 𝓐 F 𝓕
 
 
- Id→EqCat : (𝓧 𝓐 : Cat) → 𝓧 ≡ 𝓐 → 𝓧 ≃ᶜᵃᵗ 𝓐
+ Id→EqCat : (𝓧 𝓐 : Cat) → 𝓧 ≡ 𝓐 → 𝓧 ⋍ 𝓐
  Id→EqCat 𝓧 𝓧 (refl 𝓧) = 𝑖𝑑 (Ob 𝓧 ) ,
                          id-is-equiv (Ob 𝓧 ) ,
                          (λ x y → 𝑖𝑑 (hom 𝓧 x y)) ,
@@ -9291,7 +9291,7 @@ get the following characterization of identity of categories:
                          refl (comp 𝓧)
 
 
- characterization-of-category-≡ : (𝓧 𝓐 : Cat) → (𝓧 ≡ 𝓐) ≃ 𝓧 ≃ᶜᵃᵗ 𝓐
+ characterization-of-category-≡ : (𝓧 𝓐 : Cat) → (𝓧 ≡ 𝓐) ≃ 𝓧 ⋍ 𝓐
  characterization-of-category-≡ = characterization-of-type-valued-preorder-≡-with-axioms
                                    category-axioms category-axioms-subsingleton
 

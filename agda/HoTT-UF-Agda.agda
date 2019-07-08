@@ -5049,15 +5049,15 @@ module category-identity
    pcomposition = (λ x y z (f : hom 𝓧 x y) (g : hom 𝓧 y z) → 𝓕 (g o f))
                 ≡ (λ x y z (f : hom 𝓧 x y) (g : hom 𝓧 y z) → 𝓕 g □ 𝓕 f)
 
- _≃ᶜᵃᵗ_ : Cat → Cat → 𝓤 ⊔ 𝓥 ̇
+ _⋍_ : Cat → Cat → 𝓤 ⊔ 𝓥 ̇
 
- 𝓧 ≃ᶜᵃᵗ 𝓐 = Σ \(F : Ob 𝓧 → Ob 𝓐)
-                  → is-equiv F
-                  × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                          → (∀ x y → is-equiv (𝓕 x y))
-                          × is-functorial 𝓧 𝓐 F 𝓕
+ 𝓧 ⋍ 𝓐 = Σ \(F : Ob 𝓧 → Ob 𝓐)
+                → is-equiv F
+                × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                        → (∀ x y → is-equiv (𝓕 x y))
+                        × is-functorial 𝓧 𝓐 F 𝓕
 
- Id→EqCat : (𝓧 𝓐 : Cat) → 𝓧 ≡ 𝓐 → 𝓧 ≃ᶜᵃᵗ 𝓐
+ Id→EqCat : (𝓧 𝓐 : Cat) → 𝓧 ≡ 𝓐 → 𝓧 ⋍ 𝓐
  Id→EqCat 𝓧 𝓧 (refl 𝓧) = 𝑖𝑑 (Ob 𝓧 ) ,
                          id-is-equiv (Ob 𝓧 ) ,
                          (λ x y → 𝑖𝑑 (hom 𝓧 x y)) ,
@@ -5065,7 +5065,7 @@ module category-identity
                          refl (𝒾𝒹 𝓧) ,
                          refl (comp 𝓧)
 
- characterization-of-category-≡ : (𝓧 𝓐 : Cat) → (𝓧 ≡ 𝓐) ≃ 𝓧 ≃ᶜᵃᵗ 𝓐
+ characterization-of-category-≡ : (𝓧 𝓐 : Cat) → (𝓧 ≡ 𝓐) ≃ 𝓧 ⋍ 𝓐
  characterization-of-category-≡ = characterization-of-type-valued-preorder-≡-with-axioms
                                    category-axioms category-axioms-subsingleton
 
