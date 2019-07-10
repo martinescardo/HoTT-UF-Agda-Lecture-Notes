@@ -1,4 +1,4 @@
----
+--
 layout: default
 title : Introduction to Homotopy Type Theory and Univalent Foundations (HoTT/UF) with Agda
 date : 2019-03-04
@@ -2259,6 +2259,18 @@ pointed-subsingletons-are-singletons : (X : 𝓤 ̇ )
                                      → X → is-subsingleton X → is-singleton X
 
 pointed-subsingletons-are-singletons X x s = (x , s x)
+
+
+singleton-iff-pointed-and-subsingleton : {X : 𝓤 ̇ }
+                                       → is-singleton X ⇔ (X × is-subsingleton X)
+
+singleton-iff-pointed-and-subsingleton {𝓤} {X} = (a , b)
+ where
+  a : is-singleton X → X × is-subsingleton X
+  a s = center X s , singletons-are-subsingletons X s
+
+  b : X × is-subsingleton X → is-singleton X
+  b (x , t) = pointed-subsingletons-are-singletons X x t
 \end{code}
 
 The terminology stands for *[subtype](HoTT-UF-Agda.html#subtypes-of)
@@ -9859,6 +9871,67 @@ also [gives classical logic](https://lmcs.episciences.org/3217).
   `y`-many copies of the type `𝟙`, respectively, as in `𝟙 + 𝟙 + ... + 𝟙` , where `x`
   and `y` are natural numbers, then `∥ X ≡ Y ∥ ≃ (x ≡ y)` and the type
   `X ≡ X` has `x!` elements.
+
+
+Singletons are inhabited, of course:
+
+\begin{code}
+  singletons-are-inhabited : (X : 𝓤 ̇ )
+                           → is-singleton X
+                           → ∥ X ∥
+
+  singletons-are-inhabited X s = ∣ center X s ∣
+\end{code}
+
+And inhabited subsingletons are singletons:
+
+\begin{code}
+  inhabited-subsingletons-are-singletons : (X : 𝓤 ̇ )
+                                         → ∥ X ∥
+                                         → is-subsingleton X
+                                         → is-singleton X
+
+  inhabited-subsingletons-are-singletons X t i = c , φ
+   where
+    c : X
+    c = ∥∥-recursion i (𝑖𝑑 X) t
+
+    φ : (x : X) → c ≡ x
+    φ = i c
+\end{code}
+
+Hence a type is a singleton if and only if it is inhabited and a
+subsingleton:
+
+\begin{code}
+  singleton-iff-inhabited-subsingleton : (X : 𝓤 ̇ )
+                                       → is-singleton X
+                                       ⇔ (∥ X ∥ × is-subsingleton X)
+
+  singleton-iff-inhabited-subsingleton X =
+    (λ (s : is-singleton X) → singletons-are-inhabited X s ,
+                              singletons-are-subsingletons X s) ,
+    Σ-induction (inhabited-subsingletons-are-singletons X)
+\end{code}
+
+By considering the unique map `X → 𝟙`, this can be regarded as a
+particular case of the fact that a map is an equivalence if and only
+if it is both an embedding and a surjection:
+
+\begin{code}
+  equiv-iff-embedding-and-surjections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                      →  is-equiv f
+                                      ⇔ (is-embedding f × is-surjection f)
+
+  equiv-iff-embedding-and-surjections f = a , b
+   where
+    a : is-equiv f → is-embedding f × is-surjection f
+    a e = (λ y → singletons-are-subsingletons (fiber f y) (e y)) ,
+          (λ y → singletons-are-inhabited     (fiber f y) (e y))
+
+    b : is-embedding f × is-surjection f → is-equiv f
+    b (e , s) y = inhabited-subsingletons-are-singletons (fiber f y) (s y) (e y)
+\end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="choice"></a> The univalent axiom of choice
