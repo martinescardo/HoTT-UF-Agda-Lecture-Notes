@@ -553,6 +553,17 @@ pointed-subsingletons-are-singletons : (X : 𝓤 ̇ )
 
 pointed-subsingletons-are-singletons X x s = (x , s x)
 
+singleton-iff-pointed-and-subsingleton : {X : 𝓤 ̇ }
+                                       → is-singleton X ⇔ (X × is-subsingleton X)
+
+singleton-iff-pointed-and-subsingleton {𝓤} {X} = (a , b)
+ where
+  a : is-singleton X → X × is-subsingleton X
+  a s = center X s , singletons-are-subsingletons X s
+
+  b : X × is-subsingleton X → is-singleton X
+  b (x , t) = pointed-subsingletons-are-singletons X x t
+
 is-prop is-truth-value : 𝓤 ̇ → 𝓤 ̇
 is-prop        = is-subsingleton
 is-truth-value = is-subsingleton
@@ -5360,6 +5371,47 @@ module basic-truncation-development
     γ : ∃ \(x : X) → ∣ x ∣ ≡ s
     γ = ∥∥-recursion ∥∥-is-subsingleton f s
 
+  singletons-are-inhabited : (X : 𝓤 ̇ )
+                           → is-singleton X
+                           → ∥ X ∥
+
+  singletons-are-inhabited X s = ∣ center X s ∣
+
+  inhabited-subsingletons-are-singletons : (X : 𝓤 ̇ )
+                                         → ∥ X ∥
+                                         → is-subsingleton X
+                                         → is-singleton X
+
+  inhabited-subsingletons-are-singletons X t i = c , φ
+   where
+    c : X
+    c = ∥∥-recursion i (𝑖𝑑 X) t
+
+    φ : (x : X) → c ≡ x
+    φ = i c
+
+  singleton-iff-inhabited-subsingleton : (X : 𝓤 ̇ )
+                                       → is-singleton X
+                                       ⇔ (∥ X ∥ × is-subsingleton X)
+
+  singleton-iff-inhabited-subsingleton X =
+    (λ (s : is-singleton X) → singletons-are-inhabited     X s ,
+                              singletons-are-subsingletons X s) ,
+    Σ-induction (inhabited-subsingletons-are-singletons X)
+
+  equiv-iff-embedding-and-surjections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                      →  is-equiv f
+                                      ⇔ (is-embedding f × is-surjection f)
+
+  equiv-iff-embedding-and-surjections f = a , b
+   where
+    a : is-equiv f → is-embedding f × is-surjection f
+    a e = (λ y → singletons-are-subsingletons (fiber f y) (e y)) ,
+          (λ y → singletons-are-inhabited     (fiber f y) (e y))
+
+    b : is-embedding f × is-surjection f → is-equiv f
+    b (e , s) y = inhabited-subsingletons-are-singletons (fiber f y) (s y) (e y)
+
   AC : ∀ 𝓣 (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
      → is-set X → ((x : X) → is-set (A x)) → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥 ̇
 
@@ -5594,6 +5646,24 @@ module basic-truncation-development
 
     c : 𝟘
     c = 𝓤₀-is-not-a-set (b (𝓤₀ ̇ ))
+
+  unique-choice-holds : (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) (R : (x : X) → A x → 𝓣 ̇ )
+
+                      → ((x : X) → is-subsingleton (Σ \(a : A x) → R x a))
+
+                      → ((x : X) → ∃ \(a : A x) → R x a)
+                      → Σ \(f : (x : X) → A x) → (x : X) → R x (f x)
+
+  unique-choice-holds X A R u φ = f , ψ
+   where
+    s : (x : X) → ∃! \(a : A x) → R x a
+    s x = inhabited-subsingletons-are-singletons (Σ \(a : A x) → R x a) (φ x) (u x)
+
+    f : (x : X) → A x
+    f x = pr₁ (center (Σ \(a : A x) → R x a) (s x))
+
+    ψ : (x : X) → R x (f x)
+    ψ x = pr₂ (center (Σ \(a : A x) → R x a) (s x))
 
 _has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
 X has-size 𝓥 = Σ \(Y : 𝓥 ̇ ) → X ≃ Y

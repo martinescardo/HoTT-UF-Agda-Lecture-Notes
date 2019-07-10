@@ -1,4 +1,4 @@
---
+---
 layout: default
 title : Introduction to Homotopy Type Theory and Univalent Foundations (HoTT/UF) with Agda
 date : 2019-03-04
@@ -9909,7 +9909,7 @@ subsingleton:
                                        ⇔ (∥ X ∥ × is-subsingleton X)
 
   singleton-iff-inhabited-subsingleton X =
-    (λ (s : is-singleton X) → singletons-are-inhabited X s ,
+    (λ (s : is-singleton X) → singletons-are-inhabited     X s ,
                               singletons-are-subsingletons X s) ,
     Σ-induction (inhabited-subsingletons-are-singletons X)
 \end{code}
@@ -10276,6 +10276,49 @@ can pick a point of every inhabited type:
 
 See also Theorem 3.2.2 and Corollary 3.2.7 of the HoTT book for a
 different argument that works with a single, arbitrary universe.
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+#### Unique choice just holds
+
+The axiom of unique choice says that if
+
+   * for every `x : X` there is at most one `a : A x` with `R x a`, and
+
+
+   * for all `x : X` there is some `a : A x` with `R x a`
+
+then
+
+   * there is `f : (x : X) → A x` such that `R x (f x)` for all `x : X`.
+
+This just holds. Moreover, compared to the general univalent axiom of
+choice,
+
+   * we can omit the assumptions that `X` and each `A x` are a sets,
+     and that the relation `R` is subsingleton valued, and
+
+   * we can strengthen the conclusion to get designated existence `Σ`
+     rather than just unspecified existence `∃`.
+
+\begin{code}
+  unique-choice-holds : (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) (R : (x : X) → A x → 𝓣 ̇ )
+
+                      → ((x : X) → is-subsingleton (Σ \(a : A x) → R x a))
+
+                      → ((x : X) → ∃ \(a : A x) → R x a)
+                      → Σ \(f : (x : X) → A x) → (x : X) → R x (f x)
+
+  unique-choice-holds X A R u φ = f , ψ
+   where
+    s : (x : X) → ∃! \(a : A x) → R x a
+    s x = inhabited-subsingletons-are-singletons (Σ \(a : A x) → R x a) (φ x) (u x)
+
+    f : (x : X) → A x
+    f x = pr₁ (center (Σ \(a : A x) → R x a) (s x))
+
+    ψ : (x : X) → R x (f x)
+    ψ x = pr₂ (center (Σ \(a : A x) → R x a) (s x))
+\end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="resizing"></a> Propositional resizing, truncation and the powerset
