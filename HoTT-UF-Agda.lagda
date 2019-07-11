@@ -424,19 +424,26 @@ to practice univalent mathematics should consult the above references.
         1. [Functor algebras](HoTT-UF-Agda.html#functor-algebras-sip)
         1. [Type-valued preorders](HoTT-UF-Agda.html#infty-preorders-sip)
         1. [Categories](HoTT-UF-Agda.html#categories-sip)
-     1. [Subsingleton truncation, disjunction and existence](HoTT-UF-Agda.html#truncation)
+     1. [Subsingleton truncation](HoTT-UF-Agda.html#truncation)
         1. [Voevodsky's approach to subsingleton truncation](HoTT-UF-Agda.html#vvaproach)
         1. [An axiomatic approach](HoTT-UF-Agda.html#axiomatic-approach)
         1. [Disjunction and existence](HoTT-UF-Agda.html#disjunction-and-existence)
         1. [Images and surjections](HoTT-UF-Agda.html#images-and-surjections)
         1. [A characterization of equivalences](HoTT-UF-Agda.html#equivalence-characterization)
-     1. [Univalent choice](HoTT-UF-Agda.html#choice)
+     1. [Choice in univalent mathematics](HoTT-UF-Agda.html#choice)
+        1. [Unique existence in univalent mathematics](HoTT-UF-Agda.html#unique-existence)
+        1. [Unique choice](HoTT-UF-Agda.html#unique-choice)
+        1. [Univalent choice](HoTT-UF-Agda.html#univalent-choice)
+        1. [A second formulation of univalent choice](HoTT-UF-Agda.html#univalent-choice2)
+        1. [A third formulation of univalent choice](HoTT-UF-Agda.html#univalent-choice3)
+        1. [Univalent choice gives excluded middle](HoTT-UF-Agda.html#choice-gives-excluded middle)
+        1. [Global choice](HoTT-UF-Agda.html#global-choice)
      1. [Propositional resizing, truncation and the powerset](HoTT-UF-Agda.html#resizing)
         1. [Propositional resizing](HoTT-UF-Agda.html#prop-resizing)
         1. [Excluded middle gives propositional resizing](HoTT-UF-Agda.html#em-resizing)
         1. [The propositional resizing axiom is a subsingleton](HoTT-UF-Agda.html#resizing-subsingleton)
         1. [Propositional impredicativity](HoTT-UF-Agda.html#prop-impred)
-        1. [Propositional resizing gives subsingleton truncation](HoTT-UF-Agda.html#trucation-resizing)
+        1. [Propositional resizing gives subsingleton truncation](HoTT-UF-Agda.html#truncation-from-resizing)
         1. [The powerset in the presence of propositional resizing](HoTT-UF-Agda.html#powerset-resizing)
         1. [Topological spaces in the presence of propositional resizing](HoTT-UF-Agda.html#topol-resizing)
      1. [Quotients](HoTT-UF-Agda.html#quotients)
@@ -1254,43 +1261,72 @@ represents logical implication, and that a dependent function type
 
 We have the following uses of `Σ`.
 
-  * The binary cartesian product represents conjunction "and". If the
-    types `A` and `B` stand for mathematical statements, then the
-    mathematical statement "`A` and `B`" is codified as `A × B`.
+  1. The binary cartesian product represents conjunction "and". If the
+     types `A` and `B` stand for mathematical statements, then the
+     mathematical statement
 
-    This is because to establish that "`A` and `B`", we have to
-    provide a pair `(a , b)` of proofs `a : A` and `b : B`.
+       > `A` and `B`
 
-    So notice that in type theory proofs are mathematical objects,
-    rather than meta-mathematical entities like in set theory. They are
-    just elements of types.
+     is codified as
 
-  * The more general type `Σ (x : X), A x`, if the type `X` stands
-    for a mathematical object and `A` stands for a mathematical
-    statement, represents *designated* existence "there is a
-    designated `x : X` with `A x`".
+       > `A × B`,
 
-    To establish this, we have to provide a specific
-    element `x : X` and a proof `a : A x`, together in a pair `(x ,
-    a)`.
+     because to establish "`A` and `B`", we have to provide a
+     pair `(a , b)` of proofs `a : A` and `b : B`.
 
-  * Later we will discuss *unspecified* existence `∃ (x : X), A x`,
-    which will be obtained by a sort of quotient of `Σ (x : X), A x`,
-    written `∥ Σ (x : X), A x ∥`, that identifies all the elements of
-    the type `Σ (x : X), A x` in a single equivalence class, called
-    its subsingleton (or truth value or propositional)
-    [truncation](HoTT-UF-Agda.html#truncation).
+     So notice that in type theory proofs are mathematical objects,
+     rather than meta-mathematical entities like in set theory. They
+     are just elements of types.
 
-  * Another reading of `Σ (x : X), A x` is as "the type of `x : X`
-    with `A x`", similar to subset notation `{ x ∈ X | A x }` in set
-    theory.
+  1. The more general type
 
-    But have to be careful because if there is more than one element
-    in the type `A x`, then `x` is put more than once in this type. In
-    such situations, if we don't want that, we have to be careful and
-    either ensure that the type `A x` has at most one element for
-    every `x : X`, or instead consider the truncated type `∥ A x ∥`
-    and write `Σ (x : X), ∥ A x ∥`.
+       > `Σ (x : X), A x`,
+
+     if the type `X` stands for a mathematical object and `A` stands for a mathematical
+     statement, represents *designated* existence
+
+       > there is a designated `x : X` with `A x`.
+
+     To establish this, we have to provide a specific element `x : X`
+     and a proof `a : A x`, together in a pair `(x , a)`.
+
+  1. Later we will discuss *unspecified* existence
+
+
+       > `∃ (x : X), A x`,
+
+     which will be obtained by a sort of quotient of `Σ (x : X), A x`,
+     written
+
+       > `∥ Σ (x : X), A x ∥`,
+
+     that identifies all the elements of the type `Σ (x : X), A x` in
+     a single equivalence class, called its subsingleton (or truth
+     value or propositional) [truncation](HoTT-UF-Agda.html#truncation).
+
+  1. Another reading of
+
+       > `Σ (x : X), A x`
+
+     is as
+
+       > the type of `x : X` with `A x`,
+
+     similar to set-theoretical notation
+
+       > `{ x ∈ X | A x }`.
+
+     But we have to be careful because if there is more than one element
+     in the type `A x`, then `x` will occur more than once in this
+     type. More precisely, for `a₀ a₁ : A x` we have inhabitants
+     `(x , a₀)` and `(x , a₁)` of the type `Σ (x : X), A x`.
+
+     In such situations, if we don't want that, we have to be
+     careful and either ensure that the type `A x` has at most one
+     element for every `x : X`, or instead consider the truncated type
+     `∥ A x ∥` and write
+
+       > `Σ (x : X), ∥ A x ∥`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="pitypes"></a> `Π` types
@@ -9546,13 +9582,13 @@ here is not affected by the univalence requirement, or any
 subsingleton-valued property of categories.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="truncation"></a> Subsingleton truncation, disjunction and existence
+### <a id="truncation"></a> Subsingleton truncation
 
 #### <a id="vvaproach"> Voevodsky's approach to subsingleton truncation
 
 The following is Voevosky's approach to saying that a type is
 inhabited in such a way that the statement of inhabitation is a
-subsingleton, using `funext`.
+subsingleton, using relying on function extensionality.
 
 \begin{code}
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
@@ -9978,7 +10014,7 @@ if it is both an embedding and a surjection:
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="choice"></a> Univalent choice
+### <a id="choice"></a> Choice in univalent mathematics
 
 We discuss unique choice, univalent choice and global choice.
 
@@ -9992,7 +10028,8 @@ We discuss unique choice, univalent choice and global choice.
 
   * Global choice contradicts univalence.
 
-#### <a id="unique-choice"></a> The principle of unique choice
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+#### <a id="unique-existence"></a> Unique existence in univalent mathematics
 
 Unique existence of `x : X` with `A x` in univalent mathematics, written
 
@@ -10052,6 +10089,9 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
 
 *Exercise*. Find a counter-example in the absence of the requirement
  that all types `A x` are subsingletons.
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+#### <a id="unique-choice"></a> The principle of unique choice
 
 The principle of *simple unique choice* says that if
 
@@ -10317,7 +10357,7 @@ We define the axiom of choice in the universe `𝓤` to be the above with
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### A second formulation of choice
+#### <a id="univalent-choice2"></a> A second formulation of univalent choice
 
 The above is equivalent to another familiar formulation of choice,
 namely that a set-indexed product of non-empty sets is non-empty,
@@ -10382,7 +10422,7 @@ extensionality):
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### A third formulation of choice
+#### <a id="univalent-choice3"></a> A third formulation of univalent choice
 
 \begin{code}
   TAC : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → is-set X → ((x : X) → is-set (A x)) → 𝓤 ⊔ 𝓥 ̇
@@ -10434,7 +10474,7 @@ following:
  surjection of sets has an unspecified section.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### Choice implies excluded middle
+#### <a id="choice-gives-excluded middle"></a> Univalent choice gives excluded middle
 
 We apply the third formulation to show that choice implies excluded
 middle. We begin with the following lemma.
@@ -10553,7 +10593,7 @@ For more information with Agda code, see
 [this](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Choice.html).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### Global choice
+#### <a id="global-choice"></a> Global choice
 
 The following says that, for any given `X`, we can either choose a
 point of `X` or tell that `X` is empty:
@@ -10899,7 +10939,7 @@ Impredicativity-gives-PR {𝓤} {𝓥} pe fe (O , e) P i = Q , ε
 has size `𝓤₀`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="truncation-resizing"></a> Propositional resizing gives subsingleton truncation
+#### <a id="truncation-from-resizing"></a> Propositional resizing gives subsingleton truncation
 
 Using Voevodsky's [construction](HoTT-UF-Agda.html#truncation) and
 propositional resizing, we get that function extensionality implies
@@ -11485,7 +11525,7 @@ As mentioned above, if one so wishes, it is possible to resize down
 the quotient `X/≈` to the same universe as the given type `X` lives by
 assuming propositional resizing. But we don't see any mathematical
 need to do so, as the constructed quotient, regardless of the universe
-it inhabits, has a universal property that eliminates in to any
+it inhabits, has a universal property that eliminates into any
 desired universe, lower, equal or higher than the quotiented type.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
