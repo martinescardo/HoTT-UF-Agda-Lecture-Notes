@@ -1316,7 +1316,8 @@ We have the following uses of `Σ`.
 
        > `{ x ∈ X | A x }`.
 
-     But we have to be careful because if there is more than one element
+     But we
+     have to be careful because if there is more than one element
      in the type `A x`, then `x` will occur more than once in this
      type. More precisely, for `a₀ a₁ : A x` we have inhabitants
      `(x , a₀)` and `(x , a₁)` of the type `Σ (x : X), A x`.
@@ -2415,6 +2416,36 @@ EM'-gives-EM em' X s = γ (em' X s)
 
 We will not assume or deny excluded middle, which is an independent
 statement (it can't be proved or disproved).
+
+It should be emphasized that the potential failure of excluded middle
+doesn't say that there are mysterious subsingletons that fail to be
+singletons and also fail to be empty. No such things occur in
+mathematical nature:
+
+\begin{code}
+no-unicorns : ¬(Σ \(X : 𝓤 ̇) → is-subsingleton X × ¬(is-singleton X) × ¬(is-empty X))
+no-unicorns (X , i , f , g) = c
+ where
+  e : is-empty X
+  e x = f (pointed-subsingletons-are-singletons X x i)
+
+  c : 𝟘
+  c = g e
+\end{code}
+
+Given this, what does the potential failure of excluded middle *mean*?
+That there is no general way to *determine which of the two cases*
+`is-singleton X` and `is-empty X` applies for a given subsingleton
+`X`. This kind of phenomenon should be familiar even in classical,
+non-constructive mathematics: although we are entitled to believe that
+the Goldblach conjecture either holds or fails, we still don't know
+which one is the case. A hypothetical element of the type `EM` would,
+in particular, be able to solve the Goldbach conjecture. There is
+nothing wrong or contradictory from assuming the existence of such a
+magic box, other than the loss of the implicit algorithmic character
+of our type theory, which most mathematicians would be perfectly happy
+to live with.
+
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="magmasandmonoids"></a> The types of magmas and monoids
