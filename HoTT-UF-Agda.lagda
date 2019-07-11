@@ -10514,16 +10514,16 @@ For more information with Agda code, see
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### Global choice
 
-We take the opportunity to briefly address *global choice*, which was already mentioned above a couple of times.
+The following says that, for any given `X`, we can either choose a
+point of `X` or tell that `X` is empty:
 
 \begin{code}
   global-choice : (𝓤 : Universe) → 𝓤 ⁺ ̇
   global-choice 𝓤 = (X : 𝓤 ̇ ) → X + is-empty X
 \end{code}
 
-The above says that, for any given `X`, we can either choose a point
-of `X` or tell that `X` is empty, whereas the following says that we
-can pick a point of every inhabited type:
+And the following says that we can pick a point of every inhabited
+type:
 
 \begin{code}
   global-choice' : (𝓤 : Universe) → 𝓤 ⁺ ̇
