@@ -2443,7 +2443,7 @@ which one is the case. A hypothetical element of the type `EM` would,
 in particular, be able to solve the Goldbach conjecture. There is
 nothing wrong or contradictory from assuming the existence of such a
 magic box, other than the loss of the implicit algorithmic character
-of our type theory, which most mathematicians would be perfectly happy
+of our type theory, which most mathematicians will be perfectly happy
 to live with.
 
 
