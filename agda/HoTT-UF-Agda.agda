@@ -5474,9 +5474,9 @@ module _ (hfe : global-hfunext) where
    transport (R x) (h x) (φ x)                        ∎
 
   where
-   a : {f g : Π A} {φ : ∀ x → R x (f x)} (p : f ≡ g)
-     → ∀ x → transport (λ - → ∀ x → R x (- x)) p φ x
-           ≡ transport (R x) (happly f g p x) (φ x)
+   a : {f g : Π A} {φ : ∀ x → R x (f x)} (p : f ≡ g) (x : domain A)
+     → transport (λ - → ∀ x → R x (- x)) p φ x
+     ≡ transport (R x) (happly f g p x) (φ x)
 
    a (refl _) x = refl _
 

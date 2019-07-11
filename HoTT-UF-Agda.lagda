@@ -9923,8 +9923,8 @@ if it is both an embedding and a surjection:
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="choice"></a> Univalent choice
 
-We discuss unique choice, general choice and global choice. Unique
-choice just holds. General choice implies excluded middle and is not
+We discuss unique choice, univalent choice and global choice. Unique
+choice just holds. Univalent choice implies excluded middle and is not
 provable or disprovable, but is consistent with univalence. Global
 choice contradicts univalence.
 
@@ -10047,9 +10047,9 @@ module _ (hfe : global-hfunext) where
    transport (R x) (h x) (φ x)                        ∎
 
   where
-   a : {f g : Π A} {φ : ∀ x → R x (f x)} (p : f ≡ g)
-     → ∀ x → transport (λ - → ∀ x → R x (- x)) p φ x
-           ≡ transport (R x) (happly f g p x) (φ x)
+   a : {f g : Π A} {φ : ∀ x → R x (f x)} (p : f ≡ g) (x : domain A)
+     → transport (λ - → ∀ x → R x (- x)) p φ x
+     ≡ transport (R x) (happly f g p x) (φ x)
 
    a (refl _) x = refl _
 
@@ -10133,9 +10133,9 @@ In the next few subsections we continue working within the submodule
 available, so that we can use the existential quantifier `∃`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="univalent-choice"></a> The general axiom of choice
+#### <a id="univalent-choice"></a> The univalent axiom of choice
 
-The general axiom of choice in univalent mathematics says that if
+The axiom of choice in univalent mathematics says that if
 
   * for every `x : X` there exists `a : A x` with `R x a`,
 
@@ -10143,14 +10143,19 @@ where `R` is some given relation, then
 
   * there exists a choice function `f : (x : X) → A x` with `R x (f x)` for all `x : X`.
 
-This is not provable or disprovable in univalent mathematics, but it
-does hold in [Voevodsky's simplicial
-model](https://arxiv.org/abs/1211.2851) of our univalent type theory,
-and hence is consistent, provided:
+provided
 
  * `X` is a set,
  * `A` is a family of sets,
  * the relation `R` is subsingleton valued.
+
+This is not provable or disprovable in univalent mathematics, but,
+with this proviso, it does hold in [Voevodsky's simplicial
+model](https://arxiv.org/abs/1211.2851) of our univalent type theory,
+and hence is consistent. It is important that we have the condition
+that `A` is a set-indexed family of sets and that the relation `R` is
+subsingleton valued. For arbitrary higher groupoids, it is not in
+general possible to perform the choice functorially.
 
 \begin{code}
   AC : ∀ 𝓣 (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
@@ -10171,11 +10176,6 @@ We define the axiom of choice in the universe `𝓤` to be the above with
   Choice 𝓤 = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) (i : is-set X) (j : (x : X) → is-set (A x))
            → AC 𝓤 X A i j
 \end{code}
-
-It is important that we have the condition that `A` is a set-indexed
-family of sets and that the relation `R` is subsingleton valued. For
-arbitrary higher groupoids, it is not in general possible to perform
-the choice functorially.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### A second formulation of choice
