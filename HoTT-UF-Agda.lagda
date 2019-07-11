@@ -205,9 +205,7 @@ which are common place in current mathematical practice
 
 In summary, univalent mathematics is characterized by (1)-(8) and not
 by the univalence axiom alone. In fact, half of these notes begin
-*without* the univalence axiom (as measured by the number of lines in
-these lecture notes until we formulate the univalence axiom and start
-to use it).
+*without* the univalence axiom.
 
 Lastly, univalent type theories don't assume the axiom of choice or
 the principle of excluded middle, and so in some sense they are
@@ -4162,11 +4160,16 @@ NatΣ-equiv-gives-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X �
                   → is-subsingleton (Σ A)
 
 
+×-is-singleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                  → is-singleton X
+                  → is-singleton Y
+                  → is-singleton (X × Y)
+
+
 ×-is-subsingleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → is-subsingleton X
                   → is-subsingleton Y
                   → is-subsingleton (X × Y)
-
 
 ×-is-subsingleton' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                    → ((Y → is-subsingleton X) × (X → is-subsingleton Y))
@@ -4552,6 +4555,19 @@ NatΣ-equiv-gives-fiberwise-equiv = sol
       → ((x : X) → is-subsingleton (A x))
       → is-subsingleton (Σ A)
   sol i j (x , a) (y , b) = to-Σ-≡ (i x y , j y _ _)
+
+
+×-is-singleton = sol
+ where
+  sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+      → is-singleton X
+      → is-singleton Y
+      → is-singleton (X × Y)
+  sol (x , φ) (y , γ) = (x , y) , δ
+   where
+    δ : ∀ z → x , y ≡ z
+    δ (x' , y' ) = to-×-≡ (φ x' , γ y')
+
 
 ×-is-subsingleton = sol
  where
@@ -9360,7 +9376,7 @@ module category-identity
  S = type-valued-preorder-S {𝓤} {𝓥}
 \end{code}
 
-The axi<oms say that
+The axioms say that
 
   * the homs form sets, rather than arbitrary types,
   * the identity is a left and right neutral element of composition,
@@ -9832,7 +9848,7 @@ way, we can use `is-inhabited` instead of `∥_∥` if we wish.
 
 *Exercise*. Being a surjection is a proposition if function
  extensionality holds. A map is an equivalence if and only if it is
- both an embedding and a surjection.
+ both an embedding and a surjection. (To be solved shortly.)
 
 This time we can prove that the map `x ↦ ∣ x ∣` of `X` into `∥ X ∥` is
 a surjection without the universe levels getting in our way:
@@ -9923,10 +9939,17 @@ if it is both an embedding and a surjection:
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="choice"></a> Univalent choice
 
-We discuss unique choice, univalent choice and global choice. Unique
-choice just holds. Univalent choice implies excluded middle and is not
-provable or disprovable, but is consistent with univalence. Global
-choice contradicts univalence.
+We discuss unique choice, univalent choice and global choice.
+
+  * A simple form of unique choice just holds in our spartan MLTT.
+
+  * The full form of unique choice is logically equivalent to function
+    extensionality.
+
+  * Univalent choice implies excluded middle and is not provable or
+    disprovable, but is consistent with univalence.
+
+  * Global choice contradicts univalence.
 
 #### <a id="unique-choice"></a> The principle of unique choice
 
@@ -10003,7 +10026,7 @@ This just holds and is trivial:
 simple-unique-choice : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
 
                      → ((x : X) → ∃! \(a : A x) → R x a)
-                     → Σ \(f : (x : X) → A x) → (x : X) → R x (f x)
+                     → Σ \(f : Π A) → (x : X) → R x (f x)
 
 simple-unique-choice X A R s = f , φ
  where
@@ -10018,11 +10041,72 @@ Below we also consider a
 [variation](HoTT-UF-Agda.html#simple-unique-choice') of simple unique
 choice that works with `∃` (truncated `Σ`) rather than `∃!`.
 
-A stronger, less trivial result gives unique existence in the
-conclusion, but requires function extensionality, and relies on a
-general lemma that explains how to transport along an identification
-obtained by the inverse of `happly`. We use an anonymous module to
-assume function extensionality in the next few constructions.
+A full form of unique choice is Voevodsky's formulation
+[`vvfunext`](HoTT-UF-Agda.html#vvfunext) of function extensionality,
+which says that products of singletons are singletons. We show that this
+is equivalent to our official formulation of unique choice:
+
+\begin{code}
+Unique-Choice : (𝓤 𝓥 𝓦 : Universe) → (𝓤 ⊔ 𝓥 ⊔ 𝓦)⁺ ̇
+Unique-Choice 𝓤 𝓥 𝓦 = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
+                    → ((x : X) → ∃! \(a : A x) → R x a)
+                    → ∃! \(f : Π A) → (x : X) → R x (f x)
+
+
+vvfunext-gives-unique-choice : vvfunext 𝓤 (𝓥 ⊔ 𝓦) → Unique-Choice 𝓤 𝓥 𝓦
+vvfunext-gives-unique-choice vv X A R s = c
+ where
+  a : ((x : X) → Σ \(a : A x) → R x a)
+    ≃ (Σ \(f : (x : X) → A x) → (x : X) → R x (f x))
+
+  a = ΠΣ-distr-≃
+
+  b : is-singleton ((x : X) → Σ \(a : A x) → R x a)
+  b = vv s
+
+  c : is-singleton (Σ \(f : (x : X) → A x) → (x : X) → R x (f x))
+  c = equiv-to-singleton' a b
+
+
+unique-choice-gives-vvfunext : Unique-Choice 𝓤 𝓥 𝓥 → vvfunext 𝓤 𝓥
+unique-choice-gives-vvfunext {𝓤} {𝓥} uc {X} {A} φ = γ
+ where
+  R : (x : X) → A x → 𝓥  ̇
+  R x a = A x
+
+  s' : (x : X) → is-singleton (A x × A x)
+  s' x = ×-is-singleton (φ x) (φ x)
+
+  s : (x : X) → ∃! \(y : A x) → R x y
+  s = s'
+
+  e : ∃! \(f : Π A) → (x : X) → R x (f x)
+  e = uc X A R s
+
+  e' : is-singleton (Π A × Π A)
+  e' = e
+
+  ρ : Π A ◁ Π A × Π A
+  ρ = pr₁ , (λ y → y , y) , refl
+
+  γ : is-singleton (Π A)
+  γ = retract-of-singleton ρ e'
+\end{code}
+
+The above is not quite the converse of the previous, as there is a
+universe mismatch, but we do get a logical equivalence by taking `𝓦`
+to be `𝓥`:
+
+\begin{code}
+unique-choice⇔vvfunext : Unique-Choice 𝓤 𝓥 𝓥 ⇔ vvfunext 𝓤 𝓥
+unique-choice⇔vvfunext = unique-choice-gives-vvfunext ,
+                         vvfunext-gives-unique-choice
+\end{code}
+
+We now give a different derivation of unique choice from function
+extensionality, in order to illustrate transport along the inverse of
+`happly`. For simplicity, we assume global function extensionality in
+the next few constructions.
 
 \begin{code}
 module _ (hfe : global-hfunext) where
@@ -10032,15 +10116,15 @@ module _ (hfe : global-hfunext) where
    hunapply = inverse (happly _ _) (hfe _ _)
 
 
- transport-hfunext : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
-                     (f g : Π A)
-                     (φ : (x : X) → R x (f x))
-                     (h : f ∼ g)
-                     (x : X)
-                   → transport (λ - → (x : X) → R x (- x)) (hunapply h) φ x
-                   ≡ transport (R x) (h x) (φ x)
+ transport-hunapply : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
+                      (f g : Π A)
+                      (φ : (x : X) → R x (f x))
+                      (h : f ∼ g)
+                      (x : X)
+                    → transport (λ - → (x : X) → R x (- x)) (hunapply h) φ x
+                    ≡ transport (R x) (h x) (φ x)
 
- transport-hfunext A R f g φ h x =
+ transport-hunapply A R f g φ h x =
 
    transport (λ - → ∀ x → R x (- x)) (hunapply h) φ x ≡⟨ i  ⟩
    transport (R x) (happly f g (hunapply h) x) (φ x)  ≡⟨ ii ⟩
@@ -10099,13 +10183,27 @@ module _ (hfe : global-hfunext) where
            transport (λ σ → R x (pr₁ σ)) (c x (f x , φ x)) (φ₀ x) ≡⟨ iii ⟩
            φ x                                                    ∎
       where
-       i   = transport-hfunext A R f₀ f φ₀ (λ x → c₁ x (f x) (φ x)) x
+       i   = transport-hunapply A R f₀ f φ₀ (λ x → c₁ x (f x) (φ x)) x
        ii  = (transport-ap (R x) pr₁ (c x (f x , φ x)) (φ₀ x))⁻¹
        iii = c₂ x (f x) (φ x)
 \end{code}
 
 [Simple unique choice](HoTT-UF-Agda.html#simple-unique-choice) can be
-reformulated as follows using `∃` rather than `∃!`:
+reformulated as follows using `∃` rather than `∃!`. The statement
+
+   > `is-subsingleton (Σ \(a : A x) → R x a)`
+
+can be read as
+
+   > there is at most one `a : A x` with `R x a`.
+
+So the hypothesis of the following is that there is at most one such
+`a` and at least one such `a`, which amounts to saying that there is a
+unique such `a`, and hence `simple-unique-choice'` amounts to the same
+things as `simple-unique-choice`. However, `simple-unique-choice` can
+be formulated and proved in our spartan MLTT, whereas
+`simple-unique-choice'` requires the assumption of the existence of
+subsingleton truncations so that `∃` is available for its formulation.
 
 \begin{code}
 module choice
@@ -10120,7 +10218,7 @@ module choice
                         → ((x : X) → is-subsingleton (Σ \(a : A x) → R x a))
 
                         → ((x : X) → ∃ \(a : A x) → R x a)
-                        → Σ \(f : (x : X) → A x) → (x : X) → R x (f x)
+                        → Σ \(f : Π A) → (x : X) → R x (f x)
 
   simple-unique-choice' X A R u φ = simple-unique-choice X A R s
    where
@@ -10135,13 +10233,13 @@ available, so that we can use the existential quantifier `∃`.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="univalent-choice"></a> The univalent axiom of choice
 
-The axiom of choice in univalent mathematics says that if
+The axiom of choice in univalent mathematics says that
 
-  * for every `x : X` there exists `a : A x` with `R x a`,
+  * if for every `x : X` there exists `a : A x` with `R x a`,
 
-where `R` is some given relation, then
+where `R` is some given relation,
 
-  * there exists a choice function `f : (x : X) → A x` with `R x (f x)` for all `x : X`,
+  * then there exists a choice function `f : (x : X) → A x` with `R x (f x)` for all `x : X`,
 
 provided
 
@@ -10165,7 +10263,7 @@ general possible to perform the choice functorially.
                → ((x : X) (a : A x) → is-subsingleton (R x a))
 
                → ((x : X) → ∃ \(a : A x) → R x a)
-               → ∃ \(f : (x : X) → A x) → (x : X) → R x (f x)
+               → ∃ \(f : Π A) → (x : X) → R x (f x)
 \end{code}
 
 We define the axiom of choice in the universe `𝓤` to be the above with
@@ -10381,7 +10479,8 @@ set has decidable equality.
     γ = δ h
 \end{code}
 
-Applying the above to the object of truth-values, we get excluded middle:
+Applying the above to the object `Ω 𝓤` of truth-values in the universe
+`𝓤`, we get excluded middle:
 
 \begin{code}
   choice-gives-EM : propext 𝓤 → TChoice (𝓤 ⁺) → EM 𝓤
@@ -11004,7 +11103,7 @@ propositional resizing:
     (X : 𝓤 ̇ )
     (𝓐 : 𝓟𝓟 X)
        → Σ \(B : 𝓟 X)
-              → (x : X) → (x ∈ B) ⇔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A)
+               → (x : X) → (x ∈ B) ⇔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A)
 
   intersections-exist {𝓤} X 𝓐 = B , (λ x → lr x , rl x)
    where

@@ -1488,6 +1488,11 @@ NatΣ-equiv-gives-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X �
                   → ((x : X) → is-subsingleton (A x))
                   → is-subsingleton (Σ A)
 
+×-is-singleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                  → is-singleton X
+                  → is-singleton Y
+                  → is-singleton (X × Y)
+
 ×-is-subsingleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → is-subsingleton X
                   → is-subsingleton Y
@@ -1835,6 +1840,17 @@ NatΣ-equiv-gives-fiberwise-equiv = sol
       → ((x : X) → is-subsingleton (A x))
       → is-subsingleton (Σ A)
   sol i j (x , a) (y , b) = to-Σ-≡ (i x y , j y _ _)
+
+×-is-singleton = sol
+ where
+  sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+      → is-singleton X
+      → is-singleton Y
+      → is-singleton (X × Y)
+  sol (x , φ) (y , γ) = (x , y) , δ
+   where
+    δ : ∀ z → x , y ≡ z
+    δ (x' , y' ) = to-×-≡ (φ x' , γ y')
 
 ×-is-subsingleton = sol
  where
@@ -5443,7 +5459,7 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
 simple-unique-choice : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
 
                      → ((x : X) → ∃! \(a : A x) → R x a)
-                     → Σ \(f : (x : X) → A x) → (x : X) → R x (f x)
+                     → Σ \(f : Π A) → (x : X) → R x (f x)
 
 simple-unique-choice X A R s = f , φ
  where
@@ -5453,21 +5469,68 @@ simple-unique-choice X A R s = f , φ
   φ : (x : X) → R x (f x)
   φ x = pr₂ (center (Σ \(a : A x) → R x a) (s x))
 
+Unique-Choice : (𝓤 𝓥 𝓦 : Universe) → (𝓤 ⊔ 𝓥 ⊔ 𝓦)⁺ ̇
+Unique-Choice 𝓤 𝓥 𝓦 = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
+                    → ((x : X) → ∃! \(a : A x) → R x a)
+                    → ∃! \(f : Π A) → (x : X) → R x (f x)
+
+vvfunext-gives-unique-choice : vvfunext 𝓤 (𝓥 ⊔ 𝓦) → Unique-Choice 𝓤 𝓥 𝓦
+vvfunext-gives-unique-choice vv X A R s = c
+ where
+  a : ((x : X) → Σ \(a : A x) → R x a)
+    ≃ (Σ \(f : (x : X) → A x) → (x : X) → R x (f x))
+
+  a = ΠΣ-distr-≃
+
+  b : is-singleton ((x : X) → Σ \(a : A x) → R x a)
+  b = vv s
+
+  c : is-singleton (Σ \(f : (x : X) → A x) → (x : X) → R x (f x))
+  c = equiv-to-singleton' a b
+
+unique-choice-gives-vvfunext : Unique-Choice 𝓤 𝓥 𝓥 → vvfunext 𝓤 𝓥
+unique-choice-gives-vvfunext {𝓤} {𝓥} uc {X} {A} φ = γ
+ where
+  R : (x : X) → A x → 𝓥  ̇
+  R x a = A x
+
+  s' : (x : X) → is-singleton (A x × A x)
+  s' x = ×-is-singleton (φ x) (φ x)
+
+  s : (x : X) → ∃! \(y : A x) → R x y
+  s = s'
+
+  e : ∃! \(f : Π A) → (x : X) → R x (f x)
+  e = uc X A R s
+
+  e' : is-singleton (Π A × Π A)
+  e' = e
+
+  ρ : Π A ◁ Π A × Π A
+  ρ = pr₁ , (λ y → y , y) , refl
+
+  γ : is-singleton (Π A)
+  γ = retract-of-singleton ρ e'
+
+unique-choice⇔vvfunext : Unique-Choice 𝓤 𝓥 𝓥 ⇔ vvfunext 𝓤 𝓥
+unique-choice⇔vvfunext = unique-choice-gives-vvfunext ,
+                         vvfunext-gives-unique-choice
+
 module _ (hfe : global-hfunext) where
 
  private
    hunapply : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ∼ g → f ≡ g
    hunapply = inverse (happly _ _) (hfe _ _)
 
- transport-hfunext : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
-                     (f g : Π A)
-                     (φ : (x : X) → R x (f x))
-                     (h : f ∼ g)
-                     (x : X)
-                   → transport (λ - → (x : X) → R x (- x)) (hunapply h) φ x
-                   ≡ transport (R x) (h x) (φ x)
+ transport-hunapply : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
+                      (f g : Π A)
+                      (φ : (x : X) → R x (f x))
+                      (h : f ∼ g)
+                      (x : X)
+                    → transport (λ - → (x : X) → R x (- x)) (hunapply h) φ x
+                    ≡ transport (R x) (h x) (φ x)
 
- transport-hfunext A R f g φ h x =
+ transport-hunapply A R f g φ h x =
 
    transport (λ - → ∀ x → R x (- x)) (hunapply h) φ x ≡⟨ i  ⟩
    transport (R x) (happly f g (hunapply h) x) (φ x)  ≡⟨ ii ⟩
@@ -5525,7 +5588,7 @@ module _ (hfe : global-hfunext) where
            transport (λ σ → R x (pr₁ σ)) (c x (f x , φ x)) (φ₀ x) ≡⟨ iii ⟩
            φ x                                                    ∎
       where
-       i   = transport-hfunext A R f₀ f φ₀ (λ x → c₁ x (f x) (φ x)) x
+       i   = transport-hunapply A R f₀ f φ₀ (λ x → c₁ x (f x) (φ x)) x
        ii  = (transport-ap (R x) pr₁ (c x (f x , φ x)) (φ₀ x))⁻¹
        iii = c₂ x (f x) (φ x)
 
@@ -5541,7 +5604,7 @@ module choice
                         → ((x : X) → is-subsingleton (Σ \(a : A x) → R x a))
 
                         → ((x : X) → ∃ \(a : A x) → R x a)
-                        → Σ \(f : (x : X) → A x) → (x : X) → R x (f x)
+                        → Σ \(f : Π A) → (x : X) → R x (f x)
 
   simple-unique-choice' X A R u φ = simple-unique-choice X A R s
    where
@@ -5555,7 +5618,7 @@ module choice
                → ((x : X) (a : A x) → is-subsingleton (R x a))
 
                → ((x : X) → ∃ \(a : A x) → R x a)
-               → ∃ \(f : (x : X) → A x) → (x : X) → R x (f x)
+               → ∃ \(f : Π A) → (x : X) → R x (f x)
 
   Choice : ∀ 𝓤 → 𝓤 ⁺ ̇
   Choice 𝓤 = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) (i : is-set X) (j : (x : X) → is-set (A x))
@@ -6133,7 +6196,7 @@ module basic-powerset-development
     (X : 𝓤 ̇ )
     (𝓐 : 𝓟𝓟 X)
        → Σ \(B : 𝓟 X)
-              → (x : X) → (x ∈ B) ⇔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A)
+               → (x : X) → (x ∈ B) ⇔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A)
 
   intersections-exist {𝓤} X 𝓐 = B , (λ x → lr x , rl x)
    where
