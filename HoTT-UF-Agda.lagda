@@ -2446,7 +2446,7 @@ magic box, other than the loss of the implicit algorithmic character
 of our type theory, which most mathematicians will be perfectly happy
 to live with.
 
-*Exercise. We also have that it is impossible for `is-singleton X +
+*Exercise.* We also have that it is impossible for `is-singleton X +
 is-empty X` to fail for a given subsingleton `X`, which amounts to
 saying that `¬¬(is-singleton X + is-empty X)` holds. Also for any type
 `R` replacing the empty type, define a function `((X + (X → R)) → R) →
