@@ -425,6 +425,11 @@ to practice univalent mathematics should consult the above references.
         1. [Type-valued preorders](HoTT-UF-Agda.html#infty-preorders-sip)
         1. [Categories](HoTT-UF-Agda.html#categories-sip)
      1. [Subsingleton truncation, disjunction and existence](HoTT-UF-Agda.html#truncation)
+        1. [Voevodsky's approach to subsingleton truncation](HoTT-UF-Agda.html#vvaproach)
+        1. [An axiomatic approach](HoTT-UF-Agda.html#axiomatic-approach)
+        1. [Disjunction and existence](HoTT-UF-Agda.html#disjunction-and-existence)
+        1. [Images and surjections](HoTT-UF-Agda.html#images-and-surjections)
+        1. [A characterization of equivalences](HoTT-UF-Agda.html#equivalence-characterization)
      1. [Univalent choice](HoTT-UF-Agda.html#choice)
      1. [Propositional resizing, truncation and the powerset](HoTT-UF-Agda.html#resizing)
         1. [Propositional resizing](HoTT-UF-Agda.html#prop-resizing)
@@ -9543,6 +9548,8 @@ subsingleton-valued property of categories.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="truncation"></a> Subsingleton truncation, disjunction and existence
 
+#### <a id="vvaproach"> Voevodsky's approach to subsingleton truncation
+
 The following is Voevosky's approach to saying that a type is
 inhabited in such a way that the statement of inhabitation is a
 subsingleton, using `funext`.
@@ -9703,6 +9710,9 @@ There are two proposed ways to solve this kind of problem:
     consistent.  This is the same approach adopted by cubical type
     theory and cubical Agda.
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+#### <a id="axiomatic-approach"> An axiomatic approach
+
 A third possibility is to work with subsingleton truncations
 [axiomatically](https://lmcs.episciences.org/3217), which is compatible
 with the above two proposals. We write this axiom as a record type
@@ -9738,6 +9748,7 @@ module basic-truncation-development
   hunapply : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ∼ g → f ≡ g
   hunapply = hfunext-gives-dfunext hfe
 
+
   ∥∥-induction : {X : 𝓤 ̇ } {P : ∥ X ∥ → 𝓥 ̇ }
               → ((s : ∥ X ∥) → is-subsingleton (P s))
               → ((x : X) → P ∣ x ∣)
@@ -9764,6 +9775,26 @@ module basic-truncation-development
   ∥∥-functor f = ∥∥-recursion ∥∥-is-subsingleton (λ x → ∣ f x ∣)
 \end{code}
 
+The subsingleton truncation of a type and its inhabitation are
+logically equivalent propositions:
+
+\begin{code}
+  ∥∥-agrees-with-inhabitation : (X : 𝓤 ̇ ) → ∥ X ∥ ⇔ is-inhabited X
+  ∥∥-agrees-with-inhabitation X = a , b
+   where
+    a : ∥ X ∥ → is-inhabited X
+    a = ∥∥-recursion (inhabitation-is-subsingleton hunapply X) pointed-is-inhabited
+
+    b : is-inhabited X → ∥ X ∥
+    b = inhabited-recursion X ∥ X ∥ ∥∥-is-subsingleton ∣_∣
+\end{code}
+
+Hence they differ only in size, and when size matters don't get on the
+way, we can use `is-inhabited` instead of `∥_∥` if we wish.
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+#### <a id="disjunction-and-existence"> Disjunction and existence
+
 Disjunction and existence are defined as the truncation of `+` and `Σ`:
 
 \begin{code}
@@ -9787,22 +9818,8 @@ The author's slides on [univalent
 logic](https://www.newton.ac.uk/seminar/20170711100011001) discuss
 further details about these notions of disjunction and existence.
 
-The subsingleton truncation of a type and its inhabitation are
-logically equivalent propositions:
-
-\begin{code}
-  ∥∥-agrees-with-inhabitation : (X : 𝓤 ̇ ) → ∥ X ∥ ⇔ is-inhabited X
-  ∥∥-agrees-with-inhabitation X = a , b
-   where
-    a : ∥ X ∥ → is-inhabited X
-    a = ∥∥-recursion (inhabitation-is-subsingleton hunapply X) pointed-is-inhabited
-
-    b : is-inhabited X → ∥ X ∥
-    b = inhabited-recursion X ∥ X ∥ ∥∥-is-subsingleton ∣_∣
-\end{code}
-
-Hence they differ only in size, and when size matters don't get on the
-way, we can use `is-inhabited` instead of `∥_∥` if we wish.
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+#### <a id="images-and-surjections"> Images and surjections
 
 \begin{code}
   image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
@@ -9823,6 +9840,13 @@ way, we can use `is-inhabited` instead of `∥_∥` if we wish.
 
   is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
   is-surjection f = (y : codomain f) → ∃ \(x : domain f) → f x ≡ y
+
+
+  being-surjection-is-subsingleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                   → is-subsingleton (is-surjection f)
+
+  being-surjection-is-subsingleton f = Π-is-subsingleton hunapply
+                                        (λ y → ∃-is-subsingleton)
 
 
   corestriction-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -9875,6 +9899,9 @@ also [gives classical logic](https://lmcs.episciences.org/3217).
   and `y` are natural numbers, then `∥ X ≡ Y ∥ ≃ (x ≡ y)` and the type
   `X ≡ X` has `x!` elements.
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+#### <a id="equivalence-characterization"> A characterization of equivalences
+
 
 Singletons are inhabited, of course:
 
@@ -9926,7 +9953,7 @@ if it is both an embedding and a surjection:
                                       →  is-equiv f
                                       ⇔ (is-embedding f × is-surjection f)
 
-  equiv-iff-embedding-and-surjections f = a , b
+  equiv-iff-embedding-and-surjections f = (a , b)
    where
     a : is-equiv f → is-embedding f × is-surjection f
     a e = (λ y → singletons-are-subsingletons (fiber f y) (e y)) ,
@@ -9934,6 +9961,20 @@ if it is both an embedding and a surjection:
 
     b : is-embedding f × is-surjection f → is-equiv f
     b (e , s) y = inhabited-subsingletons-are-singletons (fiber f y) (s y) (e y)
+
+
+  equiv-≡-embedding-and-surjections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                    → propext (𝓤 ⊔ 𝓥)
+                                    →  is-equiv f
+                                    ≡ (is-embedding f × is-surjection f)
+
+  equiv-≡-embedding-and-surjections f pe =
+    pe (being-equiv-is-subsingleton hunapply hunapply f)
+       (×-is-subsingleton
+         (being-embedding-is-subsingleton hunapply f)
+         (being-surjection-is-subsingleton f))
+       (lr-implication (equiv-iff-embedding-and-surjections f))
+       (rl-implication (equiv-iff-embedding-and-surjections f))
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -11465,6 +11506,10 @@ We have that:
     type theory](https://arxiv.org/abs/1611.02108) with an implementation in [cubical Agda](https://homotopytypetheory.org/2018/12/06/cubical-agda/).
 
   * Univalence implies [function extensionality](HoTT-UF-Agda.html#funextfromua) and [propositional extensionality](HoTT-UF-Agda.html#propositionalextensionality).
+
+  * Simple unique choice just holds.
+
+  * Full unique choice is equivalent to function extensionality.
 
   * Choice implies excluded middle, as usual, and both are non-constructive.
 

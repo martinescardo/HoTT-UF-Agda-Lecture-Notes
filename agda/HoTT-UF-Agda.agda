@@ -5317,6 +5317,15 @@ module basic-truncation-development
   ∥∥-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → ∥ X ∥ → ∥ Y ∥
   ∥∥-functor f = ∥∥-recursion ∥∥-is-subsingleton (λ x → ∣ f x ∣)
 
+  ∥∥-agrees-with-inhabitation : (X : 𝓤 ̇ ) → ∥ X ∥ ⇔ is-inhabited X
+  ∥∥-agrees-with-inhabitation X = a , b
+   where
+    a : ∥ X ∥ → is-inhabited X
+    a = ∥∥-recursion (inhabitation-is-subsingleton hunapply X) pointed-is-inhabited
+
+    b : is-inhabited X → ∥ X ∥
+    b = inhabited-recursion X ∥ X ∥ ∥∥-is-subsingleton ∣_∣
+
   _∨_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
   A ∨ B = ∥ A + B ∥
 
@@ -5330,15 +5339,6 @@ module basic-truncation-development
 
   ∃-is-subsingleton : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → is-subsingleton (∃ A)
   ∃-is-subsingleton = ∥∥-is-subsingleton
-
-  ∥∥-agrees-with-inhabitation : (X : 𝓤 ̇ ) → ∥ X ∥ ⇔ is-inhabited X
-  ∥∥-agrees-with-inhabitation X = a , b
-   where
-    a : ∥ X ∥ → is-inhabited X
-    a = ∥∥-recursion (inhabitation-is-subsingleton hunapply X) pointed-is-inhabited
-
-    b : is-inhabited X → ∥ X ∥
-    b = inhabited-recursion X ∥ X ∥ ∥∥-is-subsingleton ∣_∣
 
   image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
   image f = Σ \(y : codomain f) → ∃ \(x : domain f) → f x ≡ y
@@ -5355,6 +5355,12 @@ module basic-truncation-development
 
   is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
   is-surjection f = (y : codomain f) → ∃ \(x : domain f) → f x ≡ y
+
+  being-surjection-is-subsingleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                   → is-subsingleton (is-surjection f)
+
+  being-surjection-is-subsingleton f = Π-is-subsingleton hunapply
+                                        (λ y → ∃-is-subsingleton)
 
   corestriction-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                            → is-surjection (corestriction f)
@@ -5416,7 +5422,7 @@ module basic-truncation-development
                                       →  is-equiv f
                                       ⇔ (is-embedding f × is-surjection f)
 
-  equiv-iff-embedding-and-surjections f = a , b
+  equiv-iff-embedding-and-surjections f = (a , b)
    where
     a : is-equiv f → is-embedding f × is-surjection f
     a e = (λ y → singletons-are-subsingletons (fiber f y) (e y)) ,
@@ -5424,6 +5430,19 @@ module basic-truncation-development
 
     b : is-embedding f × is-surjection f → is-equiv f
     b (e , s) y = inhabited-subsingletons-are-singletons (fiber f y) (s y) (e y)
+
+  equiv-≡-embedding-and-surjections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                    → propext (𝓤 ⊔ 𝓥)
+                                    →  is-equiv f
+                                    ≡ (is-embedding f × is-surjection f)
+
+  equiv-≡-embedding-and-surjections f pe =
+    pe (being-equiv-is-subsingleton hunapply hunapply f)
+       (×-is-subsingleton
+         (being-embedding-is-subsingleton hunapply f)
+         (being-surjection-is-subsingleton f))
+       (lr-implication (equiv-iff-embedding-and-surjections f))
+       (rl-implication (equiv-iff-embedding-and-surjections f))
 
 ∃! : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 ∃! A = is-singleton (Σ A)
