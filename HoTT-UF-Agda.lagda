@@ -10141,7 +10141,7 @@ The axiom of choice in univalent mathematics says that if
 
 where `R` is some given relation, then
 
-  * there exists a choice function `f : (x : X) → A x` with `R x (f x)` for all `x : X`.
+  * there exists a choice function `f : (x : X) → A x` with `R x (f x)` for all `x : X`,
 
 provided
 
@@ -11364,10 +11364,15 @@ We have that:
 
   * The first four  admit a constructive interpretation via [cubical
     type theory](https://arxiv.org/abs/1611.02108) with an implementation in [cubical Agda](https://homotopytypetheory.org/2018/12/06/cubical-agda/).
+
   * Univalence implies [function extensionality](HoTT-UF-Agda.html#funextfromua) and [propositional extensionality](HoTT-UF-Agda.html#propositionalextensionality).
+
   * Choice implies excluded middle, as usual, and both are non-constructive.
+
   * Excluded middle implies [propositional resizing and impredicativity](HoTT-UF-Agda.html#resizing).
+
   * The constructive status of propositional resizing and impredicativity is open.
+
   * Function extensionality and propositional resizing [imply](HoTT-UF-Agda.html#resizing) the existence of propositional truncations, and hence so do function extensionality and excluded middle.
 
 The avoidance of excluded middle and choice makes the theory not only
@@ -11375,6 +11380,7 @@ constructive but also [applicable to more
 models](https://arxiv.org/abs/1904.07004). However, one is free to
 assume excluded middle and choice for pieces of mathematics that
 require them, or just if one simply prefers classical reasoning.
+
 Univalent foundations have enough room for the constructive,
 non-constructive, pluralistic and neutral approaches to mathematics,
 and in this sense they are no different from e.g. set theoretic
