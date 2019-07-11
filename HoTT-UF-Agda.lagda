@@ -374,7 +374,7 @@ to practice univalent mathematics should consult the above references.
         1. [Singleton (or contractible) types](HoTT-UF-Agda.html#singleton-types)
         1. [Subsingletons (or propositions or truth values)](HoTT-UF-Agda.html#subsingleton-types)
         1. [Sets](HoTT-UF-Agda.html#set-types)
-     1. [The univalent principle of excluded middle](HoTT-UF-Agda.html#em)
+     1. [Univalent excluded middle](HoTT-UF-Agda.html#em)
      1. [The types of magmas and monoids](HoTT-UF-Agda.html#magmasandmonoids)
      1. [The identity type in univalent mathematics](HoTT-UF-Agda.html#identitytypeuf)
      1. [Identifications that depend on identifications](HoTT-UF-Agda.html#dependentequality)
@@ -427,7 +427,7 @@ to practice univalent mathematics should consult the above references.
         1. [Type-valued preorders](HoTT-UF-Agda.html#infty-preorders-sip)
         1. [Categories](HoTT-UF-Agda.html#categories-sip)
      1. [Subsingleton truncation, disjunction and existence](HoTT-UF-Agda.html#truncation)
-     1. [The univalent axiom of choice](HoTT-UF-Agda.html#choice)
+     1. [Univalent choice](HoTT-UF-Agda.html#choice)
      1. [Propositional resizing, truncation and the powerset](HoTT-UF-Agda.html#resizing)
         1. [Propositional resizing](HoTT-UF-Agda.html#prop-resizing)
         1. [Excluded middle gives propositional resizing](HoTT-UF-Agda.html#em-resizing)
@@ -2341,7 +2341,7 @@ the realm of univalent mathematics, but not yet needing the univalence
 axiom.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="em"></a> The univalent principle of excluded middle
+### <a id="em"></a> Univalent excluded middle
 
 As mentioned above, under excluded middle, the only two subsingletons,
 up to equivalence, are `𝟘` and `𝟙`. In fact, excluded middle in
@@ -9360,7 +9360,7 @@ module category-identity
  S = type-valued-preorder-S {𝓤} {𝓥}
 \end{code}
 
-The axioms say that
+The axi<oms say that
 
   * the homs form sets, rather than arbitrary types,
   * the identity is a left and right neutral element of composition,
@@ -9713,14 +9713,14 @@ visible.
 
 \begin{code}
 module basic-truncation-development
-         (pt : subsingleton-truncations-exist)
-         (fe : global-dfunext)
+        (pt  : subsingleton-truncations-exist)
+        (hfe : global-hfunext)
        where
 
   open subsingleton-truncations-exist pt public
 
-  hfe : global-hfunext
-  hfe = dfunext-gives-hfunext fe
+  hunapply : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ∼ g → f ≡ g
+  hunapply = hfunext-gives-dfunext hfe
 
   ∥∥-induction : {X : 𝓤 ̇ } {P : ∥ X ∥ → 𝓥 ̇ }
               → ((s : ∥ X ∥) → is-subsingleton (P s))
@@ -9767,20 +9767,7 @@ Disjunction and existence are defined as the truncation of `+` and `Σ`:
 
 \end{code}
 
-Unique existence of `x : X` with `A x` in univalent mathematics
-requires that not only the `x : X` but also the `a : A x` is
-unique. More precisely, we require that there is a unique *pair* `(x ,
-a) : Σ A`. This is particularly important in the formulation of
-universal properties of types that are not sets, and generalizes the categorical
-notion of uniqueness up to unique isomorphism.
-
-\begin{code}
-  ∃! : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-  ∃! A = is-singleton (Σ A)
-\end{code}
-
-This doesn't need to be truncated, because being a singleton is a
-subsingleton. The author's slides on [univalent
+The author's slides on [univalent
 logic](https://www.newton.ac.uk/seminar/20170711100011001) discuss
 further details about these notions of disjunction and existence.
 
@@ -9792,7 +9779,7 @@ logically equivalent propositions:
   ∥∥-agrees-with-inhabitation X = a , b
    where
     a : ∥ X ∥ → is-inhabited X
-    a = ∥∥-recursion (inhabitation-is-subsingleton fe X) pointed-is-inhabited
+    a = ∥∥-recursion (inhabitation-is-subsingleton hunapply X) pointed-is-inhabited
 
     b : is-inhabited X → ∥ X ∥
     b = inhabited-recursion X ∥ X ∥ ∥∥-is-subsingleton ∣_∣
@@ -9934,17 +9921,230 @@ if it is both an embedding and a surjection:
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="choice"></a> The univalent axiom of choice
+### <a id="choice"></a> Univalent choice
 
-With the univalent notion of existence available, we can now discuss
-the axiom of choice in univalent mathematics. We continue in the
-submodule `basic-truncation-development`.
+We discuss unique choice, general choice and global choice. Unique
+choice just holds. General choice implies excluded middle and is not
+provable or disprovable, but is consistent with univalence. Global
+choice contradicts univalence.
 
-The axiom of choice says that if for every `x : X` there exists `a : A
-x` with `R x a`, where `R` is some given relation, then there exists a
-choice function `f : (x : X) → A x` with `R x (f x)` for all `x :
-X`. This is not provable or disprovable in univalent mathematics, but
-it does hold in [Voevodsky's simplicial
+#### <a id="unique-choice"></a> The principle of unique choice
+
+Unique existence of `x : X` with `A x` in univalent mathematics, written
+
+   > `∃! \(x : X) → A x`
+
+or simply
+
+   > `∃! A`,
+
+requires that not only the `x : X` but also the `a : A x` is
+unique. More precisely, we require that there is a unique *pair* `(x ,
+a) : Σ A`.
+
+This is particularly important in the formulation of universal
+properties of types that are not necessarily sets, where it
+generalizes the categorical notion of uniqueness up to unique
+isomorphism.
+
+\begin{code}
+∃! : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+∃! A = is-singleton (Σ A)
+
+
+unique-existence-is-subsingleton : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                                 → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+                                 → is-subsingleton (∃! A)
+
+unique-existence-is-subsingleton A fe = being-singleton-is-subsingleton fe
+
+
+unique-existence-gives-weak-unique-existence : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) →
+
+    (∃! \(x : X) → A x)
+  → (Σ \(x : X) → A x) × ((x y : X) → A x → A y → x ≡ y)
+
+unique-existence-gives-weak-unique-existence A s = center (Σ A) s , u
+ where
+  u : ∀ x y → A x → A y → x ≡ y
+  u x y a b = ap pr₁ (singletons-are-subsingletons (Σ A) s (x , a) (y , b))
+\end{code}
+
+The converse holds if each `A x` is a subsingleton:
+
+\begin{code}
+weak-unique-existence-gives-unique-existence-sometimes : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) →
+
+    ((x : X) → is-subsingleton (A x))
+
+  → ((Σ \(x : X) → A x) × ((x y : X) → A x → A y → x ≡ y))
+  → (∃! \(x : X) → A x)
+
+weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , a) , φ
+ where
+  φ : (σ : Σ A) → x , a ≡ σ
+  φ (y , b) = to-Σ-≡ (u x y a b , i y _ _)
+\end{code}
+
+*Exercise*. Find a counter-example in the absence of the requirement
+ that all types `A x` are subsingletons.
+
+The principle of *simple unique choice* says that if
+
+   * for every `x : X` there is a unique `a : A x` with `R x a`,
+
+then
+
+   * there is a specified function `f : (x : X) → A x` such that `R x (f x)` for all `x : X`.
+
+This just holds and is trivial:
+
+\begin{code}
+simple-unique-choice : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
+
+                     → ((x : X) → ∃! \(a : A x) → R x a)
+                     → Σ \(f : (x : X) → A x) → (x : X) → R x (f x)
+
+simple-unique-choice X A R s = f , φ
+ where
+  f : (x : X) → A x
+  f x = pr₁ (center (Σ \(a : A x) → R x a) (s x))
+
+  φ : (x : X) → R x (f x)
+  φ x = pr₂ (center (Σ \(a : A x) → R x a) (s x))
+\end{code}
+
+Below we also consider a
+[variation](HoTT-UF-Agda.html#simple-unique-choice') of simple unique
+choice that works with `∃` (truncated `Σ`) rather than `∃!`.
+
+A stronger, less trivial result gives unique existence in the
+conclusion, but requires function extensionality, and relies on a
+general lemma that explains how to transport along an identification
+obtained by the inverse of `happly`. We use an anonymous module to
+assume function extensionality in the next few constructions.
+
+\begin{code}
+module _ (hfe : global-hfunext) where
+
+ private
+   hunapply : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ∼ g → f ≡ g
+   hunapply = inverse (happly _ _) (hfe _ _)
+
+
+ transport-hfunext : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
+                     (f g : Π A)
+                     (φ : (x : X) → R x (f x))
+                     (h : f ∼ g)
+                     (x : X)
+                   → transport (λ - → (x : X) → R x (- x)) (hunapply h) φ x
+                   ≡ transport (R x) (h x) (φ x)
+
+ transport-hfunext A R f g φ h x =
+
+   transport (λ - → ∀ x → R x (- x)) (hunapply h) φ x ≡⟨ i  ⟩
+   transport (R x) (happly f g (hunapply h) x) (φ x)  ≡⟨ ii ⟩
+   transport (R x) (h x) (φ x)                        ∎
+
+  where
+   a : {f g : Π A} {φ : ∀ x → R x (f x)} (p : f ≡ g)
+     → ∀ x → transport (λ - → ∀ x → R x (- x)) p φ x
+           ≡ transport (R x) (happly f g p x) (φ x)
+
+   a (refl _) x = refl _
+
+   b : happly f g (hunapply h) ≡ h
+   b = inverse-is-section (happly f g) (hfe f g) h
+
+   i  = a (hunapply h) x
+   ii = ap (λ - → transport (R x) (- x) (φ x)) b
+
+
+ unique-choice : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
+
+               → ((x : X) → ∃! \(a : A x) → R x a)
+               → ∃! \(f : (x : X) → A x) → (x : X) → R x (f x)
+
+ unique-choice X A R s = C , Φ
+  where
+   f₀ : (x : X) → A x
+   f₀ x = pr₁ (center (Σ \(a : A x) → R x a) (s x))
+
+   φ₀ : (x : X) → R x (f₀ x)
+   φ₀ x = pr₂ (center (Σ \(a : A x) → R x a) (s x))
+
+   C : Σ \(f : (x : X) → A x) → (x : X) → R x (f x)
+   C = f₀ , φ₀
+
+   c : (x : X) → (τ : Σ \(a : A x) → R x a) → f₀ x , φ₀ x ≡ τ
+   c x = centrality (Σ \(a : A x) → R x a) (s x)
+
+   c₁ : (x : X) (a : A x) (r : R x a) → f₀ x ≡ a
+   c₁ x a r = ap pr₁ (c x (a , r))
+
+   c₂ : (x : X) (a : A x) (r : R x a)
+      → transport (λ - → R x (pr₁ -)) (c x (a , r)) (φ₀ x) ≡ r
+
+   c₂ x a r = apd pr₂ (c x (a , r))
+
+   Φ : (σ : Σ \(f : (x : X) → A x) → (x : X) → R x (f x)) → C ≡ σ
+   Φ (f , φ) = to-Σ-≡ (p , hunapply q)
+    where
+     p : f₀ ≡ f
+     p = hunapply (λ x → c₁ x (f x) (φ x))
+
+     q : transport (λ - → (x : X) → R x (- x)) p φ₀ ∼ φ
+     q x = transport (λ - → (x : X) → R x (- x)) p φ₀ x           ≡⟨ i   ⟩
+           transport (R x) (ap pr₁ (c x (f x , φ x))) (φ₀ x)      ≡⟨ ii  ⟩
+           transport (λ σ → R x (pr₁ σ)) (c x (f x , φ x)) (φ₀ x) ≡⟨ iii ⟩
+           φ x                                                    ∎
+      where
+       i   = transport-hfunext A R f₀ f φ₀ (λ x → c₁ x (f x) (φ x)) x
+       ii  = (transport-ap (R x) pr₁ (c x (f x , φ x)) (φ₀ x))⁻¹
+       iii = c₂ x (f x) (φ x)
+\end{code}
+
+[Simple unique choice](HoTT-UF-Agda.html#simple-unique-choice) can be
+reformulated as follows using `∃` rather than `∃!`:
+
+\begin{code}
+module choice
+        (pt  : subsingleton-truncations-exist)
+        (hfe : global-hfunext)
+       where
+
+  open basic-truncation-development pt hfe
+
+  simple-unique-choice' : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
+
+                        → ((x : X) → is-subsingleton (Σ \(a : A x) → R x a))
+
+                        → ((x : X) → ∃ \(a : A x) → R x a)
+                        → Σ \(f : (x : X) → A x) → (x : X) → R x (f x)
+
+  simple-unique-choice' X A R u φ = simple-unique-choice X A R s
+   where
+    s : (x : X) → ∃! \(a : A x) → R x a
+    s x = inhabited-subsingletons-are-singletons (Σ \(a : A x) → R x a) (φ x) (u x)
+\end{code}
+
+In the next few subsections we continue working within the submodule
+`choice`, in order to have the existence of propositional truncations
+available, so that we can use the existential quantifier `∃`.
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+#### <a id="univalent-choice"></a> The general axiom of choice
+
+The general axiom of choice in univalent mathematics says that if
+
+  * for every `x : X` there exists `a : A x` with `R x a`,
+
+where `R` is some given relation, then
+
+  * there exists a choice function `f : (x : X) → A x` with `R x (f x)` for all `x : X`.
+
+This is not provable or disprovable in univalent mathematics, but it
+does hold in [Voevodsky's simplicial
 model](https://arxiv.org/abs/1211.2851) of our univalent type theory,
 and hence is consistent, provided:
 
@@ -10166,7 +10366,7 @@ set has decidable equality.
     A x = Σ \(n : 𝟚) → α n ≡ x
 
     l : is-subsingleton (decidable (x₀ ≡ x₁))
-    l = +-is-subsingleton' fe (i (α ₀) (α ₁))
+    l = +-is-subsingleton' hunapply (i (α ₀) (α ₁))
 
     δ : ∥((x : X) → ∥ A x ∥ → A x)∥ → decidable(x₀ ≡ x₁)
     δ = ∥∥-recursion l (decidable-equality-criterion α)
@@ -10191,7 +10391,7 @@ Applying the above to the object of truth-values, we get excluded middle:
     ⊤ = (Lift 𝓤 𝟙 , equiv-to-subsingleton (Lift-≃ 𝟙) 𝟙-is-subsingleton)
 
     δ : (ω : Ω 𝓤) → decidable (⊤ ≡ ω)
-    δ = choice-gives-decidable-equality tac (Ω 𝓤) (Ω-is-a-set fe pe) ⊤
+    δ = choice-gives-decidable-equality tac (Ω 𝓤) (Ω-is-a-set hunapply pe) ⊤
 
     em : (P : 𝓤 ̇ ) → is-subsingleton P → P + ¬ P
     em P i = γ (δ (P , i))
@@ -10206,7 +10406,7 @@ Applying the above to the object of truth-values, we get excluded middle:
       γ (inr n) = inr (contrapositive f n)
        where
         f : P → ⊤ ≡ P , i
-        f p = Ω-ext fe pe (λ (_ : Lift 𝓤 𝟙) → p) (λ (_ : P) → lift ⋆)
+        f p = Ω-ext hunapply pe (λ (_ : Lift 𝓤 𝟙) → p) (λ (_ : P) → lift ⋆)
 \end{code}
 
 For more information with Agda code, see
@@ -10276,49 +10476,6 @@ can pick a point of every inhabited type:
 
 See also Theorem 3.2.2 and Corollary 3.2.7 of the HoTT book for a
 different argument that works with a single, arbitrary universe.
-
-[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### Unique choice just holds
-
-The axiom of unique choice says that if
-
-   * for every `x : X` there is at most one `a : A x` with `R x a`, and
-
-
-   * for all `x : X` there is some `a : A x` with `R x a`
-
-then
-
-   * there is `f : (x : X) → A x` such that `R x (f x)` for all `x : X`.
-
-This just holds. Moreover, compared to the general univalent axiom of
-choice,
-
-   * we can omit the assumptions that `X` and each `A x` are a sets,
-     and that the relation `R` is subsingleton valued, and
-
-   * we can strengthen the conclusion to get designated existence `Σ`
-     rather than just unspecified existence `∃`.
-
-\begin{code}
-  unique-choice-holds : (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) (R : (x : X) → A x → 𝓣 ̇ )
-
-                      → ((x : X) → is-subsingleton (Σ \(a : A x) → R x a))
-
-                      → ((x : X) → ∃ \(a : A x) → R x a)
-                      → Σ \(f : (x : X) → A x) → (x : X) → R x (f x)
-
-  unique-choice-holds X A R u φ = f , ψ
-   where
-    s : (x : X) → ∃! \(a : A x) → R x a
-    s x = inhabited-subsingletons-are-singletons (Σ \(a : A x) → R x a) (φ x) (u x)
-
-    f : (x : X) → A x
-    f x = pr₁ (center (Σ \(a : A x) → R x a) (s x))
-
-    ψ : (x : X) → R x (f x)
-    ψ x = pr₂ (center (Σ \(a : A x) → R x a) (s x))
-\end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="resizing"></a> Propositional resizing, truncation and the powerset
@@ -10658,11 +10815,11 @@ existence in a submodule with assumptions.
 
 \begin{code}
 module powerset-union-existence
-        (pt : subsingleton-truncations-exist)
-        (fe : global-dfunext)
+        (pt  : subsingleton-truncations-exist)
+        (hfe : global-hfunext)
        where
 
- open basic-truncation-development pt fe
+ open basic-truncation-development pt hfe
 \end{code}
 
 Unions of *families* of subsets exist under the above assumption of
@@ -10818,15 +10975,15 @@ assumptions:
 
 \begin{code}
 module basic-powerset-development
-        (fe : global-dfunext)
-        (ρ : Propositional-resizing)
+        (hfe : global-hfunext)
+        (ρ   : Propositional-resizing)
        where
 
   pt : subsingleton-truncations-exist
-  pt = PR-gives-existence-of-truncations fe ρ
+  pt = PR-gives-existence-of-truncations (hfunext-gives-dfunext hfe) ρ
 
-  open basic-truncation-development pt fe
-  open powerset-union-existence pt fe
+  open basic-truncation-development pt hfe
+  open powerset-union-existence pt hfe
 
 
   ⋃ : {X : 𝓤 ̇ } → 𝓟𝓟 X → 𝓟 X
@@ -10855,8 +11012,8 @@ propositional resizing:
     β x = (A : 𝓟 X) → A ∈ 𝓐 → x ∈ A
 
     i : (x : X) → is-subsingleton (β x)
-    i x = Π-is-subsingleton fe
-           (λ A → Π-is-subsingleton fe
+    i x = Π-is-subsingleton hunapply
+           (λ A → Π-is-subsingleton hunapply
            (λ _ → ∈-is-subsingleton x A))
 
     B : 𝓟 X
@@ -11011,7 +11168,7 @@ functional and propositional extensionality.
 module quotient
        {𝓤 𝓥 : Universe}
        (pt  : subsingleton-truncations-exist)
-       (fe  : global-dfunext)
+       (hfe : global-hfunext)
        (pe  : propext 𝓥)
        (X   : 𝓤 ̇ )
        (_≈_ : X → X → 𝓥 ̇ )
@@ -11021,7 +11178,7 @@ module quotient
        (≈t  : transitive _≈_)
       where
 
- open basic-truncation-development pt fe
+ open basic-truncation-development pt hfe
 \end{code}
 
 From the given relation
@@ -11046,7 +11203,7 @@ to prove that the quotient is a set.
 
  X/≈-is-set : is-set X/≈
  X/≈-is-set = subsets-of-sets-are-sets (X → Ω 𝓥) _
-               (powersets-are-sets (dfunext-gives-hfunext fe) fe pe)
+               (powersets-are-sets (dfunext-gives-hfunext hunapply) hunapply pe)
                (λ _ → ∃-is-subsingleton)
 
  η : X → X/≈
@@ -11082,9 +11239,9 @@ points are mapped to identified points:
  η-equiv-equal : {x y : X} → x ≈ y → η x ≡ η y
  η-equiv-equal {x} {y} e =
   to-Σ-≡
-    (fe (λ z → to-Σ-≡
-                 (pe (≈p x z) (≈p y z) (≈t y x z (≈s x y e)) (≈t x y z e) ,
-                  being-subsingleton-is-subsingleton fe _ _)) ,
+    (hunapply (λ z → to-Σ-≡
+                       (pe (≈p x z) (≈p y z) (≈t y x z (≈s x y e)) (≈t x y z e) ,
+                        being-subsingleton-is-subsingleton hunapply _ _)) ,
      ∃-is-subsingleton _ _)
 \end{code}
 
@@ -11140,7 +11297,7 @@ into any set `A` of any universe `𝓦`.
        p = ∥∥-recursion (i a b) (λ σ → ∥∥-recursion (i a b) (h σ) e) d
 
      γ : (x' : X/≈) → is-subsingleton (is-subsingleton (G x'))
-     γ x' = being-subsingleton-is-subsingleton fe
+     γ x' = being-subsingleton-is-subsingleton hunapply
 
    k : (x' : X/≈) → G x'
    k = η-induction _ φ induction-step
@@ -11152,7 +11309,7 @@ into any set `A` of any universe `𝓦`.
    f' x' = pr₁ (k x')
 
    r : f' ∘ η ≡ f
-   r = fe h
+   r = hunapply h
     where
      g : (y : X) → ∃ \x → (η x ≡ η y) × (f x ≡ f' (η y))
      g y = pr₂ (k (η y))
@@ -11172,13 +11329,13 @@ into any set `A` of any universe `𝓦`.
      w = happly (f' ∘ η) (f'' ∘ η) (r ∙ s ⁻¹)
 
      t : f' ≡ f''
-     t = fe (η-induction _ (λ x' → i (f' x') (f'' x')) w)
+     t = hunapply (η-induction _ (λ x' → i (f' x') (f'' x')) w)
 
      u : f'' ∘ η ≡ f
      u = transport (λ - → - ∘ η ≡ f) t r
 
      v : u ≡ s
-     v = Π-is-set (dfunext-gives-hfunext fe) (λ x → i) (f'' ∘ η) f u s
+     v = Π-is-set hfe (λ x → i) (f'' ∘ η) f u s
 
    e : ∃! \(f' : X/≈ → A) → f' ∘ η ≡ f
    e = (f' , r) , c
@@ -11371,10 +11528,10 @@ module surjection-classifier
          (ua : Univalence)
        where
 
-  fe : global-dfunext
-  fe = univalence-gives-global-dfunext ua
+  hfe : global-hfunext
+  hfe = univalence-gives-global-hfunext ua
 
-  open basic-truncation-development pt fe public
+  open basic-truncation-development pt hfe public
 
   _↠_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
   X ↠ Y = Σ \(f : X → Y) → is-surjection f

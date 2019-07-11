@@ -5269,14 +5269,14 @@ record subsingleton-truncations-exist : 𝓤ω where
                        → is-subsingleton P → (X → P) → ∥ X ∥ → P
 
 module basic-truncation-development
-         (pt : subsingleton-truncations-exist)
-         (fe : global-dfunext)
+        (pt  : subsingleton-truncations-exist)
+        (hfe : global-hfunext)
        where
 
   open subsingleton-truncations-exist pt public
 
-  hfe : global-hfunext
-  hfe = dfunext-gives-hfunext fe
+  hunapply : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ∼ g → f ≡ g
+  hunapply = hfunext-gives-dfunext hfe
 
   ∥∥-induction : {X : 𝓤 ̇ } {P : ∥ X ∥ → 𝓥 ̇ }
               → ((s : ∥ X ∥) → is-subsingleton (P s))
@@ -5315,14 +5315,11 @@ module basic-truncation-development
   ∃-is-subsingleton : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → is-subsingleton (∃ A)
   ∃-is-subsingleton = ∥∥-is-subsingleton
 
-  ∃! : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-  ∃! A = is-singleton (Σ A)
-
   ∥∥-agrees-with-inhabitation : (X : 𝓤 ̇ ) → ∥ X ∥ ⇔ is-inhabited X
   ∥∥-agrees-with-inhabitation X = a , b
    where
     a : ∥ X ∥ → is-inhabited X
-    a = ∥∥-recursion (inhabitation-is-subsingleton fe X) pointed-is-inhabited
+    a = ∥∥-recursion (inhabitation-is-subsingleton hunapply X) pointed-is-inhabited
 
     b : is-inhabited X → ∥ X ∥
     b = inhabited-recursion X ∥ X ∥ ∥∥-is-subsingleton ∣_∣
@@ -5411,6 +5408,145 @@ module basic-truncation-development
 
     b : is-embedding f × is-surjection f → is-equiv f
     b (e , s) y = inhabited-subsingletons-are-singletons (fiber f y) (s y) (e y)
+
+∃! : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+∃! A = is-singleton (Σ A)
+
+unique-existence-is-subsingleton : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                                 → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+                                 → is-subsingleton (∃! A)
+
+unique-existence-is-subsingleton A fe = being-singleton-is-subsingleton fe
+
+unique-existence-gives-weak-unique-existence : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) →
+
+    (∃! \(x : X) → A x)
+  → (Σ \(x : X) → A x) × ((x y : X) → A x → A y → x ≡ y)
+
+unique-existence-gives-weak-unique-existence A s = center (Σ A) s , u
+ where
+  u : ∀ x y → A x → A y → x ≡ y
+  u x y a b = ap pr₁ (singletons-are-subsingletons (Σ A) s (x , a) (y , b))
+
+weak-unique-existence-gives-unique-existence-sometimes : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) →
+
+    ((x : X) → is-subsingleton (A x))
+
+  → ((Σ \(x : X) → A x) × ((x y : X) → A x → A y → x ≡ y))
+  → (∃! \(x : X) → A x)
+
+weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , a) , φ
+ where
+  φ : (σ : Σ A) → x , a ≡ σ
+  φ (y , b) = to-Σ-≡ (u x y a b , i y _ _)
+
+simple-unique-choice : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
+
+                     → ((x : X) → ∃! \(a : A x) → R x a)
+                     → Σ \(f : (x : X) → A x) → (x : X) → R x (f x)
+
+simple-unique-choice X A R s = f , φ
+ where
+  f : (x : X) → A x
+  f x = pr₁ (center (Σ \(a : A x) → R x a) (s x))
+
+  φ : (x : X) → R x (f x)
+  φ x = pr₂ (center (Σ \(a : A x) → R x a) (s x))
+
+module _ (hfe : global-hfunext) where
+
+ private
+   hunapply : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ∼ g → f ≡ g
+   hunapply = inverse (happly _ _) (hfe _ _)
+
+ transport-hfunext : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
+                     (f g : Π A)
+                     (φ : (x : X) → R x (f x))
+                     (h : f ∼ g)
+                     (x : X)
+                   → transport (λ - → (x : X) → R x (- x)) (hunapply h) φ x
+                   ≡ transport (R x) (h x) (φ x)
+
+ transport-hfunext A R f g φ h x =
+
+   transport (λ - → ∀ x → R x (- x)) (hunapply h) φ x ≡⟨ i  ⟩
+   transport (R x) (happly f g (hunapply h) x) (φ x)  ≡⟨ ii ⟩
+   transport (R x) (h x) (φ x)                        ∎
+
+  where
+   a : {f g : Π A} {φ : ∀ x → R x (f x)} (p : f ≡ g)
+     → ∀ x → transport (λ - → ∀ x → R x (- x)) p φ x
+           ≡ transport (R x) (happly f g p x) (φ x)
+
+   a (refl _) x = refl _
+
+   b : happly f g (hunapply h) ≡ h
+   b = inverse-is-section (happly f g) (hfe f g) h
+
+   i  = a (hunapply h) x
+   ii = ap (λ - → transport (R x) (- x) (φ x)) b
+
+ unique-choice : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
+
+               → ((x : X) → ∃! \(a : A x) → R x a)
+               → ∃! \(f : (x : X) → A x) → (x : X) → R x (f x)
+
+ unique-choice X A R s = C , Φ
+  where
+   f₀ : (x : X) → A x
+   f₀ x = pr₁ (center (Σ \(a : A x) → R x a) (s x))
+
+   φ₀ : (x : X) → R x (f₀ x)
+   φ₀ x = pr₂ (center (Σ \(a : A x) → R x a) (s x))
+
+   C : Σ \(f : (x : X) → A x) → (x : X) → R x (f x)
+   C = f₀ , φ₀
+
+   c : (x : X) → (τ : Σ \(a : A x) → R x a) → f₀ x , φ₀ x ≡ τ
+   c x = centrality (Σ \(a : A x) → R x a) (s x)
+
+   c₁ : (x : X) (a : A x) (r : R x a) → f₀ x ≡ a
+   c₁ x a r = ap pr₁ (c x (a , r))
+
+   c₂ : (x : X) (a : A x) (r : R x a)
+      → transport (λ - → R x (pr₁ -)) (c x (a , r)) (φ₀ x) ≡ r
+
+   c₂ x a r = apd pr₂ (c x (a , r))
+
+   Φ : (σ : Σ \(f : (x : X) → A x) → (x : X) → R x (f x)) → C ≡ σ
+   Φ (f , φ) = to-Σ-≡ (p , hunapply q)
+    where
+     p : f₀ ≡ f
+     p = hunapply (λ x → c₁ x (f x) (φ x))
+
+     q : transport (λ - → (x : X) → R x (- x)) p φ₀ ∼ φ
+     q x = transport (λ - → (x : X) → R x (- x)) p φ₀ x           ≡⟨ i   ⟩
+           transport (R x) (ap pr₁ (c x (f x , φ x))) (φ₀ x)      ≡⟨ ii  ⟩
+           transport (λ σ → R x (pr₁ σ)) (c x (f x , φ x)) (φ₀ x) ≡⟨ iii ⟩
+           φ x                                                    ∎
+      where
+       i   = transport-hfunext A R f₀ f φ₀ (λ x → c₁ x (f x) (φ x)) x
+       ii  = (transport-ap (R x) pr₁ (c x (f x , φ x)) (φ₀ x))⁻¹
+       iii = c₂ x (f x) (φ x)
+
+module choice
+        (pt  : subsingleton-truncations-exist)
+        (hfe : global-hfunext)
+       where
+
+  open basic-truncation-development pt hfe
+
+  simple-unique-choice' : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
+
+                        → ((x : X) → is-subsingleton (Σ \(a : A x) → R x a))
+
+                        → ((x : X) → ∃ \(a : A x) → R x a)
+                        → Σ \(f : (x : X) → A x) → (x : X) → R x (f x)
+
+  simple-unique-choice' X A R u φ = simple-unique-choice X A R s
+   where
+    s : (x : X) → ∃! \(a : A x) → R x a
+    s x = inhabited-subsingletons-are-singletons (Σ \(a : A x) → R x a) (φ x) (u x)
 
   AC : ∀ 𝓣 (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
      → is-set X → ((x : X) → is-set (A x)) → 𝓣 ⁺ ⊔ 𝓤 ⊔ 𝓥 ̇
@@ -5568,7 +5704,7 @@ module basic-truncation-development
     A x = Σ \(n : 𝟚) → α n ≡ x
 
     l : is-subsingleton (decidable (x₀ ≡ x₁))
-    l = +-is-subsingleton' fe (i (α ₀) (α ₁))
+    l = +-is-subsingleton' hunapply (i (α ₀) (α ₁))
 
     δ : ∥((x : X) → ∥ A x ∥ → A x)∥ → decidable(x₀ ≡ x₁)
     δ = ∥∥-recursion l (decidable-equality-criterion α)
@@ -5589,7 +5725,7 @@ module basic-truncation-development
     ⊤ = (Lift 𝓤 𝟙 , equiv-to-subsingleton (Lift-≃ 𝟙) 𝟙-is-subsingleton)
 
     δ : (ω : Ω 𝓤) → decidable (⊤ ≡ ω)
-    δ = choice-gives-decidable-equality tac (Ω 𝓤) (Ω-is-a-set fe pe) ⊤
+    δ = choice-gives-decidable-equality tac (Ω 𝓤) (Ω-is-a-set hunapply pe) ⊤
 
     em : (P : 𝓤 ̇ ) → is-subsingleton P → P + ¬ P
     em P i = γ (δ (P , i))
@@ -5604,7 +5740,7 @@ module basic-truncation-development
       γ (inr n) = inr (contrapositive f n)
        where
         f : P → ⊤ ≡ P , i
-        f p = Ω-ext fe pe (λ (_ : Lift 𝓤 𝟙) → p) (λ (_ : P) → lift ⋆)
+        f p = Ω-ext hunapply pe (λ (_ : Lift 𝓤 𝟙) → p) (λ (_ : P) → lift ⋆)
 
   global-choice : (𝓤 : Universe) → 𝓤 ⁺ ̇
   global-choice 𝓤 = (X : 𝓤 ̇ ) → X + is-empty X
@@ -5646,24 +5782,6 @@ module basic-truncation-development
 
     c : 𝟘
     c = 𝓤₀-is-not-a-set (b (𝓤₀ ̇ ))
-
-  unique-choice-holds : (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) (R : (x : X) → A x → 𝓣 ̇ )
-
-                      → ((x : X) → is-subsingleton (Σ \(a : A x) → R x a))
-
-                      → ((x : X) → ∃ \(a : A x) → R x a)
-                      → Σ \(f : (x : X) → A x) → (x : X) → R x (f x)
-
-  unique-choice-holds X A R u φ = f , ψ
-   where
-    s : (x : X) → ∃! \(a : A x) → R x a
-    s x = inhabited-subsingletons-are-singletons (Σ \(a : A x) → R x a) (φ x) (u x)
-
-    f : (x : X) → A x
-    f x = pr₁ (center (Σ \(a : A x) → R x a) (s x))
-
-    ψ : (x : X) → R x (f x)
-    ψ x = pr₂ (center (Σ \(a : A x) → R x a) (s x))
 
 _has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
 X has-size 𝓥 = Σ \(Y : 𝓥 ̇ ) → X ≃ Y
@@ -5883,11 +6001,11 @@ PR-gives-existence-of-truncations fe R =
  }
 
 module powerset-union-existence
-        (pt : subsingleton-truncations-exist)
-        (fe : global-dfunext)
+        (pt  : subsingleton-truncations-exist)
+        (hfe : global-hfunext)
        where
 
- open basic-truncation-development pt fe
+ open basic-truncation-development pt hfe
 
  family-union : {X : 𝓤 ⊔ 𝓥 ̇ } {I : 𝓥 ̇ } → (I → 𝓟 X) → 𝓟 X
  family-union {𝓤} {𝓥} {X} {I} A = λ x → (∃ \(i : I) → x ∈ A i) , ∃-is-subsingleton
@@ -5993,15 +6111,15 @@ module powerset-union-existence
    rl x = to-resize ρ (β x) (i x)
 
 module basic-powerset-development
-        (fe : global-dfunext)
-        (ρ : Propositional-resizing)
+        (hfe : global-hfunext)
+        (ρ   : Propositional-resizing)
        where
 
   pt : subsingleton-truncations-exist
-  pt = PR-gives-existence-of-truncations fe ρ
+  pt = PR-gives-existence-of-truncations (hfunext-gives-dfunext hfe) ρ
 
-  open basic-truncation-development pt fe
-  open powerset-union-existence pt fe
+  open basic-truncation-development pt hfe
+  open powerset-union-existence pt hfe
 
   ⋃ : {X : 𝓤 ̇ } → 𝓟𝓟 X → 𝓟 X
   ⋃ 𝓐 = pr₁ (PR-gives-existence-of-unions ρ _ 𝓐)
@@ -6023,8 +6141,8 @@ module basic-powerset-development
     β x = (A : 𝓟 X) → A ∈ 𝓐 → x ∈ A
 
     i : (x : X) → is-subsingleton (β x)
-    i x = Π-is-subsingleton fe
-           (λ A → Π-is-subsingleton fe
+    i x = Π-is-subsingleton hunapply
+           (λ A → Π-is-subsingleton hunapply
            (λ _ → ∈-is-subsingleton x A))
 
     B : 𝓟 X
@@ -6107,7 +6225,7 @@ is-equivalence-relation _≈_ = is-subsingleton-valued _≈_
 module quotient
        {𝓤 𝓥 : Universe}
        (pt  : subsingleton-truncations-exist)
-       (fe  : global-dfunext)
+       (hfe : global-hfunext)
        (pe  : propext 𝓥)
        (X   : 𝓤 ̇ )
        (_≈_ : X → X → 𝓥 ̇ )
@@ -6117,7 +6235,7 @@ module quotient
        (≈t  : transitive _≈_)
       where
 
- open basic-truncation-development pt fe
+ open basic-truncation-development pt hfe
 
  equiv-rel : X → (X → Ω 𝓥)
  equiv-rel x y = x ≈ y , ≈p x y
@@ -6127,7 +6245,7 @@ module quotient
 
  X/≈-is-set : is-set X/≈
  X/≈-is-set = subsets-of-sets-are-sets (X → Ω 𝓥) _
-               (powersets-are-sets (dfunext-gives-hfunext fe) fe pe)
+               (powersets-are-sets (dfunext-gives-hfunext hunapply) hunapply pe)
                (λ _ → ∃-is-subsingleton)
 
  η : X → X/≈
@@ -6146,9 +6264,9 @@ module quotient
  η-equiv-equal : {x y : X} → x ≈ y → η x ≡ η y
  η-equiv-equal {x} {y} e =
   to-Σ-≡
-    (fe (λ z → to-Σ-≡
-                 (pe (≈p x z) (≈p y z) (≈t y x z (≈s x y e)) (≈t x y z e) ,
-                  being-subsingleton-is-subsingleton fe _ _)) ,
+    (hunapply (λ z → to-Σ-≡
+                       (pe (≈p x z) (≈p y z) (≈t y x z (≈s x y e)) (≈t x y z e) ,
+                        being-subsingleton-is-subsingleton hunapply _ _)) ,
      ∃-is-subsingleton _ _)
 
  η-equal-equiv : {x y : X} → η x ≡ η y → x ≈ y
@@ -6192,7 +6310,7 @@ module quotient
        p = ∥∥-recursion (i a b) (λ σ → ∥∥-recursion (i a b) (h σ) e) d
 
      γ : (x' : X/≈) → is-subsingleton (is-subsingleton (G x'))
-     γ x' = being-subsingleton-is-subsingleton fe
+     γ x' = being-subsingleton-is-subsingleton hunapply
 
    k : (x' : X/≈) → G x'
    k = η-induction _ φ induction-step
@@ -6204,7 +6322,7 @@ module quotient
    f' x' = pr₁ (k x')
 
    r : f' ∘ η ≡ f
-   r = fe h
+   r = hunapply h
     where
      g : (y : X) → ∃ \x → (η x ≡ η y) × (f x ≡ f' (η y))
      g y = pr₂ (k (η y))
@@ -6224,13 +6342,13 @@ module quotient
      w = happly (f' ∘ η) (f'' ∘ η) (r ∙ s ⁻¹)
 
      t : f' ≡ f''
-     t = fe (η-induction _ (λ x' → i (f' x') (f'' x')) w)
+     t = hunapply (η-induction _ (λ x' → i (f' x') (f'' x')) w)
 
      u : f'' ∘ η ≡ f
      u = transport (λ - → - ∘ η ≡ f) t r
 
      v : u ≡ s
-     v = Π-is-set (dfunext-gives-hfunext fe) (λ x → i) (f'' ∘ η) f u s
+     v = Π-is-set hfe (λ x → i) (f'' ∘ η) f u s
 
    e : ∃! \(f' : X/≈ → A) → f' ∘ η ≡ f
    e = (f' , r) , c
@@ -6370,10 +6488,10 @@ module surjection-classifier
          (ua : Univalence)
        where
 
-  fe : global-dfunext
-  fe = univalence-gives-global-dfunext ua
+  hfe : global-hfunext
+  hfe = univalence-gives-global-hfunext ua
 
-  open basic-truncation-development pt fe public
+  open basic-truncation-development pt hfe public
 
   _↠_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
   X ↠ Y = Σ \(f : X → Y) → is-surjection f
