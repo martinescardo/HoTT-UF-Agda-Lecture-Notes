@@ -2423,7 +2423,7 @@ singletons and also fail to be empty. No such things occur in
 mathematical nature:
 
 \begin{code}
-no-unicorns : ¬(Σ \(X : 𝓤 ̇) → is-subsingleton X × ¬(is-singleton X) × ¬(is-empty X))
+no-unicorns : ¬(Σ \(X : 𝓤 ̇ ) → is-subsingleton X × ¬(is-singleton X) × ¬(is-empty X))
 no-unicorns (X , i , f , g) = c
  where
   e : is-empty X
