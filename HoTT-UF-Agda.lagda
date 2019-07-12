@@ -390,7 +390,8 @@ to practice univalent mathematics should consult the above references.
      1. [Voevodsky's univalence axiom](HoTT-UF-Agda.html#univalence)
      1. [Example of a type that is not a set under univalence](HoTT-UF-Agda.html#notsets)
      1. [Exercises](HoTT-UF-Agda.html#lefttothereader)
-     1. [Solutions](HoTT-UF-Agda.html#solutions)
+        1. [Formulations](HoTT-UF-Agda.html#formulations)
+        1. [Solutions](HoTT-UF-Agda.html#solutions)
      1. [A characterization of univalence](HoTT-UF-Agda.html#unicharac)
      1. [Equivalence induction](HoTT-UF-Agda.html#equivalenceinduction)
      1. [Half adjoint equivalences](HoTT-UF-Agda.html#haes)
@@ -559,15 +560,16 @@ module HoTT-UF-Agda where
 
 A universe `𝓤` is a type of types.
 
- * One use of universes is to define families of types indexed by a
-   type `X` as functions `X → 𝓤`.
+ 1. One use of universes is to define families of types indexed by a
+    type `X` as functions `X → 𝓤`.
 
- * Such a function is [sometimes](HoTT-UF-Agda.html#twinprime) seen as a property of elements of `X`.
+ 1. Such a function is [sometimes](HoTT-UF-Agda.html#twinprime) seen
+    as a property of elements of `X`.
 
- * Another use of universes, as we shall see, is to define types of
-   mathematical structures, such as
-   [monoids](HoTT-UF-Agda.html#magmasandmonoids), groups, topological
-   spaces, categories etc.
+ 1. Another use of universes, as we shall see, is to define types of
+    mathematical structures, such as
+    [monoids](HoTT-UF-Agda.html#magmasandmonoids), groups, topological
+    spaces, categories etc.
 
 Sometimes we need more than one universe. For example, the type of
 groups in a universe lives in a bigger universe, and given a category
@@ -669,31 +671,31 @@ us to sometimes use the same name for different things.)
 Next we want to give a mechanism to prove that all points of the
 type `𝟙` satisfy a given property `A`.
 
-  * The property is a function `A : 𝟙 → 𝓤` for some universe `𝓤`.
+  1. The property is a function `A : 𝟙 → 𝓤` for some universe `𝓤`.
 
-  * The type `A(x)`, which we will write simply `A x`, doesn't need to
-    be a [truth value](HoTT-UF-Agda.html#subsingletonsandsets).  It can be
-    any type. We will meet examples shortly.
+  1. The type `A(x)`, which we will write simply `A x`, doesn't need
+     to be a [truth value](HoTT-UF-Agda.html#subsingletonsandsets).
+     It can be any type. We will meet examples shortly.
 
-  * In MLTT, mathematical statements are types, such as
+  1. In MLTT, mathematical statements are types, such as
 
-    > `Π (A : 𝟙 → 𝓤), A ⋆ → Π (x : 𝟙), A x`.
+     > `Π (A : 𝟙 → 𝓤), A ⋆ → Π (x : 𝟙), A x`.
 
-  * We read this in natural language as "for any given property `A` of
-    elements of the type `𝟙`, if `A ⋆` holds, then it follows that `A
-    x` holds for all `x : 𝟙`".
+  1. We read this in natural language as "for any given property `A`
+     of elements of the type `𝟙`, if `A ⋆` holds, then it follows that
+     `A x` holds for all `x : 𝟙`".
 
 
-  * In Agda, the above `Π` type is written as
+  1. In Agda, the above type is written as
 
-    > `(A : 𝟙 → 𝓤 ̇ ) → A ⋆ → (x : 𝟙) → A x`.
+     > `(A : 𝟙 → 𝓤 ̇ ) → A ⋆ → (x : 𝟙) → A x`.
 
-    This is the type of functions with three arguments `A : 𝟙 → 𝓤 ̇` &nbsp;
-    and `a : A ⋆` and `x : 𝟙`, with values in the type `A x`.
+     This is the type of functions with three arguments `A : 𝟙 → 𝓤 ̇` &nbsp;
+     and `a : A ⋆` and `x : 𝟙`, with values in the type `A x`.
 
-  * A proof of a mathematical statement rendered as a type is a
-    construction of an element of the type.  In our example, we have
-    to construct a function, which we will name `𝟙-induction`.
+  1. A proof of a mathematical statement rendered as a type is a
+     construction of an element of the type.  In our example, we have
+     to construct a function, which we will name `𝟙-induction`.
 
 We do this as follows in Agda, where we first declare the type of the
 function `𝟙-induction` with "`:`" and then define the function by an
@@ -2822,15 +2824,14 @@ Nats-are-natural : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (τ 
 Nats-are-natural A B τ (refl x) = refl (τ x)
 \end{code}
 
-We will have the opportunity to use the following construction a
+We will have the opportunity to use the following constructions a
 number of times:
 
 \begin{code}
 NatΣ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → Σ A → Σ B
 NatΣ τ (x , a) = (x , τ x a)
-\end{code}
 
-\begin{code}
+
 transport-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ )
                (f : X → Y) {x x' : X} (p : x ≡ x') (a : A (f x))
              → transport (A ∘ f) p a ≡ transport A (ap f p) a
@@ -3246,7 +3247,7 @@ type of monoids has minimal hlevel `3`.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="naturalsset"></a> `ℕ` and `𝟚` are sets
 
-If a type has decidability of equality we can define a `wconstant`
+If a type has decidable equality we can define a `wconstant`
 function `x ≡ y → x ≡ y` and hence conclude that it is a set. This
 argument is due to Hedberg.
 
@@ -3338,8 +3339,8 @@ retraction-has-section (r , h) = h
 We have an identity retraction:
 
 \begin{code}
-◁-refl : (X : 𝓤 ̇ ) → X ◁ X
-◁-refl X = 𝑖𝑑 X , 𝑖𝑑 X , refl
+id-◁ : (X : 𝓤 ̇ ) → X ◁ X
+id-◁ X = 𝑖𝑑 X , 𝑖𝑑 X , refl
 \end{code}
 
 *Exercise.* The identity retraction is by no means the only retraction
@@ -3372,7 +3373,7 @@ retraction:
 
 \begin{code}
 _◀ : (X : 𝓤 ̇ ) → X ◁ X
-X ◀ = ◁-refl X
+X ◀ = id-◁ X
 \end{code}
 
 These last two definitions are for notational convenience. See
@@ -3565,6 +3566,7 @@ fiber-point (x , p) = x
 
 fiber-identification : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y}
                      → (w : fiber f y) → f (fiber-point w) ≡ y
+
 fiber-identification (x , p) = p
 \end{code}
 
@@ -3647,9 +3649,8 @@ invertibles-are-equivs {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = c
 
   c : is-singleton (fiber f y₀)
   c = retract-of-singleton b (singleton-types-are-singletons Y y₀)
-\end{code}
 
-\begin{code}
+
 inverse-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                  → is-equiv (inverse f e)
 
@@ -3706,7 +3707,7 @@ id-is-equiv = singleton-types-are-singletons
 
 An `abstract` definition is not expanded during type checking. One
 possible use of this is efficiency. In our case, it saves 30s in the
-checking of this module in the uses of `∘-is-equiv`:
+checking of this file for correctness in the uses of `∘-is-equiv`:
 
 \begin{code}
 ∘-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {g : Y → Z}
@@ -3732,10 +3733,12 @@ inverse-of-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
              → inverse f i ∘ inverse g j ∼ inverse (g ∘ f) (∘-is-equiv j i)
 
 inverse-of-∘ f g i j z =
+
   f' (g' z)             ≡⟨ (ap (f' ∘ g') (s z))⁻¹                      ⟩
   f' (g' (g (f (h z)))) ≡⟨ ap f' (inverse-is-retraction g j (f (h z))) ⟩
   f' (f (h z))          ≡⟨ inverse-is-retraction f i (h z)             ⟩
   h z                   ∎
+
  where
   f' = inverse f i
   g' = inverse g j
@@ -3752,10 +3755,12 @@ _≃_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ≃ Y = Σ \(f : X → Y) → is-equiv f
 \end{code}
 
-Notice that this doesn't just say that `X` and `Y` are equivalent: it
-collects all the ways in which they are equivalent. For example, the
-two-point type `𝟚` is equivalent to itself in two ways (by the
-identity map, and by the map that interchanges its two points).
+Notice that this doesn't just say that `X` and `Y` are equivalent: the
+type `X ≃ Y` collects all the ways in which the types `X` and `Y` are
+equivalent. For example, the two-point type `𝟚` is equivalent to
+itself in two ways, by the identity map, and by the map that
+interchanges its two points, and hence the type `𝟚 ≃ 𝟚` has two
+elements.
 
 Again it is convenient to have special names for its first and second
 projections:
@@ -4066,6 +4071,9 @@ Here are some facts whose proofs are left to the reader but that we
 will need from the next section onwards. Sample solutions are given
 [below](HoTT-UF-Agda.html#solutions).
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+#### <a id="solutions"></a> Formulations
+
 Define functions for the following type declarations. As a matter of
 procedure, we suggest to import this file in a solutions file and add
 another declaration with the same type and new name
@@ -4293,7 +4301,7 @@ ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x x' :
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="solutions"></a> Solutions
+#### <a id="solutions"></a> Solutions
 
 For the sake of readability, we re-state the formulations of the
 exercises in the type of `sol` in a `where` clause for each exercise.
@@ -4823,10 +4831,12 @@ G-≃-equation : (ua : is-univalent 𝓤)
              → G-≃ ua X A a X (id-≃ X) ≡ a
 
 G-≃-equation {𝓤} {𝓥} ua X A a =
+
   G-≃ ua X A a X (id-≃ X) ≡⟨ refl _                       ⟩
   transport A p a         ≡⟨ ap (λ - → transport A - a) q ⟩
   transport A (refl t) a  ≡⟨ refl _                       ⟩
   a                       ∎
+
  where
   t : Σ \(Y : 𝓤 ̇ ) → X ≃ Y
   t = (X  , id-≃ X)
@@ -6562,9 +6572,6 @@ pr₁-embedding i x ((x , a) , refl x) ((x , a') , refl x) = γ
 
 *Exercise*. Show that the converse of `pr₁-embedding` holds.
 
-More examples are equivalences, identity functions and compositions of
-embeddings:
-
 \begin{code}
 equivs-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                         (f : X → Y)
@@ -7888,6 +7895,30 @@ equality amounts to magma isomorphism.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="sip"></a> Equality of mathematical structures
 
+Independently of any choice of foundation, we regard two groups to be
+the same, for all mathematical purposes, if they are isomorphic.
+Likewise, we consider two topological spaces to be the same if they
+are homeomorphic, two metric spaces to be the same if they are
+isometric, two categories to be the same if they are equivalent, and
+so on.
+
+Do we *choose* these notions of sameness, motivated by particular
+mathematical applications, or are these notions of sameness imposed
+upon us, independently of what we want to do with groups, topological
+spaces, metric spaces and categories?
+
+This may be regarded as a philosophical question.
+
+However, we can *prove* that equality of groups is isomorphism, equality of
+topological spaces is homeomorphism, equality of metric spaces is
+isometry, equality of categories is equivalence etc., if we work in
+MLTT, take the notion of equality to be the identity type and assume
+the univalence axiom. This is what we do now.
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+#### <a id="sns"></a> Structure identity principles
+
+
 A *structure identity principle* describes the identity type of types
 of mathematical structures in terms of equivalences of
 underlying types, relying on univalence.  The first published
@@ -7900,23 +7931,23 @@ is attributed to Peter Aczel.
 Here we formulate and prove a variation for types equipped with
 structure. We consider several versions:
 
- * One for raw structures subject to no axioms, such as ∞-magmas and
-   pointed types.
+ 1. One for raw structures subject to no axioms, such as ∞-magmas and
+    pointed types.
 
- * One that adds axioms to a structure, so as to e.g. get an automatic
-   characterization of magma identifications from a characterization
-   of ∞-magma identifications.
+ 1. One that adds axioms to a structure, so as to e.g. get an
+    automatic characterization of magma identifications from a
+    characterization of ∞-magma identifications.
 
- * One that joins two kinds of structure, so as to e.g. get an
-   automatic characterization of identifications of pointed ∞-magmas
-   from characterizations of identifications for pointed types and for
-   ∞-magmas.
+ 1. One that joins two kinds of structure, so as to e.g. get an
+    automatic characterization of identifications of pointed ∞-magmas
+    from characterizations of identifications for pointed types and
+    for ∞-magmas.
 
- * In particular, adding axioms to pointed ∞-magmas we get monoids
-   with an automatic characterization of their identifications.
+ 1. In particular, adding axioms to pointed ∞-magmas we get monoids
+    with an automatic characterization of their identifications.
 
- * And then adding an axiom to monoids we get groups, again with
-   an automatic characterization of their identitifications.
+ 1. And then adding an axiom to monoids we get groups, again with
+    an automatic characterization of their identitifications.
 
 We also apply theses ideas to characterize identifications of metric
 spaces, topological spaces, graphs, partially ordered sets, and more.
@@ -8858,21 +8889,21 @@ to the identity equivalence.
 
 We have the following particular cases of interest:
 
- * *Metric spaces*. If `R` is a type of real numbers, then the axioms
-   can be taken to be those for metric spaces, in which case `M`
-   amounts to the type of metric spaces. Then the above characterizes
-   metric space identification as isometry.
+ 1. *Metric spaces*. If `R` is a type of real numbers, then the axioms
+    can be taken to be those for metric spaces, in which case `M`
+    amounts to the type of metric spaces. Then the above characterizes
+    metric space identification as isometry.
 
- * *Graphs*. If `R` is the type of truth values, and the `axioms`
-   function is constant with value *true*, then `M` amounts to the
-   type of directed graphs, and the above characterizes graph
-   identification as graph isomorphism. We get undirected graphs by
-   requiring the relation to be symmetric in the axioms.
+ 1. *Graphs*. If `R` is the type of truth values, and the `axioms`
+    function is constant with value *true*, then `M` amounts to the
+    type of directed graphs, and the above characterizes graph
+    identification as graph isomorphism. We get undirected graphs by
+    requiring the relation to be symmetric in the axioms.
 
- * *Partially ordered sets*. Again with `R` taken to be the type of
-   truth values and suitable axioms, we get posets and other ordered
-   structures, and the above says that their identifications amount to
-   order isomorphisms.
+ 1. *Partially ordered sets*. Again with `R` taken to be the type of
+    truth values and suitable axioms, we get posets and other ordered
+    structures, and the above says that their identifications amount
+    to order isomorphisms.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="topological-sip"></a> Topological spaces
@@ -9485,9 +9516,9 @@ module category-identity
 
 The axioms say that
 
-  * the homs form sets, rather than arbitrary types,
-  * the identity is a left and right neutral element of composition,
-  * composition is associative.
+  1. the homs form sets, rather than arbitrary types,
+  2. the identity is a left and right neutral element of composition,
+  3. composition is associative.
 
 \begin{code}
  category-axioms : (X : 𝓤 ̇ ) → S X → 𝓤 ⊔ 𝓥 ̇
@@ -9802,15 +9833,15 @@ is-inhabited X` is a surjection, or that `X → Y` gives `is-inhabited X
 
 There are two proposed ways to solve this kind of problem:
 
-  * Voevodsky works with certain [resizing
-    rules](http://www.math.ias.edu/vladimir/files/2011_Bergen.pdf) for
-    subsingletons. At the time of writing, the (relative) consistency
-    of the system with such rules is an open question.
+  1. Voevodsky works with certain [resizing
+     rules](http://www.math.ias.edu/vladimir/files/2011_Bergen.pdf)
+     for subsingletons. At the time of writing, the (relative)
+     consistency of the system with such rules is an open question.
 
-  * The HoTT book works with certain higher inductive types (HIT's),
-    which are known to have models and hence to be (relatively)
-    consistent.  This is the same approach adopted by cubical type
-    theory and cubical Agda.
+  2. The HoTT book works with certain higher inductive types (HIT's),
+     which are known to have models and hence to be (relatively)
+     consistent.  This is the same approach adopted by cubical type
+     theory and cubical Agda.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="axiomatic-approach"> An axiomatic approach
@@ -10084,15 +10115,15 @@ if it is both an embedding and a surjection:
 
 We discuss unique choice, univalent choice and global choice.
 
-  * A simple form of unique choice just holds in our spartan MLTT.
+  1. A simple form of unique choice just holds in our spartan MLTT.
 
-  * The full form of unique choice is logically equivalent to function
-    extensionality.
+  1. The full form of unique choice is logically equivalent to function
+     extensionality.
 
-  * Univalent choice implies excluded middle and is not provable or
-    disprovable, but is consistent with univalence.
+  1. Univalent choice implies excluded middle and is not provable or
+     disprovable, but is consistent with univalence.
 
-  * Global choice contradicts univalence.
+  1. Global choice contradicts univalence.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="unique-existence"></a> Unique existence in univalent mathematics
@@ -10159,13 +10190,13 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="unique-choice"></a> The principle of unique choice
 
-The principle of *simple unique choice* says that if
+The principle of *simple unique choice* says that
 
-   * for every `x : X` there is a unique `a : A x` with `R x a`,
+   > if for every `x : X` there is a unique `a : A x` with `R x a`,
 
 then
 
-   * there is a specified function `f : (x : X) → A x` such that `R x (f x)` for all `x : X`.
+   > there is a specified function `f : (x : X) → A x` such that `R x (f x)` for all `x : X`.
 
 This just holds and is trivial:
 
@@ -10382,17 +10413,17 @@ available, so that we can use the existential quantifier `∃`.
 
 The axiom of choice in univalent mathematics says that
 
-  * if for every `x : X` there exists `a : A x` with `R x a`,
+   > if for every `x : X` there exists `a : A x` with `R x a`,
 
 where `R` is some given relation,
 
-  * then there exists a choice function `f : (x : X) → A x` with `R x (f x)` for all `x : X`,
+   > then there exists a choice function `f : (x : X) → A x` with `R x (f x)` for all `x : X`,
 
 provided
 
- * `X` is a set,
- * `A` is a family of sets,
- * the relation `R` is subsingleton valued.
+ 1. `X` is a set,
+ 1. `A` is a family of sets,
+ 1. the relation `R` is subsingleton valued.
 
 This is not provable or disprovable in univalent mathematics, but,
 with this proviso, it does hold in [Voevodsky's simplicial

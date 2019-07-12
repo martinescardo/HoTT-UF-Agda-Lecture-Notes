@@ -927,8 +927,8 @@ retraction-has-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (ρ : X ◁ Y)
                        → has-section (retraction ρ)
 retraction-has-section (r , h) = h
 
-◁-refl : (X : 𝓤 ̇ ) → X ◁ X
-◁-refl X = 𝑖𝑑 X , 𝑖𝑑 X , refl
+id-◁ : (X : 𝓤 ̇ ) → X ◁ X
+id-◁ X = 𝑖𝑑 X , 𝑖𝑑 X , refl
 
 _◁∘_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ◁ Y → Y ◁ Z → X ◁ Z
 
@@ -942,7 +942,7 @@ _◁⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ◁ Y → Y �
 X ◁⟨ ρ ⟩ σ = ρ ◁∘ σ
 
 _◀ : (X : 𝓤 ̇ ) → X ◁ X
-X ◀ = ◁-refl X
+X ◀ = id-◁ X
 
 Σ-retract : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
           → ((x : X) → (A x) ◁ (B x)) → Σ A ◁ Σ B
@@ -1042,6 +1042,7 @@ fiber-point (x , p) = x
 
 fiber-identification : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y}
                      → (w : fiber f y) → f (fiber-point w) ≡ y
+
 fiber-identification (x , p) = p
 
 is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
@@ -1147,10 +1148,12 @@ inverse-of-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
              → inverse f i ∘ inverse g j ∼ inverse (g ∘ f) (∘-is-equiv j i)
 
 inverse-of-∘ f g i j z =
+
   f' (g' z)             ≡⟨ (ap (f' ∘ g') (s z))⁻¹                      ⟩
   f' (g' (g (f (h z)))) ≡⟨ ap f' (inverse-is-retraction g j (f (h z))) ⟩
   f' (f (h z))          ≡⟨ inverse-is-retraction f i (h z)             ⟩
   h z                   ∎
+
  where
   f' = inverse f i
   g' = inverse g j
@@ -1970,10 +1973,12 @@ G-≃-equation : (ua : is-univalent 𝓤)
              → G-≃ ua X A a X (id-≃ X) ≡ a
 
 G-≃-equation {𝓤} {𝓥} ua X A a =
+
   G-≃ ua X A a X (id-≃ X) ≡⟨ refl _                       ⟩
   transport A p a         ≡⟨ ap (λ - → transport A - a) q ⟩
   transport A (refl t) a  ≡⟨ refl _                       ⟩
   a                       ∎
+
  where
   t : Σ \(Y : 𝓤 ̇ ) → X ≃ Y
   t = (X  , id-≃ X)
