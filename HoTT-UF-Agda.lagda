@@ -2472,14 +2472,14 @@ statement, when written in full, is
 This is a theorem, which is quite different from the double negation
 of excluded middle, which is not a theorem and is
 
-   > `¬¬((X : 𝓤 ̇ ) → is-subsingleton X → ¬¬(is-singleton X + is-empty X))`.
+   > `¬¬((X : 𝓤 ̇ ) → is-subsingleton X → is-singleton X + is-empty X)`.
 
 Just as excluded middle, this is an independent statement.
 
 *Exercise.* Continued from the previous exercise. Also for any type
 `R` replacing the empty type, there is a function `((X + (X → R)) → R)
 → R`, so that the kind of phenomenon illustrated in the previous
-exercises has little to do with the emptiness of the empty type.
+exercise has little to do with the emptiness of the empty type.
 
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
