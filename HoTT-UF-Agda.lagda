@@ -2418,13 +2418,13 @@ EM'-gives-EM em' X s = γ (em' X s)
 We will not assume or deny excluded middle, which is an independent
 statement (it can't be proved or disproved). We will deliberately keep
 it undecided, adopting a neutral approach to the constructive
-vs. non-constructive dichotomy. We will however prove couple of
+vs. non-constructive dichotomy. We will however prove a couple of
 consequences of excluded middle in discussions of foundational issues
 such as size and existence of subsingleton truncations. We will also
 prove that excluded middle is a consequence of the axiom of choice.
 
 It should be emphasized that the potential failure of excluded middle
-doesn't say that there are mysterious subsingletons that fail to be
+doesn't say that there may be mysterious subsingletons that fail to be
 singletons and also fail to be empty. No such things occur in
 mathematical nature:
 
@@ -2445,19 +2445,42 @@ That there is no general way to *determine which of the two cases*
 `X`. This kind of phenomenon should be familiar even in classical,
 non-constructive mathematics: although we are entitled to believe that
 the Goldblach conjecture either holds or fails, we still don't know
-which one is the case. A hypothetical element of the type `EM` would,
-in particular, be able to solve the Goldbach conjecture. There is
-nothing wrong or contradictory from assuming the existence of such a
-magic box, other than the loss of the implicit algorithmic character
-of our type theory, which most mathematicians will be perfectly happy
-to live with.
+which one is the case, despite efforts by the sharpest mathematical
+minds. A hypothetical element of the type `EM` would, in particular,
+be able to solve the Goldbach conjecture. There is nothing wrong or
+contradictory with assuming the existence of such a magic box. There
+is only loss of the implicit algorithmic character of our type theory,
+which most mathematicians will be perfectly happy to live with. In
+these notes we don't advocate any particular philosophy for or against
+excluded middle and other non-constructive principles. We confine
+ourselves to discussing facts.
 
 *Exercise.* We also have that it is impossible for `is-singleton X +
 is-empty X` to fail for a given subsingleton `X`, which amounts to
-saying that `¬¬(is-singleton X + is-empty X)` holds. Also for any type
-`R` replacing the empty type, there is a function `((X + (X → R))
-→ R) → R`, so that this phenomenon has little to do with the emptiness
-of the empty type.
+saying that
+
+   > `¬¬(is-singleton X + is-empty X)`
+
+always holds.
+
+Occasionaly one hears people asserting that this says that the double
+negation of excluded middle holds. But this is incorrect. The above
+statement, when written in full, is
+
+   > `(X : 𝓤 ̇ ) → is-subsingleton X → ¬¬(is-singleton X + is-empty X)`.
+
+This is a theorem, which is quite different from the double negation
+of excluded middle, which is not a theorem and is
+
+   > `¬¬((X : 𝓤 ̇ ) → is-subsingleton X → ¬¬(is-singleton X + is-empty X))`.
+
+Just as excluded middle, this is an independent statement.
+
+*Exercise.* Continued from the previous exercise. Also for any type
+`R` replacing the empty type, there is a function `((X + (X → R)) → R)
+→ R`, so that the kind of phenomenon illustrated in the previous
+exercises has little to do with the emptiness of the empty type.
+
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="magmasandmonoids"></a> The types of magmas and monoids
