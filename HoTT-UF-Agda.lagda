@@ -2418,7 +2418,10 @@ EM'-gives-EM em' X s = γ (em' X s)
 We will not assume or deny excluded middle, which is an independent
 statement (it can't be proved or disproved). We will deliberately keep
 it undecided, adopting a neutral approach to the constructive
-vs. non-constructive dichotomy.
+vs. non-constructive dichotomy. We will however prove couple of
+consequences of excluded middle in discussions of foundational issues
+such as size and existence of subsingleton truncations. We will also
+prove that excluded middle is a consequence of the axiom of choice.
 
 It should be emphasized that the potential failure of excluded middle
 doesn't say that there are mysterious subsingletons that fail to be
