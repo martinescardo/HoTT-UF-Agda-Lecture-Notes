@@ -7923,7 +7923,7 @@ then
 of topological spaces *is* homeomorphism, equality of metric spaces
 *is* isometry, equality of categories *is* equivalence etc.
 
-This is what we formulate and prove now.
+This is what we do now.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="sns"></a> Structure identity principles
