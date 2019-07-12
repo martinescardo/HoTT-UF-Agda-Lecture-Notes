@@ -7909,11 +7909,21 @@ spaces, metric spaces and categories?
 
 This may be regarded as a philosophical question.
 
-However, we can *prove* that equality of groups is isomorphism, equality of
-topological spaces is homeomorphism, equality of metric spaces is
-isometry, equality of categories is equivalence etc., if we work in
-MLTT, take the notion of equality to be the identity type and assume
-the univalence axiom. This is what we do now.
+However, if
+
+  * we adopt Martin-Löf type theory as our mathematical foundation,
+
+  * take the notion of equality to be the identity type, and
+
+  * assume Voevodsky's univalence axiom,
+
+then
+
+  * we can *prove* that equality of groups *is* isomorphism, equality
+of topological spaces *is* homeomorphism, equality of metric spaces
+*is* isometry, equality of categories *is* equivalence etc.
+
+This is what we formulate and prove now.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="sns"></a> Structure identity principles
