@@ -398,7 +398,7 @@ succ-lc = ap pred
   f (inl p) = inl (ap succ p)
   f (inr k) = inr (λ (s : succ x ≡ succ y) → k (succ-lc s))
 
-module BasicArithmetic where
+module basic-arithmetic where
 
   open ℕ-order
   open Arithmetic renaming (_+_ to _∔_)
@@ -506,7 +506,7 @@ module BasicArithmetic where
    where
     q = succ (x ∔ z) ≡⟨ (+-step-on-first x z)⁻¹ ⟩
         succ x ∔ z   ≡⟨ p                       ⟩
-        zero ∎
+        zero         ∎
 
   ≼-gives-≤ (succ x) (succ y) (z , p) = IH
    where
@@ -6461,7 +6461,7 @@ module ℕ-more where
 
   open ℕ-order
   open Arithmetic renaming (_+_ to _∔_)
-  open BasicArithmetic
+  open basic-arithmetic
 
   ≤-prop-valued : (x y : ℕ) → is-prop (x ≤ y)
   ≤-prop-valued 0 y               = 𝟙-is-subsingleton

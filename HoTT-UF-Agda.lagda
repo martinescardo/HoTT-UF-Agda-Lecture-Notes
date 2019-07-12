@@ -2048,7 +2048,7 @@ done.
 We now move to basic arithmetic, and we use a module for that.
 
 \begin{code}
-module BasicArithmetic where
+module basic-arithmetic where
 
   open ℕ-order
   open Arithmetic renaming (_+_ to _∔_)
@@ -2191,6 +2191,7 @@ In both cases, we proceed by induction on both arguments.
              succ (x ∔ z) ≡⟨ ap succ p           ⟩
              succ y       ∎)
 
+
   ≼-gives-≤ : (x y : ℕ) → x ≼ y → x ≤ y
 
   ≼-gives-≤ 0 0               (z , p) = ⋆
@@ -2201,7 +2202,7 @@ In both cases, we proceed by induction on both arguments.
    where
     q = succ (x ∔ z) ≡⟨ (+-step-on-first x z)⁻¹ ⟩
         succ x ∔ z   ≡⟨ p                       ⟩
-        zero ∎
+        zero         ∎
 
   ≼-gives-≤ (succ x) (succ y) (z , p) = IH
    where
@@ -2415,7 +2416,9 @@ EM'-gives-EM em' X s = γ (em' X s)
 \end{code}
 
 We will not assume or deny excluded middle, which is an independent
-statement (it can't be proved or disproved).
+statement (it can't be proved or disproved). We will deliberately keep
+it undecided, adopting a neutral approach to the constructive
+vs. non-constructive dichotomy.
 
 It should be emphasized that the potential failure of excluded middle
 doesn't say that there are mysterious subsingletons that fail to be
@@ -2449,8 +2452,9 @@ to live with.
 *Exercise.* We also have that it is impossible for `is-singleton X +
 is-empty X` to fail for a given subsingleton `X`, which amounts to
 saying that `¬¬(is-singleton X + is-empty X)` holds. Also for any type
-`R` replacing the empty type, define a function of type `((X + (X →
-R)) → R) → R`
+`R` replacing the empty type, there is a function `((X + (X → R))
+→ R) → R`, so that this phenomenon has little to do with the emptiness
+of the empty type.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="magmasandmonoids"></a> The types of magmas and monoids
@@ -11636,7 +11640,7 @@ module ℕ-more where
 
   open ℕ-order
   open Arithmetic renaming (_+_ to _∔_)
-  open BasicArithmetic
+  open basic-arithmetic
 
   ≤-prop-valued : (x y : ℕ) → is-prop (x ≤ y)
   ≤-prop-valued 0 y               = 𝟙-is-subsingleton
