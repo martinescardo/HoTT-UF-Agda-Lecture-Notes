@@ -7900,30 +7900,12 @@ the same, for all mathematical purposes, if they are isomorphic.
 Likewise, we consider two topological spaces to be the same if they
 are homeomorphic, two metric spaces to be the same if they are
 isometric, two categories to be the same if they are equivalent, and
-so on.
-
-Do we *choose* these notions of sameness, motivated by particular
-mathematical applications, or are these notions of sameness imposed
-upon us, independently of what we want to do with groups, topological
-spaces, metric spaces and categories?
-
-This may be regarded as a philosophical question.
-
-However, if
-
-  * we adopt Martin-Löf type theory as our mathematical foundation,
-
-  * take the notion of equality to be the identity type, and
-
-  * assume Voevodsky's univalence axiom,
-
-then
-
-  * we can *prove* that equality of groups *is* isomorphism, equality
-of topological spaces *is* homeomorphism, equality of metric spaces
-*is* isometry, equality of categories *is* equivalence etc.
-
-This is what we do now.
+so on. If we adopt Martin-Löf type theory as our mathematical
+foundation, take the notion of equality to be the identity type, and
+assume Voevodsky's univalence axiom, then we can *prove* that equality
+of groups is isomorphism, equality of topological spaces is
+homeomorphism, equality of metric spaces is isometry, equality of
+categories is equivalence etc. This is what we do now.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="sns"></a> Structure identity principles
