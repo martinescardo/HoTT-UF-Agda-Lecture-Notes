@@ -7903,9 +7903,8 @@ isometric, two categories to be the same if they are equivalent, and
 so on. If we adopt Martin-Löf type theory as our mathematical
 foundation, take the notion of equality to be the identity type, and
 assume Voevodsky's univalence axiom, then we can *prove* that equality
-of groups is isomorphism, equality of topological spaces is
-homeomorphism, equality of metric spaces is isometry, equality of
-categories is equivalence etc. This is what we do now.
+of groups, topological spaces, metric spaces, categories etc. is
+characterized in this way.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="sns"></a> Structure identity principles
