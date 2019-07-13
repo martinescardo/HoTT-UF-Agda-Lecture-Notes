@@ -2747,7 +2747,7 @@ Here are some more constructions with identifications:
 \end{code}
 
 The application operation on identifications is functorial, in the
-sense that is preserves the neutral element and commutes with
+sense that it preserves the neutral element and commutes with
 composition:
 
 \begin{code}
