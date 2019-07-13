@@ -7900,15 +7900,8 @@ the same, for all mathematical purposes, if they are isomorphic.
 Likewise, we consider two topological spaces to be the same if they
 are homeomorphic, two metric spaces to be the same if they are
 isometric, two categories to be the same if they are equivalent, and
-so on. If we adopt Martin-Löf type theory as our mathematical
-foundation, take the notion of equality to be the identity type, and
-assume Voevodsky's univalence axiom, then we can *prove* that equality
-of groups, topological spaces, metric spaces, categories etc. is
-characterized in this way.
-
-[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="sns"></a> Structure identity principles
-
+so on. With the univalence axiom, we can *prove* that these notions of
+sameness are automatically captured by the identity type.
 
 A *structure identity principle* describes the identity type of types
 of mathematical structures in terms of equivalences of
