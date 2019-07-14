@@ -865,9 +865,9 @@ universe) is allowed.
 
 When we view `𝟘` as *false*, we can read the definition of
 the *negation* `¬ X` as saying that "`X` implies *false*". With univalence
-we will be able to show that "(*false* → *false*) `≡` *true*", which amounts
-to `(𝟘 → 𝟘) ≡ 𝟙`, which in turn says that there is precisely one function
-`𝟘 → 𝟘`, namely the (vacuous) identity function.
+we will be able to show that "(*false* → *true*) `≡` *true*", which amounts
+to `(𝟘 → 𝟙) ≡ 𝟙`, which in turn says that there is precisely one function
+`𝟘 → 𝟙`, namely the (vacuous) function.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="naturalnumbers"></a> The type `ℕ` of natural numbers
@@ -9681,7 +9681,7 @@ This says that if we have a function from `X` to a subsingleton `P`, then
 `P` must have a point. So this fails when `X=𝟘`. Considering `P=𝟘`, we conclude
 that `¬¬ X` if `X` is inhabited, which says that `X` is non-empty.
 
-For simplicity in the formulation of the theorems, we assume global
+For simplicity in the formulation of the theorems, we assume *global*
 function extensionality.
 A type can be pointed in many ways, but inhabited in at most one way:
 
