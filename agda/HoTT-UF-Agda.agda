@@ -2716,96 +2716,71 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
          → (Y : 𝓤 ̇ ) (y₀ : Y) (g : Y → Y)
          → ∃! \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)
 
-ℕ-is-nno {𝓤} hfe Y y₀ g = υ
+ℕ-is-nno {𝓤} hfe Y y₀ g = γ
  where
-  hunapply : {X : 𝓤₀ ̇ } {A : X → 𝓤 ̇ } {f g : Π A} → f ∼ g → f ≡ g
-  hunapply {X} {A} {f} {g} = inverse (happly f g) (hfe f g)
+  fe : dfunext 𝓤₀ 𝓤
+  fe = hfunext-gives-dfunext hfe
 
-  hunapply-is-equiv : {X : 𝓤₀ ̇ } {A : X → 𝓤 ̇ } (f g : Π A)
-                    → is-equiv (hunapply {X} {A} {f} {g})
-  hunapply-is-equiv f g = inverse-is-equiv (happly f g) (hfe f g)
-
-  lemma₀ : (h : ℕ → Y) → ((h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)) ≃ (h ∼ ℕ-iteration Y y₀ g)
-  lemma₀ h = invertibility-gives-≃ φ (γ , η , ε)
+  lemma₀ : (h : ℕ → Y) → ((h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)) ◁ (h ∼ ℕ-iteration Y y₀ g)
+  lemma₀ h = r , s , η
    where
-   φ : (h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h) → h ∼ ℕ-iteration Y y₀ g
-   φ (p , K) 0 = p
-   φ (p , K) (succ n) = h (succ n)                  ≡⟨ K n                ⟩
-                        g (h n)                     ≡⟨ ap g (φ (p , K) n) ⟩
-                        g (ℕ-iteration Y y₀ g n)    ≡⟨ refl _             ⟩
-                        ℕ-iteration Y y₀ g (succ n) ∎
+    s : (h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h) → h ∼ ℕ-iteration Y y₀ g
+    s (p , K) 0 = p
+    s (p , K) (succ n) = h (succ n)                  ≡⟨ K n                ⟩
+                         g (h n)                     ≡⟨ ap g (s (p , K) n) ⟩
+                         g (ℕ-iteration Y y₀ g n)    ≡⟨ refl _             ⟩
+                         ℕ-iteration Y y₀ g (succ n) ∎
 
-   γ : codomain φ → domain φ
-   γ H = H 0 , (λ n → h (succ n)                    ≡⟨ H (succ n)     ⟩
-                      ℕ-iteration Y y₀ g (succ n)   ≡⟨ refl _         ⟩
-                      g (ℕ-iteration Y y₀ g n)      ≡⟨ ap g ((H n)⁻¹) ⟩
-                      (g (h n))                     ∎)
+    r : codomain s → domain s
+    r H = H 0 , (λ n → h (succ n)                    ≡⟨ H (succ n)     ⟩
+                       ℕ-iteration Y y₀ g (succ n)   ≡⟨ refl _         ⟩
+                       g (ℕ-iteration Y y₀ g n)      ≡⟨ ap g ((H n)⁻¹) ⟩
+                       (g (h n))                     ∎)
 
-   remark : ∀ n H → pr₂ (γ H) n ≡ H (succ n) ∙ (refl _ ∙ ap g ((H n)⁻¹))
-   remark n H = refl _
+    remark : ∀ n H → pr₂ (r H) n ≡ H (succ n) ∙ (refl _ ∙ ap g ((H n)⁻¹))
+    remark n H = refl _
 
-   η : (z : (h 0 ≡ y₀) × h ∘ succ ∼ g ∘ h) → γ (φ z) ≡ z
-   η (p , K) =
-
-    γ (φ (p , K))                                                                     ≡⟨ refl _ ⟩
-    p , (λ n → φ (p , K) (succ n) ∙ (refl _ ∙ ap g ((φ (p , K) n)⁻¹)))                ≡⟨ refl _ ⟩
-    p , (λ n → K n ∙ ap g (φ (p , K) n) ∙ refl _ ∙ (refl _ ∙ ap g ((φ (p , K) n)⁻¹))) ≡⟨ vi     ⟩
-    p , K                                                                             ∎
-
-    where
-     i = λ n →
-       K n ∙ ap g (φ (p , K) n) ∙ refl _ ∙ (refl _ ∙ ap g ((φ (p , K) n)⁻¹)) ≡⟨ refl _ ⟩
-       K n ∙ ap g (φ (p , K) n) ∙ (refl _ ∙ ap g ((φ (p , K) n)⁻¹))          ≡⟨ ii  n  ⟩
-       K n ∙ ap g (φ (p , K) n) ∙ ap g ((φ (p , K) n)⁻¹)                     ≡⟨ iii n  ⟩
-       K n ∙ (ap g (φ (p , K) n) ∙ ap g ((φ (p , K) n)⁻¹))                   ≡⟨ iv  n  ⟩
-       K n ∙ (ap g (φ (p , K) n) ∙ (ap g (φ (p , K) n))⁻¹)                   ≡⟨ v   n  ⟩
-       K n ∙ refl _ ≡⟨ refl _ ⟩
-       K n ∎
+    η : (z : (h 0 ≡ y₀) × h ∘ succ ∼ g ∘ h) → r (s z) ≡ z
+    η (p , K) = q
+     where
+      v = λ n →
+        s (p , K) (succ n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))                ≡⟨ refl _ ⟩
+        K n ∙ ap g (s (p , K) n) ∙ refl _ ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹)) ≡⟨ refl _ ⟩
+        K n ∙ ap g (s (p , K) n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))          ≡⟨ i   n  ⟩
+        K n ∙ ap g (s (p , K) n) ∙ ap g ((s (p , K) n)⁻¹)                     ≡⟨ ii  n  ⟩
+        K n ∙ (ap g (s (p , K) n) ∙ ap g ((s (p , K) n)⁻¹))                   ≡⟨ iii n  ⟩
+        K n ∙ (ap g (s (p , K) n) ∙ (ap g (s (p , K) n))⁻¹)                   ≡⟨ iv  n  ⟩
+        K n ∙ refl _                                                          ≡⟨ refl _ ⟩
+        K n ∎
        where
-        ii  = λ n → ap (λ - → K n ∙ ap g (φ (p , K) n) ∙ -)
-                       (refl-left {_} {_} {_} {_} {ap g ((φ (p , K) n)⁻¹)})
-        iii = λ n → ∙assoc (K n) (ap g (φ (p , K) n)) (ap g ((φ (p , K) n)⁻¹))
-        iv  = λ n → ap (λ - → K n ∙ (ap g (φ (p , K) n) ∙ -)) (ap⁻¹ g (φ (p , K) n) ⁻¹)
-        v   = λ n → ap (K n ∙_) (⁻¹-right∙ (ap g (φ (p , K) n)))
+         i   = λ n → ap (λ - → K n ∙ ap g (s (p , K) n) ∙ -)
+                        (refl-left {_} {_} {_} {_} {ap g ((s (p , K) n)⁻¹)})
+         ii  = λ n → ∙assoc (K n) (ap g (s (p , K) n)) (ap g ((s (p , K) n)⁻¹))
+         iii = λ n → ap (λ - → K n ∙ (ap g (s (p , K) n) ∙ -)) (ap⁻¹ g (s (p , K) n) ⁻¹)
+         iv  = λ n → ap (K n ∙_) (⁻¹-right∙ (ap g (s (p , K) n)))
 
-     vi = ap (p ,_) (hunapply i)
+      vi = ap (p ,_) (fe v)
 
-   ε : (H : h ∼ ℕ-iteration Y y₀ g) → φ (γ H) ≡ H
-   ε H = hunapply e
-    where
-     e : (n : ℕ) → φ (γ H) n ≡ H n
-     e zero = refl _
-     e (succ n) =
-       φ (γ H) (succ n)                                          ≡⟨ refl _ ⟩
-       H (succ n) ∙ (refl _ ∙ ap g ((H n)⁻¹)) ∙ ap g (φ (γ H) n) ≡⟨ i      ⟩
-       H (succ n) ∙ ap g ((H n)⁻¹) ∙ ap g (φ (γ H) n)            ≡⟨ ii     ⟩
-       H (succ n) ∙ (ap g ((H n)⁻¹) ∙ ap g (φ (γ H) n))          ≡⟨ IH     ⟩
-       H (succ n) ∙ (ap g ((H n)⁻¹) ∙ ap g ((H n)))              ≡⟨ iii    ⟩
-       H (succ n) ∙ ((ap g ((H n))⁻¹) ∙ ap g ((H n)))            ≡⟨ iv     ⟩
-       H (succ n) ∙ refl _                                       ≡⟨ refl _ ⟩
-       H (succ n)                                                ∎
-       where
-        i    = ap (λ - → H (succ n) ∙ - ∙ ap g (φ (γ H) n))
-                  (refl-left {_} {_} {_} {_} {ap g ((H n)⁻¹)})
-        ii   = (∙assoc (H (succ n)) (ap g ((H n)⁻¹)) (ap g (φ (γ H) n)))
-        IH   = ap (λ - → H (succ n) ∙ (ap g ((H n)⁻¹) ∙ ap g -)) (e n)
-        iii  = ap (λ - → H (succ n) ∙ (- ∙ ap g ((H n)))) ((ap⁻¹ g (H n))⁻¹)
-        iv   = ap (H (succ n) ∙_) (⁻¹-left∙ (ap g (H n)))
+      q = r (s (p , K))                                                      ≡⟨ refl _ ⟩
+          p , (λ n → s (p , K) (succ n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))) ≡⟨ vi     ⟩
+          p , K                                                              ∎
 
-  lemma₁ = λ h → ((h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)) ≃⟨ i   h ⟩
-                 ((h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)) ≃⟨ ii  h ⟩
-                 (h ∼ ℕ-iteration Y y₀ g)          ≃⟨ iii h ⟩
-                 (h ≡ ℕ-iteration Y y₀ g)          ■
+  lemma₁ = λ h → ((h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)) ◁⟨ i h ⟩
+                 ((h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)) ◁⟨ lemma₀ h ⟩
+                 (h ∼ ℕ-iteration Y y₀ g)          ◁⟨ ii h ⟩
+                 (h ≡ ℕ-iteration Y y₀ g)          ◀
    where
-    i   = λ h → Σ-cong (λ _ → happly (h ∘ succ) (g ∘ h) , hfe _ _)
-    ii  = lemma₀
-    iii = λ h → hunapply , hunapply-is-equiv h (ℕ-iteration Y y₀ g)
+    i  = λ h → Σ-retract (λ _ → ≃-gives-◁ (happly (h ∘ succ) (g ∘ h) , hfe _ _))
+    ii = λ h → ≃-gives-▷ (happly h (ℕ-iteration Y y₀ g) , hfe _ _)
 
-  lemma₂ : (Σ \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)) ≃ singleton-type (ℕ-iteration Y y₀ g)
-  lemma₂ = Σ-cong lemma₁
+  lemma₂ : (Σ \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h))
+         ◁ singleton-type (ℕ-iteration Y y₀ g)
 
-  υ : ∃! \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)
-  υ = equiv-to-singleton lemma₂ (singleton-types-are-singletons (ℕ → Y) (ℕ-iteration Y y₀ g))
+  lemma₂ = Σ-retract lemma₁
+
+  γ : ∃! \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)
+  γ = retract-of-singleton lemma₂
+                           (singleton-types-are-singletons (ℕ → Y) (ℕ-iteration Y y₀ g))
 
 being-subsingleton-is-subsingleton : {X : 𝓤 ̇ } → dfunext 𝓤 𝓤
                                    → is-subsingleton (is-subsingleton X)
