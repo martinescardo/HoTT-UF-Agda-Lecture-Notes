@@ -6065,7 +6065,9 @@ The retraction property doesn't need induction on natural numbers:
 \end{code}
 
 This concludes the proof of `ℕ-is-nno`. We say that `ℕ` is a [natural
-numbers object](https://en.wikipedia.org/wiki/Natural_number_object).
+numbers object](https://en.wikipedia.org/wiki/Natural_number_object),
+or, more precisely, the triple `(ℕ , 0 , succ)` is a naturals numbers
+object.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="morefunextuses"></a> More consequences of function extensionality
