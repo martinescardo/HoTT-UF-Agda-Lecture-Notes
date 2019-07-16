@@ -2681,6 +2681,132 @@ vv-and-hfunext-are-singletons {𝓤} {𝓥} ua =
               pointed-subsingletons-are-singletons (hfunext 𝓤 𝓥)
                 (univalence-gives-hfunext' (ua 𝓤) (ua (𝓤 ⊔ 𝓥))) j
 
+∃! : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+∃! A = is-singleton (Σ A)
+
+unique-existence-is-subsingleton : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                                 → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+                                 → is-subsingleton (∃! A)
+
+unique-existence-is-subsingleton A fe = being-singleton-is-subsingleton fe
+
+unique-existence-gives-weak-unique-existence : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) →
+
+    (∃! \(x : X) → A x)
+  → (Σ \(x : X) → A x) × ((x y : X) → A x → A y → x ≡ y)
+
+unique-existence-gives-weak-unique-existence A s = center (Σ A) s , u
+ where
+  u : ∀ x y → A x → A y → x ≡ y
+  u x y a b = ap pr₁ (singletons-are-subsingletons (Σ A) s (x , a) (y , b))
+
+weak-unique-existence-gives-unique-existence-sometimes : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) →
+
+    ((x : X) → is-subsingleton (A x))
+
+  → ((Σ \(x : X) → A x) × ((x y : X) → A x → A y → x ≡ y))
+  → (∃! \(x : X) → A x)
+
+weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , a) , φ
+ where
+  φ : (σ : Σ A) → x , a ≡ σ
+  φ (y , b) = to-Σ-≡ (u x y a b , i y _ _)
+
+ℕ-is-nno : hfunext 𝓤₀ 𝓤
+         → (Y : 𝓤 ̇ ) (y₀ : Y) (g : Y → Y)
+         → ∃! \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)
+
+ℕ-is-nno {𝓤} hfe Y y₀ g = υ
+ where
+  hunapply : {X : 𝓤₀ ̇ } {A : X → 𝓤 ̇ } {f g : Π A} → f ∼ g → f ≡ g
+  hunapply {X} {A} {f} {g} = inverse (happly f g) (hfe f g)
+
+  hunapply-is-equiv : {X : 𝓤₀ ̇ } {A : X → 𝓤 ̇ } (f g : Π A)
+                    → is-equiv (hunapply {X} {A} {f} {g})
+  hunapply-is-equiv f g = inverse-is-equiv (happly f g) (hfe f g)
+
+  lemma₀ : (h : ℕ → Y) → ((h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)) ≃ (h ∼ ℕ-iteration Y y₀ g)
+  lemma₀ h = invertibility-gives-≃ φ (γ , η , ε)
+   where
+   φ : (h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h) → h ∼ ℕ-iteration Y y₀ g
+   φ (p , K) 0 = p
+   φ (p , K) (succ n) = h (succ n)                  ≡⟨ K n                ⟩
+                        g (h n)                     ≡⟨ ap g (φ (p , K) n) ⟩
+                        g (ℕ-iteration Y y₀ g n)    ≡⟨ refl _             ⟩
+                        ℕ-iteration Y y₀ g (succ n) ∎
+
+   γ : codomain φ → domain φ
+   γ H = H 0 , (λ n → h (succ n)                    ≡⟨ H (succ n)     ⟩
+                      ℕ-iteration Y y₀ g (succ n)   ≡⟨ refl _         ⟩
+                      g (ℕ-iteration Y y₀ g n)      ≡⟨ ap g ((H n)⁻¹) ⟩
+                      (g (h n))                     ∎)
+
+   remark : ∀ n H → pr₂ (γ H) n ≡ H (succ n) ∙ (refl _ ∙ ap g ((H n)⁻¹))
+   remark n H = refl _
+
+   η : (z : (h 0 ≡ y₀) × h ∘ succ ∼ g ∘ h) → γ (φ z) ≡ z
+   η (p , K) =
+
+    γ (φ (p , K))                                                                     ≡⟨ refl _ ⟩
+    p , (λ n → φ (p , K) (succ n) ∙ (refl _ ∙ ap g ((φ (p , K) n)⁻¹)))                ≡⟨ refl _ ⟩
+    p , (λ n → K n ∙ ap g (φ (p , K) n) ∙ refl _ ∙ (refl _ ∙ ap g ((φ (p , K) n)⁻¹))) ≡⟨ vi     ⟩
+    p , K                                                                             ∎
+
+    where
+     i = λ n →
+       K n ∙ ap g (φ (p , K) n) ∙ refl _ ∙ (refl _ ∙ ap g ((φ (p , K) n)⁻¹)) ≡⟨ refl _ ⟩
+       K n ∙ ap g (φ (p , K) n) ∙ (refl _ ∙ ap g ((φ (p , K) n)⁻¹))          ≡⟨ ii  n  ⟩
+       K n ∙ ap g (φ (p , K) n) ∙ ap g ((φ (p , K) n)⁻¹)                     ≡⟨ iii n  ⟩
+       K n ∙ (ap g (φ (p , K) n) ∙ ap g ((φ (p , K) n)⁻¹))                   ≡⟨ iv  n  ⟩
+       K n ∙ (ap g (φ (p , K) n) ∙ (ap g (φ (p , K) n))⁻¹)                   ≡⟨ v   n  ⟩
+       K n ∙ refl _ ≡⟨ refl _ ⟩
+       K n ∎
+       where
+        ii  = λ n → ap (λ - → K n ∙ ap g (φ (p , K) n) ∙ -)
+                       (refl-left {_} {_} {_} {_} {ap g ((φ (p , K) n)⁻¹)})
+        iii = λ n → ∙assoc (K n) (ap g (φ (p , K) n)) (ap g ((φ (p , K) n)⁻¹))
+        iv  = λ n → ap (λ - → K n ∙ (ap g (φ (p , K) n) ∙ -)) (ap⁻¹ g (φ (p , K) n) ⁻¹)
+        v   = λ n → ap (K n ∙_) (⁻¹-right∙ (ap g (φ (p , K) n)))
+
+     vi = ap (p ,_) (hunapply i)
+
+   ε : (H : h ∼ ℕ-iteration Y y₀ g) → φ (γ H) ≡ H
+   ε H = hunapply e
+    where
+     e : (n : ℕ) → φ (γ H) n ≡ H n
+     e zero = refl _
+     e (succ n) =
+       φ (γ H) (succ n)                                          ≡⟨ refl _ ⟩
+       H (succ n) ∙ (refl _ ∙ ap g ((H n)⁻¹)) ∙ ap g (φ (γ H) n) ≡⟨ i      ⟩
+       H (succ n) ∙ ap g ((H n)⁻¹) ∙ ap g (φ (γ H) n)            ≡⟨ ii     ⟩
+       H (succ n) ∙ (ap g ((H n)⁻¹) ∙ ap g (φ (γ H) n))          ≡⟨ IH     ⟩
+       H (succ n) ∙ (ap g ((H n)⁻¹) ∙ ap g ((H n)))              ≡⟨ iii    ⟩
+       H (succ n) ∙ ((ap g ((H n))⁻¹) ∙ ap g ((H n)))            ≡⟨ iv     ⟩
+       H (succ n) ∙ refl _                                       ≡⟨ refl _ ⟩
+       H (succ n)                                                ∎
+       where
+        i    = ap (λ - → H (succ n) ∙ - ∙ ap g (φ (γ H) n))
+                  (refl-left {_} {_} {_} {_} {ap g ((H n)⁻¹)})
+        ii   = (∙assoc (H (succ n)) (ap g ((H n)⁻¹)) (ap g (φ (γ H) n)))
+        IH   = ap (λ - → H (succ n) ∙ (ap g ((H n)⁻¹) ∙ ap g -)) (e n)
+        iii  = ap (λ - → H (succ n) ∙ (- ∙ ap g ((H n)))) ((ap⁻¹ g (H n))⁻¹)
+        iv   = ap (H (succ n) ∙_) (⁻¹-left∙ (ap g (H n)))
+
+  lemma₁ = λ h → ((h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)) ≃⟨ i   h ⟩
+                 ((h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)) ≃⟨ ii  h ⟩
+                 (h ∼ ℕ-iteration Y y₀ g)          ≃⟨ iii h ⟩
+                 (h ≡ ℕ-iteration Y y₀ g)          ■
+   where
+    i   = λ h → Σ-cong (λ _ → happly (h ∘ succ) (g ∘ h) , hfe _ _)
+    ii  = lemma₀
+    iii = λ h → hunapply , hunapply-is-equiv h (ℕ-iteration Y y₀ g)
+
+  lemma₂ : (Σ \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)) ≃ singleton-type (ℕ-iteration Y y₀ g)
+  lemma₂ = Σ-cong lemma₁
+
+  υ : ∃! \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)
+  υ = equiv-to-singleton lemma₂ (singleton-types-are-singletons (ℕ → Y) (ℕ-iteration Y y₀ g))
+
 being-subsingleton-is-subsingleton : {X : 𝓤 ̇ } → dfunext 𝓤 𝓤
                                    → is-subsingleton (is-subsingleton X)
 
@@ -5457,37 +5583,6 @@ module basic-truncation-development
          (being-surjection-is-subsingleton f))
        (lr-implication (equiv-iff-embedding-and-surjections f))
        (rl-implication (equiv-iff-embedding-and-surjections f))
-
-∃! : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-∃! A = is-singleton (Σ A)
-
-unique-existence-is-subsingleton : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
-                                 → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
-                                 → is-subsingleton (∃! A)
-
-unique-existence-is-subsingleton A fe = being-singleton-is-subsingleton fe
-
-unique-existence-gives-weak-unique-existence : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) →
-
-    (∃! \(x : X) → A x)
-  → (Σ \(x : X) → A x) × ((x y : X) → A x → A y → x ≡ y)
-
-unique-existence-gives-weak-unique-existence A s = center (Σ A) s , u
- where
-  u : ∀ x y → A x → A y → x ≡ y
-  u x y a b = ap pr₁ (singletons-are-subsingletons (Σ A) s (x , a) (y , b))
-
-weak-unique-existence-gives-unique-existence-sometimes : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) →
-
-    ((x : X) → is-subsingleton (A x))
-
-  → ((Σ \(x : X) → A x) × ((x y : X) → A x → A y → x ≡ y))
-  → (∃! \(x : X) → A x)
-
-weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , a) , φ
- where
-  φ : (σ : Σ A) → x , a ≡ σ
-  φ (y , b) = to-Σ-≡ (u x y a b , i y _ _)
 
 simple-unique-choice : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
 

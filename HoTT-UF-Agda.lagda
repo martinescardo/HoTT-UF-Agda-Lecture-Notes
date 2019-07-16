@@ -399,6 +399,8 @@ to practice univalent mathematics should consult the above references.
      1. [Variations of function extensionality and their logical equivalence](HoTT-UF-Agda.html#hfunext)
      1. [Universes are map classifiers](HoTT-UF-Agda.html#typeclassifier)
      1. [The univalence axiom is a (sub)singleton type](HoTT-UF-Agda.html#univalencesubsingleton)
+     1. [Unique existence in univalent mathematics](HoTT-UF-Agda.html#unique-existence)
+     1. [Universal property of the natural numbers](HoTT-UF-Agda.html#nnt)
      1. [More consequences of function extensionality](HoTT-UF-Agda.html#morefunextuses)
      1. [Propositional extensionality and the powerset](HoTT-UF-Agda.html#propositionalextensionality)
      1. [Some constructions with types of equivalences](HoTT-UF-Agda.html#equivconstructions)
@@ -432,7 +434,6 @@ to practice univalent mathematics should consult the above references.
         1. [Images and surjections](HoTT-UF-Agda.html#images-and-surjections)
         1. [A characterization of equivalences](HoTT-UF-Agda.html#equivalence-characterization)
      1. [Choice in univalent mathematics](HoTT-UF-Agda.html#choice)
-        1. [Unique existence in univalent mathematics](HoTT-UF-Agda.html#unique-existence)
         1. [Unique choice](HoTT-UF-Agda.html#unique-choice)
         1. [Univalent choice](HoTT-UF-Agda.html#univalent-choice)
         1. [A second formulation of univalent choice](HoTT-UF-Agda.html#univalent-choice2)
@@ -5862,6 +5863,174 @@ However, `funext 𝓤 𝓤` and `dfunext 𝓤 𝓤` are not subsingletons (see t
 HoTT book).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="unique-existence"></a> Unique existence in univalent mathematics
+
+Unique existence of `x : X` with `A x` in univalent mathematics, written
+
+   > `∃! \(x : X) → A x`
+
+or simply
+
+   > `∃! A`,
+
+requires that not only the `x : X` but also the `a : A x` is
+unique. More precisely, we require that there is a unique *pair* `(x ,
+a) : Σ A`.
+
+This is particularly important in the formulation of universal
+properties of types that are not necessarily sets, where it
+generalizes the categorical notion of uniqueness up to unique
+isomorphism.
+
+\begin{code}
+∃! : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+∃! A = is-singleton (Σ A)
+
+
+unique-existence-is-subsingleton : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                                 → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+                                 → is-subsingleton (∃! A)
+
+unique-existence-is-subsingleton A fe = being-singleton-is-subsingleton fe
+
+
+unique-existence-gives-weak-unique-existence : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) →
+
+    (∃! \(x : X) → A x)
+  → (Σ \(x : X) → A x) × ((x y : X) → A x → A y → x ≡ y)
+
+unique-existence-gives-weak-unique-existence A s = center (Σ A) s , u
+ where
+  u : ∀ x y → A x → A y → x ≡ y
+  u x y a b = ap pr₁ (singletons-are-subsingletons (Σ A) s (x , a) (y , b))
+\end{code}
+
+The converse holds if each `A x` is a subsingleton:
+
+\begin{code}
+weak-unique-existence-gives-unique-existence-sometimes : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) →
+
+    ((x : X) → is-subsingleton (A x))
+
+  → ((Σ \(x : X) → A x) × ((x y : X) → A x → A y → x ≡ y))
+  → (∃! \(x : X) → A x)
+
+weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , a) , φ
+ where
+  φ : (σ : Σ A) → x , a ≡ σ
+  φ (y , b) = to-Σ-≡ (u x y a b , i y _ _)
+\end{code}
+
+*Exercise*. Find a counter-example in the absence of the requirement
+ that all types `A x` are subsingletons.
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="nnt"></a> Universal property of the natural numbers
+
+The natural numbers have the following universal property. What is
+noteworthy here is that the type `Y` need not be a set, so that the
+two equations can hold in multiple ways, but nevertheless we have
+unique existence in the sense of the previous section. We need
+function extensionality for this, but not univalence.
+
+\begin{code}
+ℕ-is-nno : hfunext 𝓤₀ 𝓤
+         → (Y : 𝓤 ̇ ) (y₀ : Y) (g : Y → Y)
+         → ∃! \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)
+
+ℕ-is-nno {𝓤} hfe Y y₀ g = υ
+ where
+  hunapply : {X : 𝓤₀ ̇ } {A : X → 𝓤 ̇ } {f g : Π A} → f ∼ g → f ≡ g
+  hunapply {X} {A} {f} {g} = inverse (happly f g) (hfe f g)
+
+  hunapply-is-equiv : {X : 𝓤₀ ̇ } {A : X → 𝓤 ̇ } (f g : Π A)
+                    → is-equiv (hunapply {X} {A} {f} {g})
+  hunapply-is-equiv f g = inverse-is-equiv (happly f g) (hfe f g)
+
+  lemma₀ : (h : ℕ → Y) → ((h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)) ≃ (h ∼ ℕ-iteration Y y₀ g)
+  lemma₀ h = invertibility-gives-≃ φ (γ , η , ε)
+   where
+   φ : (h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h) → h ∼ ℕ-iteration Y y₀ g
+   φ (p , K) 0 = p
+   φ (p , K) (succ n) = h (succ n)                  ≡⟨ K n                ⟩
+                        g (h n)                     ≡⟨ ap g (φ (p , K) n) ⟩
+                        g (ℕ-iteration Y y₀ g n)    ≡⟨ refl _             ⟩
+                        ℕ-iteration Y y₀ g (succ n) ∎
+
+   γ : codomain φ → domain φ
+   γ H = H 0 , (λ n → h (succ n)                    ≡⟨ H (succ n)     ⟩
+                      ℕ-iteration Y y₀ g (succ n)   ≡⟨ refl _         ⟩
+                      g (ℕ-iteration Y y₀ g n)      ≡⟨ ap g ((H n)⁻¹) ⟩
+                      (g (h n))                     ∎)
+
+   remark : ∀ n H → pr₂ (γ H) n ≡ H (succ n) ∙ (refl _ ∙ ap g ((H n)⁻¹))
+   remark n H = refl _
+
+   η : (z : (h 0 ≡ y₀) × h ∘ succ ∼ g ∘ h) → γ (φ z) ≡ z
+   η (p , K) =
+
+    γ (φ (p , K))                                                                     ≡⟨ refl _ ⟩
+    p , (λ n → φ (p , K) (succ n) ∙ (refl _ ∙ ap g ((φ (p , K) n)⁻¹)))                ≡⟨ refl _ ⟩
+    p , (λ n → K n ∙ ap g (φ (p , K) n) ∙ refl _ ∙ (refl _ ∙ ap g ((φ (p , K) n)⁻¹))) ≡⟨ vi     ⟩
+    p , K                                                                             ∎
+
+    where
+     i = λ n →
+       K n ∙ ap g (φ (p , K) n) ∙ refl _ ∙ (refl _ ∙ ap g ((φ (p , K) n)⁻¹)) ≡⟨ refl _ ⟩
+       K n ∙ ap g (φ (p , K) n) ∙ (refl _ ∙ ap g ((φ (p , K) n)⁻¹))          ≡⟨ ii  n  ⟩
+       K n ∙ ap g (φ (p , K) n) ∙ ap g ((φ (p , K) n)⁻¹)                     ≡⟨ iii n  ⟩
+       K n ∙ (ap g (φ (p , K) n) ∙ ap g ((φ (p , K) n)⁻¹))                   ≡⟨ iv  n  ⟩
+       K n ∙ (ap g (φ (p , K) n) ∙ (ap g (φ (p , K) n))⁻¹)                   ≡⟨ v   n  ⟩
+       K n ∙ refl _ ≡⟨ refl _ ⟩
+       K n ∎
+       where
+        ii  = λ n → ap (λ - → K n ∙ ap g (φ (p , K) n) ∙ -)
+                       (refl-left {_} {_} {_} {_} {ap g ((φ (p , K) n)⁻¹)})
+        iii = λ n → ∙assoc (K n) (ap g (φ (p , K) n)) (ap g ((φ (p , K) n)⁻¹))
+        iv  = λ n → ap (λ - → K n ∙ (ap g (φ (p , K) n) ∙ -)) (ap⁻¹ g (φ (p , K) n) ⁻¹)
+        v   = λ n → ap (K n ∙_) (⁻¹-right∙ (ap g (φ (p , K) n)))
+
+     vi = ap (p ,_) (hunapply i)
+
+   ε : (H : h ∼ ℕ-iteration Y y₀ g) → φ (γ H) ≡ H
+   ε H = hunapply e
+    where
+     e : (n : ℕ) → φ (γ H) n ≡ H n
+     e zero = refl _
+     e (succ n) =
+       φ (γ H) (succ n)                                          ≡⟨ refl _ ⟩
+       H (succ n) ∙ (refl _ ∙ ap g ((H n)⁻¹)) ∙ ap g (φ (γ H) n) ≡⟨ i      ⟩
+       H (succ n) ∙ ap g ((H n)⁻¹) ∙ ap g (φ (γ H) n)            ≡⟨ ii     ⟩
+       H (succ n) ∙ (ap g ((H n)⁻¹) ∙ ap g (φ (γ H) n))          ≡⟨ IH     ⟩
+       H (succ n) ∙ (ap g ((H n)⁻¹) ∙ ap g ((H n)))              ≡⟨ iii    ⟩
+       H (succ n) ∙ ((ap g ((H n))⁻¹) ∙ ap g ((H n)))            ≡⟨ iv     ⟩
+       H (succ n) ∙ refl _                                       ≡⟨ refl _ ⟩
+       H (succ n)                                                ∎
+       where
+        i    = ap (λ - → H (succ n) ∙ - ∙ ap g (φ (γ H) n))
+                  (refl-left {_} {_} {_} {_} {ap g ((H n)⁻¹)})
+        ii   = (∙assoc (H (succ n)) (ap g ((H n)⁻¹)) (ap g (φ (γ H) n)))
+        IH   = ap (λ - → H (succ n) ∙ (ap g ((H n)⁻¹) ∙ ap g -)) (e n)
+        iii  = ap (λ - → H (succ n) ∙ (- ∙ ap g ((H n)))) ((ap⁻¹ g (H n))⁻¹)
+        iv   = ap (H (succ n) ∙_) (⁻¹-left∙ (ap g (H n)))
+
+  lemma₁ = λ h → ((h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)) ≃⟨ i   h ⟩
+                 ((h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)) ≃⟨ ii  h ⟩
+                 (h ∼ ℕ-iteration Y y₀ g)          ≃⟨ iii h ⟩
+                 (h ≡ ℕ-iteration Y y₀ g)          ■
+   where
+    i   = λ h → Σ-cong (λ _ → happly (h ∘ succ) (g ∘ h) , hfe _ _)
+    ii  = lemma₀
+    iii = λ h → hunapply , hunapply-is-equiv h (ℕ-iteration Y y₀ g)
+
+  lemma₂ : (Σ \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)) ≃ singleton-type (ℕ-iteration Y y₀ g)
+  lemma₂ = Σ-cong lemma₁
+
+  υ : ∃! \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)
+  υ = equiv-to-singleton lemma₂ (singleton-types-are-singletons (ℕ → Y) (ℕ-iteration Y y₀ g))
+\end{code}
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="morefunextuses"></a> More consequences of function extensionality
 
 \begin{code}
@@ -10109,68 +10278,6 @@ We discuss unique choice, univalent choice and global choice.
      disprovable, but is consistent with univalence.
 
   1. Global choice contradicts univalence.
-
-[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="unique-existence"></a> Unique existence in univalent mathematics
-
-Unique existence of `x : X` with `A x` in univalent mathematics, written
-
-   > `∃! \(x : X) → A x`
-
-or simply
-
-   > `∃! A`,
-
-requires that not only the `x : X` but also the `a : A x` is
-unique. More precisely, we require that there is a unique *pair* `(x ,
-a) : Σ A`.
-
-This is particularly important in the formulation of universal
-properties of types that are not necessarily sets, where it
-generalizes the categorical notion of uniqueness up to unique
-isomorphism.
-
-\begin{code}
-∃! : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-∃! A = is-singleton (Σ A)
-
-
-unique-existence-is-subsingleton : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
-                                 → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
-                                 → is-subsingleton (∃! A)
-
-unique-existence-is-subsingleton A fe = being-singleton-is-subsingleton fe
-
-
-unique-existence-gives-weak-unique-existence : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) →
-
-    (∃! \(x : X) → A x)
-  → (Σ \(x : X) → A x) × ((x y : X) → A x → A y → x ≡ y)
-
-unique-existence-gives-weak-unique-existence A s = center (Σ A) s , u
- where
-  u : ∀ x y → A x → A y → x ≡ y
-  u x y a b = ap pr₁ (singletons-are-subsingletons (Σ A) s (x , a) (y , b))
-\end{code}
-
-The converse holds if each `A x` is a subsingleton:
-
-\begin{code}
-weak-unique-existence-gives-unique-existence-sometimes : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) →
-
-    ((x : X) → is-subsingleton (A x))
-
-  → ((Σ \(x : X) → A x) × ((x y : X) → A x → A y → x ≡ y))
-  → (∃! \(x : X) → A x)
-
-weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , a) , φ
- where
-  φ : (σ : Σ A) → x , a ≡ σ
-  φ (y , b) = to-Σ-≡ (u x y a b , i y _ _)
-\end{code}
-
-*Exercise*. Find a counter-example in the absence of the requirement
- that all types `A x` are subsingletons.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="unique-choice"></a> The principle of unique choice
