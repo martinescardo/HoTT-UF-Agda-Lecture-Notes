@@ -5535,11 +5535,11 @@ module basic-truncation-development
                               singletons-are-subsingletons X s) ,
     Σ-induction (inhabited-subsingletons-are-singletons X)
 
-  equiv-iff-embedding-and-surjections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                      →  is-equiv f
-                                      ⇔ (is-embedding f × is-surjection f)
+  equiv-iff-embedding-and-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                     →  is-equiv f
+                                     ⇔ (is-embedding f × is-surjection f)
 
-  equiv-iff-embedding-and-surjections f = (a , b)
+  equiv-iff-embedding-and-surjection f = (a , b)
    where
     a : is-equiv f → is-embedding f × is-surjection f
     a e = (λ y → singletons-are-subsingletons (fiber f y) (e y)) ,
@@ -5548,18 +5548,18 @@ module basic-truncation-development
     b : is-embedding f × is-surjection f → is-equiv f
     b (e , s) y = inhabited-subsingletons-are-singletons (fiber f y) (s y) (e y)
 
-  equiv-≡-embedding-and-surjections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                    → propext (𝓤 ⊔ 𝓥)
-                                    →  is-equiv f
-                                    ≡ (is-embedding f × is-surjection f)
+  equiv-≡-embedding-and-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                   → propext (𝓤 ⊔ 𝓥)
+                                   →  is-equiv f
+                                   ≡ (is-embedding f × is-surjection f)
 
-  equiv-≡-embedding-and-surjections f pe =
+  equiv-≡-embedding-and-surjection f pe =
     pe (being-equiv-is-subsingleton hunapply hunapply f)
        (×-is-subsingleton
          (being-embedding-is-subsingleton hunapply f)
          (being-surjection-is-subsingleton f))
-       (lr-implication (equiv-iff-embedding-and-surjections f))
-       (rl-implication (equiv-iff-embedding-and-surjections f))
+       (lr-implication (equiv-iff-embedding-and-surjection f))
+       (rl-implication (equiv-iff-embedding-and-surjection f))
 
 simple-unique-choice : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
 

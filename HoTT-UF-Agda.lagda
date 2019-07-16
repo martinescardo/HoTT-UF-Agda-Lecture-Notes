@@ -3964,8 +3964,9 @@ is-univalent 𝓤 = (X Y : 𝓤 ̇ ) → is-equiv (Id→Eq X Y)
 \end{code}
 
 Thus, the univalence of the universe `𝓤` says that identifications `X
-≡ Y` of types in `𝓤` are in canonical bijection with equivalences `X ≃ Y`, if by
-bijection we mean equivalence, where the canonical bijection is
+≡ Y` of types in `𝓤` are in canonical bijection with equivalences `X ≃ Y`, if [by
+bijection we mean equivalence](HoTT-UF-Agda.html#equiv-iff-embedding-and-surjection),
+where the canonical bijection is
 `Id→Eq`.
 
 We emphasize that this doesn't posit that univalence holds. It says
@@ -10288,11 +10289,11 @@ particular case of the fact that a map is an equivalence if and only
 if it is both an embedding and a surjection:
 
 \begin{code}
-  equiv-iff-embedding-and-surjections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                      →  is-equiv f
-                                      ⇔ (is-embedding f × is-surjection f)
+  equiv-iff-embedding-and-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                     →  is-equiv f
+                                     ⇔ (is-embedding f × is-surjection f)
 
-  equiv-iff-embedding-and-surjections f = (a , b)
+  equiv-iff-embedding-and-surjection f = (a , b)
    where
     a : is-equiv f → is-embedding f × is-surjection f
     a e = (λ y → singletons-are-subsingletons (fiber f y) (e y)) ,
@@ -10302,18 +10303,18 @@ if it is both an embedding and a surjection:
     b (e , s) y = inhabited-subsingletons-are-singletons (fiber f y) (s y) (e y)
 
 
-  equiv-≡-embedding-and-surjections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                    → propext (𝓤 ⊔ 𝓥)
-                                    →  is-equiv f
-                                    ≡ (is-embedding f × is-surjection f)
+  equiv-≡-embedding-and-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                   → propext (𝓤 ⊔ 𝓥)
+                                   →  is-equiv f
+                                   ≡ (is-embedding f × is-surjection f)
 
-  equiv-≡-embedding-and-surjections f pe =
+  equiv-≡-embedding-and-surjection f pe =
     pe (being-equiv-is-subsingleton hunapply hunapply f)
        (×-is-subsingleton
          (being-embedding-is-subsingleton hunapply f)
          (being-surjection-is-subsingleton f))
-       (lr-implication (equiv-iff-embedding-and-surjections f))
-       (rl-implication (equiv-iff-embedding-and-surjections f))
+       (lr-implication (equiv-iff-embedding-and-surjection f))
+       (rl-implication (equiv-iff-embedding-and-surjection f))
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
