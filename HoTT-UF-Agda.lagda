@@ -5957,7 +5957,7 @@ univalence is not needed.  Function extensionality suffices.
 
 We apply the same retraction techniques we used in order to prove that
 [invertible maps are
-equivalences](HoTT-UF-Agda#invertibles-are-equivs). We first show that, for any `h : ℕ → Y`, the type
+equivalences](HoTT-UF-Agda.html#invertibles-are-equivs). We first show that, for any `h : ℕ → Y`, the type
 
    > `(h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)`
 
