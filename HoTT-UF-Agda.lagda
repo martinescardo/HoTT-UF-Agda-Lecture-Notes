@@ -5962,9 +5962,9 @@ automatically an equivalence, but we don't need this fact):
 
 The above section `s` is defined by induction on natural numbers, but
 the following retraction `r` is defined directly. Above and below, the
-proof `refl _` is for clarity. This adds two extra steps in the proof
-of the retraction property (one of which is silent, but we choose to
-make explicit by yet another user to `refl _`).
+identification `refl _` is for clarity. This adds some extra steps to
+the proof of the retraction property (aome of which are silent, but we
+choose to make explicit by further uses of `refl _`).
 
 \begin{code}
     r : codomain s → domain s
