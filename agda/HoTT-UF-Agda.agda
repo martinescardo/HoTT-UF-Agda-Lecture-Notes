@@ -3281,11 +3281,11 @@ Eq-Eq-cong' : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔
 
 Eq-Eq-cong' fe₀ fe₁ fe₂ fe₃ fe₄ fe₅ fe₆ fe₇ fe₈ fe₉ fe₁₀ fe₁₁ {X} {Y} {A} {B} α β =
 
-  (X ≃ Y)  ≃⟨ ≃-Comp fe₀ fe₁ fe₂ fe₃ fe₄ fe₅ Y (≃-sym α)  ⟩
-  (A ≃ Y)  ≃⟨ ≃-Sym fe₃ fe₆ fe₄                           ⟩
-  (Y ≃ A)  ≃⟨ ≃-Comp fe₆ fe₄ fe₇ fe₈ fe₉ fe₁₀ A (≃-sym β) ⟩
-  (B ≃ A)  ≃⟨ ≃-Sym fe₈ fe₁₁ fe₉                          ⟩
-  (A ≃ B)  ■
+  X ≃ Y   ≃⟨ ≃-Comp fe₀ fe₁ fe₂ fe₃ fe₄ fe₅ Y (≃-sym α)  ⟩
+  A ≃ Y   ≃⟨ ≃-Sym fe₃ fe₆ fe₄                           ⟩
+  Y ≃ A   ≃⟨ ≃-Comp fe₆ fe₄ fe₇ fe₈ fe₉ fe₁₀ A (≃-sym β) ⟩
+  B ≃ A   ≃⟨ ≃-Sym fe₈ fe₁₁ fe₉                          ⟩
+  A ≃ B   ■
 
 Eq-Eq-cong : global-dfunext
            → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
@@ -3481,19 +3481,19 @@ Yoneda-Lemma fe fe' A x = 𝓔 A x , 𝓔-is-equiv fe fe' A x
 
 retract-universal-lemma : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
                         → ((y : X) → A y ◁ (x ≡ y))
-                        → is-singleton (Σ A)
+                        → ∃! A
 
 retract-universal-lemma A x ρ = i
  where
   σ : Σ A ◁ singleton-type' x
   σ = Σ-retract ρ
 
-  i : is-singleton (Σ A)
+  i : ∃! A
   i = retract-of-singleton σ (singleton-types'-are-singletons (domain A) x)
 
 fiberwise-equiv-universal : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X) (a : A x)
                           → is-fiberwise-equiv (𝓝 A x a)
-                          → is-singleton (Σ A)
+                          → ∃! A
 fiberwise-equiv-universal A x a e = retract-universal-lemma A x ρ
  where
   ρ : ∀ y → A y ◁ (x ≡ y)
@@ -3507,13 +3507,13 @@ is-representable A = Σ \(x : domain A) → 𝓨 x ≃̇ A
 
 representable-universal : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
                         → is-representable A
-                        → is-singleton (Σ A)
+                        → ∃! A
 
 representable-universal A (x , e) = retract-universal-lemma A x
                                      (λ x → ≃-gives-▷ (e x))
 
 universal-fiberwise-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
-                          → is-singleton (Σ A)
+                          → ∃! A
                           → (τ : Nat (𝓨 x) A) → is-fiberwise-equiv τ
 
 universal-fiberwise-equiv {𝓤} {𝓥} {X} A x u τ = γ
@@ -3528,7 +3528,7 @@ universal-fiberwise-equiv {𝓤} {𝓥} {X} A x u τ = γ
   γ = NatΣ-equiv-gives-fiberwise-equiv τ e
 
 universal-representable : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                        → is-singleton (Σ A)
+                        → ∃! A
                         → is-representable A
 
 universal-representable {𝓤} {𝓥} {X} {A} ((x , a) , p) = x , φ
@@ -3549,7 +3549,7 @@ fiberwise-retractions-are-equivs {𝓤} {𝓥} {X} A x τ s = γ
   ρ : (y : X) → A y ◁ (x ≡ y)
   ρ y = τ y , s y
 
-  i : is-singleton (Σ A)
+  i : ∃! A
   i = retract-universal-lemma A x ρ
 
   γ : is-fiberwise-equiv τ
@@ -3585,7 +3585,7 @@ being-representable-is-subsingleton : global-dfunext
 
 being-representable-is-subsingleton fe {X} A r₀ r₁ = γ
  where
-  u : is-singleton (Σ A)
+  u : ∃! A
   u = representable-universal A r₀
 
   i : (x : X) (τ : Nat (𝓨 x) A) → is-singleton (is-fiberwise-equiv τ)
@@ -6865,7 +6865,7 @@ SN-gives-DNE = sol
 DNE-gives-SN = sol
  where
   sol : DNE 𝓤 → SN 𝓤
-  sol dne P i = (¬ P) , dni P , dne P i
+  sol dne P i = ¬ P , dni P , dne P i
 
 infix   0 _∼_
 infixr 50 _,_
