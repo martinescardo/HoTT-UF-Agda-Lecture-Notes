@@ -2718,6 +2718,7 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
 
 ℕ-is-nno {𝓤} hfe Y y₀ g = γ
  where
+
   fe : dfunext 𝓤₀ 𝓤
   fe = hfunext-gives-dfunext hfe
 
