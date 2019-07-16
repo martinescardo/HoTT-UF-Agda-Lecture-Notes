@@ -5941,12 +5941,19 @@ univalence is not needed.  Function extensionality suffices.
 
 ℕ-is-nno {𝓤} hfe Y y₀ g = γ
  where
+\end{code}
+
+We need both versions `hfunext` and `dfunext` of function
+extensionality:
+
+\begin{code}
   fe : dfunext 𝓤₀ 𝓤
   fe = hfunext-gives-dfunext hfe
 \end{code}
 
-To show this, we establish the following retraction (which is
-automatically an equivalence, but we don't need this fact):
+To prove the universal property, we first establish the following
+retraction (which is automatically an equivalence, but we don't need
+this fact):
 
 \begin{code}
   lemma₀ : (h : ℕ → Y) → ((h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)) ◁ (h ∼ ℕ-iteration Y y₀ g)
@@ -6047,7 +6054,8 @@ being-subsingleton-is-subsingleton {𝓤} {X} fe i j = c
   c = fe b
 \end{code}
 
-Here is a situation where `hfunext` is what is needed:
+Here the version `hfunext` of function extensinoality is what is
+needed:
 
 \begin{code}
 Π-is-set : hfunext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
