@@ -5969,9 +5969,13 @@ and hence, by function extensionality, we also have a retraction if we
 replace pointwise equality `∼` by equality `≡`.  Applying `Σ` over `h`
 to both sides we still have a retraction, so that the type
 
-   > Σ \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)
+   > `Σ \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)`
 
-is a retract of a singleton type, and hence is itself a singleton, as required.
+is a retract of the singleton type
+
+   > `Σ \(h : ℕ → Y) → h ∼ ℕ-iteration Y y₀ g`,
+
+and hence is itself a singleton, as required.
 
 We need both versions `hfunext` and `dfunext` of function
 extensionality, where the first is an assumption:
