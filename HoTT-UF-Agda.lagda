@@ -559,6 +559,13 @@ module HoTT-UF-Agda where
   html by Agda after it successfully checks the mathematical
   development for correctness.
 
+The Agda code in these notes has syntax highlighting and links (in the
+[html](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html)
+and
+[pdf](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.pdf)
+versions), so that we can navigate to the definition of a name or
+symbol by clicking at it.
+
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="universes"></a> Universes
 
@@ -628,13 +635,6 @@ We now bring our notation for universes by importing our Agda file
 [`open`](https://agda.readthedocs.io/en/latest/language/module-system.html)
 asks to make all definitions in the file `Universe` visible in our
 file here.
-
-The Agda code in these notes has syntax highlighting and links (in the
-[html](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html)
-and
-[pdf](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.pdf)
-versions), so that we can navigate to the definition of a name or
-symbol by clicking at it.
 
 \begin{code}
 open import Universes public
