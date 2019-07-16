@@ -2733,10 +2733,10 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
                          ℕ-iteration Y y₀ g (succ n) ∎
 
     r : codomain s → domain s
-    r H = H 0 , (λ n → h (succ n)                    ≡⟨ H (succ n)     ⟩
-                       ℕ-iteration Y y₀ g (succ n)   ≡⟨ refl _         ⟩
-                       g (ℕ-iteration Y y₀ g n)      ≡⟨ ap g ((H n)⁻¹) ⟩
-                       (g (h n))                     ∎)
+    r H = H 0 , (λ n → h (succ n)                  ≡⟨ H (succ n)     ⟩
+                       ℕ-iteration Y y₀ g (succ n) ≡⟨ refl _         ⟩
+                       g (ℕ-iteration Y y₀ g n)    ≡⟨ ap g ((H n)⁻¹) ⟩
+                       g (h n )                    ∎)
 
     remark : ∀ n H → pr₂ (r H) n ≡ H (succ n) ∙ (refl _ ∙ ap g ((H n)⁻¹))
     remark n H = refl _
