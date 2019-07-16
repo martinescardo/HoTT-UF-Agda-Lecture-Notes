@@ -5930,8 +5930,8 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
 The natural numbers have the following universal property. What is
 noteworthy here is that the type `Y` need not be a set, so that the
 two equations can hold in multiple ways, but nevertheless we have
-unique existence in the sense of the previous section. We need
-function extensionality for this, but not univalence.
+unique existence in the sense of the previous section. Moreover,
+univalence is not needed.  Function extensionality suffices.
 
 \begin{code}
 ℕ-is-nno : hfunext 𝓤₀ 𝓤
