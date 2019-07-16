@@ -836,6 +836,12 @@ subsingletons-are-sets : (X : 𝓤 ̇ ) → is-subsingleton X → is-set X
 subsingletons-are-sets X s = Id-collapsibles-are-sets X
                                (subsingletons-are-Id-collapsible X s)
 
+𝟘-is-set : is-set 𝟘
+𝟘-is-set = subsingletons-are-sets 𝟘 𝟘-is-subsingleton
+
+𝟙-is-set : is-set 𝟙
+𝟙-is-set = subsingletons-are-sets 𝟙 𝟙-is-subsingleton
+
 subsingletons-are-of-hlevel-1 : (X : 𝓤 ̇ )
                               → is-subsingleton X
                               → X is-of-hlevel 1

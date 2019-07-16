@@ -3157,6 +3157,17 @@ subsingletons-are-sets X s = Id-collapsibles-are-sets X
                                (subsingletons-are-Id-collapsible X s)
 \end{code}
 
+In particular, the types `𝟘` and `𝟙` are sets.
+
+\begin{code}
+𝟘-is-set : is-set 𝟘
+𝟘-is-set = subsingletons-are-sets 𝟘 𝟘-is-subsingleton
+
+𝟙-is-set : is-set 𝟙
+𝟙-is-set = subsingletons-are-sets 𝟙 𝟙-is-subsingleton
+\end{code}
+
+
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="hlevel1subsingleton"></a> The types of hlevel 1 are the subsingletons
 
@@ -5936,6 +5947,13 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
 *Exercise*. Find a counter-example in the absence of the requirement
  that all types `A x` are subsingletons.
 
+Similarly, the existence of at most one `x : X` with `A x` should be
+understood as
+
+   > `is-subsingleton (Σ A)`,
+
+but we will not introduce special notation for this concept.
+
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="nnt"></a> Universal property of the natural numbers
 
@@ -6091,7 +6109,7 @@ being-subsingleton-is-subsingleton {𝓤} {X} fe i j = c
   c = fe b
 \end{code}
 
-Here the version `hfunext` of function extensinoality is what is
+Here the version `hfunext` of function extensionality is what is
 needed:
 
 \begin{code}
