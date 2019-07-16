@@ -2751,7 +2751,7 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
        K n ∙ (ap g (s (p , K) n) ∙  ap g ((s (p , K) n) ⁻¹))                   ≡⟨ iii n  ⟩
        K n ∙ (ap g (s (p , K) n) ∙ (ap g  (s (p , K) n))⁻¹)                    ≡⟨ iv  n  ⟩
        K n ∙ refl _                                                            ≡⟨ refl _ ⟩
-       K n ∎
+       K n                                                                     ∎
         where
          i   = λ n → ap (λ - → K n ∙ ap g (s (p , K) n) ∙ -)
                         (refl-left {_} {_} {_} {_} {ap g ((s (p , K) n)⁻¹)})

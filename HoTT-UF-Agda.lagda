@@ -5991,7 +5991,7 @@ The retraction property doesn't need induction on natural numbers:
        K n ∙ (ap g (s (p , K) n) ∙  ap g ((s (p , K) n) ⁻¹))                   ≡⟨ iii n  ⟩
        K n ∙ (ap g (s (p , K) n) ∙ (ap g  (s (p , K) n))⁻¹)                    ≡⟨ iv  n  ⟩
        K n ∙ refl _                                                            ≡⟨ refl _ ⟩
-       K n ∎
+       K n                                                                     ∎
         where
          i   = λ n → ap (λ - → K n ∙ ap g (s (p , K) n) ∙ -)
                         (refl-left {_} {_} {_} {_} {ap g ((s (p , K) n)⁻¹)})
