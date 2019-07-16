@@ -5878,7 +5878,7 @@ unique. More precisely, we require that there is a unique *pair* `(x ,
 a) : Σ A`.
 
 This is particularly important in the formulation of universal
-properties of types that are not necessarily sets, where it
+properties involving types that are not necessarily sets, where it
 generalizes the categorical notion of uniqueness up to unique
 isomorphism.
 
@@ -5927,7 +5927,8 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="nnt"></a> Universal property of the natural numbers
 
-The natural numbers have the following universal property. What is
+The natural numbers have the [following universal
+property](https://dl.acm.org/citation.cfm?id=3006383). What is
 noteworthy here is that the type `Y` need not be a set, so that the
 two equations can hold in multiple ways, but nevertheless we have
 unique existence in the sense of the previous section. Moreover,
@@ -5942,7 +5943,12 @@ univalence is not needed.  Function extensionality suffices.
  where
   fe : dfunext 𝓤₀ 𝓤
   fe = hfunext-gives-dfunext hfe
+\end{code}
 
+To show this, we establish the following retraction (which is
+automatically an equivalence, but we don't need this fact):
+
+\begin{code}
   lemma₀ : (h : ℕ → Y) → ((h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)) ◁ (h ∼ ℕ-iteration Y y₀ g)
   lemma₀ h = r , s , η
    where
@@ -5952,7 +5958,15 @@ univalence is not needed.  Function extensionality suffices.
                          g (h n)                     ≡⟨ ap g (s (p , K) n) ⟩
                          g (ℕ-iteration Y y₀ g n)    ≡⟨ refl _             ⟩
                          ℕ-iteration Y y₀ g (succ n) ∎
+\end{code}
 
+The above section `s` is defined by induction on natural numbers, but
+the following retraction `r` is defined directly. Above and below, the
+proof `refl _` is for clarity. This adds two extra steps in the proof
+of the retraction property (one of which is silent, but we choose to
+make explicit by yet another user to `refl _`).
+
+\begin{code}
     r : codomain s → domain s
     r H = H 0 , (λ n → h (succ n)                    ≡⟨ H (succ n)     ⟩
                        ℕ-iteration Y y₀ g (succ n)   ≡⟨ refl _         ⟩
@@ -5961,31 +5975,35 @@ univalence is not needed.  Function extensionality suffices.
 
     remark : ∀ n H → pr₂ (r H) n ≡ H (succ n) ∙ (refl _ ∙ ap g ((H n)⁻¹))
     remark n H = refl _
+\end{code}
 
-    η : (z : (h 0 ≡ y₀) × h ∘ succ ∼ g ∘ h) → r (s z) ≡ z
+The retraction property doesn't need induction on natural numbers:
+
+\begin{code}
+    η : (z : (h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)) → r (s z) ≡ z
     η (p , K) = q
      where
       v = λ n →
-        s (p , K) (succ n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))                ≡⟨ refl _ ⟩
-        K n ∙ ap g (s (p , K) n) ∙ refl _ ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹)) ≡⟨ refl _ ⟩
-        K n ∙ ap g (s (p , K) n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))          ≡⟨ i   n  ⟩
-        K n ∙ ap g (s (p , K) n) ∙ ap g ((s (p , K) n)⁻¹)                     ≡⟨ ii  n  ⟩
-        K n ∙ (ap g (s (p , K) n) ∙ ap g ((s (p , K) n)⁻¹))                   ≡⟨ iii n  ⟩
-        K n ∙ (ap g (s (p , K) n) ∙ (ap g (s (p , K) n))⁻¹)                   ≡⟨ iv  n  ⟩
-        K n ∙ refl _                                                          ≡⟨ refl _ ⟩
-        K n ∎
-       where
+       s (p , K) (succ n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))                  ≡⟨ refl _ ⟩
+       K n ∙  ap g (s (p , K) n) ∙  refl _ ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹)) ≡⟨ refl _ ⟩
+       K n ∙  ap g (s (p , K) n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))           ≡⟨ i   n  ⟩
+       K n ∙  ap g (s (p , K) n) ∙  ap g ((s (p , K) n) ⁻¹)                    ≡⟨ ii  n  ⟩
+       K n ∙ (ap g (s (p , K) n) ∙  ap g ((s (p , K) n) ⁻¹))                   ≡⟨ iii n  ⟩
+       K n ∙ (ap g (s (p , K) n) ∙ (ap g  (s (p , K) n))⁻¹)                    ≡⟨ iv  n  ⟩
+       K n ∙ refl _                                                            ≡⟨ refl _ ⟩
+       K n ∎
+        where
          i   = λ n → ap (λ - → K n ∙ ap g (s (p , K) n) ∙ -)
                         (refl-left {_} {_} {_} {_} {ap g ((s (p , K) n)⁻¹)})
          ii  = λ n → ∙assoc (K n) (ap g (s (p , K) n)) (ap g ((s (p , K) n)⁻¹))
          iii = λ n → ap (λ - → K n ∙ (ap g (s (p , K) n) ∙ -)) (ap⁻¹ g (s (p , K) n) ⁻¹)
          iv  = λ n → ap (K n ∙_) (⁻¹-right∙ (ap g (s (p , K) n)))
 
-      vi = ap (p ,_) (fe v)
-
       q = r (s (p , K))                                                      ≡⟨ refl _ ⟩
           p , (λ n → s (p , K) (succ n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))) ≡⟨ vi     ⟩
           p , K                                                              ∎
+       where
+        vi = ap (p ,_) (fe v)
 
 
   lemma₁ = λ h → ((h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)) ◁⟨ i h ⟩
@@ -5997,11 +6015,11 @@ univalence is not needed.  Function extensionality suffices.
     ii = λ h → ≃-gives-▷ (happly h (ℕ-iteration Y y₀ g) , hfe _ _)
 
   lemma₂ : (Σ \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h))
-         ◁ singleton-type (ℕ-iteration Y y₀ g)
+         ◁ (Σ \(h : ℕ → Y) → h ≡ ℕ-iteration Y y₀ g)
 
   lemma₂ = Σ-retract lemma₁
 
-  γ : ∃! \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)
+  γ : is-singleton (Σ \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h))
   γ = retract-of-singleton lemma₂
                            (singleton-types-are-singletons (ℕ → Y) (ℕ-iteration Y y₀ g))
 \end{code}

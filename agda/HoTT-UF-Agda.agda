@@ -2740,30 +2740,30 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
     remark : ∀ n H → pr₂ (r H) n ≡ H (succ n) ∙ (refl _ ∙ ap g ((H n)⁻¹))
     remark n H = refl _
 
-    η : (z : (h 0 ≡ y₀) × h ∘ succ ∼ g ∘ h) → r (s z) ≡ z
+    η : (z : (h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)) → r (s z) ≡ z
     η (p , K) = q
      where
       v = λ n →
-        s (p , K) (succ n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))                ≡⟨ refl _ ⟩
-        K n ∙ ap g (s (p , K) n) ∙ refl _ ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹)) ≡⟨ refl _ ⟩
-        K n ∙ ap g (s (p , K) n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))          ≡⟨ i   n  ⟩
-        K n ∙ ap g (s (p , K) n) ∙ ap g ((s (p , K) n)⁻¹)                     ≡⟨ ii  n  ⟩
-        K n ∙ (ap g (s (p , K) n) ∙ ap g ((s (p , K) n)⁻¹))                   ≡⟨ iii n  ⟩
-        K n ∙ (ap g (s (p , K) n) ∙ (ap g (s (p , K) n))⁻¹)                   ≡⟨ iv  n  ⟩
-        K n ∙ refl _                                                          ≡⟨ refl _ ⟩
-        K n ∎
-       where
+       s (p , K) (succ n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))                  ≡⟨ refl _ ⟩
+       K n ∙  ap g (s (p , K) n) ∙  refl _ ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹)) ≡⟨ refl _ ⟩
+       K n ∙  ap g (s (p , K) n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))           ≡⟨ i   n  ⟩
+       K n ∙  ap g (s (p , K) n) ∙  ap g ((s (p , K) n) ⁻¹)                    ≡⟨ ii  n  ⟩
+       K n ∙ (ap g (s (p , K) n) ∙  ap g ((s (p , K) n) ⁻¹))                   ≡⟨ iii n  ⟩
+       K n ∙ (ap g (s (p , K) n) ∙ (ap g  (s (p , K) n))⁻¹)                    ≡⟨ iv  n  ⟩
+       K n ∙ refl _                                                            ≡⟨ refl _ ⟩
+       K n ∎
+        where
          i   = λ n → ap (λ - → K n ∙ ap g (s (p , K) n) ∙ -)
                         (refl-left {_} {_} {_} {_} {ap g ((s (p , K) n)⁻¹)})
          ii  = λ n → ∙assoc (K n) (ap g (s (p , K) n)) (ap g ((s (p , K) n)⁻¹))
          iii = λ n → ap (λ - → K n ∙ (ap g (s (p , K) n) ∙ -)) (ap⁻¹ g (s (p , K) n) ⁻¹)
          iv  = λ n → ap (K n ∙_) (⁻¹-right∙ (ap g (s (p , K) n)))
 
-      vi = ap (p ,_) (fe v)
-
       q = r (s (p , K))                                                      ≡⟨ refl _ ⟩
           p , (λ n → s (p , K) (succ n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))) ≡⟨ vi     ⟩
           p , K                                                              ∎
+       where
+        vi = ap (p ,_) (fe v)
 
   lemma₁ = λ h → ((h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)) ◁⟨ i h ⟩
                  ((h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)) ◁⟨ lemma₀ h ⟩
@@ -2774,11 +2774,11 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
     ii = λ h → ≃-gives-▷ (happly h (ℕ-iteration Y y₀ g) , hfe _ _)
 
   lemma₂ : (Σ \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h))
-         ◁ singleton-type (ℕ-iteration Y y₀ g)
+         ◁ (Σ \(h : ℕ → Y) → h ≡ ℕ-iteration Y y₀ g)
 
   lemma₂ = Σ-retract lemma₁
 
-  γ : ∃! \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)
+  γ : is-singleton (Σ \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h))
   γ = retract-of-singleton lemma₂
                            (singleton-types-are-singletons (ℕ → Y) (ℕ-iteration Y y₀ g))
 
