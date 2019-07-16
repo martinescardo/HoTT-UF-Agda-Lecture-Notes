@@ -3965,7 +3965,7 @@ is-univalent 𝓤 = (X Y : 𝓤 ̇ ) → is-equiv (Id→Eq X Y)
 
 Thus, the univalence of the universe `𝓤` says that identifications `X
 ≡ Y` of types in `𝓤` are in canonical bijection with equivalences `X ≃ Y`, if [by
-bijection we mean equivalence](HoTT-UF-Agda.html#equiv-iff-embedding-and-surjection),
+bijection we mean equivalence](HoTT-UF-Agda.html#equivalence-characterization),
 where the canonical bijection is
 `Id→Eq`.
 
@@ -5402,7 +5402,7 @@ hfunext-gives-dfunext : hfunext 𝓤 𝓥 → dfunext 𝓤 𝓥
 hfunext-gives-dfunext hfe {X} {A} {f} {g} = inverse (happly f g) (hfe f g)
 \end{code}
 
-Voevodsky showed that all notions of function extensionality are
+Voevodsky showed that all these notions of function extensionality are
 logically equivalent to saying that products of singletons are
 singletons:
 
@@ -5947,7 +5947,8 @@ understood as
 
    > `is-subsingleton (Σ A)`,
 
-but we will not introduce special notation for this concept.
+but we will not introduce special notation for this concept, although
+it will occur often.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="nnt"></a> Universal property of the natural numbers
@@ -5979,7 +5980,7 @@ is a retract of the type
    > `h ∼ ℕ-iteration Y y₀ g`
 
 and hence, by function extensionality, we also have a retraction if we
-replace pointwise equality `∼` by equality `≡`.  Hence the type
+replace pointwise equality `∼` by equality `≡`.  Thus the type
 
    > `Σ \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)`
 
@@ -5989,8 +5990,9 @@ is a retract of the singleton type
 
 and therefore is itself a singleton, as required.
 
-We need both versions `hfunext` and `dfunext` of function
-extensionality, where the first is an assumption:
+Now we do this in Agda. We need both versions `hfunext` and `dfunext`
+of function extensionality, where we have taken the first as an
+assumption:
 
 \begin{code}
   fe : dfunext 𝓤₀ 𝓤
@@ -6016,8 +6018,8 @@ The above section `s` is defined by induction on natural numbers, but
 the following retraction `r` is defined directly. Above and below, the
 identifications `refl _` are included for the sake of clarity. This
 adds some extra steps to the proof of the retraction property (some of
-which are silent, but we choose to make explicit by further uses of
-`refl _`).
+which could be silent, but we choose to make explicit by further uses
+of `refl _`).
 
 \begin{code}
     r : codomain s → domain s
@@ -6183,7 +6185,7 @@ Composition of equivalences is associative:
 
 *Exercise.* The hlevels are closed under `Σ` and, using `hfunext`, also
 under `Π`. Univalence is not needed, but makes the proof easier.  (Without
-univalence, we need to show that hlevels are
+univalence, we need to show that the hlevels are
 closed under equivalence first.)
 
 \begin{code}
@@ -8129,7 +8131,7 @@ identity type.
 A *structure identity principle* describes the identity type of types
 of mathematical structures in terms of equivalences of
 underlying types, relying on univalence.  The first published
-*structure identity principle*, for a large class of algebraic
+structure identity principle, for a large class of algebraic
 structures, is [[Coquand and
 Danielsson]](https://www.sciencedirect.com/science/article/pii/S0019357713000694). The
 HoTT book (section 9.8) has a categorical version, whose formulation
