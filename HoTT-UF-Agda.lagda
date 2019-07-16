@@ -5966,16 +5966,15 @@ is a retract of the type
    > `h ∼ ℕ-iteration Y y₀ g`
 
 and hence, by function extensionality, we also have a retraction if we
-replace pointwise equality `∼` by equality `≡`.  Applying `Σ` over `h`
-to both sides we still have a retraction, so that the type
+replace pointwise equality `∼` by equality `≡`.  Hence the type
 
    > `Σ \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)`
 
 is a retract of the singleton type
 
-   > `Σ \(h : ℕ → Y) → h ∼ ℕ-iteration Y y₀ g`,
+   > `Σ \(h : ℕ → Y) → h ≡ ℕ-iteration Y y₀ g`,
 
-and hence is itself a singleton, as required.
+and therefore is itself a singleton, as required.
 
 We need both versions `hfunext` and `dfunext` of function
 extensionality, where the first is an assumption:
@@ -5985,9 +5984,8 @@ extensionality, where the first is an assumption:
   fe = hfunext-gives-dfunext hfe
 \end{code}
 
-To prove the universal property, we first establish the following
-retraction (which is automatically an equivalence, but we don't need
-this fact).
+We first establish the following retraction (which is automatically an
+equivalence, but we don't need this fact).
 
 \begin{code}
   lemma₀ : (h : ℕ → Y) → ((h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)) ◁ (h ∼ ℕ-iteration Y y₀ g)
