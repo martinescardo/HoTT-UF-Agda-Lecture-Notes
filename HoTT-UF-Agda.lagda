@@ -927,13 +927,22 @@ compute with induction.
   h (succ n) = f n (h n)
 \end{code}
 
-The definition of `ℕ-induction` is itself by induction. It says that given a point `a₀ : A 0` and a function `f : (n : ℕ) → A n → A (succ n)`, in order to calculate an element of `A n` for a given `n : ℕ`, we just calculate `h n`, that is,
+The definition of `ℕ-induction` is itself by induction. It says that given a point
+
+   > `a₀ : A 0`
+
+and a function
+
+   > `f : (n : ℕ) → A n → A (succ n)`,
+
+in order to calculate an element of `A n` for a given `n : ℕ`, we just calculate `h n`, that is,
 
    > `f n (f (n-1) (f (n-2) (... (f 0 a₀)...)))`.
 
 So the principle of induction is a construction that given a *base
-case* `a₀ : A 0`, an *induction step* `f : (n : ℕ) → A n → A (succ n)` and a number `n`, says how to get
-an element of the type `A n` by [primitive
+case* `a₀ : A 0`, an *induction step* `f : (n : ℕ) → A n → A (succ n)`
+and a number `n`, says how to get an element of the type `A n` by
+[primitive
 recursion](https://www.encyclopediaofmath.org/index.php/Primitive_recursion).
 
 Notice also that `ℕ-induction` is the dependently typed version of
@@ -5946,8 +5955,26 @@ univalence is not needed.  Function extensionality suffices.
  where
 \end{code}
 
+We apply the same retraction techniques we used in order to prove that
+[invertible maps are
+equivalences](HoTT-UF-Agda#invertibles-are-equivs). We first show that, for any `h : ℕ → Y`, the type
+
+   > `(h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)`
+
+is a retract of the type
+
+   > `h ∼ ℕ-iteration Y y₀ g`
+
+and hence, by function extensionality, we also have a retraction if we
+replace pointwise equality `∼` by equality `≡`.  Applying `Σ` over `h`
+to both sides we still have a retraction, so that the type
+
+   > Σ \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)
+
+is a retract of a singleton type, and hence is itself a singleton, as required.
+
 We need both versions `hfunext` and `dfunext` of function
-extensionality:
+extensionality, where the first is an assumption:
 
 \begin{code}
   fe : dfunext 𝓤₀ 𝓤
@@ -5956,7 +5983,7 @@ extensionality:
 
 To prove the universal property, we first establish the following
 retraction (which is automatically an equivalence, but we don't need
-this fact):
+this fact).
 
 \begin{code}
   lemma₀ : (h : ℕ → Y) → ((h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)) ◁ (h ∼ ℕ-iteration Y y₀ g)
