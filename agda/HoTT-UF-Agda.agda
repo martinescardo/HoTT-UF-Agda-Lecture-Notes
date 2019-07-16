@@ -535,18 +535,13 @@ is-subsingleton X = (x y : X) → x ≡ y
 𝟘-is-subsingleton : is-subsingleton 𝟘
 𝟘-is-subsingleton x y = !𝟘 (x ≡ y) x
 
-𝟙-is-subsingleton : is-subsingleton 𝟙
-𝟙-is-subsingleton = 𝟙-induction
-                     (λ x → ∀ y → x ≡ y)
-                     (𝟙-induction (λ y → ⋆ ≡ y) (refl ⋆))
-
-𝟙-is-subsingleton' : is-subsingleton 𝟙
-𝟙-is-subsingleton' ⋆ ⋆  = refl ⋆
-
 singletons-are-subsingletons : (X : 𝓤 ̇ ) → is-singleton X → is-subsingleton X
 singletons-are-subsingletons X (c , φ) x y = x ≡⟨ (φ x)⁻¹ ⟩
                                              c ≡⟨ φ y     ⟩
                                              y ∎
+
+𝟙-is-subsingleton : is-subsingleton 𝟙
+𝟙-is-subsingleton = singletons-are-subsingletons 𝟙 𝟙-is-singleton
 
 pointed-subsingletons-are-singletons : (X : 𝓤 ̇ )
                                      → X → is-subsingleton X → is-singleton X
