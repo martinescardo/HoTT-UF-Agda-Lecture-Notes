@@ -838,8 +838,8 @@ We give the two names `is-empty` and `¬` to the same function now:
 is-empty : 𝓤 ̇ → 𝓤 ̇
 is-empty X = X → 𝟘
 
-¬ : 𝓤 ̇ → 𝓤 ̇
-¬ X = X → 𝟘
+¬_ : 𝓤 ̇ → 𝓤 ̇
+¬_ X = X → 𝟘
 \end{code}
 
 This says that a type is empty precisely when we have a function to
@@ -997,8 +997,8 @@ module Arithmetic where
   x × 0      = 0
   x × succ y = x + x × y
 
-  infixl 10 _+_
-  infixl 11 _×_
+  infixl 20 _+_
+  infixl 21 _×_
 \end{code}
 
 The above "fixity" declarations allow us to indicate the precedences
@@ -1024,8 +1024,8 @@ module Arithmetic' where
     h : ℕ → ℕ
     h = ℕ-iteration ℕ 0 (x +_)
 
-  infixl 0 _+_
-  infixl 1 _×_
+  infixl 20 _+_
+  infixl 21 _×_
 \end{code}
 
 Here the expression "`x +_`" stands for the function `ℕ → ℕ` that adds
@@ -6046,10 +6046,10 @@ The retraction property doesn't need induction on natural numbers:
         vi = ap (p ,_) (fe v)
 
 
-  lemma₁ = λ h → ((h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)) ◁⟨ i h ⟩
-                 ((h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)) ◁⟨ lemma₀ h ⟩
-                 (h ∼ ℕ-iteration Y y₀ g)          ◁⟨ ii h ⟩
-                 (h ≡ ℕ-iteration Y y₀ g)          ◀
+  lemma₁ = λ h → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h) ◁⟨ i h      ⟩
+                 (h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h) ◁⟨ lemma₀ h ⟩
+                 (h ∼ ℕ-iteration Y y₀ g)        ◁⟨ ii h     ⟩
+                 (h ≡ ℕ-iteration Y y₀ g)        ◀
    where
     i  = λ h → Σ-retract (λ _ → ≃-gives-◁ (happly (h ∘ succ) (g ∘ h) , hfe _ _))
     ii = λ h → ≃-gives-▷ (happly h (ℕ-iteration Y y₀ g) , hfe _ _)
@@ -10123,7 +10123,7 @@ Disjunction and existence are defined as the truncation of `+` and `Σ`:
   _∨_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
   A ∨ B = ∥ A + B ∥
 
-  infixl 2 _∨_
+  infixl 20 _∨_
 
   ∃ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
   ∃ A = ∥ Σ A ∥
@@ -11476,8 +11476,8 @@ propositional resizing:
 
   ∩-property {𝓤} {X} A B x = id , id
 
-  infix  2 _∩_
-  infix  2 _∪_
+  infix  20 _∩_
+  infix  20 _∪_
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -11600,7 +11600,7 @@ to prove that the quotient is a set.
 
 \begin{code}
  equiv-rel : X → (X → Ω 𝓥)
- equiv-rel x y = x ≈ y , ≈p x y
+ equiv-rel x y = (x ≈ y) , ≈p x y
 
  X/≈ : 𝓥 ⁺ ⊔ 𝓤  ̇
  X/≈ = image equiv-rel
@@ -12208,25 +12208,26 @@ rejected by Agda.
 
 \begin{code}
 
-infix  4 _∼_
-infixr 4 _,_
-infixr 2 _×_
-infixr 1 _+_
-infixl 5 _∘_
-infix  0 _≡_
-infix  0 _⇔_
-infixl 2 _∙_
-infixr 0 _≡⟨_⟩_
-infix  1 _∎
-infix  3 _⁻¹
-infix  0 _◁_
-infix  1 _◀
-infixr 0 _◁⟨_⟩_
-infix  0 _≃_
-infixl 2 _●_
-infixr 0 _≃⟨_⟩_
-infix  1 _■
-infix  3 _∈_
+infix   0 _∼_
+infixr 50 _,_
+infixr 30 _×_
+infixr 20 _+_
+infixl 70 _∘_
+infix   0 _≡_
+infix  10 _⇔_
+infixl 30 _∙_
+infixr  0 _≡⟨_⟩_
+infix   1 _∎
+infix  40 _⁻¹
+infix  10 _◁_
+infixr  0 _◁⟨_⟩_
+infix   1 _◀
+infix  10 _≃_
+infixl 30 _●_
+infixr  0 _≃⟨_⟩_
+infix   1 _■
+infix  40 _∈_
+infix  80 ¬_
 
 \end{code}
 

@@ -80,8 +80,8 @@ module Arithmetic where
   x × 0      = 0
   x × succ y = x + x × y
 
-  infixl 10 _+_
-  infixl 11 _×_
+  infixl 20 _+_
+  infixl 21 _×_
 
 module Arithmetic' where
 
@@ -97,8 +97,8 @@ module Arithmetic' where
     h : ℕ → ℕ
     h = ℕ-iteration ℕ 0 (x +_)
 
-  infixl 0 _+_
-  infixl 1 _×_
+  infixl 20 _+_
+  infixl 21 _×_
 
 module ℕ-order where
 
@@ -2766,10 +2766,10 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
        where
         vi = ap (p ,_) (fe v)
 
-  lemma₁ = λ h → ((h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)) ◁⟨ i h ⟩
-                 ((h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)) ◁⟨ lemma₀ h ⟩
-                 (h ∼ ℕ-iteration Y y₀ g)          ◁⟨ ii h ⟩
-                 (h ≡ ℕ-iteration Y y₀ g)          ◀
+  lemma₁ = λ h → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h) ◁⟨ i h      ⟩
+                 (h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h) ◁⟨ lemma₀ h ⟩
+                 (h ∼ ℕ-iteration Y y₀ g)        ◁⟨ ii h     ⟩
+                 (h ≡ ℕ-iteration Y y₀ g)        ◀
    where
     i  = λ h → Σ-retract (λ _ → ≃-gives-◁ (happly (h ∘ succ) (g ∘ h) , hfe _ _))
     ii = λ h → ≃-gives-▷ (happly h (ℕ-iteration Y y₀ g) , hfe _ _)
@@ -5445,7 +5445,7 @@ module basic-truncation-development
   _∨_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
   A ∨ B = ∥ A + B ∥
 
-  infixl 2 _∨_
+  infixl 20 _∨_
 
   ∃ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
   ∃ A = ∥ Σ A ∥
@@ -6360,8 +6360,8 @@ module basic-powerset-development
 
   ∩-property {𝓤} {X} A B x = id , id
 
-  infix  2 _∩_
-  infix  2 _∪_
+  infix  20 _∩_
+  infix  20 _∪_
 
   Top : (𝓤 : Universe) → 𝓤 ⁺⁺ ̇
   Top 𝓤 = Σ \(X : 𝓤 ̇ )
@@ -6405,7 +6405,7 @@ module quotient
  open basic-truncation-development pt hfe
 
  equiv-rel : X → (X → Ω 𝓥)
- equiv-rel x y = x ≈ y , ≈p x y
+ equiv-rel x y = (x ≈ y) , ≈p x y
 
  X/≈ : 𝓥 ⁺ ⊔ 𝓤  ̇
  X/≈ = image equiv-rel
@@ -6867,23 +6867,23 @@ DNE-gives-SN = sol
   sol : DNE 𝓤 → SN 𝓤
   sol dne P i = (¬ P) , dni P , dne P i
 
-infix  4 _∼_
-infixr 4 _,_
-infixr 2 _×_
-infixr 1 _+_
-infixl 5 _∘_
-infix  0 _≡_
-infix  0 _⇔_
-infixl 2 _∙_
-infixr 0 _≡⟨_⟩_
-infix  1 _∎
-infix  3 _⁻¹
-infix  0 _◁_
-infix  1 _◀
-infixr 0 _◁⟨_⟩_
-infix  0 _≃_
-infixl 2 _●_
-infixr 0 _≃⟨_⟩_
-infix  1 _■
-infix  3 _∈_
+infix   0 _∼_
+infixr 50 _,_
+infixr 30 _×_
+infixr 20 _+_
+infixl 70 _∘_
+infix   0 _≡_
+infix  10 _⇔_
+infixl 30 _∙_
+infixr  0 _≡⟨_⟩_
+infix   1 _∎
+infix  40 _⁻¹
+infix  10 _◁_
+infixr  0 _◁⟨_⟩_
+infix   1 _◀
+infix  10 _≃_
+infixl 30 _●_
+infixr  0 _≃⟨_⟩_
+infix   1 _■
+infix  40 _∈_
 
