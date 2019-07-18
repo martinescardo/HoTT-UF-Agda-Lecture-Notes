@@ -3167,6 +3167,7 @@ holds-is-subsingleton (P , i) = i
 
 powersets-are-sets : hfunext 𝓤 (𝓥 ⁺) → dfunext 𝓥 𝓥 → propext 𝓥
                    → {X : 𝓤 ̇ } → is-set (X → Ω 𝓥)
+
 powersets-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-a-set fe' pe)
 
 𝓟 : 𝓤 ̇ → 𝓤 ⁺ ̇
@@ -3317,6 +3318,7 @@ pr₂-embedding A X i x ((a , x) , refl x) ((b , x) , refl x) = p
 pr₁-embedding : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
               → ((x : X) → is-subsingleton (A x))
               → is-embedding (pr₁ {𝓤} {𝓥} {X} {A})
+
 pr₁-embedding i x ((x , a) , refl x) ((x , a') , refl x) = γ
  where
   γ : (x , a) , refl x ≡ (x , a') , refl x

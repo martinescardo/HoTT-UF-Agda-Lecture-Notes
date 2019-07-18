@@ -6127,7 +6127,7 @@ The retraction property doesn't need induction on natural numbers:
 
 This concludes the proof of `ℕ-is-nno`. We say that `ℕ` is a [natural
 numbers object](https://en.wikipedia.org/wiki/Natural_number_object),
-or, more precisely, the triple `(ℕ , 0 , succ)` is a naturals numbers
+or, more precisely, the triple `(ℕ , 0 , succ)` is a natural numbers
 object.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -6600,6 +6600,7 @@ Hence powersets, even of types that are not sets, are always sets.
 \begin{code}
 powersets-are-sets : hfunext 𝓤 (𝓥 ⁺) → dfunext 𝓥 𝓥 → propext 𝓥
                    → {X : 𝓤 ̇ } → is-set (X → Ω 𝓥)
+
 powersets-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-a-set fe' pe)
 \end{code}
 
@@ -6834,6 +6835,7 @@ is an embedding if `A x` is a subsingleton for every `x : X`:
 pr₁-embedding : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
               → ((x : X) → is-subsingleton (A x))
               → is-embedding (pr₁ {𝓤} {𝓥} {X} {A})
+
 pr₁-embedding i x ((x , a) , refl x) ((x , a') , refl x) = γ
  where
   γ : (x , a) , refl x ≡ (x , a') , refl x
@@ -7023,7 +7025,7 @@ transport-lemma A x τ x (refl x) = refl (τ x (refl x))
 \end{code}
 
 We denote the point `τ x (refl x)` in the above lemma by `𝓔 A x τ` as
-refer to it as the *Yoneda element* of `τ`.
+refer to it as the *Yoneda element* of the transformation `τ`.
 
 \begin{code}
 𝓔 : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X) → Nat (𝓨 x) A → A x
@@ -8180,7 +8182,7 @@ invariant under homeomorphism, properties of metric spaces are
 automatically invariant under isometry, properties of categories are
 automatically invariant under equivalence, and so on, simply because,
 by design, properties are invariant under the notion of equality given
-by the identity type. In other foundations, the automatic lack of
+by the identity type. In other foundations, the lack of such automatic
 invariance creates [practical
 difficulties](https://mathoverflow.net/questions/336191/cauchy-reals-and-dedekind-reals-satisfy-the-same-mathematical-theorems/).
 
@@ -8215,7 +8217,8 @@ structure. We consider several versions:
     an automatic characterization of their identitifications.
 
 We also apply theses ideas to characterize identifications of metric
-spaces, topological spaces, graphs, partially ordered sets, and more.
+spaces, topological spaces, graphs, partially ordered sets, categories
+and more.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="sns"></a> A structure identity principle for a standard notion of structure
@@ -8982,6 +8985,7 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
  Group : 𝓤 ⁺ ̇
  Group = Σ \(X : 𝓤 ̇ ) → Σ \(s : group-structure X) → group-axiom X (pr₁ s)
 
+
  group-axiom-is-subsingleton : (X : 𝓤 ̇ )
                              → (s : group-structure X)
                              → is-subsingleton (group-axiom X (pr₁ s))
@@ -9004,10 +9008,12 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
    γ : is-subsingleton (group-axiom X (_·_ , e))
    γ = Π-is-subsingleton dfe i
 
+
  sns-data : SNS (λ X → Σ \(s : group-structure X) → group-axiom X (pr₁ s)) 𝓤
  sns-data = add-axioms
              (λ X s → group-axiom X (pr₁ s)) group-axiom-is-subsingleton
              (monoid-identity.sns-data ua)
+
 
  _≅_ : Group → Group → 𝓤 ̇
 
@@ -9052,23 +9058,25 @@ to the identity equivalence.
                            × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 \end{code}
 
-*Exercise.* In the same that two elements of the powerset are equal
- iff they [have the same
+*Exercise.* In the same way that two elements of the powerset are
+ equal iff they [have the same
  elements](HoTT-UF-Agda.html#subset-extensionality), two subgroups are
- equal if and only if they have the same elements. This can be formulated and proved in two equivalent ways.
+ equal if and only if they have the same elements. This can be
+ formulated and proved in two equivalent ways.
 
   1. A subgroup is an element of the powerset of the underlying set of
-  the group which is closed under the group operations. So the type of
-  subgroups of a given group is a subtype of the powerset and inherits
-  the characterization of equality of the powerset.
+  the group that is closed under the group operations. So the type of
+  subgroups of a given group is embedded as a subtype of the powerset
+  of the underlying set and inherits the characterization of equality
+  of the powerset.
 
-  2. A subgroup of a group `G` is a group `H` *together* with a
-  homomorphism `G → H` which is also an embedding. Show that this
-  second definition of the type of subgroup is equivalent to the
-  previous. With this second definition, two subgroups `H` and `H'`
-  are equal iff the embeddings `H → G` and `H' → G` can be completed
-  to a triable by an isomorphism `H → H'`, which is necessarily
-  unique.
+  1. A subgroup of a group `G` is a group `H` *together* with a
+  homomorphism `H → G` which is also an embedding. Show that this
+  second definition of the type of subgroups produces a type that is
+  equivalent to the previous. With this second definition, two
+  subgroups `H` and `H'` are equal iff the embeddings `H → G` and `H'
+  → G` can be completed to a commutative triangle by a group
+  isomorphism `H → H'`, which is necessarily unique when it exists.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="slice-sip"></a> The slice type
