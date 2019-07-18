@@ -5200,7 +5200,7 @@ module type-valued-preorder-with-axioms-identity
 module category-identity
         (𝓤 𝓥 : Universe)
         (ua : Univalence)
-      where
+       where
 
  open type-valued-preorder-with-axioms-identity 𝓤 𝓥 (𝓤 ⊔ 𝓥) ua
 
@@ -5578,8 +5578,8 @@ simple-unique-choice X A R s = f , φ
 
 Unique-Choice : (𝓤 𝓥 𝓦 : Universe) → (𝓤 ⊔ 𝓥 ⊔ 𝓦)⁺ ̇
 Unique-Choice 𝓤 𝓥 𝓦 = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
-                    → ((x : X) → ∃! \(a : A x) → R x a)
-                    → ∃! \(f : Π A) → (x : X) → R x (f x)
+                     → ((x : X) → ∃! \(a : A x) → R x a)
+                     → ∃! \(f : Π A) → (x : X) → R x (f x)
 
 vvfunext-gives-unique-choice : vvfunext 𝓤 (𝓥 ⊔ 𝓦) → Unique-Choice 𝓤 𝓥 𝓦
 vvfunext-gives-unique-choice vv X A R s = c

@@ -9794,7 +9794,7 @@ By choosing suitable axioms for type-valued preorders, we get categories:
 module category-identity
         (𝓤 𝓥 : Universe)
         (ua : Univalence)
-      where
+       where
 
  open type-valued-preorder-with-axioms-identity 𝓤 𝓥 (𝓤 ⊔ 𝓥) ua
 
@@ -10414,7 +10414,9 @@ We discuss unique choice, univalent choice and global choice.
   1. Univalent choice implies excluded middle and is not provable or
      disprovable, but is consistent with univalence.
 
-  1. Global choice contradicts univalence.
+  1. Global choice contradicts univalence, because it is not possible
+     to choose an element of every type in way that is invariant under
+     automorphisms.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="unique-choice"></a> The principle of unique choice
@@ -10427,7 +10429,7 @@ then
 
    > there is a specified function `f : (x : X) → A x` such that `R x (f x)` for all `x : X`.
 
-This just holds and is trivial:
+This just holds and is trivial, given by projection:
 
 \begin{code}
 simple-unique-choice : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
@@ -10456,8 +10458,8 @@ is equivalent to our official formulation of unique choice:
 \begin{code}
 Unique-Choice : (𝓤 𝓥 𝓦 : Universe) → (𝓤 ⊔ 𝓥 ⊔ 𝓦)⁺ ̇
 Unique-Choice 𝓤 𝓥 𝓦 = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
-                    → ((x : X) → ∃! \(a : A x) → R x a)
-                    → ∃! \(f : Π A) → (x : X) → R x (f x)
+                     → ((x : X) → ∃! \(a : A x) → R x a)
+                     → ∃! \(f : Π A) → (x : X) → R x (f x)
 
 
 vvfunext-gives-unique-choice : vvfunext 𝓤 (𝓥 ⊔ 𝓦) → Unique-Choice 𝓤 𝓥 𝓦
@@ -11372,7 +11374,7 @@ the above definition in the following alternative form:
 \end{code}
 
 The fact that Agda accepts the above definition without errors means
-that there is unique way to fill each `_`, which has to be the
+that there is a unique way to fill each `_`, which has to be the
 following.
 
 \begin{code}
