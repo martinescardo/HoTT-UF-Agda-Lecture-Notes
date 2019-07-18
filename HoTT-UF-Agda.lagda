@@ -148,6 +148,10 @@ to coincide with monoid isomorphism. Largeness and smallness are taken
 as relative concepts, with type *universes* incorporated in the theory
 to account for the size distinction.
 
+In particular, properties of monoids are automatically invariant under
+isomorphism, properties of categories are automatically invariant
+under equivalence, and so son.
+
 Voevodsky's way to achieve this is to start with a Martin-Löf type
 theory (MLTT), including identity types and type universes, and
 postulate a single axiom, named *univalence*. This axiom stipulates a
@@ -8124,9 +8128,19 @@ the same, for all mathematical purposes, if they are isomorphic.
 Likewise, we consider two topological spaces to be the same if they
 are homeomorphic, two metric spaces to be the same if they are
 isometric, two categories to be the same if they are equivalent, and
-so on. With Voevodsky's univalence axiom, we can *prove* that these
-notions of sameness are automatically captured by Martin-Löf's
-identity type.
+so on.
+
+With Voevodsky's univalence axiom, we can *prove* that these notions
+of sameness are automatically captured by Martin-Löf's identity
+type. In particular, properties of groups are automatically invariant
+under isomorphism, properties of topological spaces are automatically
+invariant under homeomorphism, properties of metric spaces are
+automatically invariant under isometry, and properties of categories
+are automatically invariant under equivalence, simply because, by
+design, properties are invariant under the notion of equality given by
+the identity type. In other foundations, the automatic lack of
+invariance creates [practical
+difficulties](https://mathoverflow.net/questions/336191/cauchy-reals-and-dedekind-reals-satisfy-the-same-mathematical-theorems/).
 
 A *structure identity principle* describes the identity type of types
 of mathematical structures in terms of equivalences of
@@ -8995,6 +9009,24 @@ to the identity equivalence.
             Σ \(f : X → Y) → is-equiv f
                            × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 \end{code}
+
+*Exercise.* In the same that two elements of the powerset are equal
+ iff they [have the same
+ elements](HoTT-UF-Agda.html#subset-extensionality), two subgroups are
+ equal if and only if they have the same elements. This can be formulated and proved in two equivalent ways.
+
+  1. A subgroup is an element of the powerset of the underlying set of
+  the group which is closed under the group operations. So the type of
+  subgroups of a given group is a subtype of the powerset and inherits
+  the characterization of equality of the powerset.
+
+  2. A subgroup of a group `G` is a group `H` *together* with a
+  homomorphism `G → H` which is also an embedding. Show that this
+  second definition of the type of subgroup is equivalent to the
+  previous. With this second definition, two subgroups `H` and `H'`
+  are equal iff the embeddings `H → G` and `H' → G` can be completed
+  to a triable by an isomorphism `H → H'`, which is necessarily
+  unique.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="slice-sip"></a> The slice type
