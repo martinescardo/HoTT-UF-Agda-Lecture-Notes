@@ -9421,21 +9421,21 @@ composition or give coherence data for the identification `𝓕-id`.
 
 \begin{code}
 module generalized-functor-algebra-equality
-         {𝓤 : Universe}
-         (F : 𝓤 ̇ → 𝓤 ̇ )
+         {𝓤 𝓥 : Universe}
+         (F : 𝓤 ̇ → 𝓥 ̇ )
          (𝓕 : {X Y : 𝓤 ̇ } → (X → Y) → F X → F Y)
          (𝓕-id : {X : 𝓤 ̇ } → 𝓕 (𝑖𝑑 X) ≡ 𝑖𝑑 (F X))
        where
 
  open sip
 
- S : 𝓤 ̇ → 𝓤 ̇
+ S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
  S X = F X → X
 
- sns-data : SNS S 𝓤
+ sns-data : SNS S (𝓤 ⊔ 𝓥)
  sns-data = (ι , ρ , θ)
   where
-   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
+   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
    ι (X , α) (Y , β) (f , _) = f ∘ α ≡ β ∘ 𝓕 f
 
    ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
