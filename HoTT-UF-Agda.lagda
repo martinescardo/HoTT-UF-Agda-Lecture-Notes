@@ -3646,31 +3646,73 @@ equivs-are-invertible f e = inverse f e ,
                             inverse-is-section f e
 \end{code}
 
-The non-trivial direction is the following, for which we use the
-retraction techniques explained [above](HoTT-UF-Agda.html#retracts):
+The non-trivial direction derives the equivalence property from
+invertibility data, for which we use the retraction techniques
+explained [above](HoTT-UF-Agda.html#retracts).
+
+Suppose that invertibility data
+
+   > `g : Y → X` ,
+
+   > `η : (x : X) → g (f x) ≡ x`
+
+   > `ε : (y : Y) → f (g y) ≡ y`
+
+for a map `f : X → Y` is given, and that a point `y₀` in the codomain
+of `f` is given.
+
+We need to show that the fiber `Σ \(x : X) → f x ≡ y₀` of `y₀` is a
+singleton.
+
+  1. We first use the assumption `ε` to show that the type `f (g y) ≡
+     y₀` is a retract of the type `y ≡ y₀` for any given `y : Y`.
+
+     To get the section `s : f (g y) ≡ y₀ → y ≡ y₀`, we transport along
+     the identification `ε y : f (g y) ≡ y` over the family `A - = (-
+     ≡ y₀)`, which can be abbreviated as `_≡ y₀`.
+
+     To get the retraction `r` in the opposite direction, we transport
+     along the inverse of the identification `ε y` over the same
+     family.
+
+     We already know that this gives a section-retraction pair by
+     `transport-is-section`.
+
+  1. Next we have that the type `Σ \(x : X) → f x ≡ y₀` is a retract
+     of the type `Σ \(y : Y) → f (g y) ≡ y₀` by `Σ-reindexing-retract`
+     using the assumption that `η` exibits `g` as a section of `f`,
+     which in turn is a retract of the type `Σ \(y : Y) → y ≡ y₀` by
+     applying `Σ` to both sides of the retraction `(f (g y) ≡ y₀) ◁ (y
+     ≡ y₀)` of the previous step.
+
+     This amounts to saying that the type `fiber f y₀` is a retract of
+     `singleton-type y₀`.
+
+  1. But then we are done, because singleton types are singletons and
+     retracts of singletons are singletons.
 
 \begin{code}
 invertibles-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                        → invertible f → is-equiv f
 
-invertibles-are-equivs {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = c
+invertibles-are-equivs {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = iii
  where
-  a : (y : Y) → (f (g y) ≡ y₀) ◁ (y ≡ y₀)
-  a y =  r , s , transport-is-section (_≡ y₀) (ε y)
+  i : (y : Y) → (f (g y) ≡ y₀) ◁ (y ≡ y₀)
+  i y =  r , s , transport-is-section (_≡ y₀) (ε y)
    where
-    r : y ≡ y₀ → f (g y) ≡ y₀
-    r = transport (_≡ y₀) ((ε y)⁻¹)
-
     s : f (g y) ≡ y₀ → y ≡ y₀
     s = transport (_≡ y₀) (ε y)
 
-  b : fiber f y₀ ◁ singleton-type y₀
-  b = (Σ \(x : X) → f x ≡ y₀)     ◁⟨ Σ-reindexing-retract g (f , η) ⟩
-      (Σ \(y : Y) → f (g y) ≡ y₀) ◁⟨ Σ-retract a                    ⟩
-      (Σ \(y : Y) → y ≡ y₀)       ◀
+    r : y ≡ y₀ → f (g y) ≡ y₀
+    r = transport (_≡ y₀) ((ε y)⁻¹)
 
-  c : is-singleton (fiber f y₀)
-  c = retract-of-singleton b (singleton-types-are-singletons Y y₀)
+  ii : fiber f y₀ ◁ singleton-type y₀
+  ii = (Σ \(x : X) → f x ≡ y₀)     ◁⟨ Σ-reindexing-retract g (f , η) ⟩
+       (Σ \(y : Y) → f (g y) ≡ y₀) ◁⟨ Σ-retract i                    ⟩
+       (Σ \(y : Y) → y ≡ y₀)       ◀
+
+  iii : is-singleton (fiber f y₀)
+  iii = retract-of-singleton ii (singleton-types-are-singletons Y y₀)
 
 
 inverse-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
@@ -8135,10 +8177,10 @@ of sameness are automatically captured by Martin-Löf's identity
 type. In particular, properties of groups are automatically invariant
 under isomorphism, properties of topological spaces are automatically
 invariant under homeomorphism, properties of metric spaces are
-automatically invariant under isometry, and properties of categories
-are automatically invariant under equivalence, simply because, by
-design, properties are invariant under the notion of equality given by
-the identity type. In other foundations, the automatic lack of
+automatically invariant under isometry, properties of categories are
+automatically invariant under equivalence, and so on, simply because,
+by design, properties are invariant under the notion of equality given
+by the identity type. In other foundations, the automatic lack of
 invariance creates [practical
 difficulties](https://mathoverflow.net/questions/336191/cauchy-reals-and-dedekind-reals-satisfy-the-same-mathematical-theorems/).
 

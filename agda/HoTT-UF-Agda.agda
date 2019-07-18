@@ -1081,24 +1081,24 @@ equivs-are-invertible f e = inverse f e ,
 invertibles-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                        → invertible f → is-equiv f
 
-invertibles-are-equivs {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = c
+invertibles-are-equivs {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = iii
  where
-  a : (y : Y) → (f (g y) ≡ y₀) ◁ (y ≡ y₀)
-  a y =  r , s , transport-is-section (_≡ y₀) (ε y)
+  i : (y : Y) → (f (g y) ≡ y₀) ◁ (y ≡ y₀)
+  i y =  r , s , transport-is-section (_≡ y₀) (ε y)
    where
-    r : y ≡ y₀ → f (g y) ≡ y₀
-    r = transport (_≡ y₀) ((ε y)⁻¹)
-
     s : f (g y) ≡ y₀ → y ≡ y₀
     s = transport (_≡ y₀) (ε y)
 
-  b : fiber f y₀ ◁ singleton-type y₀
-  b = (Σ \(x : X) → f x ≡ y₀)     ◁⟨ Σ-reindexing-retract g (f , η) ⟩
-      (Σ \(y : Y) → f (g y) ≡ y₀) ◁⟨ Σ-retract a                    ⟩
-      (Σ \(y : Y) → y ≡ y₀)       ◀
+    r : y ≡ y₀ → f (g y) ≡ y₀
+    r = transport (_≡ y₀) ((ε y)⁻¹)
 
-  c : is-singleton (fiber f y₀)
-  c = retract-of-singleton b (singleton-types-are-singletons Y y₀)
+  ii : fiber f y₀ ◁ singleton-type y₀
+  ii = (Σ \(x : X) → f x ≡ y₀)     ◁⟨ Σ-reindexing-retract g (f , η) ⟩
+       (Σ \(y : Y) → f (g y) ≡ y₀) ◁⟨ Σ-retract i                    ⟩
+       (Σ \(y : Y) → y ≡ y₀)       ◀
+
+  iii : is-singleton (fiber f y₀)
+  iii = retract-of-singleton ii (singleton-types-are-singletons Y y₀)
 
 inverse-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                  → is-equiv (inverse f e)
