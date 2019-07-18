@@ -1040,7 +1040,7 @@ nested induction, on the first argument and then the second, but we
 use pattern
 matching for the sake of readability.
 
-*Exercise.* [Write it](HoTT-UF-Agda.html#someexercisessol) using
+*Exercise*. [Write it](HoTT-UF-Agda.html#someexercisessol) using
 `ℕ-induction`, recursion or iteration, as appropriate.
 
 \begin{code}
@@ -1054,7 +1054,7 @@ module ℕ-order where
   x ≥ y = y ≤ x
 \end{code}
 
-*Exercise.* After learning [`Σ`](HoTT-UF-Agda.html#sigmatypes)
+*Exercise*. After learning [`Σ`](HoTT-UF-Agda.html#sigmatypes)
  and [`_≡_`](HoTT-UF-Agda.html#identitytype) explained below, prove [that](HoTT-UF-Agda.html#BasicArithmetic)
 
    > `x ≤ y` if and only if `Σ \(z : ℕ) → x + z ≡ y`.
@@ -2057,7 +2057,7 @@ Without assuming the principle of excluded middle, we can prove that
   f (inr k) = inr (λ (s : succ x ≡ succ y) → k (succ-lc s))
 \end{code}
 
-*Exercise.* Students should do this kind of thing at least once in
+*Exercise*. Students should do this kind of thing at least once in
 their academic life: rewrite the above proof of the decidability of
 equality of `ℕ` to use the `ℕ-induction` principle instead of pattern
 matching and recursion, to understand by themselves that this can be
@@ -2467,7 +2467,7 @@ these notes we don't advocate any particular philosophy for or against
 excluded middle and other non-constructive principles. We confine
 ourselves to discussing facts.
 
-*Exercise.* We also have that it is impossible for `is-singleton X +
+*Exercise*. We also have that it is impossible for `is-singleton X +
 is-empty X` to fail for a given subsingleton `X`, which amounts to
 saying that
 
@@ -2488,7 +2488,7 @@ of excluded middle, which is not a theorem and is
 
 Just as excluded middle, this is an independent statement.
 
-*Exercise.* Continued from the previous exercise. Also for any type
+*Exercise*. Continued from the previous exercise. Also for any type
 `R` replacing the empty type, there is a function `((X + (X → R)) → R)
 → R`, so that the kind of phenomenon illustrated in the previous
 exercise has little to do with the emptiness of the empty type.
@@ -2667,13 +2667,13 @@ the neutral element and the multiplication, preserves the identifications, and
 the preservations of the identifications, and the preservation of the
 preservations of the identifications, *ad infinitum*.
 
-*Exercise.* Define the type of [groups](https://en.wikipedia.org/wiki/Group_(mathematics)) (with sets as carriers).
+*Exercise*. Define the type of [groups](https://en.wikipedia.org/wiki/Group_(mathematics)) (with sets as carriers).
 
-*Exercise.* Write down the various types of
+*Exercise*. Write down the various types of
 [categories](https://en.wikipedia.org/wiki/Category_(mathematics))
 defined in the HoTT book in Agda.
 
-*Exercise.* Try to define a type of [topological
+*Exercise*. Try to define a type of [topological
  spaces](https://en.wikipedia.org/wiki/Topological_space).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -2705,7 +2705,7 @@ And composition is associative:
 If we wanted to prove the above without pattern matching, this time we
 would need the dependent version `J` of induction on `_≡_`.
 
-*Exercise.* Try to do this with `J` and with `H`.
+*Exercise*. Try to do this with `J` and with `H`.
 
 But all arrows, the identifications, are invertible:
 
@@ -3247,7 +3247,7 @@ notion. But what may happen (and it does with univalence) is that
 there are types which don't have any finite hlevel. We can say that
 such types then have minimal hlevel `∞`.
 
-*Exercise.* Formulate and prove the following. The type `𝟙` has
+*Exercise*. Formulate and prove the following. The type `𝟙` has
 minimal hlevel `0`.
 
 \begin{code}
@@ -3364,7 +3364,7 @@ id-◁ : (X : 𝓤 ̇ ) → X ◁ X
 id-◁ X = 𝑖𝑑 X , 𝑖𝑑 X , refl
 \end{code}
 
-*Exercise.* The identity retraction is by no means the only retraction
+*Exercise*. The identity retraction is by no means the only retraction
 of a type onto itself in general, of course. Prove that we have (that
 is, produce an element of the type) `ℕ ◁ ℕ` with the function
 `pred : ℕ → ℕ` defined above as the retraction.
@@ -5331,7 +5331,7 @@ statements, namely the generalization to dependent functions, and the
 requirement that the canonical map `(f ≡ g) → (f ∼ g)` is an
 equivalence.
 
-*Exercise.* Assuming `funext`, prove that if a function `f : X → Y` is
+*Exercise*. Assuming `funext`, prove that if a function `f : X → Y` is
 an equivalence then so is the precomposition map `(-) ∘ f : (Y → Z) →
 (X → Z)`.
 
@@ -6228,7 +6228,7 @@ Composition of equivalences is associative:
                                  ≃-sym-involutive fe₁ fe₂)
 \end{code}
 
-*Exercise.* The hlevels are closed under `Σ` and, using `hfunext`, also
+*Exercise*. The hlevels are closed under `Σ` and, using `hfunext`, also
 under `Π`. Univalence is not needed, but makes the proof easier.  (Without
 univalence, we need to show that the hlevels are
 closed under equivalence first.)
@@ -6965,7 +6965,7 @@ embedding-criterion-converse f e x' x = ≃-sym
 Hence embeddings of arbitrary types are left cancellable, but the
 converse fails in general.
 
-*Exercise.* Left cancellable maps into *sets* are always embeddings.
+*Exercise*. Left cancellable maps into *sets* are always embeddings.
 
 We now introduce notation for the type of embeddings.
 
@@ -7556,7 +7556,7 @@ H↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
 H↑-≃ ua X A = G↑-≃ ua X (Σ-induction A)
 \end{code}
 
-*Exercise.* [Formulate and prove](HoTT-UF-Agda.html#someexercisessol) the equations for `G↑-≃` and `H↑-≃`
+*Exercise*. [Formulate and prove](HoTT-UF-Agda.html#someexercisessol) the equations for `G↑-≃` and `H↑-≃`
  corresponding to those for `G-≃` and `H-≃`.
 
 The difference with [`H-≃`](HoTT-UF-Agda.html-H-≃) is that here, to get
@@ -7981,7 +7981,7 @@ univalence-→-again {𝓤} ua Y = equiv-to-singleton (equiv-classification ua Y
                 (univalence-gives-dfunext (ua 𝓤)))
 \end{code}
 
-*Exercise.*
+*Exercise*.
 [(1)](HoTT-UF-Agda.html#pointed-types)
 Show that the retractions into `Y` are classified by
 the type `Σ \(A : 𝓤 ̇ ) → A` of pointed types.
@@ -9057,7 +9057,7 @@ to the identity equivalence.
                            × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 \end{code}
 
-*Exercise.* In the same way that two elements of the powerset are
+*Exercise*. In the same way that two elements of the powerset are
  equal iff they [have the same
  elements](HoTT-UF-Agda.html#subset-extensionality), two subgroups are
  equal if and only if they have the same elements. This can be
@@ -9917,7 +9917,7 @@ account that now we have axioms, which we simply ignore:
                 ≡ (λ x y z (f : hom 𝓧 x y) (g : hom 𝓧 y z) → 𝓕 g □ 𝓕 f)
 \end{code}
 
-*Exercise.* For type-valued preorders, `functorial 𝓧 𝓐 F 𝓕` is not in
+*Exercise*. For type-valued preorders, `functorial 𝓧 𝓐 F 𝓕` is not in
  general a subsingleton, but for categories, `is-functorial 𝓧 𝓐 F 𝓕`
  is always a subsingleton.
 
@@ -10106,7 +10106,7 @@ is-surjection' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)
 is-surjection' f = (y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
 \end{code}
 
-*Exercise.* The type
+*Exercise*. The type
 `(y : codomain f) → Σ \(x : domain f) → f x ≡ y` [is equivalent
  to](HoTT-UF-Agda.html#has-section-charac) the type `has-section f`,
  which is stronger than saying that `f` is a surjection.
@@ -11121,7 +11121,7 @@ PR-is-subsingleton {𝓤} {𝓥} ua =
   (λ i → has-size-is-subsingleton ua P 𝓥))
 \end{code}
 
-*Exercise.* [It is
+*Exercise*. [It is
 possible](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Resizing.html) to
 show that the propositional resizing principle is a subsingleton
 using propositional and functional extensionality instead of
@@ -11215,7 +11215,7 @@ PR-gives-impredicativity₁ pe fe = PR-gives-Impredicativity⁺
                                    pe fe (λ P i → resize-up P)
 \end{code}
 
-*Exercise.* Excluded middle
+*Exercise*. Excluded middle
 [gives](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Resizing.html) the
 impredicativity of the first universe, and of all other universes.
 
@@ -12072,7 +12072,7 @@ module surjection-classifier
 
 Solutions are available [at the end](#additionalexercisessol).
 
-*Exercise.* A sequence of elements of a type `X` is just a function `ℕ → X`.
+*Exercise*. A sequence of elements of a type `X` is just a function `ℕ → X`.
  Use [Cantor's diagonal
  argument](https://en.wikipedia.org/wiki/Cantor%27s_diagonal_argument)
  to show in Agda that the type of sequences of natural numbers is
@@ -12088,7 +12088,7 @@ cantors-diagonal : ¬(Σ \(e : ℕ → (ℕ → ℕ)) → (α : ℕ → ℕ) →
 *Hint.* It may be helpful to prove that the function `succ` has no
  fixed points, first.
 
-*Exercise.*
+*Exercise*.
 
 \begin{code}
 𝟚-has-𝟚-automorphisms : dfunext 𝓤₀ 𝓤₀ → (𝟚 ≃ 𝟚) ≃ 𝟚
