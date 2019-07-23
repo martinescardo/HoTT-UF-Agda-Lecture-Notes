@@ -63,6 +63,9 @@ learning Cubical Type Theory and Cubical Agda as the next step.
 Compared to most expositions of the subject, we work with explicit
 universe levels.
 
+We also [fully discuss and emphasize](HoTT-UF-Agda.html#summary) that
+classical axioms can be assumed consistently in univalent mathematics.
+
 **Keywords.** Univalent mathematics. Univalent foundations. Univalent
   type theory. Univalence axiom. `∞`-Groupoid. Homotopy type. Type
   theory. Homotopy type theory. Intensional Martin-Löf type
