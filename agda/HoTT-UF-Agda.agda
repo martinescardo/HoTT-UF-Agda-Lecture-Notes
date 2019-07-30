@@ -4207,8 +4207,8 @@ module sip where
  SNS : (𝓤 ̇ → 𝓥 ̇ ) → (𝓦 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
 
  SNS {𝓤} {𝓥} S 𝓦 = Σ \(ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
-                 → Σ \(ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
-                 → {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
+                  → Σ \(ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
+                  → {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
 
  homomorphic : {S : 𝓤 ̇ → 𝓥 ̇ } → SNS S 𝓦
              → (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇
