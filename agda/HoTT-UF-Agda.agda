@@ -121,6 +121,9 @@ data _+_ {𝓤 𝓥} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
 +-induction A f g (inl x) = f x
 +-induction A f g (inr y) = g y
 
++-recursion : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } → (X → A) → (Y → A) → X + Y → A
++-recursion {𝓤} {𝓥} {𝓦} {X} {Y} {A} = +-induction (λ _ → A)
+
 𝟚 : 𝓤₀ ̇
 𝟚 = 𝟙 + 𝟙
 
@@ -358,6 +361,10 @@ inl-inr-disjoint-images {𝓤} {𝓥} {X} {Y} p = 𝟙-is-not-𝟘 q
   q : 𝟙 ≡ 𝟘
   q = ap f p
 
+right-fails-gives-left-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → P + Q → ¬ Q → P
+right-fails-gives-left-holds (inl p) u = p
+right-fails-gives-left-holds (inr q) u = !𝟘 _ (u q)
+
 module twin-primes where
 
  open Arithmetic renaming (_×_ to _*_ ; _+_ to _∔_)
@@ -398,10 +405,10 @@ succ-lc = ap pred
   f (inl p) = inl (ap succ p)
   f (inr k) = inr (λ (s : succ x ≡ succ y) → k (succ-lc s))
 
-module basic-arithmetic where
+module basic-arithmetic-and-order where
 
-  open ℕ-order
-  open Arithmetic renaming (_+_ to _∔_)
+  open ℕ-order public
+  open Arithmetic renaming (_+_ to _∔_) hiding (_×_)
 
   +-assoc : (x y z : ℕ) → (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
 
@@ -516,6 +523,96 @@ module basic-arithmetic where
 
     IH : x ≤ y
     IH = ≼-gives-≤ x y (z , succ-lc q)
+
+  ≤-refl : (n : ℕ) → n ≤ n
+  ≤-refl zero     = ⋆
+  ≤-refl (succ n) = ≤-refl n
+
+  ≤-trans : (l m n : ℕ) → l ≤ m → m ≤ n → l ≤ n
+  ≤-trans zero m n p q = ⋆
+  ≤-trans (succ l) zero n p q = !𝟘 (succ l ≤ n) p
+  ≤-trans (succ l) (succ m) zero p q = q
+  ≤-trans (succ l) (succ m) (succ n) p q = ≤-trans l m n p q
+
+  ≤-anti : (m n : ℕ) → m ≤ n → n ≤ m → m ≡ n
+  ≤-anti zero zero p q = refl zero
+  ≤-anti zero (succ n) p q = !𝟘 (zero ≡ succ n) q
+  ≤-anti (succ m) zero p q = !𝟘 (succ m ≡ zero) p
+  ≤-anti (succ m) (succ n) p q = ap succ (≤-anti m n p q)
+
+  ≤-succ : (n : ℕ) → n ≤ succ n
+  ≤-succ zero     = ⋆
+  ≤-succ (succ n) = ≤-succ n
+
+  zero-minimal : (n : ℕ) → zero ≤ n
+  zero-minimal n = ⋆
+
+  unique-minimal : (n : ℕ) → n ≤ zero → n ≡ zero
+  unique-minimal zero p = refl zero
+  unique-minimal (succ n) p = !𝟘 (succ n ≡ zero) p
+
+  ≤-split : (m n : ℕ) → m ≤ succ n → (m ≤ n) + (m ≡ succ n)
+  ≤-split zero n l = inl l
+  ≤-split (succ m) zero l = inr (ap succ (unique-minimal m l))
+  ≤-split (succ m) (succ n) l = +-recursion inl (inr ∘ ap succ) (≤-split m n l)
+
+  _<_ : ℕ → ℕ → 𝓤₀ ̇
+  x < y = succ x ≤ y
+
+  not-less-bigger-or-equal : (m n : ℕ) → ¬(n < m) → m ≤ n
+  not-less-bigger-or-equal zero n u = zero-minimal n
+  not-less-bigger-or-equal (succ m) zero = dni (zero < succ m) (zero-minimal m)
+  not-less-bigger-or-equal (succ m) (succ n) = not-less-bigger-or-equal m n
+
+  bounded-∀-next : (A : ℕ → 𝓤 ̇ ) (k : ℕ)
+                 → A k
+                 → ((n : ℕ) → n < k → A n)
+                 → (n : ℕ) → n < succ k → A n
+  bounded-∀-next A k a φ n l = +-recursion f g s
+   where
+    s : (n < k) + (succ n ≡ succ k)
+    s = ≤-split (succ n) k l
+
+    f : n < k → A n
+    f = φ n
+
+    g : succ n ≡ succ k → A n
+    g p = transport A ((succ-lc p)⁻¹) a
+
+  _has-no-root<_ : (ℕ → ℕ) → ℕ → 𝓤₀ ̇
+  f has-no-root< k = (n : ℕ) → n < k → f n ≢ 0
+
+  _has-minimal-root : (ℕ → ℕ) → 𝓤₀ ̇
+  f has-minimal-root = Σ \(m : ℕ) → (f m ≡ 0)
+                                    × (f has-no-root< m)
+
+  bounded-ℕ-search : ∀ k f → (f has-minimal-root) + (f has-no-root< k)
+  bounded-ℕ-search zero f = inr (λ n → !𝟘 (f n ≢ 0))
+  bounded-ℕ-search (succ k) f = +-recursion φ γ (bounded-ℕ-search k f)
+   where
+    A : ℕ → (ℕ → ℕ) → 𝓤₀ ̇
+    A k f = (f has-minimal-root) + (f has-no-root< k)
+
+    φ : f has-minimal-root → A (succ k) f
+    φ (m , p , u) = inl (m , p , u)
+
+    γ : f has-no-root< k → A (succ k) f
+    γ u = +-recursion γ₀ γ₁ (ℕ-has-decidable-equality (f k) 0)
+     where
+      γ₀ : f k ≡ 0 → A (succ k) f
+      γ₀ p = inl (k , p , u)
+
+      γ₁ : f k ≢ 0 → A (succ k) f
+      γ₁ v = inr (bounded-∀-next (λ n → f n ≢ 0) k v u)
+
+  bounded-minimal-root : ∀ f n → f n ≡ 0 → f has-minimal-root
+  bounded-minimal-root f n p = γ
+   where
+    g : ¬(f has-no-root< (succ n))
+    g φ = φ n (≤-refl n) p
+
+    γ : f has-minimal-root
+    γ = right-fails-gives-left-holds (bounded-ℕ-search (succ n) f) g
 
 is-singleton : 𝓤 ̇ → 𝓤 ̇
 is-singleton X = Σ \(c : X) → (x : X) → c ≡ x
@@ -888,19 +985,21 @@ X has-minimal-hlevel (succ n) = (X is-of-hlevel (succ n)) × ¬(X is-of-hlevel n
 _has-minimal-hlevel-∞ : 𝓤 ̇ → 𝓤 ̇
 X has-minimal-hlevel-∞ = (n : ℕ) → ¬(X is-of-hlevel n)
 
-hedberg : {X : 𝓤 ̇ } → has-decidable-equality X → is-set X
-hedberg {𝓤} {X} d = Id-collapsibles-are-sets X ic
- where
-  ic : Id-collapsible X
-  ic x y = f (d x y) , κ (d x y)
-   where
-    f : decidable (x ≡ y) → x ≡ y → x ≡ y
-    f (inl p) q = p
-    f (inr g) q = !𝟘 (x ≡ y) (g q)
+pointed-types-are-collapsible : {X : 𝓤 ̇ } → X → collapsible X
+pointed-types-are-collapsible x = ((λ y → x) , (λ y y' → refl x))
 
-    κ : (d : (x ≡ y) + ¬(x ≡ y)) → wconstant (f d)
-    κ (inl p) q r = refl p
-    κ (inr g) q r = !𝟘 (f (inr g) q ≡ f (inr g) r) (g q)
+empty-types-are-collapsible : {X : 𝓤 ̇ } → is-empty X → collapsible X
+empty-types-are-collapsible e = (id , (λ x x' → !𝟘 (x ≡ x') (e x)))
+
+decidable-is-collapsible : {X : 𝓤 ̇ } → decidable X → collapsible X
+decidable-is-collapsible (inl x) = pointed-types-are-collapsible x
+decidable-is-collapsible (inr e) = empty-types-are-collapsible e
+
+hedberg-lemma : {X : 𝓤 ̇ } → has-decidable-equality X → Id-collapsible X
+hedberg-lemma {𝓤} {X} d x y = decidable-is-collapsible (d x y)
+
+hedberg : {X : 𝓤 ̇ } → has-decidable-equality X → is-set X
+hedberg {𝓤} {X} d = Id-collapsibles-are-sets X (hedberg-lemma d)
 
 ℕ-is-set : is-set ℕ
 ℕ-is-set = hedberg ℕ-has-decidable-equality
@@ -5704,7 +5803,7 @@ module choice
         (hfe : global-hfunext)
        where
 
-  open basic-truncation-development pt hfe
+  open basic-truncation-development pt hfe public
 
   simple-unique-choice' : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
 
@@ -6538,16 +6637,15 @@ module ℕ-order-exercise-solution where
 
 module ℕ-more where
 
-  open ℕ-order
   open Arithmetic renaming (_+_ to _∔_)
-  open basic-arithmetic
+  open basic-arithmetic-and-order
 
-  ≤-prop-valued : (x y : ℕ) → is-prop (x ≤ y)
+  ≤-prop-valued : (x y : ℕ) → is-subsingleton (x ≤ y)
   ≤-prop-valued 0 y               = 𝟙-is-subsingleton
   ≤-prop-valued (succ x) zero     = 𝟘-is-subsingleton
   ≤-prop-valued (succ x) (succ y) = ≤-prop-valued x y
 
-  ≼-prop-valued : (x y : ℕ) → is-prop (x ≼ y)
+  ≼-prop-valued : (x y : ℕ) → is-subsingleton (x ≼ y)
   ≼-prop-valued x y (z , p) (z' , p') = to-Σ-≡ (q , r)
    where
     q : z ≡ z'

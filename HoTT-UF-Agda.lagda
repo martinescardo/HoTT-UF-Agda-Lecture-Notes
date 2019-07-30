@@ -10520,6 +10520,27 @@ if it is both an embedding and a surjection:
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="exiting-truncations"></a> Existing subsingleton truncations.
+
+We we will see that [global choice](HoTT-UF-Agda.html#global-choice)
+that *global choice*
+
+   > (X : 𝓤 ̇ ) → `∥ X ∥ → X`
+
+implies excluded middle and is inconsistent with univalence. However, for some types `X`, we can exit the truncation. Because, as we have seen, we have a logical equivalence
+
+   > `∥ X ∥ ⇔ is-inhabited X`
+
+it suffices to consider
+
+   > `is-inhabited X → X`,
+
+which can be done in our spartan MLTT without any axioms for univalent mathematics.
+
+For any type `X`, we have `is-inhabited X → X` [iff](https://lmcs.episciences.org/3217/) `X` is [collapsible](HoTT-UF-Agda.html#collapsible).
+
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="choice"></a> Choice in univalent mathematics
 
 We discuss unique choice, univalent choice and global choice.
