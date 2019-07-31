@@ -11395,55 +11395,130 @@ And the following says that we can pick a point of every inhabited
 type:
 
 \begin{code}
-  global-choice' : (𝓤 : Universe) → 𝓤 ⁺ ̇
-  global-choice' 𝓤 = (X : 𝓤 ̇ ) → ∥ X ∥ → X
+  global-∥∥-choice : (𝓤 : Universe) → 𝓤 ⁺ ̇
+  global-∥∥-choice 𝓤 = (X : 𝓤 ̇ ) → ∥ X ∥ → X
 \end{code}
 
-*Exercise*. [Show](https://lmcs.episciences.org/3217) that these two
- forms of global choice are logically equivalent, and in turn
- logically equivalent to `(X : 𝓤 ̇ ) → ¬(is-empty X) → X`, so that we
- can choose a point of every nonempty type.
+We first show that these two forms of global choice are logically
+equivalent, where one direction requires propositional extensionality
+(in addition to function extensionality, which is an assumption for
+this module).
 
 \begin{code}
-  global-choice-inconsistent-with-univalence : global-choice 𝓤₁
-                                             → is-univalent 𝓤₀
+  open exit-∥∥ pt hfe
+
+  global-choice-gives-wconstant : global-choice 𝓤
+                                → (X : 𝓤 ̇ ) → wconstant-endomap X
+
+  global-choice-gives-wconstant g X = decidable-has-wconstant-endomap (g X)
+
+
+  global-choice-gives-global-∥∥-choice : global-choice  𝓤
+                                       → global-∥∥-choice 𝓤
+
+  global-choice-gives-global-∥∥-choice {𝓤} c X = γ (c X)
+   where
+    γ : X + is-empty X → ∥ X ∥ → X
+    γ (inl x) s = x
+    γ (inr n) s = !𝟘 X (∥∥-recursion 𝟘-is-subsingleton n s)
+
+
+  global-∥∥-choice-gives-all-types-are-sets : global-∥∥-choice 𝓤
+                                            → (X : 𝓤 ̇ ) → is-set  X
+
+  global-∥∥-choice-gives-all-types-are-sets {𝓤} c X =
+    types-with-wconstant-≡-endomaps-are-sets X
+        (λ x y → ∥∥-choice-function-gives-wconstant-endomap (c (x ≡ y)))
+
+
+  global-∥∥-choice-gives-universe-is-set : global-∥∥-choice (𝓤 ⁺)
+                                         → is-set (𝓤 ̇ )
+
+  global-∥∥-choice-gives-universe-is-set {𝓤} c =
+    global-∥∥-choice-gives-all-types-are-sets c (𝓤 ̇)
+
+
+  global-∥∥-choice-gives-choice : global-∥∥-choice 𝓤
+                                → TChoice 𝓤
+
+  global-∥∥-choice-gives-choice {𝓤} c X A i j = ∣(λ x → c (A x))∣
+
+
+  global-∥∥-choice-gives-EM : propext 𝓤
+                            → global-∥∥-choice (𝓤 ⁺)
+                            → EM  𝓤
+
+  global-∥∥-choice-gives-EM {𝓤} pe c =
+    choice-gives-EM pe (global-∥∥-choice-gives-choice c)
+
+
+  global-∥∥-choice-gives-global-choice : propext 𝓤
+                                       → global-∥∥-choice 𝓤
+                                       → global-∥∥-choice (𝓤 ⁺)
+                                       → global-choice 𝓤
+
+  global-∥∥-choice-gives-global-choice {𝓤} pe c c⁺ X = γ
+   where
+    d : decidable ∥ X ∥
+    d = global-∥∥-choice-gives-EM pe c⁺ ∥ X ∥ ∥∥-is-subsingleton
+
+    f : decidable ∥ X ∥ → X + is-empty X
+    f (inl i) = inl (c X i)
+    f (inr φ) = inr (contrapositive ∣_∣ φ)
+
+    γ : X + is-empty X
+    γ = f d
+
+
+  Global-Choice Global-∥∥-Choice : 𝓤ω
+  Global-Choice    = ∀ 𝓤 → global-choice  𝓤
+  Global-∥∥-Choice = ∀ 𝓤 → global-∥∥-choice 𝓤
+
+
+  Global-Choice-gives-Global-∥∥-Choice : Global-Choice → Global-∥∥-Choice
+  Global-Choice-gives-Global-∥∥-Choice c 𝓤 =
+    global-choice-gives-global-∥∥-choice (c 𝓤)
+
+
+  Global-∥∥-Choice-gives-Global-Choice : global-propext
+                                       → Global-∥∥-Choice → Global-Choice
+  Global-∥∥-Choice-gives-Global-Choice pe c 𝓤 =
+    global-∥∥-choice-gives-global-choice pe (c 𝓤) (c (𝓤 ⁺))
+\end{code}
+
+\begin{code}
+  global-∥∥-choice-inconsistent-with-univalence : Global-∥∥-Choice
+                                                → Univalence
+                                                → 𝟘
+
+  global-∥∥-choice-inconsistent-with-univalence g ua = γ (g 𝓤₁) (ua 𝓤₀)
+   where
+    open example-of-a-nonset (ua 𝓤₀)
+
+    γ : global-∥∥-choice 𝓤₁ → is-univalent 𝓤₀ → 𝟘
+    γ g ua = 𝓤₀-is-not-a-set (global-∥∥-choice-gives-all-types-are-sets g (𝓤₀ ̇ ))
+
+
+  global-choice-inconsistent-with-univalence : Global-Choice
+                                             → Univalence
                                              → 𝟘
 
-  global-choice-inconsistent-with-univalence g ua = c
-   where
-    b : (X : 𝓤₁ ̇ ) → is-set X
-    b X = hedberg (λ x y → g (x ≡ y))
-
-    open example-of-a-nonset ua
-
-    c : 𝟘
-    c = 𝓤₀-is-not-a-set (b (𝓤₀ ̇ ))
-
-
-  global-choice'-inconsistent-with-univalence : global-choice' 𝓤₁
-                                              → is-univalent 𝓤₀
-                                              → 𝟘
-
-  global-choice'-inconsistent-with-univalence g ua = c
-   where
-    a : (X : 𝓤₁ ̇ ) → has-decidable-equality X
-    a X x₀ x₁ = decidable-equality-criterion α (λ x → g (Σ \(n : 𝟚) → α n ≡ x))
-     where
-      α : 𝟚 → X
-      α ₀ = x₀
-      α ₁ = x₁
-
-    b : (X : 𝓤₁ ̇ ) → is-set X
-    b X = hedberg (a X)
-
-    open example-of-a-nonset ua
-
-    c : 𝟘
-    c = 𝓤₀-is-not-a-set (b (𝓤₀ ̇ ))
+  global-choice-inconsistent-with-univalence g =
+    global-∥∥-choice-inconsistent-with-univalence
+      (Global-Choice-gives-Global-∥∥-Choice g)
 \end{code}
 
 See also Theorem 3.2.2 and Corollary 3.2.7 of the HoTT book for a
 different argument that works with a single, arbitrary universe.
+
+Notice also that, without using propositional extensionality, we have:
+
+\begin{code}
+  global-choice-gives-all-types-are-sets : global-choice 𝓤
+                                         → (X : 𝓤 ̇ ) → is-set  X
+
+  global-choice-gives-all-types-are-sets {𝓤} c X = hedberg (λ x y → c (x ≡ y))
+\end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="resizing"></a> Propositional resizing, truncation and the powerset
