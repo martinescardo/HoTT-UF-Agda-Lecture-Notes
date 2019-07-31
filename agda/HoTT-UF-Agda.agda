@@ -5675,10 +5675,12 @@ fix f = Σ \(x : domain f) → f x ≡ x
 
 from-fix : {X : 𝓤 ̇ } (f : X → X)
          → fix f → X
+
 from-fix f = pr₁
 
 to-fix : {X : 𝓤 ̇ } (f : X → X) → wconstant f
        → X → fix f
+
 to-fix f κ x = f x , κ (f x) x
 
 fix-is-subsingleton : {X : 𝓤 ̇ } (f : X → X)
@@ -5706,6 +5708,7 @@ choice-function X = is-inhabited X → X
 
 wconstant-endomap-gives-choice-function : {X : 𝓤 ̇ }
                                         → wconstant-endomap X → choice-function X
+
 wconstant-endomap-gives-choice-function {𝓤} {X} (f , κ) = from-fix f ∘ γ
  where
   γ : is-inhabited X → fix f
@@ -5714,6 +5717,7 @@ wconstant-endomap-gives-choice-function {𝓤} {X} (f , κ) = from-fix f ∘ γ
 choice-function-gives-wconstant-endomap : global-dfunext
                                         → {X : 𝓤 ̇ }
                                         → choice-function X → wconstant-endomap X
+
 choice-function-gives-wconstant-endomap fe {X} c = f , κ
  where
   f : X → X
@@ -5738,6 +5742,7 @@ module find-hidden-root where
 
  μρ-root-minimal : (f : ℕ → ℕ) (m : ℕ) (p : f m ≡ 0)
                  → (n : ℕ) → f n ≡ 0 → μρ-root f (m , p) ≤ n
+
  μρ-root-minimal f m p n q = not-less-bigger-or-equal
                               (μρ-root f (m , p)) n (φ (dni (f n ≡ 0) q))
   where

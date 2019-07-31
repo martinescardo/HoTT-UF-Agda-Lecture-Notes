@@ -10572,8 +10572,10 @@ We first define the type of fixed points of an endomap:
 fix : {X : 𝓤 ̇ } → (X → X) → 𝓤 ̇
 fix f = Σ \(x : domain f) → f x ≡ x
 
+
 from-fix : {X : 𝓤 ̇ } (f : X → X)
          → fix f → X
+
 from-fix f = pr₁
 \end{code}
 
@@ -10583,6 +10585,7 @@ x` is a fixed point of `f`, and hence:
 \begin{code}
 to-fix : {X : 𝓤 ̇ } (f : X → X) → wconstant f
        → X → fix f
+
 to-fix f κ x = f x , κ (f x) x
 \end{code}
 
@@ -10636,6 +10639,7 @@ With a constant endomap of `X`, we can exit the truncation
 \begin{code}
 wconstant-endomap-gives-choice-function : {X : 𝓤 ̇ }
                                         → wconstant-endomap X → choice-function X
+
 wconstant-endomap-gives-choice-function {𝓤} {X} (f , κ) = from-fix f ∘ γ
  where
   γ : is-inhabited X → fix f
@@ -10650,6 +10654,7 @@ endomap):
 choice-function-gives-wconstant-endomap : global-dfunext
                                         → {X : 𝓤 ̇ }
                                         → choice-function X → wconstant-endomap X
+
 choice-function-gives-wconstant-endomap fe {X} c = f , κ
  where
   f : X → X
@@ -10685,6 +10690,7 @@ search, and this gives a constant endomap of the type of roots:
 
  μρ-root-minimal : (f : ℕ → ℕ) (m : ℕ) (p : f m ≡ 0)
                  → (n : ℕ) → f n ≡ 0 → μρ-root f (m , p) ≤ n
+
  μρ-root-minimal f m p n q = not-less-bigger-or-equal
                               (μρ-root f (m , p)) n (φ (dni (f n ≡ 0) q))
   where
