@@ -10566,7 +10566,7 @@ For any type `X`, we have `is-inhabited X → X`
 show that the type of fixed points of a `wconstant` endomap is a
 subsingleton.
 
-We first defined the type of fixed points of an endomap:
+We first define the type of fixed points of an endomap:
 
 \begin{code}
 fix : {X : 𝓤 ̇ } → (X → X) → 𝓤 ̇
@@ -11500,9 +11500,8 @@ this local module).
 
   Global-∥∥-Choice-gives-Global-Choice pe c 𝓤 =
     global-∥∥-choice-gives-global-choice pe (c 𝓤) (c (𝓤 ⁺))
-\end{code}
 
-\begin{code}
+
   global-∥∥-choice-inconsistent-with-univalence : Global-∥∥-Choice
                                                 → Univalence
                                                 → 𝟘
