@@ -2355,8 +2355,8 @@ The type of minimal roots of a function:
 Given any root, we can find a minimal root.
 
 \begin{code}
-  bounded-search-ℕ-minimal-root : ∀ f n → f n ≡ 0 → minimal-root f
-  bounded-search-ℕ-minimal-root f n p = γ
+  minimal-root-by-bounded-search-ℕ : ∀ f n → f n ≡ 0 → minimal-root f
+  minimal-root-by-bounded-search-ℕ f n p = γ
    where
     g : ¬(f has-no-root< (succ n))
     g φ = φ n (≤-refl n) p
@@ -10541,21 +10541,24 @@ if it is both an embedding and a surjection:
 
 We will see that [global choice](HoTT-UF-Agda.html#global-choice)
 
-   > (X : 𝓤 ̇ ) → `∥ X ∥ → X`
+   > `(X : 𝓤 ̇ ) → ∥ X ∥ → X`
 
 is inconsistent with univalence, and also implies excluded
-middle. However, for some types `X`, we can exit the truncation, which
-is what we show in this section.
+middle. However, for some types `X`, we can prove that `∥ X ∥ → X`.
+We characterize these types as [those that have `wconstant` endomaps](https://lmcs.episciences.org/3217/).
 
-Because, as we have seen, we have a logical equivalence
+Because, [as we have seen](HoTT-UF-Agda.html#basic-truncation-development), we have a logical equivalence
 
    > `∥ X ∥ ⇔ is-inhabited X`,
 
-it suffices to consider
+it suffices to discuss
 
    > `is-inhabited X → X`,
 
-which can be done in our spartan MLTT without any axioms for univalent mathematics (hence hence with axioms for univalent mathematics, including classical ones such as excluded middle and (non-global) choice).
+which can be done in our spartan MLTT without any axioms for univalent
+mathematics (and hence hence also with axioms for univalent
+mathematics, including classical ones such as excluded middle and
+(non-global) choice).
 
 For any type `X`, we have `is-inhabited X → X`
 [iff](https://lmcs.episciences.org/3217/) `X` has a designated
@@ -10563,7 +10566,7 @@ For any type `X`, we have `is-inhabited X → X`
 show that the type of fixed points of a `wconstant` endomap is a
 subsingleton.
 
-The type of fixed points of an endomap:
+We first defined the type of fixed points of an endomap:
 
 \begin{code}
 fix : {X : 𝓤 ̇ } → (X → X) → 𝓤 ̇
@@ -10575,7 +10578,7 @@ from-fix f = pr₁
 \end{code}
 
 Conversely, if `f` is `wconstant` then for any `x : X` we have that `f
-x` is a fixed point of `f`:
+x` is a fixed point of `f`, and hence:
 
 \begin{code}
 to-fix : {X : 𝓤 ̇ } (f : X → X) → wconstant f
@@ -10611,7 +10614,7 @@ fix-is-subsingleton {𝓤} {X} f κ = γ
 *Exercise.* Formulate and prove the fact that the type `fix f` has the
  universal property of the subsingleton truncation of `X` if `f` is
  `wconstant`. Moreover, argue that the computation rule holds
- definitionally in this case. This is an example of a situation when
+ definitionally in this case. This is an example of a situation where
  the truncation of a type just is available in MLTT without axioms or
  extensions.
 
@@ -10640,7 +10643,7 @@ wconstant-endomap-gives-choice-function {𝓤} {X} (f , κ) = from-fix f ∘ γ
 \end{code}
 
 For the converse we use function extensionality (to know that
-`is-inhabited X` is a subsingleton in the construction of the `wconstant`
+the type `is-inhabited X` is a subsingleton in the construction of the `wconstant`
 endomap):
 
 \begin{code}
@@ -10657,9 +10660,9 @@ choice-function-gives-wconstant-endomap fe {X} c = f , κ
                (pointed-is-inhabited y))
 \end{code}
 
-As an application, we show that if the type of roots of a function `f
-: ℕ → ℕ` is inhabited, then it is pointed. In other words, with the
-information that there is some root, then we can find an explicit root.
+As an application, we show that if the type of roots of a function
+`f : ℕ → ℕ` is inhabited, then it is pointed. In other words, with the
+information that there is some root, we can find an explicit root.
 
 \begin{code}
 module find-hidden-root where
@@ -10672,7 +10675,7 @@ search, and this gives a constant endomap of the type of roots:
 
 \begin{code}
  μρ : (f : ℕ → ℕ) → root f → root f
- μρ f (n , p) = minimal-root-is-root f (bounded-search-ℕ-minimal-root f n p)
+ μρ f (n , p) = minimal-root-is-root f (minimal-root-by-bounded-search-ℕ f n p)
 
  μρ-root : (f : ℕ → ℕ) → root f → ℕ
  μρ-root f r = pr₁ (μρ f r)
@@ -10686,7 +10689,7 @@ search, and this gives a constant endomap of the type of roots:
                               (μρ-root f (m , p)) n (φ (dni (f n ≡ 0) q))
   where
    φ : ¬(f n ≢ 0) → ¬(n < μρ-root f (m , p))
-   φ = contrapositive (pr₂(pr₂ (bounded-search-ℕ-minimal-root f m p)) n)
+   φ = contrapositive (pr₂(pr₂ (minimal-root-by-bounded-search-ℕ f m p)) n)
 \end{code}
 
 The crucial property of the function `μρ` is that it is `wconstant`:
@@ -10747,24 +10750,35 @@ bounded by this hidden root:
   f 6 = 1
   f 7 = 0
   f (succ (succ (succ (succ (succ (succ (succ (succ x)))))))) = x
-
-  i : is-inhabited (root f)
-  i = pointed-is-inhabited (8 , refl _)
-
-  r : root f
-  r = find-existing-root f i
 \end{code}
 
-We have that `pr₁ r` evaluates to `2`:
+We hide the root `8` of `f`:
 
 \begin{code}
-  p : pr₁ r ≡ 2
+  root-existence : is-inhabited (root f)
+  root-existence = pointed-is-inhabited (8 , refl _)
+
+  r : root f
+  r = find-existing-root f root-existence
+
+  x : ℕ
+  x = pr₁ r
+
+  x-is-root : f x ≡ 0
+  x-is-root = pr₂ r
+\end{code}
+
+We have that `x` evaluates to `2`, which is clearly the minimal root
+of `f`:
+
+\begin{code}
+  p : x ≡ 2
   p = refl _
 \end{code}
 
 Thus, the truncation operation `is-inhabited` doesn't erase
-information. We used the hidden root `a` as a bound for searching for
-the minimal root.
+information. We used the information contained in `root-existence` as
+a bound for searching for the minimal root.
 
 Notice that this construction is in pure (spartan) MLTT. Now we repeat
 part of the above using the existence of small truncations as an
@@ -10783,6 +10797,7 @@ module exit-∥∥
  find-existing-root : (f : ℕ → ℕ)
                     → (∃ \(n : ℕ) → f n ≡ 0)
                     →  Σ \(n : ℕ) → f n ≡ 0
+
  find-existing-root f = k
   where
    γ : root f → fix (μρ f)
@@ -10849,8 +10864,8 @@ For the sake of completeness, we redevelop part of the above with `∥_∥` in p
 
 
  ∥∥-choice-function-gives-wconstant-endomap : {X : 𝓤 ̇ }
-                                           → (∥ X ∥ → X)
-                                           → wconstant-endomap X
+                                            → (∥ X ∥ → X)
+                                            → wconstant-endomap X
 
  ∥∥-choice-function-gives-wconstant-endomap {𝓤} {X} c = f , κ
   where
@@ -11402,7 +11417,7 @@ type:
 We first show that these two forms of global choice are logically
 equivalent, where one direction requires propositional extensionality
 (in addition to function extensionality, which is an assumption for
-this module).
+this local module).
 
 \begin{code}
   open exit-∥∥ pt hfe
@@ -11482,6 +11497,7 @@ this module).
 
   Global-∥∥-Choice-gives-Global-Choice : global-propext
                                        → Global-∥∥-Choice → Global-Choice
+
   Global-∥∥-Choice-gives-Global-Choice pe c 𝓤 =
     global-∥∥-choice-gives-global-choice pe (c 𝓤) (c (𝓤 ⁺))
 \end{code}
@@ -11493,10 +11509,10 @@ this module).
 
   global-∥∥-choice-inconsistent-with-univalence g ua = γ (g 𝓤₁) (ua 𝓤₀)
    where
-    open example-of-a-nonset (ua 𝓤₀)
+    open example-of-a-nonset
 
     γ : global-∥∥-choice 𝓤₁ → is-univalent 𝓤₀ → 𝟘
-    γ g ua = 𝓤₀-is-not-a-set (global-∥∥-choice-gives-all-types-are-sets g (𝓤₀ ̇ ))
+    γ g ua = 𝓤₀-is-not-a-set ua (global-∥∥-choice-gives-universe-is-set g)
 
 
   global-choice-inconsistent-with-univalence : Global-Choice

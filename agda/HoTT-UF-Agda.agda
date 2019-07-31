@@ -611,8 +611,8 @@ module basic-arithmetic-and-order where
       γ₁ : f k ≢ 0 → A (succ k) f
       γ₁ v = inr (bounded-∀-next (λ n → f n ≢ 0) k v u)
 
-  bounded-search-ℕ-minimal-root : ∀ f n → f n ≡ 0 → minimal-root f
-  bounded-search-ℕ-minimal-root f n p = γ
+  minimal-root-by-bounded-search-ℕ : ∀ f n → f n ≡ 0 → minimal-root f
+  minimal-root-by-bounded-search-ℕ f n p = γ
    where
     g : ¬(f has-no-root< (succ n))
     g φ = φ n (≤-refl n) p
@@ -5728,7 +5728,7 @@ module find-hidden-root where
  open basic-arithmetic-and-order public
 
  μρ : (f : ℕ → ℕ) → root f → root f
- μρ f (n , p) = minimal-root-is-root f (bounded-search-ℕ-minimal-root f n p)
+ μρ f (n , p) = minimal-root-is-root f (minimal-root-by-bounded-search-ℕ f n p)
 
  μρ-root : (f : ℕ → ℕ) → root f → ℕ
  μρ-root f r = pr₁ (μρ f r)
@@ -5742,7 +5742,7 @@ module find-hidden-root where
                               (μρ-root f (m , p)) n (φ (dni (f n ≡ 0) q))
   where
    φ : ¬(f n ≢ 0) → ¬(n < μρ-root f (m , p))
-   φ = contrapositive (pr₂(pr₂ (bounded-search-ℕ-minimal-root f m p)) n)
+   φ = contrapositive (pr₂(pr₂ (minimal-root-by-bounded-search-ℕ f m p)) n)
 
  μρ-wconstant : (f : ℕ → ℕ) → wconstant (μρ f)
  μρ-wconstant f (n , p) (n' , p') = r
@@ -5789,13 +5789,19 @@ module find-hidden-root where
   f 7 = 0
   f (succ (succ (succ (succ (succ (succ (succ (succ x)))))))) = x
 
-  i : is-inhabited (root f)
-  i = pointed-is-inhabited (8 , refl _)
+  root-existence : is-inhabited (root f)
+  root-existence = pointed-is-inhabited (8 , refl _)
 
   r : root f
-  r = find-existing-root f i
+  r = find-existing-root f root-existence
 
-  p : pr₁ r ≡ 2
+  x : ℕ
+  x = pr₁ r
+
+  x-is-root : f x ≡ 0
+  x-is-root = pr₂ r
+
+  p : x ≡ 2
   p = refl _
 
 module exit-∥∥
@@ -5809,6 +5815,7 @@ module exit-∥∥
  find-existing-root : (f : ℕ → ℕ)
                     → (∃ \(n : ℕ) → f n ≡ 0)
                     →  Σ \(n : ℕ) → f n ≡ 0
+
  find-existing-root f = k
   where
    γ : root f → fix (μρ f)
@@ -5861,8 +5868,8 @@ module exit-∥∥
    γ = ∥∥-recursion (fix-is-subsingleton f κ) (to-fix f κ)
 
  ∥∥-choice-function-gives-wconstant-endomap : {X : 𝓤 ̇ }
-                                           → (∥ X ∥ → X)
-                                           → wconstant-endomap X
+                                            → (∥ X ∥ → X)
+                                            → wconstant-endomap X
 
  ∥∥-choice-function-gives-wconstant-endomap {𝓤} {X} c = f , κ
   where
@@ -6295,6 +6302,7 @@ module choice
 
   Global-∥∥-Choice-gives-Global-Choice : global-propext
                                        → Global-∥∥-Choice → Global-Choice
+
   Global-∥∥-Choice-gives-Global-Choice pe c 𝓤 =
     global-∥∥-choice-gives-global-choice pe (c 𝓤) (c (𝓤 ⁺))
 
@@ -6304,10 +6312,10 @@ module choice
 
   global-∥∥-choice-inconsistent-with-univalence g ua = γ (g 𝓤₁) (ua 𝓤₀)
    where
-    open example-of-a-nonset (ua 𝓤₀)
+    open example-of-a-nonset
 
     γ : global-∥∥-choice 𝓤₁ → is-univalent 𝓤₀ → 𝟘
-    γ g ua = 𝓤₀-is-not-a-set (global-∥∥-choice-gives-all-types-are-sets g (𝓤₀ ̇ ))
+    γ g ua = 𝓤₀-is-not-a-set ua (global-∥∥-choice-gives-universe-is-set g)
 
   global-choice-inconsistent-with-univalence : Global-Choice
                                              → Univalence
