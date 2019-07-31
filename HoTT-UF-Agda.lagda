@@ -10556,7 +10556,7 @@ it suffices to discuss
    > `is-inhabited X → X`,
 
 which can be done in our spartan MLTT without any axioms for univalent
-mathematics (and hence hence also with axioms for univalent
+mathematics (and hence also with axioms for univalent
 mathematics, including non-constructive ones such as excluded middle
 and choice).
 
