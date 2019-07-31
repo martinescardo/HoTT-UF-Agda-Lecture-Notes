@@ -5835,13 +5835,34 @@ module exit-∥∥
    k : ∥ root f ∥ → root f
    k = h ∘ g
 
+ wconstant-endomap-gives-∥∥-choice-function : {X : 𝓤 ̇ }
+                                            → wconstant-endomap X
+                                            → (∥ X ∥ → X)
+
+ wconstant-endomap-gives-∥∥-choice-function {𝓤} {X} (f , κ) = from-fix f ∘ γ
+  where
+   γ : ∥ X ∥ → fix f
+   γ = ∥∥-recursion (fix-is-subsingleton f κ) (to-fix f κ)
+
+ ∥∥-choice-function-gives-wconstant-endomap : {X : 𝓤 ̇ }
+                                            → (∥ X ∥ → X)
+                                            → wconstant-endomap X
+
+ ∥∥-choice-function-gives-wconstant-endomap {𝓤} {X} c = f , κ
+  where
+   f : X → X
+   f = c ∘ ∣_∣
+
+   κ : wconstant f
+   κ x y = ap c (∥∥-is-subsingleton ∣ x ∣ ∣ y ∣)
+
  ∥∥-recursion-set : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
                   → is-set Y
                   → (f : X → Y)
                   → wconstant f
                   → ∥ X ∥ → Y
 
- ∥∥-recursion-set {𝓤} {𝓥} X Y s f κ = γ
+ ∥∥-recursion-set {𝓤} {𝓥} X Y s f κ = f'
   where
    ψ : (y y' : Y) → (Σ \x → f x ≡ y) → (Σ \x' → f x' ≡ y') → y ≡ y'
    ψ y y' (x , r) (x' , r') = y    ≡⟨ r ⁻¹   ⟩
@@ -5864,29 +5885,8 @@ module exit-∥∥
    h : P → Y
    h = restriction f
 
-   γ : ∥ X ∥ → Y
-   γ = h ∘ g
-
- wconstant-endomap-gives-∥∥-choice-function : {X : 𝓤 ̇ }
-                                            → wconstant-endomap X
-                                            → (∥ X ∥ → X)
-
- wconstant-endomap-gives-∥∥-choice-function {𝓤} {X} (f , κ) = from-fix f ∘ γ
-  where
-   γ : ∥ X ∥ → fix f
-   γ = ∥∥-recursion (fix-is-subsingleton f κ) (to-fix f κ)
-
- ∥∥-choice-function-gives-wconstant-endomap : {X : 𝓤 ̇ }
-                                            → (∥ X ∥ → X)
-                                            → wconstant-endomap X
-
- ∥∥-choice-function-gives-wconstant-endomap {𝓤} {X} c = f , κ
-  where
-   f : X → X
-   f = c ∘ ∣_∣
-
-   κ : wconstant f
-   κ x y = ap c (∥∥-is-subsingleton ∣ x ∣ ∣ y ∣)
+   f' : ∥ X ∥ → Y
+   f' = h ∘ g
 
 simple-unique-choice : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
 

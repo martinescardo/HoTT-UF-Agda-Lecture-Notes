@@ -10819,48 +10819,6 @@ module exit-∥∥
    k = h ∘ g
 \end{code}
 
-There is another situation in which we can eliminate truncations that
-is often useful in practice. The universal property of subsingleton
-truncation says that we can get a function `∥ X ∥ → Y` provided the
-type `Y` is a subsingleton and we have a given function `X →
-Y`. Because `Y` is a subsingleton, the given function is automatically
-`wconstant`. Hence the following generalizes this to the situation in
-which `Y` is a set:
-
-\begin{code}
- ∥∥-recursion-set : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
-                  → is-set Y
-                  → (f : X → Y)
-                  → wconstant f
-                  → ∥ X ∥ → Y
-
- ∥∥-recursion-set {𝓤} {𝓥} X Y s f κ = γ
-  where
-   ψ : (y y' : Y) → (Σ \x → f x ≡ y) → (Σ \x' → f x' ≡ y') → y ≡ y'
-   ψ y y' (x , r) (x' , r') = y    ≡⟨ r ⁻¹   ⟩
-                              f x  ≡⟨ κ x x' ⟩
-                              f x' ≡⟨ r'     ⟩
-                              y'   ∎
-
-   φ : (y y' : Y) → (∃ \x → f x ≡ y) → (∃ \x' → f x' ≡ y') → y ≡ y'
-   φ y y' u u' = ∥∥-recursion (s y y') (λ - → ∥∥-recursion (s y y') (ψ y y' -) u') u
-
-   P : 𝓤 ⊔ 𝓥 ̇
-   P = image f
-
-   i : is-subsingleton P
-   i (y , u) (y' , u') = to-Σ-≡ (φ y y' u u' , ∃-is-subsingleton _ _)
-
-   g : ∥ X ∥ → P
-   g = ∥∥-recursion i (corestriction f)
-
-   h : P → Y
-   h = restriction f
-
-   γ : ∥ X ∥ → Y
-   γ = h ∘ g
-\end{code}
-
 We also have:
 
 \begin{code}
@@ -10885,6 +10843,48 @@ We also have:
 
    κ : wconstant f
    κ x y = ap c (∥∥-is-subsingleton ∣ x ∣ ∣ y ∣)
+\end{code}
+
+There is another situation in which we can eliminate truncations that
+is often useful in practice. The universal property of subsingleton
+truncation says that we can get a function `∥ X ∥ → Y` provided the
+type `Y` is a subsingleton and we have a given function `X →
+Y`. Because `Y` is a subsingleton, the given function is automatically
+`wconstant`. Hence the following generalizes this to the situation in
+which `Y` is a set:
+
+\begin{code}
+ ∥∥-recursion-set : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+                  → is-set Y
+                  → (f : X → Y)
+                  → wconstant f
+                  → ∥ X ∥ → Y
+
+ ∥∥-recursion-set {𝓤} {𝓥} X Y s f κ = f'
+  where
+   ψ : (y y' : Y) → (Σ \x → f x ≡ y) → (Σ \x' → f x' ≡ y') → y ≡ y'
+   ψ y y' (x , r) (x' , r') = y    ≡⟨ r ⁻¹   ⟩
+                              f x  ≡⟨ κ x x' ⟩
+                              f x' ≡⟨ r'     ⟩
+                              y'   ∎
+
+   φ : (y y' : Y) → (∃ \x → f x ≡ y) → (∃ \x' → f x' ≡ y') → y ≡ y'
+   φ y y' u u' = ∥∥-recursion (s y y') (λ - → ∥∥-recursion (s y y') (ψ y y' -) u') u
+
+   P : 𝓤 ⊔ 𝓥 ̇
+   P = image f
+
+   i : is-subsingleton P
+   i (y , u) (y' , u') = to-Σ-≡ (φ y y' u u' , ∃-is-subsingleton _ _)
+
+   g : ∥ X ∥ → P
+   g = ∥∥-recursion i (corestriction f)
+
+   h : P → Y
+   h = restriction f
+
+   f' : ∥ X ∥ → Y
+   f' = h ∘ g
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
