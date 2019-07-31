@@ -5773,7 +5773,7 @@ module find-hidden-root where
     g = inhabited-recursion (root f) (fix (μρ f))
          (fix-is-subsingleton (μρ f) (μρ-wconstant f)) γ
 
-    h : fix (μρ f) → Σ \(n : ℕ) → f n ≡ 0
+    h : fix (μρ f) → root f
     h = from-fix (μρ f)
 
  module find-existing-root-example where
@@ -5835,6 +5835,7 @@ module exit-∥∥
                   → (f : X → Y)
                   → wconstant f
                   → ∥ X ∥ → Y
+
  ∥∥-recursion-set {𝓤} {𝓥} X Y s f κ = h ∘ g
   where
    ψ : (y y' : Y) → (Σ \x → f x ≡ y) → (Σ \x' → f x' ≡ y') → y ≡ y'

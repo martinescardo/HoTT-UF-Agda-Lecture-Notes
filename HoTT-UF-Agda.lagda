@@ -10562,7 +10562,7 @@ mathematics, including classical ones such as excluded middle and
 
 For any type `X`, we have `is-inhabited X → X`
 [iff](https://lmcs.episciences.org/3217/) `X` has a designated
-[wconstant-endomap](HoTT-UF-Agda.html#wconstant-endomap). To prove this we first
+[wconstant endomap](HoTT-UF-Agda.html#wconstant-endomap). To prove this we first
 show that the type of fixed points of a `wconstant` endomap is a
 subsingleton.
 
@@ -10692,7 +10692,7 @@ search, and this gives a constant endomap of the type of roots:
    φ = contrapositive (pr₂(pr₂ (minimal-root-by-bounded-search-ℕ f m p)) n)
 \end{code}
 
-The crucial property of the function `μρ` is that it is `wconstant`:
+The crucial property of the function `μρ f` is that it is `wconstant`:
 
 \begin{code}
  μρ-wconstant : (f : ℕ → ℕ) → wconstant (μρ f)
@@ -10715,7 +10715,7 @@ The crucial property of the function `μρ` is that it is `wconstant`:
    r = to-Σ-≡ (q , ℕ-is-set _ _ _ _)
 \end{code}
 
-Using the `wconstancy` of `μρ`, if a root of `f` exists, then we can
+Using the `wconstancy` of `μρ f`, if a root of `f` exists, then we can
 find one (which in fact will be the minimal one):
 
 \begin{code}
@@ -10729,7 +10729,7 @@ find one (which in fact will be the minimal one):
     g = inhabited-recursion (root f) (fix (μρ f))
          (fix-is-subsingleton (μρ f) (μρ-wconstant f)) γ
 
-    h : fix (μρ f) → Σ \(n : ℕ) → f n ≡ 0
+    h : fix (μρ f) → root f
     h = from-fix (μρ f)
 \end{code}
 
@@ -10826,6 +10826,7 @@ the following generalizes this to the situation in which `Y` is a set:
                   → (f : X → Y)
                   → wconstant f
                   → ∥ X ∥ → Y
+
  ∥∥-recursion-set {𝓤} {𝓥} X Y s f κ = h ∘ g
   where
    ψ : (y y' : Y) → (Σ \x → f x ≡ y) → (Σ \x' → f x' ≡ y') → y ≡ y'
