@@ -10587,7 +10587,7 @@ to-fix f κ x = f x , κ (f x) x
 \end{code}
 
 The following is trivial if the type `X` is a set. What may be
-surprising is that it holds for arbitrary types, because in this case the type `f x ≡ x` is in general not a subsingleton (consider e.g. `X = 𝓤₀ ̇ ` and `f = λ _ → 𝟚`).
+surprising is that it holds for arbitrary types, because in this case the type `f x ≡ x` is in general not a subsingleton.
 
 \begin{code}
 fix-is-subsingleton : {X : 𝓤 ̇ } (f : X → X)
