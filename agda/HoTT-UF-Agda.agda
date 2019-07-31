@@ -579,22 +579,28 @@ module basic-arithmetic-and-order where
     g : succ n ≡ succ k → A n
     g p = transport A ((succ-lc p)⁻¹) a
 
+  root : (ℕ → ℕ) → 𝓤₀ ̇
+  root f = Σ \(n : ℕ) → f n ≡ 0
+
   _has-no-root<_ : (ℕ → ℕ) → ℕ → 𝓤₀ ̇
   f has-no-root< k = (n : ℕ) → n < k → f n ≢ 0
 
-  _has-minimal-root : (ℕ → ℕ) → 𝓤₀ ̇
-  f has-minimal-root = Σ \(m : ℕ) → (f m ≡ 0)
-                                    × (f has-no-root< m)
+  minimal-root : (ℕ → ℕ) → 𝓤₀ ̇
+  minimal-root f = Σ \(m : ℕ) → (f m ≡ 0)
+                              × (f has-no-root< m)
 
-  bounded-ℕ-search : ∀ k f → (f has-minimal-root) + (f has-no-root< k)
+  minimal-root-is-root : ∀ f → minimal-root f → root f
+  minimal-root-is-root f (m , p , _) = m , p
+
+  bounded-ℕ-search : ∀ k f → (minimal-root f) + (f has-no-root< k)
   bounded-ℕ-search zero f = inr (λ n → !𝟘 (f n ≢ 0))
   bounded-ℕ-search (succ k) f = +-recursion φ γ (bounded-ℕ-search k f)
    where
     A : ℕ → (ℕ → ℕ) → 𝓤₀ ̇
-    A k f = (f has-minimal-root) + (f has-no-root< k)
+    A k f = (minimal-root f) + (f has-no-root< k)
 
-    φ : f has-minimal-root → A (succ k) f
-    φ (m , p , u) = inl (m , p , u)
+    φ : minimal-root f → A (succ k) f
+    φ = inl
 
     γ : f has-no-root< k → A (succ k) f
     γ u = +-recursion γ₀ γ₁ (ℕ-has-decidable-equality (f k) 0)
@@ -605,13 +611,13 @@ module basic-arithmetic-and-order where
       γ₁ : f k ≢ 0 → A (succ k) f
       γ₁ v = inr (bounded-∀-next (λ n → f n ≢ 0) k v u)
 
-  bounded-minimal-root : ∀ f n → f n ≡ 0 → f has-minimal-root
-  bounded-minimal-root f n p = γ
+  bounded-search-ℕ-minimal-root : ∀ f n → f n ≡ 0 → minimal-root f
+  bounded-search-ℕ-minimal-root f n p = γ
    where
     g : ¬(f has-no-root< (succ n))
     g φ = φ n (≤-refl n) p
 
-    γ : f has-minimal-root
+    γ : minimal-root f
     γ = right-fails-gives-left-holds (bounded-ℕ-search (succ n) f) g
 
 is-singleton : 𝓤 ̇ → 𝓤 ̇
@@ -867,17 +873,18 @@ X is-of-hlevel (succ n) = (x x' : X) → ((x ≡ x') is-of-hlevel n)
 wconstant : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 wconstant f = (x x' : domain f) → f x ≡ f x'
 
-collapsible : 𝓤 ̇ → 𝓤 ̇
-collapsible X = Σ \(f : X → X) → wconstant f
+wconstant-endomap : 𝓤 ̇ → 𝓤 ̇
+wconstant-endomap X = Σ \(f : X → X) → wconstant f
 
-collapser : (X : 𝓤 ̇ ) → collapsible X → X → X
-collapser X (f , w) = f
+wcmap : (X : 𝓤 ̇ ) → wconstant-endomap X → (X → X)
+wcmap X (f , w) = f
 
-collapser-wconstancy : (X : 𝓤 ̇ ) (c : collapsible X) → wconstant (collapser X c)
-collapser-wconstancy X (f , w) = w
+wcmap-constancy : (X : 𝓤 ̇ ) (c : wconstant-endomap X)
+                → wconstant (wcmap X c)
+wcmap-constancy X (f , w) = w
 
 Hedberg : {X : 𝓤 ̇ } (x : X)
-        → ((y : X) → collapsible (x ≡ y))
+        → ((y : X) → wconstant-endomap (x ≡ y))
         → (y : X) → is-subsingleton (x ≡ y)
 
 Hedberg {𝓤} {X} x c y p q =
@@ -887,19 +894,19 @@ Hedberg {𝓤} {X} x c y p q =
  q                       ∎
  where
   f : (y : X) → x ≡ y → x ≡ y
-  f y = collapser (x ≡ y) (c y)
+  f y = wcmap (x ≡ y) (c y)
 
   κ : (y : X) (p q : x ≡ y) → f y p ≡ f y q
-  κ y = collapser-wconstancy (x ≡ y) (c y)
+  κ y = wcmap-constancy (x ≡ y) (c y)
 
   a : (y : X) (p : x ≡ y) → p ≡ (f x (refl x))⁻¹ ∙ f y p
   a x (refl x) = (⁻¹-left∙ (f x (refl x)))⁻¹
 
-Id-collapsible : 𝓤 ̇ → 𝓤 ̇
-Id-collapsible X = (x y : X) → collapsible(x ≡ y)
+wconstant-≡-endomaps : 𝓤 ̇ → 𝓤 ̇
+wconstant-≡-endomaps X = (x y : X) → wconstant-endomap (x ≡ y)
 
-sets-are-Id-collapsible : (X : 𝓤 ̇ ) → is-set X → Id-collapsible X
-sets-are-Id-collapsible X s x y = (f , κ)
+sets-have-wconstant-≡-endomaps : (X : 𝓤 ̇ ) → is-set X → wconstant-≡-endomaps X
+sets-have-wconstant-≡-endomaps X s x y = (f , κ)
  where
   f : x ≡ y → x ≡ y
   f p = p
@@ -907,16 +914,17 @@ sets-are-Id-collapsible X s x y = (f , κ)
   κ : (p q : x ≡ y) → f p ≡ f q
   κ p q = s x y p q
 
-Id-collapsibles-are-sets : (X : 𝓤 ̇ ) → Id-collapsible X → is-set X
-Id-collapsibles-are-sets X c x = Hedberg x
-                                  (λ y → collapser (x ≡ y) (c x y) ,
-                                  collapser-wconstancy (x ≡ y) (c x y))
+types-with-wconstant-≡-endomaps-are-sets : (X : 𝓤 ̇ )
+                                         → wconstant-≡-endomaps X → is-set X
+types-with-wconstant-≡-endomaps-are-sets X c x = Hedberg x
+                                                  (λ y → wcmap (x ≡ y) (c x y) ,
+                                                   wcmap-constancy (x ≡ y) (c x y))
 
-subsingletons-are-Id-collapsible : (X : 𝓤 ̇ )
-                                 → is-subsingleton X
-                                 → Id-collapsible X
+subsingletons-have-wconstant-≡-endomaps : (X : 𝓤 ̇ )
+                                        → is-subsingleton X
+                                        → wconstant-≡-endomaps X
 
-subsingletons-are-Id-collapsible X s x y = (f , κ)
+subsingletons-have-wconstant-≡-endomaps X s x y = (f , κ)
  where
   f : x ≡ y → x ≡ y
   f p = s x y
@@ -925,8 +933,8 @@ subsingletons-are-Id-collapsible X s x y = (f , κ)
   κ p q = refl (s x y)
 
 subsingletons-are-sets : (X : 𝓤 ̇ ) → is-subsingleton X → is-set X
-subsingletons-are-sets X s = Id-collapsibles-are-sets X
-                               (subsingletons-are-Id-collapsible X s)
+subsingletons-are-sets X s = types-with-wconstant-≡-endomaps-are-sets X
+                               (subsingletons-have-wconstant-≡-endomaps X s)
 
 𝟘-is-set : is-set 𝟘
 𝟘-is-set = subsingletons-are-sets 𝟘 𝟘-is-subsingleton
@@ -985,21 +993,21 @@ X has-minimal-hlevel (succ n) = (X is-of-hlevel (succ n)) × ¬(X is-of-hlevel n
 _has-minimal-hlevel-∞ : 𝓤 ̇ → 𝓤 ̇
 X has-minimal-hlevel-∞ = (n : ℕ) → ¬(X is-of-hlevel n)
 
-pointed-types-are-collapsible : {X : 𝓤 ̇ } → X → collapsible X
-pointed-types-are-collapsible x = ((λ y → x) , (λ y y' → refl x))
+pointed-types-have-wconstant-endomap : {X : 𝓤 ̇ } → X → wconstant-endomap X
+pointed-types-have-wconstant-endomap x = ((λ y → x) , (λ y y' → refl x))
 
-empty-types-are-collapsible : {X : 𝓤 ̇ } → is-empty X → collapsible X
-empty-types-are-collapsible e = (id , (λ x x' → !𝟘 (x ≡ x') (e x)))
+empty-types-have-wconstant-endomap : {X : 𝓤 ̇ } → is-empty X → wconstant-endomap X
+empty-types-have-wconstant-endomap e = (id , (λ x x' → !𝟘 (x ≡ x') (e x)))
 
-decidable-is-collapsible : {X : 𝓤 ̇ } → decidable X → collapsible X
-decidable-is-collapsible (inl x) = pointed-types-are-collapsible x
-decidable-is-collapsible (inr e) = empty-types-are-collapsible e
+decidable-has-wconstant-endomap : {X : 𝓤 ̇ } → decidable X → wconstant-endomap X
+decidable-has-wconstant-endomap (inl x) = pointed-types-have-wconstant-endomap x
+decidable-has-wconstant-endomap (inr e) = empty-types-have-wconstant-endomap e
 
-hedberg-lemma : {X : 𝓤 ̇ } → has-decidable-equality X → Id-collapsible X
-hedberg-lemma {𝓤} {X} d x y = decidable-is-collapsible (d x y)
+hedberg-lemma : {X : 𝓤 ̇ } → has-decidable-equality X → wconstant-≡-endomaps X
+hedberg-lemma {𝓤} {X} d x y = decidable-has-wconstant-endomap (d x y)
 
 hedberg : {X : 𝓤 ̇ } → has-decidable-equality X → is-set X
-hedberg {𝓤} {X} d = Id-collapsibles-are-sets X (hedberg-lemma d)
+hedberg {𝓤} {X} d = types-with-wconstant-≡-endomaps-are-sets X (hedberg-lemma d)
 
 ℕ-is-set : is-set ℕ
 ℕ-is-set = hedberg ℕ-has-decidable-equality
@@ -1770,7 +1778,7 @@ subtypes-of-sets-are-sets = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
       → left-cancellable m → is-set Y → is-set X
-  sol {𝓤} {𝓥} {X} m i h = Id-collapsibles-are-sets X c
+  sol {𝓤} {𝓥} {X} m i h = types-with-wconstant-≡-endomaps-are-sets X c
    where
     f : (x x' : X) → x ≡ x' → x ≡ x'
     f x x' r = i (ap m r)
@@ -1778,7 +1786,7 @@ subtypes-of-sets-are-sets = sol
     κ : (x x' : X) (r s : x ≡ x') → f x x' r ≡ f x x' s
     κ x x' r s = ap i (h (m x) (m x') (ap m r) (ap m s))
 
-    c : Id-collapsible X
+    c : wconstant-≡-endomaps X
     c x x' = f x x' , κ x x'
 
 pr₁-lc = sol
@@ -3231,7 +3239,7 @@ holds-is-subsingleton (P , i) = i
          being-subsingleton-is-subsingleton fe _ _)
 
 Ω-is-a-set : dfunext 𝓤 𝓤 → propext 𝓤 → is-set (Ω 𝓤)
-Ω-is-a-set {𝓤} fe pe = Id-collapsibles-are-sets (Ω 𝓤) c
+Ω-is-a-set {𝓤} fe pe = types-with-wconstant-≡-endomaps-are-sets (Ω 𝓤) c
  where
   A : (p q : Ω 𝓤) → 𝓤 ̇
   A p q = (p holds → q holds) × (q holds → p holds)
@@ -5661,6 +5669,208 @@ module basic-truncation-development
          (being-surjection-is-subsingleton f))
        (lr-implication (equiv-iff-embedding-and-surjection f))
        (rl-implication (equiv-iff-embedding-and-surjection f))
+
+fix : {X : 𝓤 ̇ } → (X → X) → 𝓤 ̇
+fix f = Σ \(x : domain f) → f x ≡ x
+
+from-fix : {X : 𝓤 ̇ } (f : X → X)
+         → fix f → X
+from-fix f = pr₁
+
+to-fix : {X : 𝓤 ̇ } (f : X → X) → wconstant f
+       → X → fix f
+to-fix f κ x = f x , κ (f x) x
+
+fix-is-subsingleton : {X : 𝓤 ̇ } (f : X → X)
+                    → wconstant f → is-subsingleton (fix f)
+
+fix-is-subsingleton {𝓤} {X} f κ = γ
+ where
+  a : (y x : X) → (f x ≡ x) ≃ (f y ≡ x)
+  a y x = transport (_≡ x) (κ x y) , transport-is-equiv (_≡ x) (κ x y)
+
+  b : (y : X) → fix f ≃ singleton-type' (f y)
+  b y = Σ-cong (a y)
+
+  c : X → is-singleton (fix f)
+  c y = equiv-to-singleton (b y) (singleton-types'-are-singletons X (f y))
+
+  d : fix f → is-singleton (fix f)
+  d = c ∘ from-fix f
+
+  γ : is-subsingleton (fix f)
+  γ = subsingleton-criterion d
+
+choice-function : 𝓤 ̇ → 𝓤 ⁺ ̇
+choice-function X = is-inhabited X → X
+
+wconstant-endomap-gives-choice-function : {X : 𝓤 ̇ }
+                                        → wconstant-endomap X → choice-function X
+wconstant-endomap-gives-choice-function {𝓤} {X} (f , κ) = from-fix f ∘ γ
+ where
+  γ : is-inhabited X → fix f
+  γ = inhabited-recursion X (fix f) (fix-is-subsingleton f κ) (to-fix f κ)
+
+choice-function-gives-wconstant-endomap : global-dfunext
+                                        → {X : 𝓤 ̇ }
+                                        → choice-function X → wconstant-endomap X
+choice-function-gives-wconstant-endomap fe {X} c = f , κ
+ where
+  f : X → X
+  f = c ∘ pointed-is-inhabited
+
+  κ : wconstant f
+  κ x y = ap c (inhabitation-is-subsingleton fe X (pointed-is-inhabited x)
+               (pointed-is-inhabited y))
+
+module find-hidden-root where
+
+ open basic-arithmetic-and-order public
+
+ μρ : (f : ℕ → ℕ) → root f → root f
+ μρ f (n , p) = minimal-root-is-root f (bounded-search-ℕ-minimal-root f n p)
+
+ μρ-root : (f : ℕ → ℕ) → root f → ℕ
+ μρ-root f r = pr₁ (μρ f r)
+
+ μρ-root-is-root : (f : ℕ → ℕ) (r : root f) → f (μρ-root f r) ≡ 0
+ μρ-root-is-root f r = pr₂ (μρ f r)
+
+ μρ-root-minimal : (f : ℕ → ℕ) (m : ℕ) (p : f m ≡ 0)
+                 → (n : ℕ) → f n ≡ 0 → μρ-root f (m , p) ≤ n
+ μρ-root-minimal f m p n q = not-less-bigger-or-equal
+                              (μρ-root f (m , p)) n (φ (dni (f n ≡ 0) q))
+  where
+   φ : ¬(f n ≢ 0) → ¬(n < μρ-root f (m , p))
+   φ = contrapositive (pr₂(pr₂ (bounded-search-ℕ-minimal-root f m p)) n)
+
+ μρ-wconstant : (f : ℕ → ℕ) → wconstant (μρ f)
+ μρ-wconstant f (n , p) (n' , p') = r
+  where
+   m m' : ℕ
+   m  = μρ-root f (n , p)
+   m' = μρ-root f (n' , p')
+
+   l : m ≤ m'
+   l = μρ-root-minimal f n p m' (μρ-root-is-root f (n' , p'))
+
+   l' : m' ≤ m
+   l' = μρ-root-minimal f n' p' m (μρ-root-is-root f (n , p))
+
+   q : m ≡ m'
+   q = ≤-anti _ _ l l'
+
+   r : μρ f (n , p) ≡ μρ f (n' , p')
+   r = to-Σ-≡ (q , ℕ-is-set _ _ _ _)
+
+ find-existing-root : (f : ℕ → ℕ) → is-inhabited (root f) → root f
+ find-existing-root f = h ∘ g
+   where
+    γ : root f → fix (μρ f)
+    γ = to-fix (μρ f) (μρ-wconstant f)
+
+    g : is-inhabited (root f) → fix (μρ f)
+    g = inhabited-recursion (root f) (fix (μρ f))
+         (fix-is-subsingleton (μρ f) (μρ-wconstant f)) γ
+
+    h : fix (μρ f) → Σ \(n : ℕ) → f n ≡ 0
+    h = from-fix (μρ f)
+
+ module find-existing-root-example where
+
+  f : ℕ → ℕ
+  f 0 = 1
+  f 1 = 1
+  f 2 = 0
+  f 3 = 1
+  f 4 = 0
+  f 5 = 1
+  f 6 = 1
+  f 7 = 0
+  f (succ (succ (succ (succ (succ (succ (succ (succ x)))))))) = x
+
+  i : is-inhabited (root f)
+  i = pointed-is-inhabited (8 , refl _)
+
+  r : root f
+  r = find-existing-root f i
+
+  p : pr₁ r ≡ 2
+  p = refl _
+
+module exit-∥∥
+        (pt  : subsingleton-truncations-exist)
+        (hfe : global-hfunext)
+       where
+
+ open basic-truncation-development pt hfe
+ open find-hidden-root hiding (find-existing-root)
+
+ find-existing-root : (f : ℕ → ℕ)
+                    → (∃ \(n : ℕ) → f n ≡ 0)
+                    →  Σ \(n : ℕ) → f n ≡ 0
+ find-existing-root f = k
+  where
+   γ : root f → fix (μρ f)
+   γ = to-fix (μρ f) (μρ-wconstant f)
+
+   g : ∥ root f ∥ → fix (μρ f)
+   g = ∥∥-recursion (fix-is-subsingleton (μρ f) (μρ-wconstant f)) γ
+
+   h : fix (μρ f) → root f
+   h = from-fix (μρ f)
+
+   k : ∥ root f ∥ → root f
+   k = h ∘ g
+
+ ∥∥-recursion-set : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+                  → is-set Y
+                  → (f : X → Y)
+                  → wconstant f
+                  → ∥ X ∥ → Y
+ ∥∥-recursion-set {𝓤} {𝓥} X Y s f κ = h ∘ g
+  where
+   ψ : (y y' : Y) → (Σ \x → f x ≡ y) → (Σ \x' → f x' ≡ y') → y ≡ y'
+   ψ y y' (x , r) (x' , r') = y    ≡⟨ r ⁻¹   ⟩
+                              f x  ≡⟨ κ x x' ⟩
+                              f x' ≡⟨ r'     ⟩
+                              y'   ∎
+
+   φ : (y y' : Y) → (∃ \x → f x ≡ y) → (∃ \x' → f x' ≡ y') → y ≡ y'
+   φ y y' u u' = ∥∥-recursion (s y y') (λ - → ∥∥-recursion (s y y') (ψ y y' -) u') u
+
+   P : 𝓤 ⊔ 𝓥 ̇
+   P = image f
+
+   i : is-subsingleton P
+   i (y , u) (y' , u') = to-Σ-≡ (φ y y' u u' , ∃-is-subsingleton _ _)
+
+   g : ∥ X ∥ → P
+   g = ∥∥-recursion i (corestriction f)
+
+   h : P → Y
+   h = restriction f
+
+ wconstant-endomap-gives-∥∥-choice-function : {X : 𝓤 ̇ }
+                                            → wconstant-endomap X
+                                            → (∥ X ∥ → X)
+
+ wconstant-endomap-gives-∥∥-choice-function {𝓤} {X} (f , κ) = from-fix f ∘ γ
+  where
+   γ : ∥ X ∥ → fix f
+   γ = ∥∥-recursion (fix-is-subsingleton f κ) (to-fix f κ)
+
+ ∥∥-choice-function-gives-wconstant-endomap : {X : 𝓤 ̇ }
+                                           → (∥ X ∥ → X)
+                                           → wconstant-endomap X
+
+ ∥∥-choice-function-gives-wconstant-endomap {𝓤} {X} c = f , κ
+  where
+   f : X → X
+   f = c ∘ ∣_∣
+
+   κ : wconstant f
+   κ x y = ap c (∥∥-is-subsingleton ∣ x ∣ ∣ y ∣)
 
 simple-unique-choice : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
 

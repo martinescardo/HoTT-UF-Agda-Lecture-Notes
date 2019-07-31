@@ -442,6 +442,7 @@ to practice univalent mathematics should consult the above references.
         1. [Disjunction and existence](HoTT-UF-Agda.html#disjunction-and-existence)
         1. [Images and surjections](HoTT-UF-Agda.html#images-and-surjections)
         1. [A characterization of equivalences](HoTT-UF-Agda.html#equivalence-characterization)
+        1. [Exiting truncations](HoTT-UF-Agda.html#exiting-truncations)
      1. [Choice in univalent mathematics](HoTT-UF-Agda.html#choice)
         1. [Unique choice](HoTT-UF-Agda.html#unique-choice)
         1. [Univalent choice](HoTT-UF-Agda.html#univalent-choice)
@@ -2309,24 +2310,37 @@ on natural numbers. First, it is reflexive, transitive and antisymmetric:
 
     g : succ n ≡ succ k → A n
     g p = transport A ((succ-lc p)⁻¹) a
+\end{code}
 
+The type of roots of a function:
+
+\begin{code}
+  root : (ℕ → ℕ) → 𝓤₀ ̇
+  root f = Σ \(n : ℕ) → f n ≡ 0
 
   _has-no-root<_ : (ℕ → ℕ) → ℕ → 𝓤₀ ̇
   f has-no-root< k = (n : ℕ) → n < k → f n ≢ 0
+\end{code}
 
-  _has-minimal-root : (ℕ → ℕ) → 𝓤₀ ̇
-  f has-minimal-root = Σ \(m : ℕ) → (f m ≡ 0)
-                                    × (f has-no-root< m)
+The type of minimal roots of a function:
 
-  bounded-ℕ-search : ∀ k f → (f has-minimal-root) + (f has-no-root< k)
+\begin{code}
+  minimal-root : (ℕ → ℕ) → 𝓤₀ ̇
+  minimal-root f = Σ \(m : ℕ) → (f m ≡ 0)
+                              × (f has-no-root< m)
+
+  minimal-root-is-root : ∀ f → minimal-root f → root f
+  minimal-root-is-root f (m , p , _) = m , p
+
+  bounded-ℕ-search : ∀ k f → (minimal-root f) + (f has-no-root< k)
   bounded-ℕ-search zero f = inr (λ n → !𝟘 (f n ≢ 0))
   bounded-ℕ-search (succ k) f = +-recursion φ γ (bounded-ℕ-search k f)
    where
     A : ℕ → (ℕ → ℕ) → 𝓤₀ ̇
-    A k f = (f has-minimal-root) + (f has-no-root< k)
+    A k f = (minimal-root f) + (f has-no-root< k)
 
-    φ : f has-minimal-root → A (succ k) f
-    φ (m , p , u) = inl (m , p , u)
+    φ : minimal-root f → A (succ k) f
+    φ = inl
 
     γ : f has-no-root< k → A (succ k) f
     γ u = +-recursion γ₀ γ₁ (ℕ-has-decidable-equality (f k) 0)
@@ -2341,13 +2355,13 @@ on natural numbers. First, it is reflexive, transitive and antisymmetric:
 Given any root, we can find a minimal root.
 
 \begin{code}
-  bounded-minimal-root : ∀ f n → f n ≡ 0 → f has-minimal-root
-  bounded-minimal-root f n p = γ
+  bounded-search-ℕ-minimal-root : ∀ f n → f n ≡ 0 → minimal-root f
+  bounded-search-ℕ-minimal-root f n p = γ
    where
     g : ¬(f has-no-root< (succ n))
     g φ = φ n (≤-refl n) p
 
-    γ : f has-minimal-root
+    γ : minimal-root f
     γ = right-fails-gives-left-holds (bounded-ℕ-search (succ n) f) g
 \end{code}
 
@@ -3176,26 +3190,28 @@ The prefix "`w`" officially stands for "weakly". Perhaps
 *incoherently constant* or *wildly constant* would be better
 terminologies, with *coherence* understood in the `∞`-categorical
 sense. We prefer to stick to *wildly* rather than *weakly*, and luckily
-both start with the letter "`w`". The following is also probably not
-very good terminology, but we haven't come up with a better one yet.
+both start with the letter "`w`".
+
+We first define the type of constant endomaps of a given type:
 
 \begin{code}
-collapsible : 𝓤 ̇ → 𝓤 ̇
-collapsible X = Σ \(f : X → X) → wconstant f
+wconstant-endomap : 𝓤 ̇ → 𝓤 ̇
+wconstant-endomap X = Σ \(f : X → X) → wconstant f
 
-collapser : (X : 𝓤 ̇ ) → collapsible X → X → X
-collapser X (f , w) = f
+wcmap : (X : 𝓤 ̇ ) → wconstant-endomap X → (X → X)
+wcmap X (f , w) = f
 
-collapser-wconstancy : (X : 𝓤 ̇ ) (c : collapsible X) → wconstant (collapser X c)
-collapser-wconstancy X (f , w) = w
+wcmap-constancy : (X : 𝓤 ̇ ) (c : wconstant-endomap X)
+                → wconstant (wcmap X c)
+wcmap-constancy X (f , w) = w
 \end{code}
 
 The point is that a type is a set if and only if its identity types
-all have `wconstant` endomaps:
+all have designated `wconstant` endomaps:
 
 \begin{code}
 Hedberg : {X : 𝓤 ̇ } (x : X)
-        → ((y : X) → collapsible (x ≡ y))
+        → ((y : X) → wconstant-endomap (x ≡ y))
         → (y : X) → is-subsingleton (x ≡ y)
 
 Hedberg {𝓤} {X} x c y p q =
@@ -3205,10 +3221,10 @@ Hedberg {𝓤} {X} x c y p q =
  q                       ∎
  where
   f : (y : X) → x ≡ y → x ≡ y
-  f y = collapser (x ≡ y) (c y)
+  f y = wcmap (x ≡ y) (c y)
 
   κ : (y : X) (p q : x ≡ y) → f y p ≡ f y q
-  κ y = collapser-wconstancy (x ≡ y) (c y)
+  κ y = wcmap-constancy (x ≡ y) (c y)
 
   a : (y : X) (p : x ≡ y) → p ≡ (f x (refl x))⁻¹ ∙ f y p
   a x (refl x) = (⁻¹-left∙ (f x (refl x)))⁻¹
@@ -3220,11 +3236,11 @@ Hedberg {𝓤} {X} x c y p q =
 The following is immediate from the definitions:
 
 \begin{code}
-Id-collapsible : 𝓤 ̇ → 𝓤 ̇
-Id-collapsible X = (x y : X) → collapsible(x ≡ y)
+wconstant-≡-endomaps : 𝓤 ̇ → 𝓤 ̇
+wconstant-≡-endomaps X = (x y : X) → wconstant-endomap (x ≡ y)
 
-sets-are-Id-collapsible : (X : 𝓤 ̇ ) → is-set X → Id-collapsible X
-sets-are-Id-collapsible X s x y = (f , κ)
+sets-have-wconstant-≡-endomaps : (X : 𝓤 ̇ ) → is-set X → wconstant-≡-endomaps X
+sets-have-wconstant-≡-endomaps X s x y = (f , κ)
  where
   f : x ≡ y → x ≡ y
   f p = p
@@ -3236,10 +3252,11 @@ sets-are-Id-collapsible X s x y = (f , κ)
 And the converse is the content of Hedberg's Theorem.
 
 \begin{code}
-Id-collapsibles-are-sets : (X : 𝓤 ̇ ) → Id-collapsible X → is-set X
-Id-collapsibles-are-sets X c x = Hedberg x
-                                  (λ y → collapser (x ≡ y) (c x y) ,
-                                  collapser-wconstancy (x ≡ y) (c x y))
+types-with-wconstant-≡-endomaps-are-sets : (X : 𝓤 ̇ )
+                                         → wconstant-≡-endomaps X → is-set X
+types-with-wconstant-≡-endomaps-are-sets X c x = Hedberg x
+                                                  (λ y → wcmap (x ≡ y) (c x y) ,
+                                                   wcmap-constancy (x ≡ y) (c x y))
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -3250,11 +3267,11 @@ the argument `p`, using the fact that `X` is a subsingleton instead,
 to get a `wconstant` function:
 
 \begin{code}
-subsingletons-are-Id-collapsible : (X : 𝓤 ̇ )
-                                 → is-subsingleton X
-                                 → Id-collapsible X
+subsingletons-have-wconstant-≡-endomaps : (X : 𝓤 ̇ )
+                                        → is-subsingleton X
+                                        → wconstant-≡-endomaps X
 
-subsingletons-are-Id-collapsible X s x y = (f , κ)
+subsingletons-have-wconstant-≡-endomaps X s x y = (f , κ)
  where
   f : x ≡ y → x ≡ y
   f p = s x y
@@ -3266,8 +3283,8 @@ subsingletons-are-Id-collapsible X s x y = (f , κ)
 And the corollary is that subsingleton types are sets.
 \begin{code}
 subsingletons-are-sets : (X : 𝓤 ̇ ) → is-subsingleton X → is-set X
-subsingletons-are-sets X s = Id-collapsibles-are-sets X
-                               (subsingletons-are-Id-collapsible X s)
+subsingletons-are-sets X s = types-with-wconstant-≡-endomaps-are-sets X
+                               (subsingletons-have-wconstant-≡-endomaps X s)
 \end{code}
 
 In particular, the types `𝟘` and `𝟙` are sets.
@@ -3389,23 +3406,23 @@ function `x ≡ y → x ≡ y` and hence conclude that it is a set. This
 argument is due to Hedberg.
 
 \begin{code}
-pointed-types-are-collapsible : {X : 𝓤 ̇ } → X → collapsible X
-pointed-types-are-collapsible x = ((λ y → x) , (λ y y' → refl x))
+pointed-types-have-wconstant-endomap : {X : 𝓤 ̇ } → X → wconstant-endomap X
+pointed-types-have-wconstant-endomap x = ((λ y → x) , (λ y y' → refl x))
 
-empty-types-are-collapsible : {X : 𝓤 ̇ } → is-empty X → collapsible X
-empty-types-are-collapsible e = (id , (λ x x' → !𝟘 (x ≡ x') (e x)))
-
-
-decidable-is-collapsible : {X : 𝓤 ̇ } → decidable X → collapsible X
-decidable-is-collapsible (inl x) = pointed-types-are-collapsible x
-decidable-is-collapsible (inr e) = empty-types-are-collapsible e
+empty-types-have-wconstant-endomap : {X : 𝓤 ̇ } → is-empty X → wconstant-endomap X
+empty-types-have-wconstant-endomap e = (id , (λ x x' → !𝟘 (x ≡ x') (e x)))
 
 
-hedberg-lemma : {X : 𝓤 ̇ } → has-decidable-equality X → Id-collapsible X
-hedberg-lemma {𝓤} {X} d x y = decidable-is-collapsible (d x y)
+decidable-has-wconstant-endomap : {X : 𝓤 ̇ } → decidable X → wconstant-endomap X
+decidable-has-wconstant-endomap (inl x) = pointed-types-have-wconstant-endomap x
+decidable-has-wconstant-endomap (inr e) = empty-types-have-wconstant-endomap e
+
+
+hedberg-lemma : {X : 𝓤 ̇ } → has-decidable-equality X → wconstant-≡-endomaps X
+hedberg-lemma {𝓤} {X} d x y = decidable-has-wconstant-endomap (d x y)
 
 hedberg : {X : 𝓤 ̇ } → has-decidable-equality X → is-set X
-hedberg {𝓤} {X} d = Id-collapsibles-are-sets X (hedberg-lemma d)
+hedberg {𝓤} {X} d = types-with-wconstant-≡-endomaps-are-sets X (hedberg-lemma d)
 
 ℕ-is-set : is-set ℕ
 ℕ-is-set = hedberg ℕ-has-decidable-equality
@@ -4658,7 +4675,7 @@ subtypes-of-sets-are-sets = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
       → left-cancellable m → is-set Y → is-set X
-  sol {𝓤} {𝓥} {X} m i h = Id-collapsibles-are-sets X c
+  sol {𝓤} {𝓥} {X} m i h = types-with-wconstant-≡-endomaps-are-sets X c
    where
     f : (x x' : X) → x ≡ x' → x ≡ x'
     f x x' r = i (ap m r)
@@ -4666,7 +4683,7 @@ subtypes-of-sets-are-sets = sol
     κ : (x x' : X) (r s : x ≡ x') → f x x' r ≡ f x x' s
     κ x x' r s = ap i (h (m x) (m x') (ap m r) (ap m s))
 
-    c : Id-collapsible X
+    c : wconstant-≡-endomaps X
     c x x' = f x x' , κ x x'
 
 pr₁-lc = sol
@@ -6680,7 +6697,7 @@ With this and Hedberg, we get that `Ω` is a set:
 
 \begin{code}
 Ω-is-a-set : dfunext 𝓤 𝓤 → propext 𝓤 → is-set (Ω 𝓤)
-Ω-is-a-set {𝓤} fe pe = Id-collapsibles-are-sets (Ω 𝓤) c
+Ω-is-a-set {𝓤} fe pe = types-with-wconstant-≡-endomaps-are-sets (Ω 𝓤) c
  where
   A : (p q : Ω 𝓤) → 𝓤 ̇
   A p q = (p holds → q holds) × (q holds → p holds)
@@ -10520,25 +10537,329 @@ if it is both an embedding and a surjection:
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="exiting-truncations"></a> Existing subsingleton truncations.
+#### <a id="exiting-truncations"></a> Exiting subsingleton truncations
 
-We we will see that [global choice](HoTT-UF-Agda.html#global-choice)
-that *global choice*
+We will see that [global choice](HoTT-UF-Agda.html#global-choice)
 
    > (X : 𝓤 ̇ ) → `∥ X ∥ → X`
 
-implies excluded middle and is inconsistent with univalence. However, for some types `X`, we can exit the truncation. Because, as we have seen, we have a logical equivalence
+is inconsistent with univalence, and also implies excluded
+middle. However, for some types `X`, we can exit the truncation, which
+is what we show in this section.
 
-   > `∥ X ∥ ⇔ is-inhabited X`
+Because, as we have seen, we have a logical equivalence
+
+   > `∥ X ∥ ⇔ is-inhabited X`,
 
 it suffices to consider
 
    > `is-inhabited X → X`,
 
-which can be done in our spartan MLTT without any axioms for univalent mathematics.
+which can be done in our spartan MLTT without any axioms for univalent mathematics (hence hence with axioms for univalent mathematics, including classical ones such as excluded middle and (non-global) choice).
 
-For any type `X`, we have `is-inhabited X → X` [iff](https://lmcs.episciences.org/3217/) `X` is [collapsible](HoTT-UF-Agda.html#collapsible).
+For any type `X`, we have `is-inhabited X → X`
+[iff](https://lmcs.episciences.org/3217/) `X` has a designated
+[wconstant-endomap](HoTT-UF-Agda.html#wconstant-endomap). To prove this we first
+show that the type of fixed points of a `wconstant` endomap is a
+subsingleton.
 
+The type of fixed points of an endomap:
+
+\begin{code}
+fix : {X : 𝓤 ̇ } → (X → X) → 𝓤 ̇
+fix f = Σ \(x : domain f) → f x ≡ x
+
+from-fix : {X : 𝓤 ̇ } (f : X → X)
+         → fix f → X
+from-fix f = pr₁
+\end{code}
+
+Conversely, if `f` is `wconstant` then for any `x : X` we have that `f
+x` is a fixed point of `f`:
+
+\begin{code}
+to-fix : {X : 𝓤 ̇ } (f : X → X) → wconstant f
+       → X → fix f
+to-fix f κ x = f x , κ (f x) x
+\end{code}
+
+The following is trivial if the type `X` is a set. What may be
+surprising is that it holds for arbitrary types, because in this case the type `f x ≡ x` is in general not a subsingleton (consider e.g. `X = 𝓤₀ ̇ ` and `f = λ _ → 𝟚`).
+
+\begin{code}
+fix-is-subsingleton : {X : 𝓤 ̇ } (f : X → X)
+                    → wconstant f → is-subsingleton (fix f)
+
+fix-is-subsingleton {𝓤} {X} f κ = γ
+ where
+  a : (y x : X) → (f x ≡ x) ≃ (f y ≡ x)
+  a y x = transport (_≡ x) (κ x y) , transport-is-equiv (_≡ x) (κ x y)
+
+  b : (y : X) → fix f ≃ singleton-type' (f y)
+  b y = Σ-cong (a y)
+
+  c : X → is-singleton (fix f)
+  c y = equiv-to-singleton (b y) (singleton-types'-are-singletons X (f y))
+
+  d : fix f → is-singleton (fix f)
+  d = c ∘ from-fix f
+
+  γ : is-subsingleton (fix f)
+  γ = subsingleton-criterion d
+\end{code}
+
+*Exercise.* Formulate and prove the fact that the type `fix f` has the
+ universal property of the subsingleton truncation of `X` if `f` is
+ `wconstant`. Moreover, argue that the computation rule holds
+ definitionally in this case. This is an example of a situation when
+ the truncation of a type just is available in MLTT without axioms or
+ extensions.
+
+We use `fix-is-subsingleton` to show that the type `is-inhabited X →
+X` is logically equivalent to the type `wconstant-endomap X`, where
+one direction uses function extensionality. We refer to a function
+`is-inhabited X → X` as a *choice function* for `X`. So a type has a
+choice function if and only if it has a designated `wconstant`
+endomap.
+
+\begin{code}
+choice-function : 𝓤 ̇ → 𝓤 ⁺ ̇
+choice-function X = is-inhabited X → X
+\end{code}
+
+With a constant endomap of `X`, we can exit the truncation
+`is-inhabited X` in pure MLTT:
+
+\begin{code}
+wconstant-endomap-gives-choice-function : {X : 𝓤 ̇ }
+                                        → wconstant-endomap X → choice-function X
+wconstant-endomap-gives-choice-function {𝓤} {X} (f , κ) = from-fix f ∘ γ
+ where
+  γ : is-inhabited X → fix f
+  γ = inhabited-recursion X (fix f) (fix-is-subsingleton f κ) (to-fix f κ)
+\end{code}
+
+For the converse we use function extensionality (to know that
+`is-inhabited X` is a subsingleton in the construction of the `wconstant`
+endomap):
+
+\begin{code}
+choice-function-gives-wconstant-endomap : global-dfunext
+                                        → {X : 𝓤 ̇ }
+                                        → choice-function X → wconstant-endomap X
+choice-function-gives-wconstant-endomap fe {X} c = f , κ
+ where
+  f : X → X
+  f = c ∘ pointed-is-inhabited
+
+  κ : wconstant f
+  κ x y = ap c (inhabitation-is-subsingleton fe X (pointed-is-inhabited x)
+               (pointed-is-inhabited y))
+\end{code}
+
+As an application, we show that if the type of roots of a function `f
+: ℕ → ℕ` is inhabited, then it is pointed. In other words, with the
+information that there is some root, then we can find an explicit root.
+
+\begin{code}
+module find-hidden-root where
+
+ open basic-arithmetic-and-order public
+\end{code}
+
+Given a root, we find a minimal root (below it, of course) by bounded
+search, and this gives a constant endomap of the type of roots:
+
+\begin{code}
+ μρ : (f : ℕ → ℕ) → root f → root f
+ μρ f (n , p) = minimal-root-is-root f (bounded-search-ℕ-minimal-root f n p)
+
+ μρ-root : (f : ℕ → ℕ) → root f → ℕ
+ μρ-root f r = pr₁ (μρ f r)
+
+ μρ-root-is-root : (f : ℕ → ℕ) (r : root f) → f (μρ-root f r) ≡ 0
+ μρ-root-is-root f r = pr₂ (μρ f r)
+
+ μρ-root-minimal : (f : ℕ → ℕ) (m : ℕ) (p : f m ≡ 0)
+                 → (n : ℕ) → f n ≡ 0 → μρ-root f (m , p) ≤ n
+ μρ-root-minimal f m p n q = not-less-bigger-or-equal
+                              (μρ-root f (m , p)) n (φ (dni (f n ≡ 0) q))
+  where
+   φ : ¬(f n ≢ 0) → ¬(n < μρ-root f (m , p))
+   φ = contrapositive (pr₂(pr₂ (bounded-search-ℕ-minimal-root f m p)) n)
+\end{code}
+
+The crucial property of the function `μρ` is that it is `wconstant`:
+
+\begin{code}
+ μρ-wconstant : (f : ℕ → ℕ) → wconstant (μρ f)
+ μρ-wconstant f (n , p) (n' , p') = r
+  where
+   m m' : ℕ
+   m  = μρ-root f (n , p)
+   m' = μρ-root f (n' , p')
+
+   l : m ≤ m'
+   l = μρ-root-minimal f n p m' (μρ-root-is-root f (n' , p'))
+
+   l' : m' ≤ m
+   l' = μρ-root-minimal f n' p' m (μρ-root-is-root f (n , p))
+
+   q : m ≡ m'
+   q = ≤-anti _ _ l l'
+
+   r : μρ f (n , p) ≡ μρ f (n' , p')
+   r = to-Σ-≡ (q , ℕ-is-set _ _ _ _)
+\end{code}
+
+Using the `wconstancy` of `μρ`, if a root of `f` exists, then we can
+find one (which in fact will be the minimal one):
+
+\begin{code}
+ find-existing-root : (f : ℕ → ℕ) → is-inhabited (root f) → root f
+ find-existing-root f = h ∘ g
+   where
+    γ : root f → fix (μρ f)
+    γ = to-fix (μρ f) (μρ-wconstant f)
+
+    g : is-inhabited (root f) → fix (μρ f)
+    g = inhabited-recursion (root f) (fix (μρ f))
+         (fix-is-subsingleton (μρ f) (μρ-wconstant f)) γ
+
+    h : fix (μρ f) → Σ \(n : ℕ) → f n ≡ 0
+    h = from-fix (μρ f)
+\end{code}
+
+In the following example, we first hide a root with
+`pointed-is-inhabited` and then find the minimal root with search
+bounded by this hidden root:
+
+\begin{code}
+ module find-existing-root-example where
+
+  f : ℕ → ℕ
+  f 0 = 1
+  f 1 = 1
+  f 2 = 0
+  f 3 = 1
+  f 4 = 0
+  f 5 = 1
+  f 6 = 1
+  f 7 = 0
+  f (succ (succ (succ (succ (succ (succ (succ (succ x)))))))) = x
+
+  i : is-inhabited (root f)
+  i = pointed-is-inhabited (8 , refl _)
+
+  r : root f
+  r = find-existing-root f i
+\end{code}
+
+We have that `pr₁ r` evaluates to `2`:
+
+\begin{code}
+  p : pr₁ r ≡ 2
+  p = refl _
+\end{code}
+
+Thus, the truncation operation `is-inhabited` doesn't erase
+information. We used the hidden root `a` as a bound for searching for
+the minimal root.
+
+Notice that this construction is in pure (spartan) MLTT. Now we repeat
+part of the above using the existence of small truncations as an
+assumption:
+
+\begin{code}
+
+module exit-∥∥
+        (pt  : subsingleton-truncations-exist)
+        (hfe : global-hfunext)
+       where
+
+ open basic-truncation-development pt hfe
+ open find-hidden-root hiding (find-existing-root)
+
+ find-existing-root : (f : ℕ → ℕ)
+                    → (∃ \(n : ℕ) → f n ≡ 0)
+                    →  Σ \(n : ℕ) → f n ≡ 0
+ find-existing-root f = k
+  where
+   γ : root f → fix (μρ f)
+   γ = to-fix (μρ f) (μρ-wconstant f)
+
+   g : ∥ root f ∥ → fix (μρ f)
+   g = ∥∥-recursion (fix-is-subsingleton (μρ f) (μρ-wconstant f)) γ
+
+   h : fix (μρ f) → root f
+   h = from-fix (μρ f)
+
+   k : ∥ root f ∥ → root f
+   k = h ∘ g
+\end{code}
+
+There is another situation in which we can eliminate truncations that
+is often useful in practice. The universal property of subsingleton
+truncation says that we can get a function `∥ X ∥ → Y` if `Y` is a
+subsingleton and we have a given function `X → Y`. Because `Y` is a
+subsingleton, the given function is automatically `wconstant`. Hence
+the following generalizes this to the situation in which `Y` is a set:
+
+\begin{code}
+ ∥∥-recursion-set : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+                  → is-set Y
+                  → (f : X → Y)
+                  → wconstant f
+                  → ∥ X ∥ → Y
+ ∥∥-recursion-set {𝓤} {𝓥} X Y s f κ = h ∘ g
+  where
+   ψ : (y y' : Y) → (Σ \x → f x ≡ y) → (Σ \x' → f x' ≡ y') → y ≡ y'
+   ψ y y' (x , r) (x' , r') = y    ≡⟨ r ⁻¹   ⟩
+                              f x  ≡⟨ κ x x' ⟩
+                              f x' ≡⟨ r'     ⟩
+                              y'   ∎
+
+   φ : (y y' : Y) → (∃ \x → f x ≡ y) → (∃ \x' → f x' ≡ y') → y ≡ y'
+   φ y y' u u' = ∥∥-recursion (s y y') (λ - → ∥∥-recursion (s y y') (ψ y y' -) u') u
+
+   P : 𝓤 ⊔ 𝓥 ̇
+   P = image f
+
+   i : is-subsingleton P
+   i (y , u) (y' , u') = to-Σ-≡ (φ y y' u u' , ∃-is-subsingleton _ _)
+
+   g : ∥ X ∥ → P
+   g = ∥∥-recursion i (corestriction f)
+
+   h : P → Y
+   h = restriction f
+\end{code}
+
+For the sake of completeness, we redevelop part of the above with `∥_∥` in place of `is-inhabited`:
+
+\begin{code}
+ wconstant-endomap-gives-∥∥-choice-function : {X : 𝓤 ̇ }
+                                            → wconstant-endomap X
+                                            → (∥ X ∥ → X)
+
+ wconstant-endomap-gives-∥∥-choice-function {𝓤} {X} (f , κ) = from-fix f ∘ γ
+  where
+   γ : ∥ X ∥ → fix f
+   γ = ∥∥-recursion (fix-is-subsingleton f κ) (to-fix f κ)
+
+
+ ∥∥-choice-function-gives-wconstant-endomap : {X : 𝓤 ̇ }
+                                           → (∥ X ∥ → X)
+                                           → wconstant-endomap X
+
+ ∥∥-choice-function-gives-wconstant-endomap {𝓤} {X} c = f , κ
+  where
+   f : X → X
+   f = c ∘ ∣_∣
+
+   κ : wconstant f
+   κ x y = ap c (∥∥-is-subsingleton ∣ x ∣ ∣ y ∣)
+\end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="choice"></a> Choice in univalent mathematics
