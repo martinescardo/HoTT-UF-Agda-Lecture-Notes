@@ -10545,7 +10545,7 @@ We will see that [global choice](HoTT-UF-Agda.html#global-choice)
 
 is inconsistent with univalence, and also implies excluded
 middle. However, for some types `X`, we can prove that `∥ X ∥ → X`.
-We characterize these types as [those that have `wconstant` endomaps](https://lmcs.episciences.org/3217/).
+We characterize such types as [those that have `wconstant` endomaps](https://lmcs.episciences.org/3217/).
 
 Because, [as we have seen](HoTT-UF-Agda.html#basic-truncation-development), we have a logical equivalence
 
@@ -10557,8 +10557,8 @@ it suffices to discuss
 
 which can be done in our spartan MLTT without any axioms for univalent
 mathematics (and hence hence also with axioms for univalent
-mathematics, including classical ones such as excluded middle and
-(non-global) choice).
+mathematics, including non-constructive ones such as excluded middle
+and choice).
 
 For any type `X`, we have `is-inhabited X → X`
 [iff](https://lmcs.episciences.org/3217/) `X` has a designated
@@ -10657,7 +10657,7 @@ choice-function-gives-wconstant-endomap fe {X} c = f , κ
 
   κ : wconstant f
   κ x y = ap c (inhabitation-is-subsingleton fe X (pointed-is-inhabited x)
-               (pointed-is-inhabited y))
+                                                  (pointed-is-inhabited y))
 \end{code}
 
 As an application, we show that if the type of roots of a function
@@ -10756,7 +10756,7 @@ We hide the root `8` of `f`:
 
 \begin{code}
   root-existence : is-inhabited (root f)
-  root-existence = pointed-is-inhabited (8 , refl _)
+  root-existence = pointed-is-inhabited (8 , refl (f 8))
 
   r : root f
   r = find-existing-root f root-existence
@@ -10780,12 +10780,12 @@ Thus, the truncation operation `is-inhabited` doesn't erase
 information. We used the information contained in `root-existence` as
 a bound for searching for the minimal root.
 
-Notice that this construction is in pure (spartan) MLTT. Now we repeat
-part of the above using the existence of small truncations as an
-assumption:
+Notice that this construction is in pure (spartan) MLTT without
+assumptions. Now we repeat part of the above using the existence of
+small truncations and functional extensionality as assumptions,
+replacing `is-inhabited` by `∥_∥`:
 
 \begin{code}
-
 module exit-∥∥
         (pt  : subsingleton-truncations-exist)
         (hfe : global-hfunext)
@@ -10815,10 +10815,11 @@ module exit-∥∥
 
 There is another situation in which we can eliminate truncations that
 is often useful in practice. The universal property of subsingleton
-truncation says that we can get a function `∥ X ∥ → Y` if `Y` is a
-subsingleton and we have a given function `X → Y`. Because `Y` is a
-subsingleton, the given function is automatically `wconstant`. Hence
-the following generalizes this to the situation in which `Y` is a set:
+truncation says that we can get a function `∥ X ∥ → Y` provided the
+type `Y` is a subsingleton and we have a given function `X →
+Y`. Because `Y` is a subsingleton, the given function is automatically
+`wconstant`. Hence the following generalizes this to the situation in
+which `Y` is a set:
 
 \begin{code}
  ∥∥-recursion-set : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
@@ -10827,7 +10828,7 @@ the following generalizes this to the situation in which `Y` is a set:
                   → wconstant f
                   → ∥ X ∥ → Y
 
- ∥∥-recursion-set {𝓤} {𝓥} X Y s f κ = h ∘ g
+ ∥∥-recursion-set {𝓤} {𝓥} X Y s f κ = γ
   where
    ψ : (y y' : Y) → (Σ \x → f x ≡ y) → (Σ \x' → f x' ≡ y') → y ≡ y'
    ψ y y' (x , r) (x' , r') = y    ≡⟨ r ⁻¹   ⟩
@@ -10849,9 +10850,12 @@ the following generalizes this to the situation in which `Y` is a set:
 
    h : P → Y
    h = restriction f
+
+   γ : ∥ X ∥ → Y
+   γ = h ∘ g
 \end{code}
 
-For the sake of completeness, we redevelop part of the above with `∥_∥` in place of `is-inhabited`:
+We also have:
 
 \begin{code}
  wconstant-endomap-gives-∥∥-choice-function : {X : 𝓤 ̇ }
@@ -11484,13 +11488,19 @@ this local module).
 
     γ : X + is-empty X
     γ = f d
+\end{code}
 
+Two forms globally global choice:
 
+\begin{code}
   Global-Choice Global-∥∥-Choice : 𝓤ω
   Global-Choice    = ∀ 𝓤 → global-choice  𝓤
   Global-∥∥-Choice = ∀ 𝓤 → global-∥∥-choice 𝓤
+\end{code}
 
+Which are equivalent, where one direction uses propositional extensionality:
 
+\begin{code}
   Global-Choice-gives-Global-∥∥-Choice : Global-Choice → Global-∥∥-Choice
   Global-Choice-gives-Global-∥∥-Choice c 𝓤 =
     global-choice-gives-global-∥∥-choice (c 𝓤)
@@ -11501,8 +11511,11 @@ this local module).
 
   Global-∥∥-Choice-gives-Global-Choice pe c 𝓤 =
     global-∥∥-choice-gives-global-choice pe (c 𝓤) (c (𝓤 ⁺))
+\end{code}
 
+And which are inconsistent with univalence:
 
+\begin{code}
   global-∥∥-choice-inconsistent-with-univalence : Global-∥∥-Choice
                                                 → Univalence
                                                 → 𝟘

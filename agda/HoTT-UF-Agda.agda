@@ -5721,7 +5721,7 @@ choice-function-gives-wconstant-endomap fe {X} c = f , κ
 
   κ : wconstant f
   κ x y = ap c (inhabitation-is-subsingleton fe X (pointed-is-inhabited x)
-               (pointed-is-inhabited y))
+                                                  (pointed-is-inhabited y))
 
 module find-hidden-root where
 
@@ -5790,7 +5790,7 @@ module find-hidden-root where
   f (succ (succ (succ (succ (succ (succ (succ (succ x)))))))) = x
 
   root-existence : is-inhabited (root f)
-  root-existence = pointed-is-inhabited (8 , refl _)
+  root-existence = pointed-is-inhabited (8 , refl (f 8))
 
   r : root f
   r = find-existing-root f root-existence
@@ -5836,7 +5836,7 @@ module exit-∥∥
                   → wconstant f
                   → ∥ X ∥ → Y
 
- ∥∥-recursion-set {𝓤} {𝓥} X Y s f κ = h ∘ g
+ ∥∥-recursion-set {𝓤} {𝓥} X Y s f κ = γ
   where
    ψ : (y y' : Y) → (Σ \x → f x ≡ y) → (Σ \x' → f x' ≡ y') → y ≡ y'
    ψ y y' (x , r) (x' , r') = y    ≡⟨ r ⁻¹   ⟩
@@ -5858,6 +5858,9 @@ module exit-∥∥
 
    h : P → Y
    h = restriction f
+
+   γ : ∥ X ∥ → Y
+   γ = h ∘ g
 
  wconstant-endomap-gives-∥∥-choice-function : {X : 𝓤 ̇ }
                                             → wconstant-endomap X
