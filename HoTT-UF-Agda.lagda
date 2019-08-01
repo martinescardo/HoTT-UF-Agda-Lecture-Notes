@@ -2291,10 +2291,10 @@ on natural numbers. First, it is reflexive, transitive and antisymmetric:
   _<_ : ℕ → ℕ → 𝓤₀ ̇
   x < y = succ x ≤ y
 
-  not-less-bigger-or-equal : (m n : ℕ) → ¬(n < m) → m ≤ n
-  not-less-bigger-or-equal zero n u = zero-minimal n
-  not-less-bigger-or-equal (succ m) zero = dni (zero < succ m) (zero-minimal m)
-  not-less-bigger-or-equal (succ m) (succ n) = not-less-bigger-or-equal m n
+  not-<-gives-≥ : (m n : ℕ) → ¬(n < m) → m ≤ n
+  not-<-gives-≥ zero n u = zero-minimal n
+  not-<-gives-≥ (succ m) zero = dni (zero < succ m) (zero-minimal m)
+  not-<-gives-≥ (succ m) (succ n) = not-<-gives-≥ m n
 
   bounded-∀-next : (A : ℕ → 𝓤 ̇ ) (k : ℕ)
                  → A k
@@ -10136,43 +10136,66 @@ inhabitation-is-subsingleton fe X =
    (λ P → Π-is-subsingleton fe
    (λ (s : is-subsingleton P) → Π-is-subsingleton fe
    (λ (f : X → P) → s)))
-
-pointed-is-inhabited : {X : 𝓤 ̇ } → X → is-inhabited X
-pointed-is-inhabited x = λ P s f → f x
-
-inhabited-recursion : (X P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → is-inhabited X → P
-inhabited-recursion X P s f φ = φ P s f
 \end{code}
 
-We can derive induction from recursion in this case, but the
+The following is the introduction rule for inhabitation, which says
+that pointed types are inhabited:
+
+\begin{code}
+inhabited-intro : {X : 𝓤 ̇ } → X → is-inhabited X
+inhabited-intro x = λ P s f → f x
+\end{code}
+
+And its recursion principle:
+
+\begin{code}
+inhabited-recursion : {X P : 𝓤 ̇ } → is-subsingleton P → (X → P) → is-inhabited X → P
+inhabited-recursion s f φ = φ (codomain f) s f
+\end{code}
+
+And its computation rule:
+
+\begin{code}
+inhabited-recursion-computation : {X P : 𝓤 ̇ }
+                                  (i : is-subsingleton P)
+                                  (f : X → P)
+                                  (x : X)
+                                → inhabited-recursion i f (inhabited-intro x) ≡ f x
+
+inhabited-recursion-computation i f x = refl (f x)
+\end{code}
+
+So the point `x` inside `inhabited x` is available for use by any
+function `f` into a subsingleton, via `inhabited-recursion`.
+
+We can derive induction from recursion in this case, but its
 "computation rule" holds up to an identification, rather than
 judgmentally:
 
 \begin{code}
 inhabited-induction : global-dfunext
                     → {X : 𝓤 ̇ } {P : is-inhabited X → 𝓤 ̇ }
-                    → (i : (s : is-inhabited X) → is-subsingleton (P s))
-                    → (f : (x : X) → P (pointed-is-inhabited x))
+                      (i : (s : is-inhabited X) → is-subsingleton (P s))
+                      (f : (x : X) → P (inhabited-intro x))
                     → (s : is-inhabited X) → P s
 
 inhabited-induction fe {X} {P} i f s = φ' s
  where
   φ : X → P s
-  φ x = transport P (inhabitation-is-subsingleton fe X (pointed-is-inhabited x) s)
-                    (f x)
+  φ x = transport P (inhabitation-is-subsingleton fe X (inhabited-intro x) s) (f x)
+
   φ' : is-inhabited X → P s
-  φ' = inhabited-recursion X (P s) (i s) φ
+  φ' = inhabited-recursion (i s) φ
 
 
 inhabited-computation : (fe : global-dfunext) {X : 𝓤 ̇ } {P : is-inhabited X → 𝓤 ̇ }
-                      → (i : (s : is-inhabited X) → is-subsingleton (P s))
-                      → (f : (x : X) → P (pointed-is-inhabited x))
-                      → (x : X)
-                      → inhabited-induction fe i f (pointed-is-inhabited x) ≡ f x
+                        (i : (s : is-inhabited X) → is-subsingleton (P s))
+                        (f : (x : X) → P (inhabited-intro x))
+                        (x : X)
+                      → inhabited-induction fe i f (inhabited-intro x) ≡ f x
 
-inhabited-computation fe i f x = i (pointed-is-inhabited x)
-                                   (inhabited-induction fe i f
-                                     (pointed-is-inhabited x))
+inhabited-computation fe i f x = i (inhabited-intro x)
+                                   (inhabited-induction fe i f (inhabited-intro x))
                                    (f x)
 \end{code}
 
@@ -10181,10 +10204,10 @@ However, although we [don't necessarily have](HoTT-UF-Agda.html#moreexercises) t
 `¬¬ P → P`, we do have that `is-inhabited P → P` if `P` is a subsingleton.
 
 \begin{code}
-inhabited-gives-pointed-for-subsingletons : (P : 𝓤 ̇ )
-                                          → is-subsingleton P → is-inhabited P → P
+inhabited-subsingletons-are-pointed : (P : 𝓤 ̇ )
+                                    → is-subsingleton P → is-inhabited P → P
 
-inhabited-gives-pointed-for-subsingletons P s = inhabited-recursion P P s (𝑖𝑑 P)
+inhabited-subsingletons-are-pointed P s = inhabited-recursion s (𝑖𝑑 P)
 \end{code}
 
 *Exercise*. [Show](https://lmcs.episciences.org/3217) that
@@ -10195,10 +10218,8 @@ inhabited-functorial : global-dfunext → (X : 𝓤 ⁺ ̇ ) (Y : 𝓤 ̇ )
                      → (X → Y) → is-inhabited X → is-inhabited Y
 
 inhabited-functorial fe X Y f = inhabited-recursion
-                                  X
-                                  (is-inhabited Y)
                                   (inhabitation-is-subsingleton fe Y)
-                                  (pointed-is-inhabited ∘ f)
+                                  (inhabited-intro ∘ f)
 \end{code}
 
 This universe assignment for functoriality is fairly restrictive, but
@@ -10234,7 +10255,7 @@ restriction' f (y , _) = y
 corestriction' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                → X → image' f
 
-corestriction' f x = f x , pointed-is-inhabited (x , refl (f x))
+corestriction' f x = f x , inhabited-intro (x , refl (f x))
 \end{code}
 
 And we can define the notion of surjection as follows:
@@ -10308,6 +10329,13 @@ module basic-truncation-development
   hunapply : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ∼ g → f ≡ g
   hunapply = hfunext-gives-dfunext hfe
 
+  ∥∥-recursion-computation : {X : 𝓤 ̇ } {P :  𝓥 ̇ }
+                           → (i : is-subsingleton P)
+                           → (f : X → P)
+                           → (x : X)
+                           → ∥∥-recursion i f ∣ x ∣ ≡ f x
+
+  ∥∥-recursion-computation i f x = i (∥∥-recursion i f ∣ x ∣) (f x)
 
   ∥∥-induction : {X : 𝓤 ̇ } {P : ∥ X ∥ → 𝓥 ̇ }
               → ((s : ∥ X ∥) → is-subsingleton (P s))
@@ -10343,10 +10371,10 @@ logically equivalent propositions:
   ∥∥-agrees-with-inhabitation X = a , b
    where
     a : ∥ X ∥ → is-inhabited X
-    a = ∥∥-recursion (inhabitation-is-subsingleton hunapply X) pointed-is-inhabited
+    a = ∥∥-recursion (inhabitation-is-subsingleton hunapply X) inhabited-intro
 
     b : is-inhabited X → ∥ X ∥
-    b = inhabited-recursion X ∥ X ∥ ∥∥-is-subsingleton ∣_∣
+    b = inhabited-recursion ∥∥-is-subsingleton ∣_∣
 \end{code}
 
 Hence they differ only in size, and when size matters don't get on the
@@ -10556,23 +10584,26 @@ it suffices to discuss
    > `is-inhabited X → X`,
 
 which can be done in our spartan MLTT without any axioms for univalent
-mathematics (and hence also with axioms for univalent
+mathematics (and hence also *with* axioms for univalent
 mathematics, including non-constructive ones such as excluded middle
 and choice).
 
-For any type `X`, we have `is-inhabited X → X`
-[iff](https://lmcs.episciences.org/3217/) `X` has a designated
-[wconstant endomap](HoTT-UF-Agda.html#wconstant-endomap). To prove this we first
+For any type `X`, we have `is-inhabited X → X` iff `X` has a
+designated [wconstant
+endomap](HoTT-UF-Agda.html#wconstant-endomap). To prove this we first
 show that the type of fixed points of a `wconstant` endomap is a
 subsingleton.
 
-We first define the type of fixed points of an endomap:
+We first define the type of fixed points:
 
 \begin{code}
 fix : {X : 𝓤 ̇ } → (X → X) → 𝓤 ̇
 fix f = Σ \(x : domain f) → f x ≡ x
+\end{code}
 
+Of course any fixed point of `f` gives an element of `X`:
 
+\begin{code}
 from-fix : {X : 𝓤 ̇ } (f : X → X)
          → fix f → X
 
@@ -10580,7 +10611,8 @@ from-fix f = pr₁
 \end{code}
 
 Conversely, if `f` is `wconstant` then for any `x : X` we have that `f
-x` is a fixed point of `f`, and hence:
+x` is a fixed point of `f`, and hence from any element of `X` we get a
+fixed point of `f`:
 
 \begin{code}
 to-fix : {X : 𝓤 ̇ } (f : X → X) → wconstant f
@@ -10590,7 +10622,8 @@ to-fix f κ x = f x , κ (f x) x
 \end{code}
 
 The following is trivial if the type `X` is a set. What may be
-surprising is that it holds for arbitrary types, because in this case the type `f x ≡ x` is in general not a subsingleton.
+surprising is that it holds for arbitrary types, because in this case
+the identity type `f x ≡ x` is in general not a subsingleton.
 
 \begin{code}
 fix-is-subsingleton : {X : 𝓤 ̇ } (f : X → X)
@@ -10616,17 +10649,17 @@ fix-is-subsingleton {𝓤} {X} f κ = γ
 
 *Exercise.* Formulate and prove the fact that the type `fix f` has the
  universal property of the subsingleton truncation of `X` if `f` is
- `wconstant`. Moreover, argue that the computation rule holds
- definitionally in this case. This is an example of a situation where
- the truncation of a type just is available in MLTT without axioms or
- extensions.
+ `wconstant`. Moreover, argue that the computation rule for recursion
+ holds definitionally in this case. This is an example of a situation
+ where the truncation of a type just is available in MLTT without
+ axioms or extensions.
 
 We use `fix-is-subsingleton` to show that the type `is-inhabited X →
 X` is logically equivalent to the type `wconstant-endomap X`, where
 one direction uses function extensionality. We refer to a function
-`is-inhabited X → X` as a *choice function* for `X`. So a type has a
-choice function if and only if it has a designated `wconstant`
-endomap.
+`is-inhabited X → X` as a *choice function* for `X`. So the claim is
+that a type has a choice function if and only if it has a designated
+`wconstant` endomap.
 
 \begin{code}
 choice-function : 𝓤 ̇ → 𝓤 ⁺ ̇
@@ -10643,7 +10676,7 @@ wconstant-endomap-gives-choice-function : {X : 𝓤 ̇ }
 wconstant-endomap-gives-choice-function {𝓤} {X} (f , κ) = from-fix f ∘ γ
  where
   γ : is-inhabited X → fix f
-  γ = inhabited-recursion X (fix f) (fix-is-subsingleton f κ) (to-fix f κ)
+  γ = inhabited-recursion (fix-is-subsingleton f κ) (to-fix f κ)
 \end{code}
 
 For the converse we use function extensionality (to know that
@@ -10658,11 +10691,11 @@ choice-function-gives-wconstant-endomap : global-dfunext
 choice-function-gives-wconstant-endomap fe {X} c = f , κ
  where
   f : X → X
-  f = c ∘ pointed-is-inhabited
+  f = c ∘ inhabited-intro
 
   κ : wconstant f
-  κ x y = ap c (inhabitation-is-subsingleton fe X (pointed-is-inhabited x)
-                                                  (pointed-is-inhabited y))
+  κ x y = ap c (inhabitation-is-subsingleton fe X (inhabited-intro x)
+                                                  (inhabited-intro y))
 \end{code}
 
 As an application, we show that if the type of roots of a function
@@ -10691,11 +10724,13 @@ search, and this gives a constant endomap of the type of roots:
  μρ-root-minimal : (f : ℕ → ℕ) (m : ℕ) (p : f m ≡ 0)
                  → (n : ℕ) → f n ≡ 0 → μρ-root f (m , p) ≤ n
 
- μρ-root-minimal f m p n q = not-less-bigger-or-equal
-                              (μρ-root f (m , p)) n (φ (dni (f n ≡ 0) q))
+ μρ-root-minimal f m p n q = not-<-gives-≥ (μρ-root f (m , p)) n γ
   where
    φ : ¬(f n ≢ 0) → ¬(n < μρ-root f (m , p))
    φ = contrapositive (pr₂(pr₂ (minimal-root-by-bounded-search-ℕ f m p)) n)
+
+   γ : ¬ (n < μρ-root f (m , p))
+   γ = φ (dni (f n ≡ 0) q)
 \end{code}
 
 The crucial property of the function `μρ f` is that it is `wconstant`:
@@ -10732,16 +10767,15 @@ find one (which in fact will be the minimal one):
     γ = to-fix (μρ f) (μρ-wconstant f)
 
     g : is-inhabited (root f) → fix (μρ f)
-    g = inhabited-recursion (root f) (fix (μρ f))
-         (fix-is-subsingleton (μρ f) (μρ-wconstant f)) γ
+    g = inhabited-recursion (fix-is-subsingleton (μρ f) (μρ-wconstant f)) γ
 
     h : fix (μρ f) → root f
     h = from-fix (μρ f)
 \end{code}
 
 In the following example, we first hide a root with
-`pointed-is-inhabited` and then find the minimal root with search
-bounded by this hidden root:
+[`inhabited-intro`](HoTT-UF-Agda.html#inhabited-intro) and then find
+the minimal root with search bounded by this hidden root:
 
 \begin{code}
  module find-existing-root-example where
@@ -10762,7 +10796,7 @@ We hide the root `8` of `f`:
 
 \begin{code}
   root-existence : is-inhabited (root f)
-  root-existence = pointed-is-inhabited (8 , refl (f 8))
+  root-existence = inhabited-intro (8 , refl 0)
 
   r : root f
   r = find-existing-root f root-existence
@@ -10782,9 +10816,10 @@ of `f`:
   p = refl _
 \end{code}
 
-Thus, the truncation operation `is-inhabited` doesn't erase
-information. We used the information contained in `root-existence` as
-a bound for searching for the minimal root.
+Thus, even though the type `is-inhabited A` is a subsingleton for any
+type `A`, the function `inhabited-intro : A → is-inhabited A` doesn't
+erase information. We used the information contained in
+`root-existence` as a bound for searching for the minimal root.
 
 Notice that this construction is in pure (spartan) MLTT without
 assumptions. Now we repeat part of the above using the existence of
@@ -10798,13 +10833,13 @@ module exit-∥∥
        where
 
  open basic-truncation-development pt hfe
- open find-hidden-root hiding (find-existing-root)
+ open find-hidden-root
 
- find-existing-root : (f : ℕ → ℕ)
-                    → (∃ \(n : ℕ) → f n ≡ 0)
-                    →  Σ \(n : ℕ) → f n ≡ 0
+ find-∥∥-existing-root : (f : ℕ → ℕ)
+                       → (∃ \(n : ℕ) → f n ≡ 0)
+                       →  Σ \(n : ℕ) → f n ≡ 0
 
- find-existing-root f = k
+ find-∥∥-existing-root f = k
   where
    γ : root f → fix (μρ f)
    γ = to-fix (μρ f) (μρ-wconstant f)
@@ -10817,9 +10852,58 @@ module exit-∥∥
 
    k : ∥ root f ∥ → root f
    k = h ∘ g
+
+ module find-∥∥-existing-root-example where
+
+  f : ℕ → ℕ
+  f 0 = 1
+  f 1 = 1
+  f 2 = 0
+  f 3 = 1
+  f 4 = 0
+  f 5 = 1
+  f 6 = 1
+  f 7 = 0
+  f (succ (succ (succ (succ (succ (succ (succ (succ x)))))))) = x
+
+  root-∥∥-existence : ∥ root f ∥
+  root-∥∥-existence = ∣ 8 , refl 0 ∣
+
+  r : root f
+  r = find-∥∥-existing-root f root-∥∥-existence
+
+  x : ℕ
+  x = pr₁ r
+
+  x-is-root : f x ≡ 0
+  x-is-root = pr₂ r
 \end{code}
 
-We also have:
+This time, because the existence of propositional truncations is an
+assumption for this submodule, we don't have that `x` evaluates to
+`2`, because the computation rule for truncation doesn't hold
+definitionally.  But we do have that `x` is `2`, applying the
+computation rule manually.
+
+\begin{code}
+  NB : find-∥∥-existing-root f
+     ≡ from-fix (μρ f) ∘ ∥∥-recursion
+                          (fix-is-subsingleton (μρ f) (μρ-wconstant f))
+                          (to-fix (μρ f) (μρ-wconstant f))
+  NB = refl _
+
+  p : x ≡ 2
+  p = ap (pr₁ ∘ from-fix (μρ f))
+         (∥∥-recursion-computation
+            (fix-is-subsingleton (μρ f) (μρ-wconstant f))
+            (to-fix (μρ f) (μρ-wconstant f))
+            (8 , refl _))
+\end{code}
+
+In Cubical Agda, with the truncation defined as a higher inductive
+type, `x` would compute to `2` automatically, like in our previous
+example using Voevodsky's truncation `is-inhabited`.  This
+concludes the example. We also have:
 
 \begin{code}
  wconstant-endomap-gives-∥∥-choice-function : {X : 𝓤 ̇ }
@@ -10886,6 +10970,9 @@ which `Y` is a set:
    f' : ∥ X ∥ → Y
    f' = h ∘ g
 \end{code}
+
+If we try to do this with Voevodsky's truncation `is-inhabited`, we
+stumble into an insurmountable problem of size.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="choice"></a> Choice in univalent mathematics
@@ -11868,13 +11955,12 @@ PR-gives-existence-of-truncations fe R =
     λ {𝓤} {X} x → to-resize R
                    (is-inhabited X)
                    (inhabitation-is-subsingleton fe X)
-                   (pointed-is-inhabited x) ;
+                   (inhabited-intro x) ;
 
    ∥∥-recursion =
 
     λ {𝓤} {𝓥} {X} {P} i u s → from-resize R P i
-                                (inhabited-recursion X
-                                  (resize R P i)
+                                (inhabited-recursion
                                   (resize-is-subsingleton R P i)
                                   (to-resize R P i ∘ u)
                                   (from-resize R
