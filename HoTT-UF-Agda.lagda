@@ -58,7 +58,7 @@ constructive development of univalent mathematics in Agda, we would
 need to use its new [cubical
 flavour](https://homotopytypetheory.org/2018/12/06/cubical-agda/), and
 we hope these notes provide a base for researchers interested in
-learning Cubical Type Theory and Cubical Agda as the next step.
+learning cubical type theory and cubical Agda as the next step.
 
 Compared to most expositions of the subject, we work with explicit
 universe levels.
@@ -10900,7 +10900,7 @@ computation rule manually.
             (8 , refl _))
 \end{code}
 
-In Cubical Agda, with the truncation defined as a higher inductive
+In cubical Agda, with the truncation defined as a higher inductive
 type, `x` would compute to `2` automatically, like in our previous
 example using Voevodsky's truncation `is-inhabited`.  This
 concludes the example. We also have:
