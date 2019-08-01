@@ -10112,7 +10112,7 @@ subsingleton-valued property of categories.
 
 The following is Voevosky's approach to saying that a type is
 inhabited in such a way that the statement of inhabitation is a
-subsingleton, using relying on function extensionality.
+subsingleton, relying on function extensionality.
 
 \begin{code}
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
