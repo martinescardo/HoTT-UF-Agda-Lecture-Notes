@@ -1347,12 +1347,23 @@ We have the following uses of `Σ`.
      type. More precisely, for `a₀ a₁ : A x` we have inhabitants
      `(x , a₀)` and `(x , a₁)` of the type `Σ (x : X), A x`.
 
-     In such situations, if we don't want that, we have to be
-     careful and either ensure that the type `A x` has at most one
-     element for every `x : X`, or instead consider the truncated type
-     `∥ A x ∥` and write
+     In such situations, if we don't want that, we have to either
+     ensure that the type `A x` has at most one element for every `x :
+     X`, or instead consider the truncated type `∥ A x ∥` and write
 
        > `Σ (x : X), ∥ A x ∥`.
+
+     An example is the image of a function `f : X →
+     Y`, which will be defined to be
+
+       > `Σ (y : Y), ∥ Σ (x : X), f x ≡ y ∥`.
+
+     This is the type of `y : Y` for which there is an unspecified
+     `x : X` with `f x ≡ y`.
+
+     (For constructively minded readers, we emphasize that this
+     [doesn't erase](HoTT-UF-Agda.html#exiting-truncations) the
+     witness `x:X`.)
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="pitypes"></a> `Π` types
