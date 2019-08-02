@@ -2006,11 +2006,9 @@ inl-inr-disjoint-images {𝓤} {𝓥} {X} {Y} p = 𝟙-is-not-𝟘 q
 If `P or Q` holds and `P` fails, then `Q` holds:
 
 \begin{code}
-
 right-fails-gives-left-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → P + Q → ¬ Q → P
 right-fails-gives-left-holds (inl p) u = p
 right-fails-gives-left-holds (inr q) u = !𝟘 _ (u q)
-
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -11594,7 +11592,7 @@ this local module).
     γ = f d
 \end{code}
 
-Two forms globally global choice:
+Two forms of globally global choice:
 
 \begin{code}
   Global-Choice Global-∥∥-Choice : 𝓤ω
@@ -11643,8 +11641,6 @@ And which are inconsistent with univalence:
 
 See also Theorem 3.2.2 and Corollary 3.2.7 of the HoTT book for a
 different argument that works with a single, arbitrary universe.
-
-Notice also that, without using propositional extensionality, we have:
 
 \begin{code}
   global-choice-gives-all-types-are-sets : global-choice 𝓤
