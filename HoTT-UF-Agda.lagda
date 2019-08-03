@@ -152,7 +152,7 @@ to account for the size distinction.
 
 In particular, properties of monoids are automatically invariant under
 isomorphism, properties of categories are automatically invariant
-under equivalence, and so son.
+under equivalence, and so on.
 
 Voevodsky's way to achieve this is to start with a Martin-Löf type
 theory (MLTT), including identity types and type universes, and
