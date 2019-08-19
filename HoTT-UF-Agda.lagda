@@ -3586,6 +3586,7 @@ transport-is-retraction A (refl x) = refl
 
 transport-is-section : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
                      → transport A (p ⁻¹) ∘ transport A p ∼ 𝑖𝑑 (A x)
+
 transport-is-section A (refl x) = refl
 \end{code}
 
@@ -3741,7 +3742,7 @@ So the type `fiber f y` collects the points `x : X` which are mapped
 to a point identified with `y`, including the identification
 datum. Voevodsky's insight is that a general notion of equivalence can
 be formulated in MLTT by requiring the fibers to be singletons. It is
-important here that not only the `y : Y` with `f x ≡ y` is unique, but
+important here that not only the `x : X` with `f x ≡ y` is unique, but
 also that the identification datum `p : f x ≡ y` is unique. This is
 similar to, or even a generalization of the categorical
 notion of "uniqueness up to a unique isomorphism".
