@@ -198,51 +198,51 @@ data Id {𝓤} (X : 𝓤 ̇ ) : X → X → 𝓤 ̇  where
 _≡_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
 x ≡ y = Id _ x y
 
-J : (X : 𝓤 ̇ ) (A : (x y : X) → x ≡ y → 𝓥 ̇ )
+𝕁 : (X : 𝓤 ̇ ) (A : (x y : X) → x ≡ y → 𝓥 ̇ )
   → ((x : X) → A x x (refl x))
   → (x y : X) (p : x ≡ y) → A x y p
 
-J X A f x x (refl x) = f x
+𝕁 X A f x x (refl x) = f x
 
-H : {X : 𝓤 ̇ } (x : X) (B : (y : X) → x ≡ y → 𝓥 ̇ )
+ℍ : {X : 𝓤 ̇ } (x : X) (B : (y : X) → x ≡ y → 𝓥 ̇ )
   → B x (refl x)
   → (y : X) (p : x ≡ y) → B y p
 
-H x B b x (refl x) = b
+ℍ x B b x (refl x) = b
 
-J' : (X : 𝓤 ̇ ) (A : (x y : X) → x ≡ y → 𝓥 ̇ )
+𝕁' : (X : 𝓤 ̇ ) (A : (x y : X) → x ≡ y → 𝓥 ̇ )
    → ((x : X) → A x x (refl x))
    → (x y : X) (p : x ≡ y) → A x y p
 
-J' X A f x = H x (A x) (f x)
+𝕁' X A f x = ℍ x (A x) (f x)
 
-Js-agreement : (X : 𝓤 ̇ ) (A : (x y : X) → x ≡ y → 𝓥 ̇ )
+𝕁s-agreement : (X : 𝓤 ̇ ) (A : (x y : X) → x ≡ y → 𝓥 ̇ )
                (f : (x : X) → A x x (refl x)) (x y : X) (p : x ≡ y)
-             → J X A f x y p ≡ J' X A f x y p
+             → 𝕁 X A f x y p ≡ 𝕁' X A f x y p
 
-Js-agreement X A f x x (refl x) = refl (f x)
+𝕁s-agreement X A f x x (refl x) = refl (f x)
 
 transport : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
           → x ≡ y → A x → A y
 
 transport A (refl x) = 𝑖𝑑 (A x)
 
-transportJ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
+transport𝕁 : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
            → x ≡ y → A x → A y
 
-transportJ {𝓤} {𝓥} {X} A {x} {y} = J X (λ x y _ → A x → A y) (λ x → 𝑖𝑑 (A x)) x y
+transport𝕁 {𝓤} {𝓥} {X} A {x} {y} = 𝕁 X (λ x y _ → A x → A y) (λ x → 𝑖𝑑 (A x)) x y
 
-nondep-H : {X : 𝓤 ̇ } (x : X) (A : X → 𝓥 ̇ )
+nondep-ℍ : {X : 𝓤 ̇ } (x : X) (A : X → 𝓥 ̇ )
          → A x → (y : X) → x ≡ y → A y
-nondep-H x A = H x (λ y _ → A y)
+nondep-ℍ x A = ℍ x (λ y _ → A y)
 
-transportH : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
+transportℍ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
            → x ≡ y → A x → A y
-transportH A {x} {y} p a = nondep-H x A a y p
+transportℍ A {x} {y} p a = nondep-ℍ x A a y p
 
 transports-agreement : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
-                     → (transportH A p ≡ transport A p)
-                     × (transportJ A p ≡ transport A p)
+                     → (transportℍ A p ≡ transport A p)
+                     × (transport𝕁 A p ≡ transport A p)
 
 transports-agreement A (refl x) = refl (transport A (refl x)) ,
                                   refl (transport A (refl x))
@@ -2079,11 +2079,11 @@ univalence→ ua X = singletons-are-subsingletons
 →univalence i = ⇒univalence (λ X → pointed-subsingletons-are-singletons
                                     (Σ (X ≃_)) (X , id-≃ X) (i X))
 
-G-≃ : is-univalent 𝓤
+𝔾-≃ : is-univalent 𝓤
     → (X : 𝓤 ̇ ) (A : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇ )
     → A (X , id-≃ X) → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A (Y , e)
 
-G-≃ {𝓤} ua X A a Y e = transport A p a
+𝔾-≃ {𝓤} ua X A a Y e = transport A p a
  where
   t : Σ \(Y : 𝓤 ̇ ) → X ≃ Y
   t = (X , id-≃ X)
@@ -2091,14 +2091,14 @@ G-≃ {𝓤} ua X A a Y e = transport A p a
   p : t ≡ (Y , e)
   p = univalence→ {𝓤} ua X t (Y , e)
 
-G-≃-equation : (ua : is-univalent 𝓤)
+𝔾-≃-equation : (ua : is-univalent 𝓤)
              → (X : 𝓤 ̇ ) (A : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇ )
              → (a : A (X  , id-≃ X))
-             → G-≃ ua X A a X (id-≃ X) ≡ a
+             → 𝔾-≃ ua X A a X (id-≃ X) ≡ a
 
-G-≃-equation {𝓤} {𝓥} ua X A a =
+𝔾-≃-equation {𝓤} {𝓥} ua X A a =
 
-  G-≃ ua X A a X (id-≃ X) ≡⟨ refl _                       ⟩
+  𝔾-≃ ua X A a X (id-≃ X) ≡⟨ refl _                       ⟩
   transport A p a         ≡⟨ ap (λ - → transport A - a) q ⟩
   transport A (refl t) a  ≡⟨ refl _                       ⟩
   a                       ∎
@@ -2114,31 +2114,31 @@ G-≃-equation {𝓤} {𝓥} ua X A a =
   q = subsingletons-are-sets (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
        (univalence→ {𝓤} ua X) t t p (refl t)
 
-H-≃ : is-univalent 𝓤
+ℍ-≃ : is-univalent 𝓤
     → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
     → A X (id-≃ X) → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A Y e
 
-H-≃ ua X A = G-≃ ua X (Σ-induction A)
+ℍ-≃ ua X A = 𝔾-≃ ua X (Σ-induction A)
 
-H-≃-equation : (ua : is-univalent 𝓤)
+ℍ-≃-equation : (ua : is-univalent 𝓤)
              → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
              → (a : A X  (id-≃ X))
-             → H-≃ ua X A a X (id-≃ X) ≡ a
+             → ℍ-≃ ua X A a X (id-≃ X) ≡ a
 
-H-≃-equation ua X A = G-≃-equation ua X (Σ-induction A)
+ℍ-≃-equation ua X A = 𝔾-≃-equation ua X (Σ-induction A)
 
-J-≃ : is-univalent 𝓤
+𝕁-≃ : is-univalent 𝓤
     → (A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
     → ((X : 𝓤 ̇ ) → A X X (id-≃ X))
     → (X Y : 𝓤 ̇ ) (e : X ≃ Y) → A X Y e
 
-J-≃ ua A φ X = H-≃ ua X (A X) (φ X)
+𝕁-≃ ua A φ X = ℍ-≃ ua X (A X) (φ X)
 
-H-equiv : is-univalent 𝓤
+ℍ-equiv : is-univalent 𝓤
         → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → (X → Y) → 𝓥 ̇ )
         → A X (𝑖𝑑 X) → (Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → A Y f
 
-H-equiv {𝓤} {𝓥} ua X A a Y f i = γ (f , i) i
+ℍ-equiv {𝓤} {𝓥} ua X A a Y f i = γ (f , i) i
  where
   B : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓤 ⊔ 𝓥 ̇
   B Y (f , i) = is-equiv f → A Y f
@@ -2147,21 +2147,21 @@ H-equiv {𝓤} {𝓥} ua X A a Y f i = γ (f , i) i
   b = λ (_ : is-equiv (𝑖𝑑 X)) → a
 
   γ : (e : X ≃ Y) → B Y e
-  γ = H-≃ ua X B b Y
+  γ = ℍ-≃ ua X B b Y
 
-J-equiv : is-univalent 𝓤
+𝕁-equiv : is-univalent 𝓤
         → (A : (X Y : 𝓤 ̇ ) → (X → Y) → 𝓥 ̇ )
         → ((X : 𝓤 ̇ ) → A X X (𝑖𝑑 X))
         → (X Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → A X Y f
 
-J-equiv ua A φ X = H-equiv ua X (A X) (φ X)
+𝕁-equiv ua A φ X = ℍ-equiv ua X (A X) (φ X)
 
-J-invertible : is-univalent 𝓤
+𝕁-invertible : is-univalent 𝓤
              → (A : (X Y : 𝓤 ̇ ) → (X → Y) → 𝓥 ̇ )
              → ((X : 𝓤 ̇ ) → A X X (𝑖𝑑 X))
              → (X Y : 𝓤 ̇ ) (f : X → Y) → invertible f → A X Y f
 
-J-invertible ua A φ X Y f i = J-equiv ua A φ X Y f (invertibles-are-equivs f i)
+𝕁-invertible ua A φ X Y f i = 𝕁-equiv ua A φ X Y f (invertibles-are-equivs f i)
 
 automatic-equiv-functoriality :
 
@@ -2178,7 +2178,7 @@ automatic-equiv-functoriality :
 automatic-equiv-functoriality {𝓤} F 𝓕 𝓕-id {X} {Y} {Z} f g ua = γ
   where
    γ :  is-equiv f + is-equiv g → 𝓕 (g ∘ f) ≡ 𝓕 g ∘ 𝓕 f
-   γ (inl i) = H-equiv ua X A a Y f i g
+   γ (inl i) = ℍ-equiv ua X A a Y f i g
     where
      A : (Y : 𝓤 ̇ ) → (X → Y) → 𝓤 ̇
      A Y f = (g : Y → Z) → 𝓕 (g ∘ f) ≡ 𝓕 g ∘ 𝓕 f
@@ -2186,7 +2186,7 @@ automatic-equiv-functoriality {𝓤} F 𝓕 𝓕-id {X} {Y} {Z} f g ua = γ
      a : (g : X → Z) → 𝓕 g ≡ 𝓕 g ∘ 𝓕 id
      a g = ap (𝓕 g ∘_) (𝓕-id ⁻¹)
 
-   γ (inr j) = H-equiv ua Y B b Z g j f
+   γ (inr j) = ℍ-equiv ua Y B b Z g j f
     where
      B : (Z : 𝓤 ̇ ) → (Y → Z) → 𝓤 ̇
      B Z g = (f : X → Y) → 𝓕 (g ∘ f) ≡ 𝓕 g ∘ 𝓕 f
@@ -2199,7 +2199,7 @@ automatic-equiv-functoriality {𝓤} F 𝓕 𝓕-id {X} {Y} {Z} f g ua = γ
                       → (i : is-equiv f)
                       → (Σ \(x : X) → A x) ≡ (Σ \(y : Y) → A (inverse f i y))
 
-Σ-change-of-variable' {𝓤} {𝓥} ua {X} {Y} A f i = H-≃ ua X B b Y (f , i)
+Σ-change-of-variable' {𝓤} {𝓥} ua {X} {Y} A f i = ℍ-≃ ua X B b Y (f , i)
  where
    B : (Y : 𝓤 ̇ ) → X ≃ Y →  (𝓤 ⊔ 𝓥)⁺ ̇
    B Y (f , i) = (Σ A) ≡ (Σ (A ∘ inverse f i))
@@ -2227,7 +2227,7 @@ transport-map-along-≃ : (ua : is-univalent 𝓤) {X Y Z : 𝓤 ̇ }
                       → transport (λ - → - → Z) (Eq→Id ua X Y e) g
                       ≡ g ∘ Eq→fun (≃-sym e)
 
-transport-map-along-≃ {𝓤} ua {X} {Y} {Z} = J-≃ ua A a X Y
+transport-map-along-≃ {𝓤} ua {X} {Y} {Z} = 𝕁-≃ ua A a X Y
  where
   A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓤 ̇
   A X Y e = (g : X → Z) → transport (λ - → - → Z) (Eq→Id ua X Y e) g
@@ -2265,7 +2265,7 @@ ua-equivs-are-haes : is-univalent 𝓤
                    → {X Y : 𝓤 ̇ } (f : X → Y)
                    → is-equiv f → is-hae f
 
-ua-equivs-are-haes ua {X} {Y} = J-equiv ua (λ X Y f → is-hae f) id-is-hae X Y
+ua-equivs-are-haes ua {X} {Y} = 𝕁-equiv ua (λ X Y f → is-hae f) id-is-hae X Y
 
 ua-invertibles-are-haes : is-univalent 𝓤
                         → {X Y : 𝓤 ̇ } (f : X → Y)
@@ -2389,7 +2389,7 @@ precomp-is-equiv : is-univalent 𝓤
                  → (Z : 𝓤 ̇ ) → is-equiv (λ (g : Y → Z) → g ∘ f)
 
 precomp-is-equiv {𝓤} ua =
-   J-equiv ua
+   𝕁-equiv ua
      (λ X Y (f : X → Y) → (Z : 𝓤 ̇ ) → is-equiv (λ g → g ∘ f))
      (λ X Z → id-is-equiv (X → Z))
 

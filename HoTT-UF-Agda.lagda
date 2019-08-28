@@ -1534,11 +1534,11 @@ which he called `J` (we could have called it `≡-induction`, but we
 prefer to honour MLTT tradition):
 
 \begin{code}
-J : (X : 𝓤 ̇ ) (A : (x y : X) → x ≡ y → 𝓥 ̇ )
+𝕁 : (X : 𝓤 ̇ ) (A : (x y : X) → x ≡ y → 𝓥 ̇ )
   → ((x : X) → A x x (refl x))
   → (x y : X) (p : x ≡ y) → A x y p
 
-J X A f x x (refl x) = f x
+𝕁 X A f x x (refl x) = f x
 \end{code}
 
 This is [related](https://www.cs.bham.ac.uk/~mhe/yoneda/yoneda.html) to the [Yoneda
@@ -1546,7 +1546,7 @@ Lemma](https://en.wikipedia.org/wiki/Yoneda_lemma) in category theory,
 for readers familiar with the subject, which says that certain natural
 transformations are *uniquely determined* by their *action on the
 identity arrows*, even if they are *defined for all arrows*. Similarly
-here, `J` is uniquely determined by its action on reflexive
+here, `𝕁` is uniquely determined by its action on reflexive
 identifications, but is *defined for all identifications between any
 two points*, not just reflexivities.
 
@@ -1554,8 +1554,8 @@ In summary, Martin-Löf's identity type is given by the data
 
   * `Id`,
   * `refl`,
-  * `J`,
-  * the above equation for `J`.
+  * `𝕁`,
+  * the above equation for `𝕁`.
 
 However, we will not always use this induction principle, because we
 can instead work with the instances we need by pattern matching on
@@ -1563,35 +1563,35 @@ can instead work with the instances we need by pattern matching on
 there is a [theorem by Jesper
 Cockx](https://dl.acm.org/citation.cfm?id=2628139) that says that
 with the Agda option `without-K`, pattern matching on `refl` can
-define/prove precisely what `J` can.
+define/prove precisely what `𝕁` can.
 
 *Exercise*. Define
 \begin{code}
-H : {X : 𝓤 ̇ } (x : X) (B : (y : X) → x ≡ y → 𝓥 ̇ )
+ℍ : {X : 𝓤 ̇ } (x : X) (B : (y : X) → x ≡ y → 𝓥 ̇ )
   → B x (refl x)
   → (y : X) (p : x ≡ y) → B y p
 
-H x B b x (refl x) = b
+ℍ x B b x (refl x) = b
 \end{code}
 
-Then we can define `J` from `H` as follows:
+Then we can define `𝕁` from `ℍ` as follows:
 
 \begin{code}
-J' : (X : 𝓤 ̇ ) (A : (x y : X) → x ≡ y → 𝓥 ̇ )
+𝕁' : (X : 𝓤 ̇ ) (A : (x y : X) → x ≡ y → 𝓥 ̇ )
    → ((x : X) → A x x (refl x))
    → (x y : X) (p : x ≡ y) → A x y p
 
-J' X A f x = H x (A x) (f x)
+𝕁' X A f x = ℍ x (A x) (f x)
 
-Js-agreement : (X : 𝓤 ̇ ) (A : (x y : X) → x ≡ y → 𝓥 ̇ )
+𝕁s-agreement : (X : 𝓤 ̇ ) (A : (x y : X) → x ≡ y → 𝓥 ̇ )
                (f : (x : X) → A x x (refl x)) (x y : X) (p : x ≡ y)
-             → J X A f x y p ≡ J' X A f x y p
+             → 𝕁 X A f x y p ≡ 𝕁' X A f x y p
 
-Js-agreement X A f x x (refl x) = refl (f x)
+𝕁s-agreement X A f x x (refl x) = refl (f x)
 \end{code}
 
-Similarly define `H'` from `J` without using pattern matching on `refl`
-and show that it coincides with `H` (possibly using pattern matching
+Similarly define `H'` from `𝕁` without using pattern matching on `refl`
+and show that it coincides with `ℍ` (possibly using pattern matching
 on `refl`). This is [harder](http://www.cse.chalmers.se/~coquand/singl.pdf).
 
 **Notational remark.** The symbols "`=`" and "`≡`" are swapped with
@@ -1619,36 +1619,36 @@ transport : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
 transport A (refl x) = 𝑖𝑑 (A x)
 \end{code}
 
-We can equivalently define transport using `J` as follows:
+We can equivalently define transport using `𝕁` as follows:
 
 \begin{code}
-transportJ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
+transport𝕁 : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
            → x ≡ y → A x → A y
 
-transportJ {𝓤} {𝓥} {X} A {x} {y} = J X (λ x y _ → A x → A y) (λ x → 𝑖𝑑 (A x)) x y
+transport𝕁 {𝓤} {𝓥} {X} A {x} {y} = 𝕁 X (λ x y _ → A x → A y) (λ x → 𝑖𝑑 (A x)) x y
 \end{code}
 
 In the same way `ℕ`-recursion can be seen as the non-dependent special
 case of `ℕ`-induction, the following transport function can be seen as
-the non-dependent special case of the `≡`-induction principle `H` with
+the non-dependent special case of the `≡`-induction principle `ℍ` with
 some of the arguments permuted and made implicit:
 
 \begin{code}
-nondep-H : {X : 𝓤 ̇ } (x : X) (A : X → 𝓥 ̇ )
+nondep-ℍ : {X : 𝓤 ̇ } (x : X) (A : X → 𝓥 ̇ )
          → A x → (y : X) → x ≡ y → A y
-nondep-H x A = H x (λ y _ → A y)
+nondep-ℍ x A = ℍ x (λ y _ → A y)
 
-transportH : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
+transportℍ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
            → x ≡ y → A x → A y
-transportH A {x} {y} p a = nondep-H x A a y p
+transportℍ A {x} {y} p a = nondep-ℍ x A a y p
 \end{code}
 
 All the above transports coincide:
 
 \begin{code}
 transports-agreement : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
-                     → (transportH A p ≡ transport A p)
-                     × (transportJ A p ≡ transport A p)
+                     → (transportℍ A p ≡ transport A p)
+                     × (transport𝕁 A p ≡ transport A p)
 
 transports-agreement A (refl x) = refl (transport A (refl x)) ,
                                   refl (transport A (refl x))
@@ -1732,7 +1732,7 @@ expression we are replacing with `transport`.
 Notice that we have so far used the recursion principle `transport`
 only. To reason about `transport`, `_∙_`, `_⁻¹` and `ap`, we [will
 need](HoTT-UF-Agda.html#identitytypeuf) to use the full induction
-principle `J` (or equivalently pattern matching on `refl`).
+principle `𝕁` (or equivalently pattern matching on `refl`).
 
 *Pointwise equality of functions*. We will work with pointwise
 equality of functions, defined as follows, which, using univalence,
@@ -2842,9 +2842,9 @@ And composition is associative:
 \end{code}
 
 If we wanted to prove the above without pattern matching, this time we
-would need the dependent version `J` of induction on `_≡_`.
+would need the dependent version `𝕁` of induction on `_≡_`.
 
-*Exercise*. Try to do this with `J` and with `H`.
+*Exercise*. Try to do this with `𝕁` and with `ℍ`.
 
 But all arrows, the identifications, are invertible:
 
@@ -5031,8 +5031,8 @@ univalence→ ua X = singletons-are-subsingletons
 ### <a id="equivalenceinduction"></a> Equivalence induction
 
 Under univalence, we get induction principles for type equivalences,
-corresponding to the induction principles [`H`](HoTT-UF-Agda.html#H)
-and [`J`](HoTT-UF-Agda.html#J) for identifications.  To prove a
+corresponding to the induction principles [`ℍ`](HoTT-UF-Agda.html#H)
+and [`𝕁`](HoTT-UF-Agda.html#J) for identifications.  To prove a
 property of equivalences, it is enough to prove it for the identity
 equivalence `id-≃ X` for all `X`. In order to also easily derive an
 equation for this, we perform the construction using the fact that
@@ -5040,11 +5040,11 @@ univalence implies that `Σ \(Y : 𝓤 ̇ ) → X ≃ Y` is a subsingleton for
 any `X`.
 
 \begin{code}
-G-≃ : is-univalent 𝓤
+𝔾-≃ : is-univalent 𝓤
     → (X : 𝓤 ̇ ) (A : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇ )
     → A (X , id-≃ X) → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A (Y , e)
 
-G-≃ {𝓤} ua X A a Y e = transport A p a
+𝔾-≃ {𝓤} ua X A a Y e = transport A p a
  where
   t : Σ \(Y : 𝓤 ̇ ) → X ≃ Y
   t = (X , id-≃ X)
@@ -5053,14 +5053,14 @@ G-≃ {𝓤} ua X A a Y e = transport A p a
   p = univalence→ {𝓤} ua X t (Y , e)
 
 
-G-≃-equation : (ua : is-univalent 𝓤)
+𝔾-≃-equation : (ua : is-univalent 𝓤)
              → (X : 𝓤 ̇ ) (A : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇ )
              → (a : A (X  , id-≃ X))
-             → G-≃ ua X A a X (id-≃ X) ≡ a
+             → 𝔾-≃ ua X A a X (id-≃ X) ≡ a
 
-G-≃-equation {𝓤} {𝓥} ua X A a =
+𝔾-≃-equation {𝓤} {𝓥} ua X A a =
 
-  G-≃ ua X A a X (id-≃ X) ≡⟨ refl _                       ⟩
+  𝔾-≃ ua X A a X (id-≃ X) ≡⟨ refl _                       ⟩
   transport A p a         ≡⟨ ap (λ - → transport A - a) q ⟩
   transport A (refl t) a  ≡⟨ refl _                       ⟩
   a                       ∎
@@ -5076,43 +5076,43 @@ G-≃-equation {𝓤} {𝓥} ua X A a =
   q = subsingletons-are-sets (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
        (univalence→ {𝓤} ua X) t t p (refl t)
 
-H-≃ : is-univalent 𝓤
+ℍ-≃ : is-univalent 𝓤
     → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
     → A X (id-≃ X) → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A Y e
 
-H-≃ ua X A = G-≃ ua X (Σ-induction A)
+ℍ-≃ ua X A = 𝔾-≃ ua X (Σ-induction A)
 
 
-H-≃-equation : (ua : is-univalent 𝓤)
+ℍ-≃-equation : (ua : is-univalent 𝓤)
              → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
              → (a : A X  (id-≃ X))
-             → H-≃ ua X A a X (id-≃ X) ≡ a
+             → ℍ-≃ ua X A a X (id-≃ X) ≡ a
 
-H-≃-equation ua X A = G-≃-equation ua X (Σ-induction A)
+ℍ-≃-equation ua X A = 𝔾-≃-equation ua X (Σ-induction A)
 \end{code}
 
-The induction principle `H-≃` keeps `X` fixed and lets `Y` vary, while
-the induction principle `J-≃` lets both vary:
+The induction principle `ℍ-≃` keeps `X` fixed and lets `Y` vary, while
+the induction principle `𝕁-≃` lets both vary:
 
 \begin{code}
-J-≃ : is-univalent 𝓤
+𝕁-≃ : is-univalent 𝓤
     → (A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
     → ((X : 𝓤 ̇ ) → A X X (id-≃ X))
     → (X Y : 𝓤 ̇ ) (e : X ≃ Y) → A X Y e
 
-J-≃ ua A φ X = H-≃ ua X (A X) (φ X)
+𝕁-≃ ua A φ X = ℍ-≃ ua X (A X) (φ X)
 \end{code}
 
 A second set of equivalence induction principles refer to `is-equiv`
 rather than `≃` and are proved by reduction to the first version
-`H-≃`:
+`ℍ-≃`:
 
 \begin{code}
-H-equiv : is-univalent 𝓤
+ℍ-equiv : is-univalent 𝓤
         → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → (X → Y) → 𝓥 ̇ )
         → A X (𝑖𝑑 X) → (Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → A Y f
 
-H-equiv {𝓤} {𝓥} ua X A a Y f i = γ (f , i) i
+ℍ-equiv {𝓤} {𝓥} ua X A a Y f i = γ (f , i) i
  where
   B : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓤 ⊔ 𝓥 ̇
   B Y (f , i) = is-equiv f → A Y f
@@ -5121,7 +5121,7 @@ H-equiv {𝓤} {𝓥} ua X A a Y f i = γ (f , i) i
   b = λ (_ : is-equiv (𝑖𝑑 X)) → a
 
   γ : (e : X ≃ Y) → B Y e
-  γ = H-≃ ua X B b Y
+  γ = ℍ-≃ ua X B b Y
 \end{code}
 
 The above and the following say that to prove that a property of
@@ -5129,27 +5129,27 @@ The above and the following say that to prove that a property of
 identity functions:
 
 \begin{code}
-J-equiv : is-univalent 𝓤
+𝕁-equiv : is-univalent 𝓤
         → (A : (X Y : 𝓤 ̇ ) → (X → Y) → 𝓥 ̇ )
         → ((X : 𝓤 ̇ ) → A X X (𝑖𝑑 X))
         → (X Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → A X Y f
 
-J-equiv ua A φ X = H-equiv ua X (A X) (φ X)
+𝕁-equiv ua A φ X = ℍ-equiv ua X (A X) (φ X)
 \end{code}
 
 And the following is an immediate consequence of the fact that
 invertible maps are equivalences:
 
 \begin{code}
-J-invertible : is-univalent 𝓤
+𝕁-invertible : is-univalent 𝓤
              → (A : (X Y : 𝓤 ̇ ) → (X → Y) → 𝓥 ̇ )
              → ((X : 𝓤 ̇ ) → A X X (𝑖𝑑 X))
              → (X Y : 𝓤 ̇ ) (f : X → Y) → invertible f → A X Y f
 
-J-invertible ua A φ X Y f i = J-equiv ua A φ X Y f (invertibles-are-equivs f i)
+𝕁-invertible ua A φ X Y f i = 𝕁-equiv ua A φ X Y f (invertibles-are-equivs f i)
 \end{code}
 
-For example, using `H-equiv` we see that for any pair of functions
+For example, using `ℍ-equiv` we see that for any pair of functions
 
    > `F : 𝓤 ̇ → 𝓤 ̇ `,
 
@@ -5175,7 +5175,7 @@ automatic-equiv-functoriality :
 automatic-equiv-functoriality {𝓤} F 𝓕 𝓕-id {X} {Y} {Z} f g ua = γ
   where
    γ :  is-equiv f + is-equiv g → 𝓕 (g ∘ f) ≡ 𝓕 g ∘ 𝓕 f
-   γ (inl i) = H-equiv ua X A a Y f i g
+   γ (inl i) = ℍ-equiv ua X A a Y f i g
     where
      A : (Y : 𝓤 ̇ ) → (X → Y) → 𝓤 ̇
      A Y f = (g : Y → Z) → 𝓕 (g ∘ f) ≡ 𝓕 g ∘ 𝓕 f
@@ -5183,7 +5183,7 @@ automatic-equiv-functoriality {𝓤} F 𝓕 𝓕-id {X} {Y} {Z} f g ua = γ
      a : (g : X → Z) → 𝓕 g ≡ 𝓕 g ∘ 𝓕 id
      a g = ap (𝓕 g ∘_) (𝓕-id ⁻¹)
 
-   γ (inr j) = H-equiv ua Y B b Z g j f
+   γ (inr j) = ℍ-equiv ua Y B b Z g j f
     where
      B : (Z : 𝓤 ̇ ) → (Y → Z) → 𝓤 ̇
      B Z g = (f : X → Y) → 𝓕 (g ∘ f) ≡ 𝓕 g ∘ 𝓕 f
@@ -5202,7 +5202,7 @@ terminology):
                       → (i : is-equiv f)
                       → (Σ \(x : X) → A x) ≡ (Σ \(y : Y) → A (inverse f i y))
 
-Σ-change-of-variable' {𝓤} {𝓥} ua {X} {Y} A f i = H-≃ ua X B b Y (f , i)
+Σ-change-of-variable' {𝓤} {𝓥} ua {X} {Y} A f i = ℍ-≃ ua X B b Y (f , i)
  where
    B : (Y : 𝓤 ̇ ) → X ≃ Y →  (𝓤 ⊔ 𝓥)⁺ ̇
    B Y (f , i) = (Σ A) ≡ (Σ (A ∘ inverse f i))
@@ -5246,7 +5246,7 @@ transport-map-along-≃ : (ua : is-univalent 𝓤) {X Y Z : 𝓤 ̇ }
                       → transport (λ - → - → Z) (Eq→Id ua X Y e) g
                       ≡ g ∘ Eq→fun (≃-sym e)
 
-transport-map-along-≃ {𝓤} ua {X} {Y} {Z} = J-≃ ua A a X Y
+transport-map-along-≃ {𝓤} ua {X} {Y} {Z} = 𝕁-≃ ua A a X Y
  where
   A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓤 ̇
   A X Y e = (g : X → Z) → transport (λ - → - → Z) (Eq→Id ua X Y e) g
@@ -5262,8 +5262,8 @@ transport-map-along-≃ {𝓤} ua {X} {Y} {Z} = J-≃ ua A a X Y
      q = ap (λ - → transport (λ - → - → Z) - g ) p
 \end{code}
 
-An annoying feature of the use of `J` (rather than pattern matching on
-`refl`) or `J-≃` is that we have to repeat what we want to prove, as
+An annoying feature of the use of `𝕁` (rather than pattern matching on
+`refl`) or `𝕁-≃` is that we have to repeat what we want to prove, as
 in the above examples.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -5332,7 +5332,7 @@ ua-equivs-are-haes : is-univalent 𝓤
                    → {X Y : 𝓤 ̇ } (f : X → Y)
                    → is-equiv f → is-hae f
 
-ua-equivs-are-haes ua {X} {Y} = J-equiv ua (λ X Y f → is-hae f) id-is-hae X Y
+ua-equivs-are-haes ua {X} {Y} = 𝕁-equiv ua (λ X Y f → is-hae f) id-is-hae X Y
 
 
 ua-invertibles-are-haes : is-univalent 𝓤
@@ -5515,7 +5515,7 @@ precomp-is-equiv : is-univalent 𝓤
                  → (Z : 𝓤 ̇ ) → is-equiv (λ (g : Y → Z) → g ∘ f)
 
 precomp-is-equiv {𝓤} ua =
-   J-equiv ua
+   𝕁-equiv ua
      (λ X Y (f : X → Y) → (Z : 𝓤 ̇ ) → is-equiv (λ g → g ∘ f))
      (λ X Z → id-is-equiv (X → Z))
 \end{code}
@@ -7722,9 +7722,9 @@ H↑-≃ ua X A = G↑-≃ ua X (Σ-induction A)
 \end{code}
 
 *Exercise*. [Formulate and prove](HoTT-UF-Agda.html#someexercisessol) the equations for `G↑-≃` and `H↑-≃`
- corresponding to those for `G-≃` and `H-≃`.
+ corresponding to those for `𝔾-≃` and `ℍ-≃`.
 
-The difference with [`H-≃`](HoTT-UF-Agda.html-H-≃) is that here, to get
+The difference with [`ℍ-≃`](HoTT-UF-Agda.html-ℍ-≃) is that here, to get
 the conclusion, we need to assume
 
    > `A (Lift 𝓥 X) (≃-Lift X)`
