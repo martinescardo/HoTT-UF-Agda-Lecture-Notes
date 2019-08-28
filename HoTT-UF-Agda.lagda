@@ -146,9 +146,9 @@ multiplication operation and a unit satisfying associativity of
 multiplication and neutrality of the unit in the usual way, and then
 we *prove* that the native notion of equality that comes with
 univalent type theory (inherited from Martin-Löf type theory) happens
-to coincide with monoid isomorphism. Largeness and smallness are taken
-as relative concepts, with type *universes* incorporated in the theory
-to account for the size distinction.
+to coincide with the notion of monoid isomorphism. Largeness and
+smallness are taken as relative concepts, with type *universes*
+incorporated in the theory to account for the size distinction.
 
 In particular, properties of monoids are automatically invariant under
 isomorphism, properties of categories are automatically invariant
@@ -4423,6 +4423,13 @@ subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
                          → is-set (Σ \(x : X) → A x)
 
 
+to-subtype-≡ : {X : 𝓦 ̇ } {A : X → 𝓥 ̇ }
+               {x y : X} {a : A x} {b : A y}
+             → ((x : X) → is-subsingleton (A x))
+             → x ≡ y
+             → (x , a) ≡ (y , b)
+
+
 pr₁-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
           → ((x : X) → is-singleton (A x))
           → is-equiv (λ (t : Σ A) → pr₁ t)
@@ -4713,6 +4720,16 @@ subsets-of-sets-are-sets = sol
   sol X A h p = subtypes-of-sets-are-sets pr₁ (pr₁-lc p) h
 
 
+to-subtype-≡ = sol
+ where
+  sol : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+        {x y : X} {a : A x} {b : A y}
+      → ((x : X) → is-subsingleton (A x))
+      → x ≡ y
+      → (x , a) ≡ (y , b)
+  sol {𝓤} {𝓥} {X} {A} {x} {y} {a} {b} s p = to-Σ-≡ (p , s y (transport A p a) b)
+
+
 pr₁-equiv = sol
  where
   sol : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
@@ -4727,7 +4744,7 @@ pr₁-equiv = sol
     ε x = refl (pr₁ (g x))
 
     η : (σ : Σ A) → g (pr₁ σ) ≡ σ
-    η (x , a) = to-Σ-≡ (ε x , singletons-are-subsingletons (A x) (s x) _ a)
+    η (x , a) = to-subtype-≡ (λ x → singletons-are-subsingletons (A x) (s x)) (ε x)
 
 
 ΠΣ-distr-≃ = sol
@@ -4880,7 +4897,7 @@ NatΣ-equiv-gives-fiberwise-equiv = sol
       → is-subsingleton X
       → ((x : X) → is-subsingleton (A x))
       → is-subsingleton (Σ A)
-  sol i j (x , a) (y , b) = to-Σ-≡ (i x y , j y _ _)
+  sol i j (x , _) (y , _) = to-subtype-≡ j (i x y)
 
 
 ×-is-singleton = sol
@@ -4992,7 +5009,7 @@ univalence⇒ ua X = equiv-singleton-lemma X (Id→Eq X) (ua X)
 ⇒univalence i X = singleton-equiv-lemma X (Id→Eq X) (i X)
 \end{code}
 
-We can replace singleton by subsingleton and still have a logical
+We can replace *singleton* by *subsingleton* and still have a logical
 equivalence, and we sometimes need the characterization in this form:
 
 \begin{code}
@@ -5899,8 +5916,14 @@ being-singleton-is-subsingleton fe {X} (x , φ) (y , γ) = p
   s : is-set X
   s = subsingletons-are-sets X i
 
+  a : (z : X) → is-subsingleton ((t : X) → z ≡ t)
+  a z = Π-is-subsingleton fe (s z)
+
+  b : x ≡ y
+  b = φ y
+
   p : (x , φ) ≡ (y , γ)
-  p = to-Σ-≡ (φ y , fe (λ (z : X) → s y z _ _))
+  p = to-subtype-≡ a b
 
 
 being-equiv-is-subsingleton : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
@@ -6128,7 +6151,7 @@ weak-unique-existence-gives-unique-existence-sometimes : {X : 𝓤 ̇ } (A : X �
 weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , a) , φ
  where
   φ : (σ : Σ A) → x , a ≡ σ
-  φ (y , b) = to-Σ-≡ (u x y a b , i y _ _)
+  φ (y , b) = to-subtype-≡ i (u x y a b)
 \end{code}
 
 *Exercise*. Find a counter-example in the absence of the requirement
@@ -6361,9 +6384,10 @@ Composition of equivalences is associative:
                    {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
                  → ≃-sym (≃-sym α) ≡ α
 
-≃-sym-involutive fe fe' (f , a) = to-Σ-≡
-                                   (inversion-involutive f a ,
-                                    being-equiv-is-subsingleton fe fe' f _ _)
+≃-sym-involutive fe fe' (f , a) = to-subtype-≡
+                                   (being-equiv-is-subsingleton fe fe')
+                                   (inversion-involutive f a)
+
 
 ≃-sym-is-equiv : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -6654,11 +6678,12 @@ subsingleton-univalence {𝓤} pe fe P i X = γ
 
   eqtoid : P ≃ X → P ≡ X
   eqtoid e = pe i (equiv-to-subsingleton (≃-sym e) i)
-                (Eq→fun e) (Eq→fun (≃-sym e))
+                  (Eq→fun e) (Eq→fun (≃-sym e))
 
   m : is-subsingleton (P ≃ X)
-  m (f , k) (f' , k') = to-Σ-≡ (fe (λ x → j (f x) (f' x)) ,
-                                being-equiv-is-subsingleton fe fe f' _ k')
+  m (f , k) (f' , k') = to-subtype-≡
+                          (being-equiv-is-subsingleton fe fe)
+                          (fe (λ x → j (f x) (f' x)))
     where
      j : is-subsingleton X
      j = equiv-to-subsingleton (≃-sym (f , k)) i
@@ -6698,9 +6723,9 @@ holds-is-subsingleton (P , i) = i
 Ω-ext : dfunext 𝓤 𝓤 → propext 𝓤 → {p q : Ω 𝓤}
       → (p holds → q holds) → (q holds → p holds) → p ≡ q
 
-Ω-ext {𝓤} fe pe {p} {q} f g =
- to-Σ-≡ (pe (holds-is-subsingleton p) (holds-is-subsingleton q) f g ,
-         being-subsingleton-is-subsingleton fe _ _)
+Ω-ext {𝓤} fe pe {p} {q} f g = to-subtype-≡
+                                 (λ _ → being-subsingleton-is-subsingleton fe)
+                                 (pe (holds-is-subsingleton p) (holds-is-subsingleton q) f g)
 \end{code}
 
 With this and Hedberg, we get that `Ω` is a set:
@@ -6772,8 +6797,8 @@ x ∈ A = A x holds
 _⊆_ : {X : 𝓤 ̇ } → 𝓟 X → 𝓟 X → 𝓤 ̇
 A ⊆ B = ∀ x → x ∈ A → x ∈ B
 
-∈-is-subsingleton : {X : 𝓤 ̇ } (x : X) (A : 𝓟 X) → is-subsingleton (x ∈ A)
-∈-is-subsingleton x A = holds-is-subsingleton (A x)
+∈-is-subsingleton : {X : 𝓤 ̇ } (A : 𝓟 X) (x : X) → is-subsingleton (x ∈ A)
+∈-is-subsingleton A x = holds-is-subsingleton (A x)
 
 
 ⊆-is-subsingleton : dfunext 𝓤 𝓤
@@ -6781,7 +6806,7 @@ A ⊆ B = ∀ x → x ∈ A → x ∈ B
 
 ⊆-is-subsingleton fe A B = Π-is-subsingleton fe
                             (λ x → Π-is-subsingleton fe
-                            (λ _ → ∈-is-subsingleton x B))
+                            (λ _ → ∈-is-subsingleton B x))
 
 
 ⊆-refl : {X : 𝓤 ̇ } (A : 𝓟 X) → A ⊆ A
@@ -6809,11 +6834,10 @@ subset-extensionality : propext 𝓤 → dfunext 𝓤 𝓤 → dfunext 𝓤 (�
 subset-extensionality pe fe fe' {X} A B h k = fe' φ
  where
   φ : (x : X) → A x ≡ B x
-  φ x = to-Σ-≡ (pe (holds-is-subsingleton (A x))
-                   (holds-is-subsingleton (B x)) (h x) (k x) ,
-                being-subsingleton-is-subsingleton fe
-                   (holds-is-subsingleton _)
-                   (holds-is-subsingleton _))
+  φ x = to-subtype-≡
+           (λ _ → being-subsingleton-is-subsingleton fe)
+           (pe (holds-is-subsingleton (A x)) (holds-is-subsingleton (B x))
+               (h x) (k x))
 \end{code}
 
 And hence so does univalence:
@@ -6847,18 +6871,14 @@ id-≃-left : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔
           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
           → id-≃ X ● α ≡ α
 
-id-≃-left fe fe' α = to-Σ-≡
-                        (refl _ ,
-                         being-equiv-is-subsingleton fe fe' _ _ _)
+id-≃-left fe fe' α = to-subtype-≡ (being-equiv-is-subsingleton fe fe') (refl _)
 
 
 ≃-sym-left-inverse : dfunext 𝓥 𝓥
                    → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
                    → ≃-sym α ● α ≡ id-≃ Y
 
-≃-sym-left-inverse fe (f , e) = to-Σ-≡
-                                 (p ,
-                                  being-equiv-is-subsingleton fe fe _ _ _)
+≃-sym-left-inverse fe (f , e) = to-subtype-≡ (being-equiv-is-subsingleton fe fe) p
  where
   p : f ∘ inverse f e ≡ id
   p = fe (inverse-is-section f e)
@@ -6868,9 +6888,7 @@ id-≃-left fe fe' α = to-Σ-≡
                     → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
                     → α ● ≃-sym α ≡ id-≃ X
 
-≃-sym-right-inverse fe (f , e) = to-Σ-≡
-                                  (p ,
-                                   being-equiv-is-subsingleton fe fe _ _ _)
+≃-sym-right-inverse fe (f , e) = to-subtype-≡ (being-equiv-is-subsingleton fe fe) p
  where
   p : inverse f e ∘ f ≡ id
   p = fe (inverse-is-retraction f e)
@@ -8105,7 +8123,7 @@ the-singletons-form-a-singleton {𝓤} pe fe = c , φ
   c = Lift 𝓤 𝟙 , i
 
   φ : (x : 𝓢 𝓤) → c ≡ x
-  φ (S , s) = to-Σ-≡ (p , being-singleton-is-subsingleton fe _ _)
+  φ (S , s) = to-subtype-≡ (λ _ → being-singleton-is-subsingleton fe) p
    where
     p : Lift 𝓤 𝟙 ≡ S
     p = pe (singletons-are-subsingletons (Lift 𝓤 𝟙) i)
@@ -9149,7 +9167,7 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
          z ∎
 
      u : (y , _ , q) ≡ (z , p , _)
-     u = to-Σ-≡ (t , to-×-≡ (s (x · z) e _ _ , s (z · x) e _ _))
+     u = to-subtype-≡ (λ x' → ×-is-subsingleton (s (x · x') e) (s (x' · x) e)) t
 
    γ : is-subsingleton (group-axiom X (_·_ , e))
    γ = Π-is-subsingleton dfe i
@@ -10339,6 +10357,7 @@ module basic-truncation-development
   hunapply : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ∼ g → f ≡ g
   hunapply = hfunext-gives-dfunext hfe
 
+
   ∥∥-recursion-computation : {X : 𝓤 ̇ } {P :  𝓥 ̇ }
                            → (i : is-subsingleton P)
                            → (f : X → P)
@@ -10346,6 +10365,7 @@ module basic-truncation-development
                            → ∥∥-recursion i f ∣ x ∣ ≡ f x
 
   ∥∥-recursion-computation i f x = i (∥∥-recursion i f ∣ x ∣) (f x)
+
 
   ∥∥-induction : {X : 𝓤 ̇ } {P : ∥ X ∥ → 𝓥 ̇ }
               → ((s : ∥ X ∥) → is-subsingleton (P s))
@@ -10453,7 +10473,7 @@ further details about these notions of disjunction and existence.
   corestriction-surjection f (y , s) = ∥∥-functor g s
    where
     g : (Σ \x → f x ≡ y) → Σ \x → corestriction f x ≡ y , s
-    g (x , p) = x , to-Σ-≡ (p , ∥∥-is-subsingleton _ _)
+    g (x , p) = x , to-subtype-≡ (λ _ → ∃-is-subsingleton) p
 
 
   surjection-induction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -10763,7 +10783,7 @@ The crucial property of the function `μρ f` is that it is `wconstant`:
    q = ≤-anti _ _ l l'
 
    r : μρ f (n , p) ≡ μρ f (n' , p')
-   r = to-Σ-≡ (q , ℕ-is-set _ _ _ _)
+   r = to-subtype-≡ (λ _ → ℕ-is-set (f _) 0) q
 \end{code}
 
 Using the `wconstancy` of `μρ f`, if a root of `f` exists, then we can
@@ -10969,7 +10989,7 @@ which `Y` is a set:
    P = image f
 
    i : is-subsingleton P
-   i (y , u) (y' , u') = to-Σ-≡ (φ y y' u u' , ∃-is-subsingleton _ _)
+   i (y , u) (y' , u') = to-subtype-≡ (λ _ → ∃-is-subsingleton) (φ y y' u u')
 
    g : ∥ X ∥ → P
    g = ∥∥-recursion i (corestriction f)
@@ -11408,7 +11428,7 @@ middle. We begin with the following lemma.
       u = c x t
 
       f : (Σ \(n : 𝟚) → α n ≡ x) → Σ \(n : 𝟚) → r n ≡ (x , t)
-      f (n , p) = n , to-Σ-≡ (p , ∥∥-is-subsingleton _ t)
+      f (n , p) = n , to-subtype-≡ (λ _ → ∃-is-subsingleton) p
 
     s : image α → 𝟚
     s y = pr₁ (σ y)
@@ -11420,7 +11440,7 @@ middle. We begin with the following lemma.
     l = sections-are-lc s (r , η)
 
     αr : {m n : 𝟚} → α m ≡ α n → r m ≡ r n
-    αr p = to-Σ-≡ (p , ∥∥-is-subsingleton _ _)
+    αr p = to-subtype-≡ (λ _ → ∃-is-subsingleton) p
 
     rα : {m n : 𝟚} → r m ≡ r n → α m ≡ α n
     rα = ap pr₁
@@ -11920,8 +11940,9 @@ Impredicativity-gives-PR {𝓤} {𝓥} pe fe (O , e) P i = Q , ε
          (lift ⋆)
 
   γ : P → Q
-  γ p = ap down (to-Σ-≡ (pe k i (λ _ → p) (λ _ → lift ⋆) ,
-                         being-subsingleton-is-subsingleton fe _ _))
+  γ p = ap down (to-subtype-≡
+                    (λ _ → being-subsingleton-is-subsingleton fe)
+                    (pe k i (λ _ → p) (λ _ → lift ⋆)))
 
   ε : P ≃ Q
   ε = logically-equivalent-subsingletons-are-equivalent P Q i j (γ , φ)
@@ -12094,7 +12115,7 @@ establish the existence.
     Q = ⋆ᵤ ∈ B
 
     j : is-subsingleton Q
-    j = ∈-is-subsingleton ⋆ᵤ B
+    j = ∈-is-subsingleton B ⋆ᵤ
 
     f : P → Q
     f p = b
@@ -12186,7 +12207,7 @@ propositional resizing:
     i : (x : X) → is-subsingleton (β x)
     i x = Π-is-subsingleton hunapply
            (λ A → Π-is-subsingleton hunapply
-           (λ _ → ∈-is-subsingleton x A))
+           (λ _ → ∈-is-subsingleton A x))
 
     B : 𝓟 X
     B x = (resize ρ (β x) (i x) , resize-is-subsingleton ρ (β x) (i x))
@@ -12229,8 +12250,8 @@ propositional resizing:
 
   (A ∩ B) = λ x → ((x ∈ A) × (x ∈ B)) ,
                   ×-is-subsingleton
-                    (∈-is-subsingleton x A)
-                    (∈-is-subsingleton x B)
+                    (∈-is-subsingleton A x)
+                    (∈-is-subsingleton B x)
 
 
   ∪-property : {X : 𝓤 ̇ } (A B : 𝓟 X)
@@ -12410,11 +12431,11 @@ points are mapped to identified points:
 \begin{code}
  η-equiv-equal : {x y : X} → x ≈ y → η x ≡ η y
  η-equiv-equal {x} {y} e =
-  to-Σ-≡
-    (hunapply (λ z → to-Σ-≡
-                       (pe (≈p x z) (≈p y z) (≈t y x z (≈s x y e)) (≈t x y z e) ,
-                        being-subsingleton-is-subsingleton hunapply _ _)) ,
-     ∃-is-subsingleton _ _)
+  to-subtype-≡
+    (λ _ → ∃-is-subsingleton)
+    (hunapply (λ z → to-subtype-≡
+                        (λ _ → being-subsingleton-is-subsingleton hunapply)
+                        (pe (≈p x z) (≈p y z) (≈t y x z (≈s x y e)) (≈t x y z e))))
 \end{code}
 
 To prove the required universal property, we also need the fact that
@@ -12455,7 +12476,7 @@ into any set `A` of any universe `𝓦`.
    φ = η-induction _ γ induction-step
     where
      induction-step : (y : X) → is-subsingleton (G (η y))
-     induction-step x (a , d) (b , e) = to-Σ-≡ (p , ∃-is-subsingleton _ _)
+     induction-step x (a , d) (b , e) = to-subtype-≡ (λ _ → ∃-is-subsingleton) p
       where
        h : (Σ \x' → (η x' ≡ η x) × (f x' ≡ a))
          → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))
@@ -12495,19 +12516,13 @@ into any set `A` of any universe `𝓦`.
      h y = ∥∥-recursion (i (f' (η y)) (f y)) (j y) (g y)
 
    c : (σ : Σ \(f'' : X/≈ → A) → f'' ∘ η ≡ f) → (f' , r) ≡ σ
-   c (f'' , s) = to-Σ-≡ (t , v)
+   c (f'' , s) = to-subtype-≡ (λ g → Π-is-set hfe (λ _ → i) (g ∘ η) f) t
     where
      w : ∀ x → f'(η x) ≡ f''(η x)
      w = happly (f' ∘ η) (f'' ∘ η) (r ∙ s ⁻¹)
 
      t : f' ≡ f''
      t = hunapply (η-induction _ (λ x' → i (f' x') (f'' x')) w)
-
-     u : f'' ∘ η ≡ f
-     u = transport (λ - → - ∘ η ≡ f) t r
-
-     v : u ≡ s
-     v = Π-is-set hfe (λ x → i) (f'' ∘ η) f u s
 
    e : ∃! \(f' : X/≈ → A) → f' ∘ η ≡ f
    e = (f' , r) , c
@@ -12599,15 +12614,15 @@ module ℕ-more where
   ≤-prop-valued (succ x) (succ y) = ≤-prop-valued x y
 
   ≼-prop-valued : (x y : ℕ) → is-subsingleton (x ≼ y)
-  ≼-prop-valued x y (z , p) (z' , p') = to-Σ-≡ (q , r)
+  ≼-prop-valued x y (z , p) (z' , p') = γ
    where
     q : z ≡ z'
     q = +-lc x z z' (x ∔ z  ≡⟨ p     ⟩
                      y      ≡⟨ p' ⁻¹ ⟩
                      x ∔ z' ∎)
 
-    r : transport (λ - → x ∔ - ≡ y) q p ≡ p'
-    r = ℕ-is-set (x ∔ z') y (transport (λ - → x ∔ - ≡ y) q p) p'
+    γ : z , p ≡ z' , p'
+    γ = to-subtype-≡ (λ z → ℕ-is-set (x ∔ z) y) q
 
   ≤-charac : propext 𝓤₀ → (x y : ℕ) → (x ≤ y) ≡ (x ≼ y)
   ≤-charac pe x y = pe (≤-prop-valued x y) (≼-prop-valued x y)
@@ -12647,8 +12662,9 @@ the-subsingletons-are-the-subtypes-of-a-singleton' pe fe X = γ
   a = the-subsingletons-are-the-subtypes-of-a-singleton X
 
   b : is-subsingleton (X ↪ 𝟙)
-  b (f , e) (f' , e') = to-Σ-≡ (fe (λ x → 𝟙-is-subsingleton (f x) (f' x)) ,
-                                being-embedding-is-subsingleton fe f' _ e')
+  b (f , e) (f' , e') = to-subtype-≡
+                           (being-embedding-is-subsingleton fe)
+                           (fe (λ x → 𝟙-is-subsingleton (f x) (f' x)))
 
   γ : is-subsingleton X ≡ (X ↪ 𝟙)
   γ = pe (being-subsingleton-is-subsingleton fe) b (pr₁ a) (pr₂ a)
@@ -12862,7 +12878,9 @@ cantors-diagonal = sol
                                                      ₀   ≡⟨ p ⁻¹ ⟩
                                                      h ₀ ∎)))
 
-      γ ₀ ₁ p q = to-Σ-≡ (fe (𝟚-induction (λ n → pr₁ (g (h ₀)) n ≡ h n)
+      γ ₀ ₁ p q = to-subtype-≡
+                     (being-equiv-is-subsingleton fe fe)
+                     (fe (𝟚-induction (λ n → pr₁ (g (h ₀)) n ≡ h n)
                                (pr₁ (g (h ₀)) ₀ ≡⟨ ap (λ - → pr₁ (g -) ₀) p ⟩
                                 pr₁ (g ₀) ₀     ≡⟨ refl ₀                   ⟩
                                 ₀               ≡⟨ p ⁻¹                     ⟩
@@ -12870,10 +12888,11 @@ cantors-diagonal = sol
                                (pr₁ (g (h ₀)) ₁ ≡⟨ ap (λ - → pr₁ (g -) ₁) p ⟩
                                 pr₁ (g ₀) ₁     ≡⟨ refl ₁                   ⟩
                                 ₁               ≡⟨ q ⁻¹                     ⟩
-                                h ₁             ∎)),
-                         being-equiv-is-subsingleton fe fe _ _ e)
+                                h ₁             ∎)))
 
-      γ ₁ ₀ p q = to-Σ-≡ (fe (𝟚-induction (λ n → pr₁ (g (h ₀)) n ≡ h n)
+      γ ₁ ₀ p q = to-subtype-≡
+                     (being-equiv-is-subsingleton fe fe)
+                     (fe (𝟚-induction (λ n → pr₁ (g (h ₀)) n ≡ h n)
                                (pr₁ (g (h ₀)) ₀ ≡⟨ ap (λ - → pr₁ (g -) ₀) p ⟩
                                 pr₁ (g ₁) ₀     ≡⟨ refl ₁                   ⟩
                                 ₁               ≡⟨ p ⁻¹                     ⟩
@@ -12881,8 +12900,7 @@ cantors-diagonal = sol
                                (pr₁ (g (h ₀)) ₁ ≡⟨ ap (λ - → pr₁ (g -) ₁) p ⟩
                                 pr₁ (g ₁) ₁     ≡⟨ refl ₀                   ⟩
                                 ₀               ≡⟨ q ⁻¹                     ⟩
-                                h ₁             ∎)),
-                         being-equiv-is-subsingleton fe fe _ _ e)
+                                h ₁             ∎)))
 
       γ ₁ ₁ p q = !𝟘 (g (h ₀) ≡ (h , e))
                      (₁-is-not-₀ (equivs-are-lc h e (h ₁ ≡⟨ q    ⟩
