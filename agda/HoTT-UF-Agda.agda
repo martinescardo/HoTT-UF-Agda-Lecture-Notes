@@ -5052,6 +5052,35 @@ module subgroup-identity
                               (ap-⟪⟫ S T , ap-⟪⟫-is-equiv S T)
                               (powersets-are-sets' ua ⟪ S ⟫ ⟪ T ⟫)
 
+  subgroup-equality : (S T : Subgroups)
+                    → (S ≡ T)
+                    ≃ ((x : ⟨ G ⟩) → (x ∈ ⟪ S ⟫) ⇔ (x ∈ ⟪ T ⟫))
+
+  subgroup-equality S T = γ
+   where
+    f : S ≡ T → (x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ⇔ x ∈ ⟪ T ⟫
+    f p x = transport (λ - → x ∈ ⟪ - ⟫) p , transport (λ - → x ∈ ⟪ - ⟫) (p ⁻¹)
+
+    h : ((x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ⇔ x ∈ ⟪ T ⟫) → ⟪ S ⟫ ≡ ⟪ T ⟫
+    h φ = subset-extensionality' ua α β
+     where
+      α : ⟪ S ⟫ ⊆ ⟪ T ⟫
+      α x = lr-implication (φ x)
+      β : ⟪ T ⟫ ⊆ ⟪ S ⟫
+      β x = rl-implication (φ x)
+
+    g : ((x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ⇔ x ∈ ⟪ T ⟫) → S ≡ T
+    g = inverse (ap-⟪⟫ S T) (ap-⟪⟫-is-equiv S T) ∘ h
+
+    γ : (S ≡ T) ≃ ((x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ⇔ x ∈ ⟪ T ⟫)
+    γ = logically-equivalent-subsingletons-are-equivalent _ _
+          (subgroups-form-a-set S T)
+          (Π-is-subsingleton dfe
+             (λ x → ×-is-subsingleton
+                      (Π-is-subsingleton dfe (λ _ → ∈-is-subsingleton ⟪ T ⟫ x))
+                      (Π-is-subsingleton dfe (λ _ → ∈-is-subsingleton ⟪ S ⟫ x))))
+          (f , g)
+
   subgroup-unit : (S : Subgroups) → unit G ∈ ⟪ S ⟫
   subgroup-unit (A , u , m , i) = u
 

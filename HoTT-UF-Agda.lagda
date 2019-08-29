@@ -9492,7 +9492,7 @@ subsets in the powerset:
 It follows that two subgroups are equal if and only if they have the
 same elements:
 
-𝕖gin{code}
+\begin{code}
   subgroup-equality : (S T : Subgroups)
                     → (S ≡ T)
                     ≃ ((x : ⟨ G ⟩) → (x ∈ ⟪ S ⟫) ⇔ (x ∈ ⟪ T ⟫))
