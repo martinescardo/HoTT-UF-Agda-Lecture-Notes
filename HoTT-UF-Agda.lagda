@@ -6036,7 +6036,6 @@ dependent functions with implicit arguments.
 
   γ : is-subsingleton ({x : X} → A x)
   γ = retract-of-subsingleton ρ (Π-is-subsingleton fe i)
-
 \end{code}
 
 To show that `vvfunext 𝓤 𝓥` and `hfunext 𝓤 𝓥` are subsingletons, we
@@ -6299,6 +6298,39 @@ This concludes the proof of `ℕ-is-nno`. We say that `ℕ` is a [natural
 numbers object](https://en.wikipedia.org/wiki/Natural_number_object),
 or, more precisely, the triple `(ℕ , 0 , succ)` is a natural numbers
 object.
+
+Here is an example, which given any `n : ℕ` constructs a type with `n` elements (and decidable equality):
+
+\begin{code}
+module finite-types (hfe : hfunext 𝓤₀ 𝓤₁) where
+
+ fin :  ∃! \(Fin : ℕ → 𝓤₀ ̇ )
+     → (Fin 0 ≡ 𝟘)
+     × (Fin ∘ succ ≡ λ n → Fin n + 𝟙)
+
+ fin = ℕ-is-nno hfe (𝓤₀ ̇) 𝟘 (_+ 𝟙)
+
+ Fin : ℕ → 𝓤₀ ̇
+ Fin = pr₁ (center _ fin)
+
+ Fin-property-0 : Fin 0 ≡ 𝟘
+ Fin-property-0 = refl _
+
+ Fin-property-succ : Fin ∘ succ ≡ λ n → Fin n + 𝟙
+ Fin-property-succ = refl _
+
+ Fin-property-succ' : (n : ℕ) → Fin (succ n) ≡ Fin n + 𝟙
+ Fin-property-succ' n = refl _
+
+ Fin-property-2 : Fin 2 ≡ (𝟘 + 𝟙) + 𝟙
+ Fin-property-2 = refl _
+\end{code}
+
+For instance, equation `Fin 2 ≡ (𝟘 + 𝟙) + 𝟙` holds in two ways, and
+yet `fin` claims unique existence. As mentioned above, this is
+possible because `fin` asserts the uniqueness of `Fin` only up to
+unique identifications, like unique existence up to unique isomorphism
+in category theory.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="morefunextuses"></a> More consequences of function extensionality

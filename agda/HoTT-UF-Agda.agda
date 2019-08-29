@@ -2913,6 +2913,29 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
   γ = retract-of-singleton lemma₂
                            (singleton-types-are-singletons (ℕ → Y) (ℕ-iteration Y y₀ g))
 
+module finite-types (hfe : hfunext 𝓤₀ 𝓤₁) where
+
+ fin :  ∃! \(Fin : ℕ → 𝓤₀ ̇ )
+     → (Fin 0 ≡ 𝟘)
+     × (Fin ∘ succ ≡ λ n → Fin n + 𝟙)
+
+ fin = ℕ-is-nno hfe (𝓤₀ ̇) 𝟘 (_+ 𝟙)
+
+ Fin : ℕ → 𝓤₀ ̇
+ Fin = pr₁ (center _ fin)
+
+ Fin-property-0 : Fin 0 ≡ 𝟘
+ Fin-property-0 = refl _
+
+ Fin-property-succ : Fin ∘ succ ≡ λ n → Fin n + 𝟙
+ Fin-property-succ = refl _
+
+ Fin-property-succ' : (n : ℕ) → Fin (succ n) ≡ Fin n + 𝟙
+ Fin-property-succ' n = refl _
+
+ Fin-property-2 : Fin 2 ≡ (𝟘 + 𝟙) + 𝟙
+ Fin-property-2 = refl _
+
 being-subsingleton-is-subsingleton : {X : 𝓤 ̇ } → dfunext 𝓤 𝓤
                                    → is-subsingleton (is-subsingleton X)
 
