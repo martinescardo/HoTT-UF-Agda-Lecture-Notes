@@ -2466,7 +2466,7 @@ singleton-iff-pointed-and-subsingleton {𝓤} {X} = (a , b)
   b (x , t) = pointed-subsingletons-are-singletons X x t
 \end{code}
 
-The terminology stands for *[subtype](HoTT-UF-Agda.html#subtypes-of)
+The terminology stands for *[subtype](HoTT-UF-Agda.html#subtypes-of`)
 of a singleton* and is
 [justified](HoTT-UF-Agda.html#the-subsingletons-are-the-subtypes-of-a-singleton)
 by the fact that a type `X` is a subsingleton according to the above
@@ -7145,6 +7145,9 @@ We now introduce notation for the type of embeddings.
 \begin{code}
 _↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ↪ Y = Σ \(f : X → Y) → is-embedding f
+
+Emb→fun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ↪ Y → X → Y
+Emb→fun (f , i) = f
 \end{code}
 
 The following justifies the terminology *subsingleton*:
@@ -8008,15 +8011,15 @@ global-≃-ap ua = global-≃-ap' ua id
 A subtype of a type `Y` is a type `X` *together* with an embedding of `X` into `Y`:
 
 \begin{code}
-subtypes-of : 𝓤 ̇ → 𝓤 ⁺ ̇
-subtypes-of {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↪ Y
+subtypes : 𝓤 ̇ → 𝓤 ⁺ ̇
+subtypes {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↪ Y
 \end{code}
 
 The type `Ω 𝓤` of subsingletons in the universe `𝓤` is the subtype
 classifier of types in `𝓤`, in the sense that we have a canonical
 equivalence
 
-   > `subtypes-of Y ≃ (Y → Ω 𝓤)`
+   > `subtypes Y ≃ (Y → Ω 𝓤)`
 
 for any type `Y : 𝓤`. We will derive this from something
 more general.  We defined embeddings to be maps whose fibers are
@@ -8067,12 +8070,17 @@ mc-gives-sc {𝓤} s P Y = γ
 Therefore we have the following canonical equivalence:
 
 \begin{code}
+χ-special-is-equiv : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
+                   → (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ )
+                   → is-equiv (χ-special P Y)
+
+χ-special-is-equiv {𝓤} ua fe P Y = mc-gives-sc (universes-are-map-classifiers ua fe) P Y
+
 special-map-classifier : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
                        → (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ )
                        → 𝓤 /[ P ] Y ≃ (Y → Σ P)
 
-special-map-classifier {𝓤} ua fe P Y =
- χ-special P Y , mc-gives-sc (universes-are-map-classifiers ua fe) P Y
+special-map-classifier {𝓤} ua fe P Y = χ-special P Y , χ-special-is-equiv ua fe P Y
 \end{code}
 
 In particular, considering `P = is-subsingleton`, we get the promised
@@ -8080,7 +8088,7 @@ fact that `Ω` is the subtype classifier:
 
 \begin{code}
 Ω-is-subtype-classifier : Univalence
-                        → (Y : 𝓤 ̇ ) → subtypes-of Y ≃ (Y → Ω 𝓤)
+                        → (Y : 𝓤 ̇ ) → subtypes Y ≃ (Y → Ω 𝓤)
 
 Ω-is-subtype-classifier {𝓤} ua = special-map-classifier (ua 𝓤)
                                   (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
@@ -8091,7 +8099,7 @@ It follows that the type of subtypes of `Y` is always a set, even if
 `Y` is not a set:
 
 \begin{code}
-subtypes-form-set : Univalence → (Y : 𝓤 ̇ ) → is-set (subtypes-of Y)
+subtypes-form-set : Univalence → (Y : 𝓤 ̇ ) → is-set (subtypes Y)
 subtypes-form-set {𝓤} ua Y = equiv-to-set
                               (Ω-is-subtype-classifier ua Y)
                               (powersets-are-sets' ua)
@@ -9453,8 +9461,12 @@ module subgroup-identity
  open sip
  open monoid-identity {𝓤} (ua 𝓤) hiding (sns-data ; _≅_)
  open group-identity {𝓤} (ua 𝓤)
+\end{code}
 
- module _ (G : Group) where
+We assume an arbitrary group `G` in the following discussion.
+
+\begin{code}
+ module ambient (G : Group) where
 
   _·_ : ⟨ G ⟩ → ⟨ G ⟩ → ⟨ G ⟩
   x · y = x ·⟨ G ⟩ y

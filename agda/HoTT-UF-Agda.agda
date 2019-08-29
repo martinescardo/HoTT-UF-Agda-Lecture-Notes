@@ -3557,6 +3557,9 @@ embedding-criterion-converse f e x' x = ≃-sym
 _↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ↪ Y = Σ \(f : X → Y) → is-embedding f
 
+Emb→fun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ↪ Y → X → Y
+Emb→fun (f , i) = f
+
 𝓨 : {X : 𝓤 ̇ } → X → (X → 𝓤 ̇ )
 𝓨 {𝓤} {X} = Id X
 
@@ -4106,8 +4109,8 @@ global-≃-ap' {𝓤} {𝓥} ua F A φ X Y e =
 
 global-≃-ap ua = global-≃-ap' ua id
 
-subtypes-of : 𝓤 ̇ → 𝓤 ⁺ ̇
-subtypes-of {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↪ Y
+subtypes : 𝓤 ̇ → 𝓤 ⁺ ̇
+subtypes {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↪ Y
 
 _/[_]_ : (𝓤 : Universe) → (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
 𝓤 /[ P ] Y = Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → (y : Y) → P (fiber f y)
@@ -4138,21 +4141,26 @@ mc-gives-sc {𝓤} s P Y = γ
   γ : is-equiv (χ-special P Y)
   γ = Eq→fun-is-equiv e
 
+χ-special-is-equiv : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
+                   → (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ )
+                   → is-equiv (χ-special P Y)
+
+χ-special-is-equiv {𝓤} ua fe P Y = mc-gives-sc (universes-are-map-classifiers ua fe) P Y
+
 special-map-classifier : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
                        → (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ )
                        → 𝓤 /[ P ] Y ≃ (Y → Σ P)
 
-special-map-classifier {𝓤} ua fe P Y =
- χ-special P Y , mc-gives-sc (universes-are-map-classifiers ua fe) P Y
+special-map-classifier {𝓤} ua fe P Y = χ-special P Y , χ-special-is-equiv ua fe P Y
 
 Ω-is-subtype-classifier : Univalence
-                        → (Y : 𝓤 ̇ ) → subtypes-of Y ≃ (Y → Ω 𝓤)
+                        → (Y : 𝓤 ̇ ) → subtypes Y ≃ (Y → Ω 𝓤)
 
 Ω-is-subtype-classifier {𝓤} ua = special-map-classifier (ua 𝓤)
                                   (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
                                   is-subsingleton
 
-subtypes-form-set : Univalence → (Y : 𝓤 ̇ ) → is-set (subtypes-of Y)
+subtypes-form-set : Univalence → (Y : 𝓤 ̇ ) → is-set (subtypes Y)
 subtypes-form-set {𝓤} ua Y = equiv-to-set
                               (Ω-is-subtype-classifier ua Y)
                               (powersets-are-sets' ua)
@@ -5009,7 +5017,7 @@ module subgroup-identity
  open monoid-identity {𝓤} (ua 𝓤) hiding (sns-data ; _≅_)
  open group-identity {𝓤} (ua 𝓤)
 
- module _ (G : Group) where
+ module ambient (G : Group) where
 
   _·_ : ⟨ G ⟩ → ⟨ G ⟩ → ⟨ G ⟩
   x · y = x ·⟨ G ⟩ y
