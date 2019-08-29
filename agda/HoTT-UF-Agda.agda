@@ -5000,6 +5000,137 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  forget-unit-preservation-is-equiv G H = Eq→fun-is-equiv (≅-agreement G H)
 
+module subgroup-identity
+        (𝓤 : Universe)
+        (ua : Univalence)
+      where
+
+ open sip
+ open monoid-identity {𝓤} (ua 𝓤) hiding (sns-data ; _≅_)
+ open group-identity {𝓤} (ua 𝓤)
+
+ module _ (G : Group) where
+
+  _·_ : ⟨ G ⟩ → ⟨ G ⟩ → ⟨ G ⟩
+  x · y = x ·⟨ G ⟩ y
+
+  inve : ⟨ G ⟩ → ⟨ G ⟩
+  inve = inv G
+
+  infixl 42 _·_
+
+  Subgroups : 𝓤 ⁺ ̇
+  Subgroups = Σ \(A : 𝓟 ⟨ G ⟩)
+            → (unit G ∈ A)
+            × ((x y : ⟨ G ⟩) → x ∈ A → y ∈ A → x · y ∈ A)
+            × ((x : ⟨ G ⟩) → inve x ∈ A)
+
+  ⟪_⟫ : Subgroups → 𝓟 ⟨ G ⟩
+  ⟪ A , u , c , ι ⟫ = A
+
+  ⟪⟫-is-embedding : is-embedding ⟪_⟫
+  ⟪⟫-is-embedding = pr₁-embedding i
+   where
+    i = λ A → ×-is-subsingleton
+                (∈-is-subsingleton A (unit G))
+             (×-is-subsingleton
+                (Π-is-subsingleton dfe
+                   (λ x → Π-is-subsingleton dfe
+                   (λ y → Π-is-subsingleton dfe
+                   (λ _ → Π-is-subsingleton dfe
+                   (λ _ → ∈-is-subsingleton A (x · y))))))
+                (Π-is-subsingleton dfe (λ x → ∈-is-subsingleton A (inve x))))
+
+  ap-⟪⟫ : (S T : Subgroups) → S ≡ T → ⟪ S ⟫ ≡ ⟪ T ⟫
+  ap-⟪⟫ S T = ap ⟪_⟫
+
+  ap-⟪⟫-is-equiv : (S T : Subgroups) → is-equiv (ap-⟪⟫ S T)
+  ap-⟪⟫-is-equiv = embedding-gives-ap-is-equiv ⟪_⟫ ⟪⟫-is-embedding
+
+  subgroups-form-a-set : is-set Subgroups
+  subgroups-form-a-set S T = equiv-to-subsingleton
+                              (ap-⟪⟫ S T , ap-⟪⟫-is-equiv S T)
+                              (powersets-are-sets' ua ⟪ S ⟫ ⟪ T ⟫)
+
+  subgroup-unit : (S : Subgroups) → unit G ∈ ⟪ S ⟫
+  subgroup-unit (A , u , m , i) = u
+
+  subgroup-multiplication : (S : Subgroups)
+                          → ((x y : ⟨ G ⟩) → x ∈ ⟪ S ⟫
+                                           → y ∈ ⟪ S ⟫
+                                           → x · y ∈ ⟪ S ⟫)
+
+  subgroup-multiplication (A , u , m , i) = m
+
+  subgroup-inv : (S : Subgroups)
+               → (x : ⟨ G ⟩) → inve x ∈ ⟪ S ⟫
+
+  subgroup-inv (A , u , m , i) = i
+
+  group : Subgroups → Group
+  group S = Y , ((_*_ , e) , i , l , r , a) , γ
+   where
+    Y = Σ \(x : ⟨ G ⟩) → x ∈ ⟪ S ⟫
+
+    _*_ : Y → Y → Y
+    (x , h) * (x' , h') = (x · x') , subgroup-multiplication S x x' h h'
+
+    e : Y
+    e = unit G , subgroup-unit S
+
+    i : is-set Y
+    i = subsets-of-sets-are-sets
+          ⟨ G ⟩
+          (λ x → x ∈ ⟪ S ⟫)
+          (group-is-set G)
+          (∈-is-subsingleton ⟪ S ⟫)
+
+    l : (y : Y) → e * y ≡ y
+    l (x , _) = to-subtype-≡ (∈-is-subsingleton ⟪ S ⟫) (unit-left G x)
+
+    r : (y : Y) → y * e ≡ y
+    r (x , _) = to-subtype-≡ (∈-is-subsingleton ⟪ S ⟫) (unit-right G x)
+
+    a : (y₀ y₁ y₂ : Y) → ((y₀ * y₁) * y₂) ≡ (y₀ * (y₁ * y₂))
+    a (x₀ , _) (x₁ , _) (x₂ , _) = to-subtype-≡
+                                      (∈-is-subsingleton ⟪ S ⟫)
+                                      (assoc G x₀ x₁ x₂)
+
+    γ : (y : Y) → Σ \(y' : Y) → (y * y' ≡ e) × (y' * y ≡ e)
+    γ (x , h) = (inve x , h') , ir , il
+     where
+      h' : (inv G x) ∈ ⟪ S ⟫
+      h' = subgroup-inv S x
+      ir : (x , h) * (inve x , h') ≡ e
+      ir = to-subtype-≡ (∈-is-subsingleton ⟪ S ⟫) (inv-right G x)
+      il : (inve x , h') * (x , h) ≡ e
+      il = to-subtype-≡ (∈-is-subsingleton ⟪ S ⟫) (inv-left G x)
+
+  subgroup-embedding : (S : Subgroups) → ⟨ group S ⟩ → ⟨ G ⟩
+  subgroup-embedding _ = pr₁
+
+  subgroup-embedding-is-embedding : (S : Subgroups)
+                                  → is-embedding (subgroup-embedding S)
+
+  subgroup-embedding-is-embedding S = pr₁-embedding (∈-is-subsingleton ⟪ S ⟫)
+
+  subgroup-embedding-is-homomorphism : (S : Subgroups)
+                                     → is-homomorphism (group S) G (subgroup-embedding S)
+
+  subgroup-embedding-is-homomorphism S = refl _ , refl _
+
+  Subgroups' : 𝓤 ⁺ ̇
+  Subgroups' = Σ \(H : Group)
+             → Σ \(f : ⟨ H ⟩ → ⟨ G ⟩)
+             → is-embedding f
+             × is-homomorphism H G f
+
+  α : Subgroups → Subgroups'
+  α S = group S ,
+        subgroup-embedding S ,
+        subgroup-embedding-is-embedding S ,
+        subgroup-embedding-is-homomorphism S
+
 module slice-identity
         {𝓤 : Universe}
         (R : 𝓤 ̇ )

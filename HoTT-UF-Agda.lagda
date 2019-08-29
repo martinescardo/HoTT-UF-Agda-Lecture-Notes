@@ -428,6 +428,7 @@ to practice univalent mathematics should consult the above references.
         1. [Pointed ∞-magmas](HoTT-UF-Agda.html#pointed-infty-magmas)
         1. [Monoids](HoTT-UF-Agda.html#monoids-sip)
         1. [Groups](HoTT-UF-Agda.html#groups-sip)
+        1. [Subgroups](HoTT-UF-Agda.html#subgroups-sip)
         1. [The slice type](HoTT-UF-Agda.html#slice-sip)
         1. [Metric spaces, graphs and ordered structures](HoTT-UF-Agda.html#metric-sip)
         1. [Topological spaces](HoTT-UF-Agda.html#topological-sip)
@@ -8384,6 +8385,11 @@ structure. We consider several versions:
  1. And then adding an axiom to monoids we get groups, again with
     an automatic characterization of their identitifications.
 
+ 1. We also show that while to groups are equal precisely when they
+    are isomorphism, two *subgroups* of a group are equal precisely
+    when they have the same elements, if we define a subgroup to be a
+    subset closed under the group operations.
+
 We also apply theses ideas to characterize identifications of metric
 spaces, topological spaces, graphs, partially ordered sets, categories
 and more.
@@ -9402,13 +9408,13 @@ This equivalence is that which forgets the preservation of the unit:
 
 This completes the solution of the exercise.
 
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+#### <a id="subgroups-sip"></a> Subgroups
 
-
-*Exercise*. In the same way that two elements of the powerset are
- equal iff they [have the same
- elements](HoTT-UF-Agda.html#subset-extensionality), two subgroups are
- equal if and only if they have the same elements. This can be
- formulated and proved in two equivalent ways.
+In the same way that two elements of the powerset are equal iff they
+[have the same elements](HoTT-UF-Agda.html#subset-extensionality), two
+subgroups are equal if and only if they have the same elements. This
+can be formulated and proved in two equivalent ways.
 
   1. A subgroup is an element of the powerset of the underlying set of
   the group that is closed under the group operations. So the type of
@@ -9417,12 +9423,211 @@ This completes the solution of the exercise.
   of the powerset.
 
   1. A subgroup of a group `G` is a group `H` *together* with a
-  homomorphism `H → G` which is also an embedding. Show that this
-  second definition of the type of subgroups produces a type that is
-  equivalent to the previous. With this second definition, two
+  homomorphic embedding `H → G`. We leave it as an exercise to show
+  that this second definition of the type of subgroups produces a type
+  that is equivalent to the previous. With this second definition, two
   subgroups `H` and `H'` are equal iff the embeddings `H → G` and `H'
   → G` can be completed to a commutative triangle by a group
   isomorphism `H → H'`, which is necessarily unique when it exists.
+
+\begin{code}
+module subgroup-identity
+        (𝓤 : Universe)
+        (ua : Univalence)
+      where
+
+ open sip
+ open monoid-identity {𝓤} (ua 𝓤) hiding (sns-data ; _≅_)
+ open group-identity {𝓤} (ua 𝓤)
+
+ module _ (G : Group) where
+
+  _·_ : ⟨ G ⟩ → ⟨ G ⟩ → ⟨ G ⟩
+  x · y = x ·⟨ G ⟩ y
+
+  inve : ⟨ G ⟩ → ⟨ G ⟩
+  inve = inv G
+
+  infixl 42 _·_
+
+  Subgroups : 𝓤 ⁺ ̇
+  Subgroups = Σ \(A : 𝓟 ⟨ G ⟩)
+            → (unit G ∈ A)
+            × ((x y : ⟨ G ⟩) → x ∈ A → y ∈ A → x · y ∈ A)
+            × ((x : ⟨ G ⟩) → inve x ∈ A)
+
+  ⟪_⟫ : Subgroups → 𝓟 ⟨ G ⟩
+  ⟪ A , u , c , ι ⟫ = A
+
+  ⟪⟫-is-embedding : is-embedding ⟪_⟫
+  ⟪⟫-is-embedding = pr₁-embedding i
+   where
+    i = λ A → ×-is-subsingleton
+                (∈-is-subsingleton A (unit G))
+             (×-is-subsingleton
+                (Π-is-subsingleton dfe
+                   (λ x → Π-is-subsingleton dfe
+                   (λ y → Π-is-subsingleton dfe
+                   (λ _ → Π-is-subsingleton dfe
+                   (λ _ → ∈-is-subsingleton A (x · y))))))
+                (Π-is-subsingleton dfe (λ x → ∈-is-subsingleton A (inve x))))
+\end{code}
+
+Therefore equality of subgroups is equality of their underlying
+subsets in the powerset:
+
+\begin{code}
+  ap-⟪⟫ : (S T : Subgroups) → S ≡ T → ⟪ S ⟫ ≡ ⟪ T ⟫
+  ap-⟪⟫ S T = ap ⟪_⟫
+
+  ap-⟪⟫-is-equiv : (S T : Subgroups) → is-equiv (ap-⟪⟫ S T)
+  ap-⟪⟫-is-equiv = embedding-gives-ap-is-equiv ⟪_⟫ ⟪⟫-is-embedding
+
+  subgroups-form-a-set : is-set Subgroups
+  subgroups-form-a-set S T = equiv-to-subsingleton
+                              (ap-⟪⟫ S T , ap-⟪⟫-is-equiv S T)
+                              (powersets-are-sets' ua ⟪ S ⟫ ⟪ T ⟫)
+\end{code}
+
+It follows that two subgroups are equal if and only if they have the
+same elements:
+
+𝕖gin{code}
+  subgroup-equality : (S T : Subgroups)
+                    → (S ≡ T)
+                    ≃ ((x : ⟨ G ⟩) → (x ∈ ⟪ S ⟫) ⇔ (x ∈ ⟪ T ⟫))
+
+  subgroup-equality S T = γ
+   where
+    f : S ≡ T → (x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ⇔ x ∈ ⟪ T ⟫
+    f p x = transport (λ - → x ∈ ⟪ - ⟫) p , transport (λ - → x ∈ ⟪ - ⟫) (p ⁻¹)
+
+    h : ((x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ⇔ x ∈ ⟪ T ⟫) → ⟪ S ⟫ ≡ ⟪ T ⟫
+    h φ = subset-extensionality' ua α β
+     where
+      α : ⟪ S ⟫ ⊆ ⟪ T ⟫
+      α x = lr-implication (φ x)
+      β : ⟪ T ⟫ ⊆ ⟪ S ⟫
+      β x = rl-implication (φ x)
+
+    g : ((x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ⇔ x ∈ ⟪ T ⟫) → S ≡ T
+    g = inverse (ap-⟪⟫ S T) (ap-⟪⟫-is-equiv S T) ∘ h
+
+    γ : (S ≡ T) ≃ ((x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ⇔ x ∈ ⟪ T ⟫)
+    γ = logically-equivalent-subsingletons-are-equivalent _ _
+          (subgroups-form-a-set S T)
+          (Π-is-subsingleton dfe
+             (λ x → ×-is-subsingleton
+                      (Π-is-subsingleton dfe (λ _ → ∈-is-subsingleton ⟪ T ⟫ x))
+                      (Π-is-subsingleton dfe (λ _ → ∈-is-subsingleton ⟪ S ⟫ x))))
+          (f , g)
+\end{code}
+
+We now introduce notations for the projections:
+
+\begin{code}
+  subgroup-unit : (S : Subgroups) → unit G ∈ ⟪ S ⟫
+  subgroup-unit (A , u , m , i) = u
+
+  subgroup-multiplication : (S : Subgroups)
+                          → ((x y : ⟨ G ⟩) → x ∈ ⟪ S ⟫
+                                           → y ∈ ⟪ S ⟫
+                                           → x · y ∈ ⟪ S ⟫)
+
+  subgroup-multiplication (A , u , m , i) = m
+
+
+  subgroup-inv : (S : Subgroups)
+               → (x : ⟨ G ⟩) → inve x ∈ ⟪ S ⟫
+
+  subgroup-inv (A , u , m , i) = i
+\end{code}
+
+With this we can transform a subgroup into a genuine group. We call this the induced group:
+
+\begin{code}
+  group : Subgroups → Group
+  group S = Y , ((_*_ , e) , i , l , r , a) , γ
+   where
+    Y = Σ \(x : ⟨ G ⟩) → x ∈ ⟪ S ⟫
+
+    _*_ : Y → Y → Y
+    (x , h) * (x' , h') = (x · x') , subgroup-multiplication S x x' h h'
+
+    e : Y
+    e = unit G , subgroup-unit S
+
+    i : is-set Y
+    i = subsets-of-sets-are-sets
+          ⟨ G ⟩
+          (λ x → x ∈ ⟪ S ⟫)
+          (group-is-set G)
+          (∈-is-subsingleton ⟪ S ⟫)
+
+    l : (y : Y) → e * y ≡ y
+    l (x , _) = to-subtype-≡ (∈-is-subsingleton ⟪ S ⟫) (unit-left G x)
+
+    r : (y : Y) → y * e ≡ y
+    r (x , _) = to-subtype-≡ (∈-is-subsingleton ⟪ S ⟫) (unit-right G x)
+
+    a : (y₀ y₁ y₂ : Y) → ((y₀ * y₁) * y₂) ≡ (y₀ * (y₁ * y₂))
+    a (x₀ , _) (x₁ , _) (x₂ , _) = to-subtype-≡
+                                      (∈-is-subsingleton ⟪ S ⟫)
+                                      (assoc G x₀ x₁ x₂)
+
+    γ : (y : Y) → Σ \(y' : Y) → (y * y' ≡ e) × (y' * y ≡ e)
+    γ (x , h) = (inve x , h') , ir , il
+     where
+      h' : (inv G x) ∈ ⟪ S ⟫
+      h' = subgroup-inv S x
+      ir : (x , h) * (inve x , h') ≡ e
+      ir = to-subtype-≡ (∈-is-subsingleton ⟪ S ⟫) (inv-right G x)
+      il : (inve x , h') * (x , h) ≡ e
+      il = to-subtype-≡ (∈-is-subsingleton ⟪ S ⟫) (inv-left G x)
+\end{code}
+
+The group induced by a subgroup is embedded into the ambient group:
+
+\begin{code}
+  subgroup-embedding : (S : Subgroups) → ⟨ group S ⟩ → ⟨ G ⟩
+  subgroup-embedding _ = pr₁
+
+
+  subgroup-embedding-is-embedding : (S : Subgroups)
+                                  → is-embedding (subgroup-embedding S)
+
+  subgroup-embedding-is-embedding S = pr₁-embedding (∈-is-subsingleton ⟪ S ⟫)
+\end{code}
+
+*Exercise.* It may happen that two subgroups induce isomorphic, and hence equal, groups without they themselves being equal. This is the case, for example, for the subgroup of even elements of the group of integers under addition, and for the full subgroup. They don't have the same elements, and hence are not equal, but they induce isomorphic, and hence equal, groups.
+
+The above embedding is a homomorphism:
+
+\begin{code}
+  subgroup-embedding-is-homomorphism : (S : Subgroups)
+                                     → is-homomorphism (group S) G (subgroup-embedding S)
+
+  subgroup-embedding-is-homomorphism S = refl _ , refl _
+\end{code}
+
+An alternative, more categorical, formulation of the type of subgroups
+is the following:
+
+\begin{code}
+  Subgroups' : 𝓤 ⁺ ̇
+  Subgroups' = Σ \(H : Group)
+             → Σ \(f : ⟨ H ⟩ → ⟨ G ⟩)
+             → is-embedding f
+             × is-homomorphism H G f
+
+  α : Subgroups → Subgroups'
+  α S = group S ,
+        subgroup-embedding S ,
+        subgroup-embedding-is-embedding S ,
+        subgroup-embedding-is-homomorphism S
+\end{code}
+
+*Exercise.* Show that `α` is an equivalence.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="slice-sip"></a> The slice type
