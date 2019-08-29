@@ -5001,9 +5001,9 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
  forget-unit-preservation-is-equiv G H = Eq→fun-is-equiv (≅-agreement G H)
 
 module subgroup-identity
-        (𝓤 : Universe)
+        (𝓤  : Universe)
         (ua : Univalence)
-      where
+       where
 
  open sip
  open monoid-identity {𝓤} (ua 𝓤) hiding (sns-data ; _≅_)
@@ -5132,8 +5132,10 @@ module subgroup-identity
      where
       h' : (inv G x) ∈ ⟪ S ⟫
       h' = subgroup-inv S x h
+
       ir : (x , h) * (inve x , h') ≡ e
       ir = to-subtype-≡ (∈-is-subsingleton ⟪ S ⟫) (inv-right G x)
+
       il : (inve x , h') * (x , h) ≡ e
       il = to-subtype-≡ (∈-is-subsingleton ⟪ S ⟫) (inv-left G x)
 

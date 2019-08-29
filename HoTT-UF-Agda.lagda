@@ -9411,10 +9411,24 @@ This completes the solution of the exercise.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="subgroups-sip"></a> Subgroups
 
-In the same way that two elements of the powerset are equal iff they
-[have the same elements](HoTT-UF-Agda.html#subset-extensionality), two
-subgroups are equal if and only if they have the same elements. This
-can be formulated and proved in two equivalent ways.
+It is common mathematical practice to regard isomorphic groups to be
+the same, which is a theorem in univalent mathematics, with the notion
+of sameness articulated by the identity type, as shown above.
+However, for some purposes, we may wish to consider two groups to be
+the same if they have the same elements. For example, in order to show
+that the subgrops of a group form an [algebraic
+lattice](https://ncatlab.org/nlab/show/algebraic+lattice) with the
+finitely generated subgroups an the compact elements, it is this
+notion of equality that is used, with subgroup containment
+as the lattice order.
+
+Asking whether two groups have the same elements in univalent
+mathematics doesn't make sense unless they are subgroups of the same
+ambient group.  In the same way that in univalent mathematics two
+elements of the powerset are equal iff they [have the same
+elements](HoTT-UF-Agda.html#subset-extensionality), two subgroups are
+equal if and only if they have the same elements. This can be
+formulated and proved in two equivalent ways.
 
   1. A subgroup is an element of the powerset of the underlying set of
   the group that is closed under the group operations. So the type of
@@ -9432,9 +9446,9 @@ can be formulated and proved in two equivalent ways.
 
 \begin{code}
 module subgroup-identity
-        (𝓤 : Universe)
+        (𝓤  : Universe)
         (ua : Univalence)
-      where
+       where
 
  open sip
  open monoid-identity {𝓤} (ua 𝓤) hiding (sns-data ; _≅_)
@@ -9582,8 +9596,10 @@ With this we can transform a subgroup into a genuine group. We call this the ind
      where
       h' : (inv G x) ∈ ⟪ S ⟫
       h' = subgroup-inv S x h
+
       ir : (x , h) * (inve x , h') ≡ e
       ir = to-subtype-≡ (∈-is-subsingleton ⟪ S ⟫) (inv-right G x)
+
       il : (inve x , h') * (x , h) ≡ e
       il = to-subtype-≡ (∈-is-subsingleton ⟪ S ⟫) (inv-left G x)
 \end{code}
@@ -9648,6 +9664,7 @@ homomorphisms.
 
 
   one-left-inv G x x' p = inv-Lemma G x x' (inv G x) p (inv-right G x)
+
 
   one-right-inv : (G : Group) (x x' : ⟨ G ⟩)
                 → (x ·⟨ G ⟩ x') ≡ unit G
