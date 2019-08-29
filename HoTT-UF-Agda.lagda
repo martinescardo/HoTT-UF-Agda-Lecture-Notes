@@ -9359,7 +9359,7 @@ We now solve the exercise.
 The usual notion of group homomorphism is that of
 multiplication-preserving function. But this is known to be equivalent
 to our chosen notion, which reflects the way we constructed groups
-from monoids and our general structure identity principle.
+from monoids and by our general structure identity principle.
 
 \begin{code}
  is-homomorphism : (G H : Group) → (⟨ G ⟩ → ⟨ H ⟩) → 𝓤 ̇
@@ -9424,7 +9424,7 @@ the same, which is a theorem in univalent mathematics, with the notion
 of sameness articulated by the identity type, as shown above.
 However, for some purposes, we may wish to consider two groups to be
 the same if they have the same elements. For example, in order to show
-that the subgrops of a group form an [algebraic
+that the subgroups of a group form an [algebraic
 lattice](https://ncatlab.org/nlab/show/algebraic+lattice) with the
 finitely generated subgroups an the compact elements, it is this
 notion of equality that is used, with subgroup containment
@@ -9433,7 +9433,7 @@ as the lattice order.
 Asking whether two groups have the same elements in univalent
 mathematics doesn't make sense unless they are subgroups of the same
 ambient group.  In the same way that in univalent mathematics two
-elements of the powerset are equal iff they [have the same
+members of the powerset are equal iff they [have the same
 elements](HoTT-UF-Agda.html#subset-extensionality), two subgroups are
 equal if and only if they have the same elements. This can be
 formulated and proved in two equivalent ways.
@@ -9441,8 +9441,8 @@ formulated and proved in two equivalent ways.
   1. A subgroup is an element of the powerset of the underlying set of
   the group that is closed under the group operations. So the type of
   subgroups of a given group is embedded as a subtype of the powerset
-  of the underlying set and inherits the characterization of equality
-  of the powerset.
+  of the underlying set and hence inherits the characterization of
+  equality from the powerset.
 
   1. A subgroup of a group `G` is a group `H` *together* with a
   homomorphic embedding `H → G`. We leave it as an exercise to show
@@ -9450,7 +9450,9 @@ formulated and proved in two equivalent ways.
   that is equivalent to the previous. With this second definition, two
   subgroups `H` and `H'` are equal iff the embeddings `H → G` and `H'
   → G` can be completed to a commutative triangle by a group
-  isomorphism `H → H'`, which is necessarily unique when it exists.
+  isomorphism `H → H'`, which is necessarily unique when it exists
+  (cf. the discussion of equality in [slice
+  types](HoTT-UF-Agda.html#slice-sip) below).
 
 \begin{code}
 module subgroup-identity
@@ -9463,7 +9465,7 @@ module subgroup-identity
  open group-identity {𝓤} (ua 𝓤)
 \end{code}
 
-We assume an arbitrary group `G` in the following discussion.
+We assume an arbitrary ambient group `G` in the following discussion.
 
 \begin{code}
  module ambient (G : Group) where
@@ -10070,7 +10072,7 @@ Many of the above examples can be written in such a concise form.
 #### <a id="functor-algebras-sip"></a> Functor algebras
 
 In the following, we don't need to know that the functor preserves
-composition or give coherence data for the identification `𝓕-id`.
+composition or to give coherence data for the identification `𝓕-id`.
 
 \begin{code}
 module generalized-functor-algebra-equality
@@ -11507,8 +11509,8 @@ We discuss unique choice, univalent choice and global choice.
      disprovable, but is consistent with univalence.
 
   1. Global choice contradicts univalence, because it is not possible
-     to choose an element of every type in way that is invariant under
-     automorphisms.
+     to choose an element of every inhabited type in way that is
+     invariant under automorphisms.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="unique-choice"></a> The principle of unique choice
