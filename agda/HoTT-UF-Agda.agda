@@ -3303,6 +3303,13 @@ powersets-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-a-set fe' pe)
 𝓟 : 𝓤 ̇ → 𝓤 ⁺ ̇
 𝓟 {𝓤} X = X → Ω 𝓤
 
+powersets-are-sets' : Univalence
+                    → {X : 𝓤 ̇ } → is-set (𝓟 X)
+powersets-are-sets' {𝓤} ua = powersets-are-sets
+                               (univalence-gives-hfunext' (ua 𝓤) (ua (𝓤 ⁺)))
+                               (univalence-gives-dfunext (ua 𝓤))
+                               (univalence-gives-propext (ua 𝓤))
+
 _∈_ : {X : 𝓤 ̇ } → X → 𝓟 X → 𝓤 ̇
 x ∈ A = A x holds
 
@@ -3328,10 +3335,10 @@ A ⊆ B = ∀ x → x ∈ A → x ∈ B
 ⊆-refl-consequence {X} A A (refl A) = ⊆-refl A , ⊆-refl A
 
 subset-extensionality : propext 𝓤 → dfunext 𝓤 𝓤 → dfunext 𝓤 (𝓤 ⁺)
-                      → {X : 𝓤 ̇ } (A B : 𝓟 X)
+                      → {X : 𝓤 ̇ } {A B : 𝓟 X}
                       → A ⊆ B → B ⊆ A → A ≡ B
 
-subset-extensionality pe fe fe' {X} A B h k = fe' φ
+subset-extensionality pe fe fe' {X} {A} {B} h k = fe' φ
  where
   φ : (x : X) → A x ≡ B x
   φ x = to-subtype-≡
@@ -3340,7 +3347,7 @@ subset-extensionality pe fe fe' {X} A B h k = fe' φ
                (h x) (k x))
 
 subset-extensionality' : Univalence
-                       → {X : 𝓤 ̇ } (A B : 𝓟 X)
+                       → {X : 𝓤 ̇ } {A B : 𝓟 X}
                        → A ⊆ B → B ⊆ A → A ≡ B
 
 subset-extensionality' {𝓤} ua = subset-extensionality
@@ -4148,10 +4155,7 @@ special-map-classifier {𝓤} ua fe P Y =
 subtypes-form-set : Univalence → (Y : 𝓤 ̇ ) → is-set (subtypes-of Y)
 subtypes-form-set {𝓤} ua Y = equiv-to-set
                               (Ω-is-subtype-classifier ua Y)
-                              (powersets-are-sets
-                                (univalence-gives-hfunext' (ua 𝓤) (ua (𝓤 ⁺)))
-                                (univalence-gives-dfunext (ua 𝓤))
-                                (univalence-gives-propext (ua 𝓤)))
+                              (powersets-are-sets' ua)
 
 𝓢 : (𝓤 : Universe) → 𝓤 ⁺ ̇
 𝓢 𝓤 = Σ \(S : 𝓤 ̇ ) → is-singleton S
@@ -4806,6 +4810,22 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
  Group : 𝓤 ⁺ ̇
  Group = Σ \(X : 𝓤 ̇ ) → Σ \(s : group-structure X) → group-axiom X (pr₁ s)
 
+ inv-lemma : (X : 𝓤 ̇ ) (_·_ : X → X → X) (e : X)
+           → monoid-axioms X (_·_ , e)
+           → (x y z : X)
+           → (y · x) ≡ e
+           → (x · z) ≡ e
+           → y ≡ z
+
+ inv-lemma X _·_  e (s , l , r , a) x y z q p =
+
+    y             ≡⟨ (r y)⁻¹          ⟩
+    (y · e)       ≡⟨ ap (y ·_) (p ⁻¹) ⟩
+    (y · (x · z)) ≡⟨ (a y x z)⁻¹      ⟩
+    ((y · x) · z) ≡⟨ ap (_· z) q      ⟩
+    (e · z)       ≡⟨ l z              ⟩
+    z             ∎
+
  group-axiom-is-subsingleton : (X : 𝓤 ̇ )
                              → (s : group-structure X)
                              → is-subsingleton (group-axiom X (pr₁ s))
@@ -4815,12 +4835,8 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
    i : (x : X) → is-subsingleton (Σ \(x' : X) → (x · x' ≡ e) × (x' · x ≡ e))
    i x (y , _ , q) (z , p , _) = u
     where
-     t = y             ≡⟨ (r y)⁻¹          ⟩
-         (y · e)       ≡⟨ ap (y ·_) (p ⁻¹) ⟩
-         (y · (x · z)) ≡⟨ (a y x z)⁻¹      ⟩
-         ((y · x) · z) ≡⟨ ap (_· z) q      ⟩
-         (e · z)       ≡⟨ l z              ⟩
-         z ∎
+     t : y ≡ z
+     t = inv-lemma X _·_ e (s , l , r , a) x y z q p
 
      u : (y , _ , q) ≡ (z , p , _)
      u = to-subtype-≡ (λ x' → ×-is-subsingleton (s (x · x') e) (s (x' · x) e)) t
@@ -4854,6 +4870,135 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
             Σ \(f : X → Y) → is-equiv f
                            × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+
+ group-structure-of : (G : Group) → group-structure ⟨ G ⟩
+ group-structure-of (X , ((_·_ , e) , i , l , r , a) , γ) = (_·_ , e) , i , l , r , a
+
+ monoid-structure-of : (G : Group) → monoid-structure ⟨ G ⟩
+ monoid-structure-of (X , ((_·_ , e) , i , l , r , a) , γ) = (_·_ , e)
+
+ monoid-axioms-of : (G : Group) → monoid-axioms ⟨ G ⟩ (monoid-structure-of G)
+ monoid-axioms-of (X , ((_·_ , e) , i , l , r , a) , γ) = i , l , r , a
+
+ multiplication : (G : Group) → ⟨ G ⟩ → ⟨ G ⟩ → ⟨ G ⟩
+ multiplication (X , ((_·_ , e) , i , l , r , a) , γ) = _·_
+
+ syntax multiplication G x y = x ·⟨ G ⟩ y
+
+ unit : (G : Group) → ⟨ G ⟩
+ unit (X , ((_·_ , e) , i , l , r , a) , γ) = e
+
+ group-is-set : (G : Group)
+              → is-set ⟨ G ⟩
+
+ group-is-set (X , ((_·_ , e) , i , l , r , a) , γ) = i
+
+ unit-left : (G : Group) (x : ⟨ G ⟩)
+           → unit G ·⟨ G ⟩ x ≡ x
+
+ unit-left (X , ((_·_ , e) , i , l , r , a) , γ) x = l x
+
+ unit-right : (G : Group) (x : ⟨ G ⟩)
+            → x ·⟨ G ⟩ unit G ≡ x
+
+ unit-right (X , ((_·_ , e) , i , l , r , a) , γ) x = r x
+
+ assoc : (G : Group) (x y z : ⟨ G ⟩)
+       → (x ·⟨ G ⟩ y) ·⟨ G ⟩ z ≡ x ·⟨ G ⟩ (y ·⟨ G ⟩ z)
+
+ assoc (X , ((_·_ , e) , i , l , r , a) , γ) = a
+
+ inv : (G : Group) → ⟨ G ⟩ → ⟨ G ⟩
+ inv (X , ((_·_ , e) , i , l , r , a) , γ) x = pr₁ (γ x)
+
+ inv-left : (G : Group) (x : ⟨ G ⟩)
+          → inv G x ·⟨ G ⟩ x ≡ unit G
+
+ inv-left (X , ((_·_ , e) , i , l , r , a) , γ) x = pr₂ (pr₂ (γ x))
+
+ inv-right : (G : Group) (x : ⟨ G ⟩)
+           → x ·⟨ G ⟩ inv G x ≡ unit G
+
+ inv-right (X , ((_·_ , e) , i , l , r , a) , γ) x = pr₁ (pr₂ (γ x))
+
+ preserves-multiplication : (G H : Group) → (⟨ G ⟩ → ⟨ H ⟩) → 𝓤 ̇
+ preserves-multiplication G H f = (λ (x y : ⟨ G ⟩) → f (x ·⟨ G ⟩ y))
+                                ≡ (λ (x y : ⟨ G ⟩) → f x ·⟨ H ⟩ f y)
+
+ preserves-unit : (G H : Group) → (⟨ G ⟩ → ⟨ H ⟩) → 𝓤 ̇
+ preserves-unit G H f = f (unit G) ≡ unit H
+
+ idempotent-is-unit : (G : Group) (x : ⟨ G ⟩)
+                    → x ·⟨ G ⟩ x ≡ x
+                    → x ≡ unit G
+
+ idempotent-is-unit G x p = γ
+  where
+   x' = inv G x
+   γ = x                        ≡⟨ (unit-left G x)⁻¹                        ⟩
+       unit G ·⟨ G ⟩ x          ≡⟨ (ap (λ - → - ·⟨ G ⟩ x) (inv-left G x))⁻¹ ⟩
+       (x' ·⟨ G ⟩ x) ·⟨ G ⟩ x   ≡⟨ assoc G x' x x                           ⟩
+       x' ·⟨ G ⟩ (x ·⟨ G ⟩ x)   ≡⟨ ap (λ - → x' ·⟨ G ⟩ -) p                 ⟩
+       x' ·⟨ G ⟩ x              ≡⟨ inv-left G x                             ⟩
+       unit G                   ∎
+
+ unit-preservation-lemma : (G H : Group) (f : ⟨ G ⟩ → ⟨ H ⟩)
+                         → preserves-multiplication G H f
+                         → preserves-unit G H f
+
+ unit-preservation-lemma G H f m = idempotent-is-unit H e p
+  where
+   e  = f (unit G)
+
+   p = e ·⟨ H ⟩ e               ≡⟨ ap (λ - → - (unit G) (unit G)) (m ⁻¹)    ⟩
+       f (unit G ·⟨ G ⟩ unit G) ≡⟨ ap f (unit-left G (unit G))              ⟩
+       e                        ∎
+
+ is-homomorphism : (G H : Group) → (⟨ G ⟩ → ⟨ H ⟩) → 𝓤 ̇
+ is-homomorphism G H f = preserves-multiplication G H f
+                       × preserves-unit G H f
+
+ notions-of-homomorphism-agree : (G H : Group) (f : ⟨ G ⟩ → ⟨ H ⟩)
+                               → is-homomorphism G H f
+                               ≃ preserves-multiplication G H f
+
+ notions-of-homomorphism-agree G H f = γ
+  where
+   hfe : hfunext 𝓤 𝓤
+   hfe = univalence-gives-hfunext ua
+
+   j : is-subsingleton (preserves-multiplication G H f)
+   j = Π-is-set hfe
+         (λ _ → Π-is-set hfe
+         (λ _ → group-is-set H))
+         (λ (x y : ⟨ G ⟩) → f (x ·⟨ G ⟩ y))
+         (λ (x y : ⟨ G ⟩) → f x ·⟨ H ⟩ f y)
+
+   i : is-subsingleton (is-homomorphism G H f)
+   i = ×-is-subsingleton j (group-is-set H (f (unit G)) (unit H))
+
+   α : is-homomorphism G H f → preserves-multiplication G H f
+   α = pr₁
+
+   β : preserves-multiplication G H f → is-homomorphism G H f
+   β m = m , unit-preservation-lemma G H f m
+
+   γ : is-homomorphism G H f ≃ preserves-multiplication G H f
+   γ = logically-equivalent-subsingletons-are-equivalent _ _ i j (α , β)
+
+ ≅-agreement : (G H : Group) → (G ≅ H) ≃ (G ≅' H)
+ ≅-agreement G H = Σ-cong (λ f → Σ-cong (λ _ → notions-of-homomorphism-agree G H f))
+
+ forget-unit-preservation : (G H : Group) → (G ≅ H) → (G ≅' H)
+ forget-unit-preservation G H (f , e , m , _) = f , e , m
+
+ NB : (G H : Group) → Eq→fun (≅-agreement G H) ≡ forget-unit-preservation G H
+ NB G H = refl _
+
+ forget-unit-preservation-is-equiv : (G H : Group)
+                                   → is-equiv (forget-unit-preservation G H)
+
+ forget-unit-preservation-is-equiv G H = Eq→fun-is-equiv (≅-agreement G H)
 
 module slice-identity
         {𝓤 : Universe}
