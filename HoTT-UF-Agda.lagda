@@ -8385,8 +8385,8 @@ structure. We consider several versions:
  1. And then adding an axiom to monoids we get groups, again with
     an automatic characterization of their identitifications.
 
- 1. We also show that while to groups are equal precisely when they
-    are isomorphism, two *subgroups* of a group are equal precisely
+ 1. We also show that while two groups are equal precisely when they
+    are isomorphic, two *subgroups* of a group are equal precisely
     when they have the same elements, if we define a subgroup to be a
     subset closed under the group operations.
 
@@ -9454,7 +9454,7 @@ module subgroup-identity
   Subgroups = Σ \(A : 𝓟 ⟨ G ⟩)
             → (unit G ∈ A)
             × ((x y : ⟨ G ⟩) → x ∈ A → y ∈ A → x · y ∈ A)
-            × ((x : ⟨ G ⟩) → inve x ∈ A)
+            × ((x : ⟨ G ⟩) → x ∈ A → inve x ∈ A)
 
   ⟪_⟫ : Subgroups → 𝓟 ⟨ G ⟩
   ⟪ A , u , c , ι ⟫ = A
@@ -9470,7 +9470,9 @@ module subgroup-identity
                    (λ y → Π-is-subsingleton dfe
                    (λ _ → Π-is-subsingleton dfe
                    (λ _ → ∈-is-subsingleton A (x · y))))))
-                (Π-is-subsingleton dfe (λ x → ∈-is-subsingleton A (inve x))))
+                (Π-is-subsingleton dfe
+                   (λ x → Π-is-subsingleton dfe
+                   (λ _ → ∈-is-subsingleton A (inve x)))))
 \end{code}
 
 Therefore equality of subgroups is equality of their underlying
@@ -9538,7 +9540,7 @@ We now introduce notations for the projections:
 
 
   subgroup-inv : (S : Subgroups)
-               → (x : ⟨ G ⟩) → inve x ∈ ⟪ S ⟫
+               → (x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ → inve x ∈ ⟪ S ⟫
 
   subgroup-inv (A , u , m , i) = i
 \end{code}
@@ -9579,7 +9581,7 @@ With this we can transform a subgroup into a genuine group. We call this the ind
     γ (x , h) = (inve x , h') , ir , il
      where
       h' : (inv G x) ∈ ⟪ S ⟫
-      h' = subgroup-inv S x
+      h' = subgroup-inv S x h
       ir : (x , h) * (inve x , h') ≡ e
       ir = to-subtype-≡ (∈-is-subsingleton ⟪ S ⟫) (inv-right G x)
       il : (inve x , h') * (x , h) ≡ e
@@ -9627,7 +9629,78 @@ is the following:
         subgroup-embedding-is-homomorphism S
 \end{code}
 
-*Exercise.* Show that `α` is an equivalence.
+The following is an incomplete derivation that `α` is an
+equivalence. We begin with general facts about groups and
+homomorphisms.
+
+\begin{code}
+  inv-Lemma : (G : Group) (x y z : ⟨ G ⟩)
+            → (y ·⟨ G ⟩ x) ≡ unit G
+            → (x ·⟨ G ⟩ z) ≡ unit G
+            → y ≡ z
+
+  inv-Lemma G = inv-lemma ⟨ G ⟩ (multiplication G) (unit G) (monoid-axioms-of G)
+
+
+  one-left-inv : (G : Group) (x x' : ⟨ G ⟩)
+               → (x' ·⟨ G ⟩ x) ≡ unit G
+               → x' ≡ inv G x
+
+
+  one-left-inv G x x' p = inv-Lemma G x x' (inv G x) p (inv-right G x)
+
+  one-right-inv : (G : Group) (x x' : ⟨ G ⟩)
+                → (x ·⟨ G ⟩ x') ≡ unit G
+                → x' ≡ inv G x
+
+  one-right-inv G x x' p = (inv-Lemma G x (inv G x) x' (inv-left G x) p)⁻¹
+
+
+  preserves-inv : (G H : Group) → (⟨ G ⟩ → ⟨ H ⟩) → 𝓤 ̇
+  preserves-inv G H f = (x : ⟨ G ⟩) → f (inv G x) ≡ inv H (f x)
+
+
+  inv-preservation-lemma : (G H : Group) (f : ⟨ G ⟩ → ⟨ H ⟩)
+                         → preserves-multiplication G H f
+                         → preserves-inv G H f
+
+  inv-preservation-lemma G H f m x = γ
+   where
+    p = f (inv G x) ·⟨ H ⟩ f x ≡⟨ (ap (λ - → - (inv G x) x) m)⁻¹  ⟩
+        f (inv G x ·⟨ G ⟩ x)   ≡⟨ ap f (inv-left G x)             ⟩
+        f (unit G)             ≡⟨ unit-preservation-lemma G H f m ⟩
+        unit H                 ∎
+
+    γ : f (inv G x) ≡ inv H (f x)
+    γ = one-left-inv H (f x) (f (inv G x)) p
+\end{code}
+
+*Exercise.* Show that `α` is an equivalence with inverse `β` defined as follows.
+
+\begin{code}
+  β : Subgroups' → Subgroups
+  β (H , f , e , m' , u') = (A , u , m , i)
+   where
+    A : 𝓟 ⟨ G ⟩
+    A x = fiber f x , e x
+
+    u : fiber f (unit G)
+    u = unit H , u'
+
+    m : (x x' : ⟨ G ⟩) → fiber f x → fiber f x' → fiber f (x · x')
+    m x x' (y , p) (y' , p') = (y ·⟨ H ⟩ y') ,
+
+                               (f (y ·⟨ H ⟩ y') ≡⟨ ap (λ - → - y y') m' ⟩
+                                f y · f y'      ≡⟨ ap₂ _·_ p p' ⟩
+                                x · x'          ∎)
+
+    i : (x : ⟨ G ⟩) → fiber f x → fiber f (inve x)
+    i x (y , p) = inv H y ,
+
+                  (f (inv H y) ≡⟨ inv-preservation-lemma H G f m' y ⟩
+                   inve (f y)  ≡⟨ ap inve p ⟩
+                   inve x      ∎)
+\end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="slice-sip"></a> The slice type
