@@ -11750,8 +11750,8 @@ provided
  1. `A` is a family of sets,
  1. the relation `R` is subsingleton valued.
 
-This is not provable or disprovable in univalent mathematics, but,
-with this proviso, it does hold in [Voevodsky's simplicial
+This is not provable or disprovable in spartan univalent type theory,
+but, with this proviso, it does hold in [Voevodsky's simplicial
 model](https://arxiv.org/abs/1211.2851) of our univalent type theory,
 and hence is consistent. It is important that we have the condition
 that `A` is a set-indexed family of sets and that the relation `R` is
