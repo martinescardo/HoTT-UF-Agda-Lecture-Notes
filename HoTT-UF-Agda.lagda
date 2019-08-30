@@ -6361,7 +6361,7 @@ different from `refl Fin`. Consider
 
 and show that `Fin' ∘ succ ≡ λ n → Fin' n + 𝟙` so that `Fin'`
 satisfies the defining equations of `Fin`, although not judgmentally,
-and hence `Fin' ≡ Fin` by the univeral property of `Fin`. But there ar
+and hence `Fin' ≡ Fin` by the univeral property of `Fin`. But there are
 many equalities `Fin' ≡ Fin`. Which one do we get by the universal
 property? Show that the type `Fin n` has decidable equality and hence
 is a set.
