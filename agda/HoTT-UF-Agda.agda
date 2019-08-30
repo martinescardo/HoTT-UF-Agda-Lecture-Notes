@@ -2919,22 +2919,28 @@ module finite-types (hfe : hfunext 𝓤₀ 𝓤₁) where
      → (Fin 0 ≡ 𝟘)
      × (Fin ∘ succ ≡ λ n → Fin n + 𝟙)
 
- fin = ℕ-is-nno hfe (𝓤₀ ̇) 𝟘 (_+ 𝟙)
+ fin = ℕ-is-nno hfe (𝓤₀ ̇ ) 𝟘 (_+ 𝟙)
 
  Fin : ℕ → 𝓤₀ ̇
  Fin = pr₁ (center _ fin)
 
- Fin-property-0 : Fin 0 ≡ 𝟘
- Fin-property-0 = refl _
+ Fin-equation₀ : Fin 0 ≡ 𝟘
+ Fin-equation₀ = refl _
 
- Fin-property-succ : Fin ∘ succ ≡ λ n → Fin n + 𝟙
- Fin-property-succ = refl _
+ Fin-equation-succ : Fin ∘ succ ≡ λ n → Fin n + 𝟙
+ Fin-equation-succ = refl _
 
- Fin-property-succ' : (n : ℕ) → Fin (succ n) ≡ Fin n + 𝟙
- Fin-property-succ' n = refl _
+ Fin-equation-succ' : (n : ℕ) → Fin (succ n) ≡ Fin n + 𝟙
+ Fin-equation-succ' n = refl _
 
- Fin-property-2 : Fin 2 ≡ (𝟘 + 𝟙) + 𝟙
- Fin-property-2 = refl _
+ Fin-equation₁ : Fin 1 ≡ 𝟘 + 𝟙
+ Fin-equation₁ = refl _
+
+ Fin-equation₂ : Fin 2 ≡ (𝟘 + 𝟙) + 𝟙
+ Fin-equation₂ = refl _
+
+ Fin-equation₃ : Fin 3 ≡ ((𝟘 + 𝟙) + 𝟙) + 𝟙
+ Fin-equation₃ = refl _
 
 being-subsingleton-is-subsingleton : {X : 𝓤 ̇ } → dfunext 𝓤 𝓤
                                    → is-subsingleton (is-subsingleton X)
@@ -6737,7 +6743,7 @@ module choice
                                          → is-set (𝓤 ̇ )
 
   global-∥∥-choice-gives-universe-is-set {𝓤} c =
-    global-∥∥-choice-gives-all-types-are-sets c (𝓤 ̇)
+    global-∥∥-choice-gives-all-types-are-sets c (𝓤 ̇ )
 
   global-∥∥-choice-gives-choice : global-∥∥-choice 𝓤
                                 → TChoice 𝓤

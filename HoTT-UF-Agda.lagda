@@ -6308,29 +6308,63 @@ module finite-types (hfe : hfunext 𝓤₀ 𝓤₁) where
      → (Fin 0 ≡ 𝟘)
      × (Fin ∘ succ ≡ λ n → Fin n + 𝟙)
 
- fin = ℕ-is-nno hfe (𝓤₀ ̇) 𝟘 (_+ 𝟙)
+ fin = ℕ-is-nno hfe (𝓤₀ ̇ ) 𝟘 (_+ 𝟙)
 
  Fin : ℕ → 𝓤₀ ̇
  Fin = pr₁ (center _ fin)
-
- Fin-property-0 : Fin 0 ≡ 𝟘
- Fin-property-0 = refl _
-
- Fin-property-succ : Fin ∘ succ ≡ λ n → Fin n + 𝟙
- Fin-property-succ = refl _
-
- Fin-property-succ' : (n : ℕ) → Fin (succ n) ≡ Fin n + 𝟙
- Fin-property-succ' n = refl _
-
- Fin-property-2 : Fin 2 ≡ (𝟘 + 𝟙) + 𝟙
- Fin-property-2 = refl _
 \end{code}
 
-For instance, equation `Fin 2 ≡ (𝟘 + 𝟙) + 𝟙` holds in two ways, and
-yet `fin` claims unique existence. As mentioned above, this is
-possible because `fin` asserts the uniqueness of `Fin` only up to
-unique identifications, like unique existence up to unique isomorphism
-in category theory.
+We could use the other projections to derive the following two
+equations, but they hold definitionally:
+
+\begin{code}
+ Fin-equation₀ : Fin 0 ≡ 𝟘
+ Fin-equation₀ = refl _
+
+ Fin-equation-succ : Fin ∘ succ ≡ λ n → Fin n + 𝟙
+ Fin-equation-succ = refl _
+\end{code}
+
+We also have
+
+\begin{code}
+ Fin-equation-succ' : (n : ℕ) → Fin (succ n) ≡ Fin n + 𝟙
+ Fin-equation-succ' n = refl _
+\end{code}
+
+and the examples
+
+\begin{code}
+ Fin-equation₁ : Fin 1 ≡ 𝟘 + 𝟙
+ Fin-equation₁ = refl _
+
+ Fin-equation₂ : Fin 2 ≡ (𝟘 + 𝟙) + 𝟙
+ Fin-equation₂ = refl _
+
+ Fin-equation₃ : Fin 3 ≡ ((𝟘 + 𝟙) + 𝟙) + 𝟙
+ Fin-equation₃ = refl _
+\end{code}
+
+*Exercise*. The equation
+
+   > `Fin ∘ succ ≡ λ n → Fin n + 𝟙`
+
+holds in multiple ways assuming univalence, because `Fin n` has `n!`
+automorphisms. Construct an involutive fiberwise equivalence
+
+   > `mirror : (n : ℕ) → Fin n → Fin n`
+
+different from the identity and hence an identification `Fin ≡ Fin`
+different from `refl Fin`. Consider
+
+   > `∃! \(Fin' : ℕ → 𝓤₀ ̇ ) → (Fin' 0 ≡ 𝟘) × (Fin' ∘ succ ≡ λ n → 𝟙 + Fin' n)`
+
+and show that `Fin' ∘ succ ≡ λ n → Fin' n + 𝟙` so that `Fin'`
+satisfies the defining equations of `Fin`, although not judgmentally,
+and hence `Fin' ≡ Fin` by the univeral property of `Fin`. But there ar
+many equalities `Fin' ≡ Fin`. Which one do we get by the universal
+property? Show that the type `Fin n` has decidable equality and hence
+is a set.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="morefunextuses"></a> More consequences of function extensionality
@@ -12101,7 +12135,7 @@ this local module).
                                          → is-set (𝓤 ̇ )
 
   global-∥∥-choice-gives-universe-is-set {𝓤} c =
-    global-∥∥-choice-gives-all-types-are-sets c (𝓤 ̇)
+    global-∥∥-choice-gives-all-types-are-sets c (𝓤 ̇ )
 
 
   global-∥∥-choice-gives-choice : global-∥∥-choice 𝓤
