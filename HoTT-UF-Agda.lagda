@@ -11582,10 +11582,10 @@ prerequisite for this section. The preliminary development on rings
 doesn't depend on that, and hence we could have placed it there, but
 we prefer to have a contiguous development for expository purposes.
 
-We consider rings without unit, called rngs sometimes, and so we call
-Rng our type of rings. (It is trivial to add units if desired (using
+We consider rings without unit, called *rngs* sometimes, and so we call
+`Rng` our type of rings. It is trivial to add units if desired (using
 `sip-join`, `pointed-type-identity` and `sip-with-axioms`) to get a
-type Ring.)
+type `Ring`.
 
 There are several options to apply the above techniques to accomplish
 this. There is a compromise between mathematical conciseness and
@@ -11593,7 +11593,8 @@ mathematical clarity. Conciseness would demand to define a rng to be a
 set with an Abelian group structure, with a semigroup structure and
 with a distributivity law relating them. But it seems to be clearer
 and more direct to define a rng to consist of two magma structures on
-the same set subject to axioms, and we adopt this approach.
+the same set subject to axioms, and we adopt this approach for
+expository reasons.
 
 *Exercise.* Proceed using the alternative approach, which should be
  equally easy and short (and perhaps even shorter).
