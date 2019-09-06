@@ -11787,7 +11787,7 @@ Its addition and multiplication:
 \end{code}
 
 The notion of (two-sided) ideal of a ring `𝓡`, which is an element of
-the power set ` 𝓟 ⟨ 𝓡 ⟩` of the underlying set `⟨ 𝓡 ⟩`:
+the powerset `𝓟 ⟨ 𝓡 ⟩` of the underlying set `⟨ 𝓡 ⟩` of `𝓡`:
 
 \begin{code}
  is-ideal : (𝓡 : Rng) → 𝓟 ⟨ 𝓡 ⟩ → 𝓤 ̇
@@ -11795,7 +11795,6 @@ the power set ` 𝓟 ⟨ 𝓡 ⟩` of the underlying set `⟨ 𝓡 ⟩`:
                               × (y ∈ I → (x ·⟨ 𝓡 ⟩ y) ∈ I)
                               × (x ∈ I → (x ·⟨ 𝓡 ⟩ y) ∈ I)
 
- open ℕ-order
 \end{code}
 
 We now consider Noetherian rings. We assume that subsingleton
@@ -11804,8 +11803,8 @@ truncations exist, to have the existential quantifier `∃` available:
 \begin{code}
  module noetherian (pt : subsingleton-truncations-exist) where
 
+  open ℕ-order
   open basic-truncation-development pt hfe
-
 
   is-noetherian : (𝓡 : Rng) → 𝓤 ⁺ ̇
   is-noetherian 𝓡 = (I : ℕ → 𝓟 ⟨ 𝓡 ⟩)

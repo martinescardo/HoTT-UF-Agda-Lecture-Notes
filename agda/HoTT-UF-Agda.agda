@@ -6498,10 +6498,9 @@ module rng-identity {𝓤 : Universe} (ua : Univalence) where
                               × (y ∈ I → (x ·⟨ 𝓡 ⟩ y) ∈ I)
                               × (x ∈ I → (x ·⟨ 𝓡 ⟩ y) ∈ I)
 
- open ℕ-order
-
  module noetherian (pt : subsingleton-truncations-exist) where
 
+  open ℕ-order
   open basic-truncation-development pt hfe
 
   is-noetherian : (𝓡 : Rng) → 𝓤 ⁺ ̇
