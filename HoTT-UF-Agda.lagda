@@ -444,6 +444,7 @@ to practice univalent mathematics should consult the above references.
         1. [Images and surjections](HoTT-UF-Agda.html#images-and-surjections)
         1. [A characterization of equivalences](HoTT-UF-Agda.html#equivalence-characterization)
         1. [Exiting truncations](HoTT-UF-Agda.html#exiting-truncations)
+        1. [Noetherian rings](HoTT-UF-Agda.html#ring-sip)
      1. [Choice in univalent mathematics](HoTT-UF-Agda.html#choice)
         1. [Unique choice](HoTT-UF-Agda.html#unique-choice)
         1. [Univalent choice](HoTT-UF-Agda.html#univalent-choice)
@@ -6299,7 +6300,8 @@ numbers object](https://en.wikipedia.org/wiki/Natural_number_object),
 or, more precisely, the triple `(ℕ , 0 , succ)` is a natural numbers
 object.
 
-Here is an example, which given any `n : ℕ` constructs a type with `n` elements (and decidable equality):
+Here is an important example, which given any `n : ℕ` constructs a
+type with `n` elements (and decidable equality):
 
 \begin{code}
 module finite-types (hfe : hfunext 𝓤₀ 𝓤₁) where
@@ -6345,11 +6347,11 @@ and the examples
  Fin-equation₃ = refl _
 \end{code}
 
-*Exercise*. The equation
+*Exercises*. Assume univalence. The equation
 
    > `Fin ∘ succ ≡ λ n → Fin n + 𝟙`
 
-holds in multiple ways assuming univalence, because `Fin n` has `n!`
+holds in multiple ways, because `Fin n` has `n!`
 automorphisms. Construct an involutive fiberwise equivalence
 
    > `mirror : (n : ℕ) → Fin n → Fin n`
@@ -6514,6 +6516,7 @@ hfunext-≃ : hfunext 𝓤 𝓥
           → (f ≡ g) ≃ (f ∼ g)
 
 hfunext-≃ hfe f g = (happly f g , hfe f g)
+
 
 hfunext₂-≃ : hfunext 𝓤 (𝓥 ⊔ 𝓦) → hfunext 𝓥 𝓦
            → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : (x : X) → Y x → 𝓦 ̇ }
@@ -9285,12 +9288,9 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
                            × (f d ≡ e)
 
 
- characterization-of-group-≡ : is-univalent 𝓤
-                             → (A B : Group)
+ characterization-of-group-≡ : (A B : Group) → (A ≡ B) ≃ (A ≅ B)
 
-                             → (A ≡ B) ≃ (A ≅ B)
-
- characterization-of-group-≡ ua = characterization-of-≡ ua sns-data
+ characterization-of-group-≡ = characterization-of-≡ ua sns-data
 \end{code}
 
 *Exercise*. The above equivalence is characterized by induction on
@@ -9481,6 +9481,11 @@ This equivalence is that which forgets the preservation of the unit:
 \end{code}
 
 This completes the solution of the exercise.
+
+\begin{code}
+ is-abelian : Group → 𝓤 ̇
+ is-abelian G = (x y : ⟨ G ⟩) → x ·⟨ G ⟩ y ≡ y ·⟨ G ⟩ x
+\end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="subgroups-sip"></a> Subgroups
@@ -11560,6 +11565,328 @@ which `Y` is a set:
 
 If we try to do this with Voevodsky's truncation `is-inhabited`, we
 stumble into an insurmountable problem of size.
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+#### <a id="ring-sip"></a> Noetherian rings
+
+A mathematician asked us what a formalization of Noetherian rings
+would look like in univalent mathematics, in particular with respect
+to automatic preservation of theorems about rings by ring
+isomorphisms.
+
+This requires the existential quantifier `∃` and hence propositional
+truncations to formulate the Noetherian property, and this is why we
+place this here rather than in the earlier chapter on [equality of
+mathematical structures](HoTT-UF-Agda.html#magmas-sip), which is a
+prerequisite for this section. The preliminary development on rings
+doesn't depend on that, and hence we could have placed it there, but
+we prefer to have a contiguous development for expository purposes.
+
+We consider rings without unit, called rngs sometimes, and so we call
+Rng our type of rings. (It is trivial to add units if desired (using
+`sip-join`, `pointed-type-identity` and `sip-with-axioms`) to get a
+type Ring.)
+
+There are several options to apply the above techniques to accomplish
+this. There is a compromise between mathematical conciseness and
+mathematical clarity. Conciseness would demand to define a rng to be a
+set with an Abelian group structure, with a semigroup structure and
+with a distributivity law relating them. But it seems to be clearer
+and more direct to define a rng to consist of two magma structures on
+the same set subject to axioms, and we adopt this approach.
+
+*Exercise.* Proceed using the alternative approach, which should be
+ equally easy and short (and perhaps even shorter).
+
+We consider rings in a universe 𝓤, and we assume univalence in their
+development:
+
+\begin{code}
+module rng-identity {𝓤 : Universe} (ua : Univalence) where
+\end{code}
+
+We derive function extensionality from univalence:
+
+\begin{code}
+ fe : global-dfunext
+ fe = univalence-gives-global-dfunext ua
+
+ hfe : global-hfunext
+ hfe = univalence-gives-global-hfunext ua
+\end{code}
+
+Ring structure is the product of two magma structures:
+
+\begin{code}
+ rng-structure : 𝓤 ̇ → 𝓤 ̇
+ rng-structure X = (X → X → X) × (X → X → X)
+\end{code}
+
+The axioms are the usual ones, with the additional requirement that
+the underlying type is a set (as opposed to an ∞-groupoid):
+
+\begin{code}
+ rng-axioms : (R : 𝓤 ̇ ) → rng-structure R → 𝓤 ̇
+ rng-axioms R (_+_ , _·_) = I × II × III × IV × V × VI × VII
+  where
+    I   = is-set R
+    II  = (x y z : R) → (x + y) + z ≡ x + (y + z)
+    III = (x y : R) → x + y ≡ y + x
+    IV  = Σ \(O : R) → ((x : R) → x + O ≡ x) × ((x : R) → Σ \(x' : R) → x + x' ≡ O)
+    V   = (x y z : R) → (x · y) · z ≡ x · (y · z)
+    VI  = (x y z : R) → x · (y + z) ≡ (x · y) + (x · z)
+    VII = (x y z : R) → (y + z) · x ≡ (y · x) + (z · x)
+\end{code}
+
+The type of rings in the universe `𝓤`, which lives in the universe after `𝓤`:
+
+\begin{code}
+ Rng : 𝓤 ⁺ ̇
+ Rng = Σ \(R : 𝓤 ̇ ) → Σ \(s : rng-structure R) → rng-axioms R s
+\end{code}
+
+In order to be able to apply univalence to show that the identity type
+`𝓡 ≡ 𝓡'` of two rings is in canonical bijection with the type `𝓡 ≅ 𝓡'`
+of ring isomorphisms, we need to show that the axioms constitute
+property rather than data, that is, they form a subsingleton, or a
+type with at most one element. The proof is a mix of algebra (to show
+that an additive semigroup has at most one zero element, and at most
+one additive inverse for each element) and general facts about
+subsingletons (e.g. they are closed under products) and is entirely
+routine.
+
+\begin{code}
+ rng-axioms-is-subsingleton : (R : 𝓤 ̇ ) (s : rng-structure R)
+                            → is-subsingleton (rng-axioms R s)
+
+ rng-axioms-is-subsingleton R (_+_ , _·_) (i , ii , iii , iv-vii) = δ
+  where
+    A   = λ (O : R) → ((x : R) → x + O ≡ x)
+                    × ((x : R) → Σ \(x' : R) → x + x' ≡ O)
+
+    IV  = Σ A
+
+    a : (O O' : R) → ((x : R) → x + O ≡ x) → ((x : R) → x + O' ≡ x) → O ≡ O'
+    a O O' f f' = O       ≡⟨ (f' O)⁻¹ ⟩
+                 (O + O') ≡⟨ iii O O' ⟩
+                 (O' + O) ≡⟨ f O'     ⟩
+                  O'      ∎
+
+    b : (O : R) → is-subsingleton ((x : R) → x + O ≡ x)
+    b O = Π-is-subsingleton fe (λ x → i (x + O) x)
+
+    c : (O : R)
+      → ((x : R) → x + O ≡ x)
+      → (x : R) → is-subsingleton (Σ \(x' : R) → x + x' ≡ O)
+    c O f x (x' , p') (x'' , p'') = to-subtype-≡ (λ x' → i (x + x') O) r
+     where
+      r : x' ≡ x''
+      r = x'               ≡⟨ (f x')⁻¹               ⟩
+          (x' + O)         ≡⟨ ap (x' +_) (p'' ⁻¹)    ⟩
+          (x' + (x + x'')) ≡⟨ (ii x' x x'')⁻¹        ⟩
+          ((x' + x) + x'') ≡⟨ ap (_+ x'') (iii x' x) ⟩
+          ((x + x') + x'') ≡⟨ ap (_+ x'') p'         ⟩
+          (O + x'')        ≡⟨ iii O x''              ⟩
+          (x'' + O)        ≡⟨ f x''                  ⟩
+          x''              ∎
+
+    d : (O : R) → is-subsingleton (A O)
+    d O (f , g) = φ (f , g)
+     where
+      φ : is-subsingleton (A O)
+      φ = ×-is-subsingleton (b O) (Π-is-subsingleton fe (λ x → c O f x))
+
+    IV-is-subsingleton : is-subsingleton IV
+    IV-is-subsingleton (O , f , g) (O' , f' , g') = e
+     where
+      e : (O , f , g) ≡ (O' , f' , g')
+      e = to-subtype-≡ d (a O O' f f')
+
+    γ : is-subsingleton (rng-axioms R (_+_ , _·_))
+    γ = ×-is-subsingleton
+          (being-set-is-subsingleton fe)
+       (×-is-subsingleton
+          (Π-is-subsingleton fe
+          (λ x → Π-is-subsingleton fe
+          (λ y → Π-is-subsingleton fe
+          (λ z → i ((x + y) + z) (x + (y + z))))))
+       (×-is-subsingleton
+          (Π-is-subsingleton fe
+          (λ x → Π-is-subsingleton fe
+          (λ y → i (x + y) (y + x))))
+       (×-is-subsingleton
+          IV-is-subsingleton
+       (×-is-subsingleton
+          (Π-is-subsingleton fe
+          (λ x → Π-is-subsingleton fe
+          (λ y → Π-is-subsingleton fe
+          (λ z → i ((x · y) · z) (x · (y · z))))))
+       (×-is-subsingleton
+          (Π-is-subsingleton fe
+          (λ x → Π-is-subsingleton fe
+          (λ y → Π-is-subsingleton fe
+          (λ z → i (x · (y + z)) ((x · y) + (x · z))))))
+
+          (Π-is-subsingleton fe
+          (λ x → Π-is-subsingleton fe
+          (λ y → Π-is-subsingleton fe
+          (λ z → i ((y + z) · x) ((y · x) + (z · x)))))))))))
+
+    δ : (α : rng-axioms R (_+_ , _·_)) → (i , ii , iii , iv-vii) ≡ α
+    δ = γ (i , ii , iii , iv-vii)
+\end{code}
+
+We define a ring isomorphism to be a bijection which preserves
+addition and multiplication, and collect all isomorphism of two rings
+`𝓡` and `𝓡'` in a type `𝓡 ≅ 𝓡'`:
+
+\begin{code}
+ _≅_ : Rng → Rng → 𝓤 ̇
+
+ (R , (_+_ , _·_) , _) ≅ (R' , (_+'_ , _·'_) , _) =
+
+                       Σ \(f : R → R') → is-equiv f
+                                       × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
+                                       × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
+
+\end{code}
+
+Then we apply the chapter on equality of mathematical structures to
+show that the type of ring identities is in bijection with the type of
+ring isomorphisms:
+
+\begin{code}
+ characterization-of-rng-≡ : (𝓡 𝓡' : Rng) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅ 𝓡')
+
+ characterization-of-rng-≡ = sip.characterization-of-≡ (ua 𝓤)
+                              (sip-with-axioms.add-axioms
+                                rng-axioms
+                                rng-axioms-is-subsingleton
+                                (sip-join.join
+                                  ∞-magma-identity.sns-data
+                                  ∞-magma-identity.sns-data))
+\end{code}
+
+The underlying type of a ring:
+
+\begin{code}
+
+ ⟨_⟩ : (𝓡 : Rng) → 𝓤 ̇
+ ⟨ R , (_+_ , _·_) , s ⟩ = R
+\end{code}
+
+Its addition and multiplication:
+
+\begin{code}
+ addition multiplication : (𝓡 : Rng) → ⟨ 𝓡 ⟩ → ⟨ 𝓡 ⟩ → ⟨ 𝓡 ⟩
+ addition       (R , (_+_ , _·_) , s) = _+_
+ multiplication (R , (_+_ , _·_) , s) = _·_
+
+ syntax addition       𝓡 x y = x +⟨ 𝓡 ⟩ y
+ syntax multiplication 𝓡 x y = x ·⟨ 𝓡 ⟩ y
+\end{code}
+
+The notion of (two-sided) ideal of a ring `𝓡`, which is an element of
+the power set ` 𝓟 ⟨ 𝓡 ⟩` of the underlying set `⟨ 𝓡 ⟩`:
+
+\begin{code}
+ is-ideal : (𝓡 : Rng) → 𝓟 ⟨ 𝓡 ⟩ → 𝓤 ̇
+ is-ideal 𝓡 I = (x y : ⟨ 𝓡 ⟩) → (x ∈ I → y ∈ I → (x +⟨ 𝓡 ⟩ y) ∈ I)
+                              × (y ∈ I → (x ·⟨ 𝓡 ⟩ y) ∈ I)
+                              × (x ∈ I → (x ·⟨ 𝓡 ⟩ y) ∈ I)
+
+ open ℕ-order
+\end{code}
+
+We now consider Noetherian rings. We assume that subsingleton
+truncations exist, to have the existential quantifier `∃` available:
+
+\begin{code}
+ module noetherian (pt : subsingleton-truncations-exist) where
+
+  open basic-truncation-development pt hfe
+
+
+  is-noetherian : (𝓡 : Rng) → 𝓤 ⁺ ̇
+  is-noetherian 𝓡 = (I : ℕ → 𝓟 ⟨ 𝓡 ⟩)
+                  → ((n : ℕ) → is-ideal 𝓡 (I n))
+                  → ((n : ℕ) → I n ⊆ I (succ n))
+                  → ∃ \(m : ℕ) → (n : ℕ) → m ≤ n → I m ≡ I n
+
+
+  NoetherianRng : 𝓤 ⁺ ̇
+  NoetherianRng = Σ \(𝓡 : Rng) → is-noetherian 𝓡
+\end{code}
+
+In order to be able to characterize equality of Noetherian rings, we
+again need to show that `is-noetherean` is property rather than data:
+
+\begin{code}
+  Noetherian-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-noetherian 𝓡)
+  Noetherian-is-subsingleton 𝓡 = Π-is-subsingleton fe
+                                 (λ I → Π-is-subsingleton fe
+                                 (λ _ → Π-is-subsingleton fe
+                                 (λ _ → ∃-is-subsingleton)))
+
+
+  forget-Noether : NoetherianRng → Rng
+  forget-Noether (𝓡 , _) = 𝓡
+
+  forget-Noether-is-embedding : is-embedding forget-Noether
+  forget-Noether-is-embedding = pr₁-embedding Noetherian-is-subsingleton
+\end{code}
+
+Isomorphism of Noetherian rings:
+
+\begin{code}
+  _≅ₙ_ : NoetherianRng → NoetherianRng → 𝓤 ̇
+
+  (R , (_+_ , _·_) , _) , _ ≅ₙ (R' , (_+'_ , _·'_) , _) , _ =
+
+                            Σ \(f : R → R') → is-equiv f
+                                            × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
+                                            × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
+
+  NB : (𝓡 𝓡' : NoetherianRng) → (𝓡 ≅ₙ 𝓡') ≡ forget-Noether 𝓡 ≅ forget-Noether 𝓡'
+  NB 𝓡 𝓡' = refl _
+\end{code}
+
+Again the identity type of Noetherian rings is in bijection with the
+type of noetherian ring isomorphisms:
+
+\begin{code}
+  characterization-of-nrng-≡ : (𝓡 𝓡' : NoetherianRng) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅ₙ 𝓡')
+  characterization-of-nrng-≡ 𝓡 𝓡' =
+
+    (𝓡 ≡ 𝓡')                               ≃⟨ i  ⟩
+    (forget-Noether 𝓡 ≡ forget-Noether 𝓡') ≃⟨ ii ⟩
+    (𝓡 ≅ₙ 𝓡')                              ■
+
+    where
+     i = ≃-sym (embedding-criterion-converse forget-Noether
+                  forget-Noether-is-embedding 𝓡 𝓡')
+     ii = characterization-of-rng-≡ (forget-Noether 𝓡) (forget-Noether 𝓡')
+\end{code}
+
+Hence properties of Noetherian rings are invariant under
+isomorphism. More generally, we can transport along type-valued
+functions of Noetherian rings, with values in an arbitrary universe
+`𝓥`, rather than just truth-valued ones:
+
+\begin{code}
+  isomorphic-NoetherianRng-transport :
+
+      (P : NoetherianRng → 𝓥 ̇ )
+    → (𝓡 𝓡' : NoetherianRng) → 𝓡 ≅ₙ 𝓡' → P 𝓡 → P 𝓡'
+
+  isomorphic-NoetherianRng-transport P 𝓡 𝓡' i p = b
+   where
+    a : 𝓡 ≡ 𝓡'
+    a = Eq→fun (≃-sym (characterization-of-nrng-≡ 𝓡 𝓡')) i
+
+    b : P 𝓡'
+    b = transport P a p
+\end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="choice"></a> Choice in univalent mathematics

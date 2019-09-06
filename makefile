@@ -19,11 +19,11 @@ _site/HoTT-UF-Agda.html : HoTT-UF-Agda.lagda
 	$(info )
 	$(info This will take a couple of minutes...)
 	$(info )
-	agda --html --html-highlight=code HoTT-UF-Agda.lagda
+	time agda --html --html-highlight=code HoTT-UF-Agda.lagda
 	cp html/HoTT-UF-Agda.tex index.md
 	mv html/HoTT-UF-Agda.tex HoTT-UF-Agda.md
 	mv html/Universes.tex    Universes.md
-	agda --html Universes.lagda
+	time agda --html Universes.lagda
 	mv html/Agda.Primitive.html Agda.Primitive.html
 	jekyll build
 
@@ -38,8 +38,8 @@ agda/HoTT-UF-Agda.agda :  HoTT-UF-Agda.lagda
 	cat HoTT-UF-Agda.lagda | ./illiterator > agda/HoTT-UF-Agda.agda
 	cat Universes.lagda    | ./illiterator > agda/Universes.agda
 
-cleanless :
+clean :
 	rm -f *.o *.hi HoTT-UF-Agda.md index.md Universes.md Agda.Primitive.html
 
-clean :
+cleanmore :
 	rm -f *.agdai *.o *.hi HoTT-UF-Agda.md index.md Universes.md Agda.Primitive.html illiterator
