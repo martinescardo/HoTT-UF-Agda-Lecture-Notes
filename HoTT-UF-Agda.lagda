@@ -11852,7 +11852,7 @@ Isomorphism of Noetherian rings:
 \end{code}
 
 Again the identity type of Noetherian rings is in bijection with the
-type of noetherian ring isomorphisms:
+type of Noetherian ring isomorphisms:
 
 \begin{code}
   characterization-of-nrng-≡ : (𝓡 𝓡' : NoetherianRng) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅ₙ 𝓡')
@@ -11887,6 +11887,9 @@ functions of Noetherian rings, with values in an arbitrary universe
     b : P 𝓡'
     b = transport P a p
 \end{code}
+
+In particular, any theorem about a Noetherian ring automatically
+applies to any Noetherian ring isomorphic to it.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="choice"></a> Choice in univalent mathematics
