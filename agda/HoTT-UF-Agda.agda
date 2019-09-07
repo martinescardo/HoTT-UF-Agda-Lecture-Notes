@@ -6495,8 +6495,8 @@ module rng-identity {𝓤 : Universe} (ua : Univalence) where
 
  is-ideal : (𝓡 : Rng) → 𝓟 ⟨ 𝓡 ⟩ → 𝓤 ̇
  is-ideal 𝓡 I = (x y : ⟨ 𝓡 ⟩) → (x ∈ I → y ∈ I → (x +⟨ 𝓡 ⟩ y) ∈ I)
-                              × (y ∈ I → (x ·⟨ 𝓡 ⟩ y) ∈ I)
                               × (x ∈ I → (x ·⟨ 𝓡 ⟩ y) ∈ I)
+                              × (y ∈ I → (x ·⟨ 𝓡 ⟩ y) ∈ I)
 
  module noetherian (pt : subsingleton-truncations-exist) where
 
@@ -6549,16 +6549,16 @@ module rng-identity {𝓤 : Universe} (ua : Univalence) where
 
   isomorphic-NoetherianRng-transport :
 
-      (P : NoetherianRng → 𝓥 ̇ )
-    → (𝓡 𝓡' : NoetherianRng) → 𝓡 ≅ₙ 𝓡' → P 𝓡 → P 𝓡'
+      (A : NoetherianRng → 𝓥 ̇ )
+    → (𝓡 𝓡' : NoetherianRng) → 𝓡 ≅ₙ 𝓡' → A 𝓡 → A 𝓡'
 
-  isomorphic-NoetherianRng-transport P 𝓡 𝓡' i p = b
+  isomorphic-NoetherianRng-transport A 𝓡 𝓡' i a = a'
    where
-    a : 𝓡 ≡ 𝓡'
-    a = Eq→fun (≃-sym (characterization-of-nrng-≡ 𝓡 𝓡')) i
+    p : 𝓡 ≡ 𝓡'
+    p = Eq→fun (≃-sym (characterization-of-nrng-≡ 𝓡 𝓡')) i
 
-    b : P 𝓡'
-    b = transport P a p
+    a' : A 𝓡'
+    a' = transport A p a
 
 simple-unique-choice : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
 

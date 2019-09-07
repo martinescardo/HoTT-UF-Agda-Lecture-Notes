@@ -11594,7 +11594,7 @@ set with an Abelian group structure, with a semigroup structure and
 with a distributivity law relating them. But it seems to be clearer
 and more direct to define a rng to consist of two magma structures on
 the same set subject to axioms, and we adopt this approach for
-expository reasons.
+expository purposes.
 
 *Exercise.* Proceed using the alternative approach, which should be
  equally easy and short (and perhaps even shorter).
@@ -11793,9 +11793,8 @@ the powerset `𝓟 ⟨ 𝓡 ⟩` of the underlying set `⟨ 𝓡 ⟩` of `𝓡`:
 \begin{code}
  is-ideal : (𝓡 : Rng) → 𝓟 ⟨ 𝓡 ⟩ → 𝓤 ̇
  is-ideal 𝓡 I = (x y : ⟨ 𝓡 ⟩) → (x ∈ I → y ∈ I → (x +⟨ 𝓡 ⟩ y) ∈ I)
-                              × (y ∈ I → (x ·⟨ 𝓡 ⟩ y) ∈ I)
                               × (x ∈ I → (x ·⟨ 𝓡 ⟩ y) ∈ I)
-
+                              × (y ∈ I → (x ·⟨ 𝓡 ⟩ y) ∈ I)
 \end{code}
 
 We now consider Noetherian rings. We assume that subsingleton
@@ -11819,7 +11818,7 @@ truncations exist, to have the existential quantifier `∃` available:
 \end{code}
 
 In order to be able to characterize equality of Noetherian rings, we
-again need to show that `is-noetherean` is property rather than data:
+again need to show that `is-noetherian` is property rather than data:
 
 \begin{code}
   Noetherian-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-noetherian 𝓡)
@@ -11876,16 +11875,16 @@ functions of Noetherian rings, with values in an arbitrary universe
 \begin{code}
   isomorphic-NoetherianRng-transport :
 
-      (P : NoetherianRng → 𝓥 ̇ )
-    → (𝓡 𝓡' : NoetherianRng) → 𝓡 ≅ₙ 𝓡' → P 𝓡 → P 𝓡'
+      (A : NoetherianRng → 𝓥 ̇ )
+    → (𝓡 𝓡' : NoetherianRng) → 𝓡 ≅ₙ 𝓡' → A 𝓡 → A 𝓡'
 
-  isomorphic-NoetherianRng-transport P 𝓡 𝓡' i p = b
+  isomorphic-NoetherianRng-transport A 𝓡 𝓡' i a = a'
    where
-    a : 𝓡 ≡ 𝓡'
-    a = Eq→fun (≃-sym (characterization-of-nrng-≡ 𝓡 𝓡')) i
+    p : 𝓡 ≡ 𝓡'
+    p = Eq→fun (≃-sym (characterization-of-nrng-≡ 𝓡 𝓡')) i
 
-    b : P 𝓡'
-    b = transport P a p
+    a' : A 𝓡'
+    a' = transport A p a
 \end{code}
 
 In particular, any theorem about a Noetherian ring automatically
@@ -13418,7 +13417,7 @@ into any set `A` of any universe `𝓦`.
 As mentioned above, if one so wishes, it is possible to resize down
 the quotient `X/≈` to the same universe as the given type `X` lives by
 assuming propositional resizing. But we don't see any mathematical
-need to do so, as the constructed quotient, regardless of the universe
+need or benefit to do so, as the constructed quotient, regardless of the universe
 it inhabits, has a universal property that eliminates into any
 desired universe, lower, equal or higher than the quotiented type.
 
