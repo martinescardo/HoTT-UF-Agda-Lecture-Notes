@@ -444,7 +444,7 @@ to practice univalent mathematics should consult the above references.
         1. [Images and surjections](HoTT-UF-Agda.html#images-and-surjections)
         1. [A characterization of equivalences](HoTT-UF-Agda.html#equivalence-characterization)
         1. [Exiting truncations](HoTT-UF-Agda.html#exiting-truncations)
-        1. [Noetherian rings](HoTT-UF-Agda.html#ring-sip)
+        1. [Noetherian local rings](HoTT-UF-Agda.html#ring-sip)
      1. [Choice in univalent mathematics](HoTT-UF-Agda.html#choice)
         1. [Unique choice](HoTT-UF-Agda.html#unique-choice)
         1. [Univalent choice](HoTT-UF-Agda.html#univalent-choice)
@@ -6121,11 +6121,11 @@ isomorphism.
 ∃! A = is-singleton (Σ A)
 
 
-unique-existence-is-subsingleton : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
-                                 → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
-                                 → is-subsingleton (∃! A)
+∃!-is-subsingleton : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                   → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+                   → is-subsingleton (∃! A)
 
-unique-existence-is-subsingleton A fe = being-singleton-is-subsingleton fe
+∃!-is-subsingleton A fe = being-singleton-is-subsingleton fe
 
 
 unique-existence-gives-weak-unique-existence : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) →
@@ -11567,9 +11567,9 @@ If we try to do this with Voevodsky's truncation `is-inhabited`, we
 stumble into an insurmountable problem of size.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="ring-sip"></a> Noetherian rings
+#### <a id="ring-sip"></a> Noetherian local rings
 
-A mathematician asked us what a formalization of Noetherian rings
+A mathematician asked us what a formalization of Noetherian local rings
 would look like in univalent mathematics, in particular with respect
 to automatic preservation of theorems about rings by ring
 isomorphisms.
@@ -11582,10 +11582,7 @@ prerequisite for this section. The preliminary development on rings
 doesn't depend on that, and hence we could have placed it there, but
 we prefer to have a contiguous development for expository purposes.
 
-We consider rings without unit, called *rngs* sometimes, and so we call
-`Rng` our type of rings. It is trivial to add units if desired (using
-`sip-join`, `pointed-type-identity` and `sip-with-axioms`) to get a
-type `Ring`.
+We consider rings without unit, called *rngs*, and with unit, called *rings*.
 
 There are several options to apply the above techniques to accomplish
 this. There is a compromise between mathematical conciseness and
@@ -11599,11 +11596,11 @@ expository purposes.
 *Exercise.* Proceed using the alternative approach, which should be
  equally easy and short (and perhaps even shorter).
 
-We consider rings in a universe 𝓤, and we assume univalence in their
+We consider r(i)ngs in a universe 𝓤, and we assume univalence in their
 development:
 
 \begin{code}
-module rng-identity {𝓤 : Universe} (ua : Univalence) where
+module ring-identity {𝓤 : Universe} (ua : Univalence) where
 \end{code}
 
 We derive function extensionality from univalence:
@@ -11737,19 +11734,19 @@ routine.
     δ = γ (i , ii , iii , iv-vii)
 \end{code}
 
-We define a ring isomorphism to be a bijection which preserves
-addition and multiplication, and collect all isomorphism of two rings
-`𝓡` and `𝓡'` in a type `𝓡 ≅ 𝓡'`:
+We define a rng isomorphism to be a bijection which preserves
+addition and multiplication, and collect all isomorphisms of two rngs
+`𝓡` and `𝓡'` in a type `𝓡 ≅[Rng] 𝓡'`:
 
 \begin{code}
- _≅_ : Rng → Rng → 𝓤 ̇
+ _≅[Rng]_ : Rng → Rng → 𝓤 ̇
 
- (R , (_+_ , _·_) , _) ≅ (R' , (_+'_ , _·'_) , _) =
+ (R , (_+_ , _·_) , _) ≅[Rng] (R' , (_+'_ , _·'_) , _) =
 
-                       Σ \(f : R → R') → is-equiv f
-                                       × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
-                                       × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
-
+                       Σ \(f : R → R')
+                     → is-equiv f
+                     × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
+                     × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
 \end{code}
 
 Then we apply the chapter on equality of mathematical structures to
@@ -11757,7 +11754,8 @@ show that the type of ring identities is in bijection with the type of
 ring isomorphisms:
 
 \begin{code}
- characterization-of-rng-≡ : (𝓡 𝓡' : Rng) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅ 𝓡')
+ characterization-of-rng-≡ : (𝓡 𝓡' : Rng)
+                           → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[Rng] 𝓡')
 
  characterization-of-rng-≡ = sip.characterization-of-≡ (ua 𝓤)
                               (sip-with-axioms.add-axioms
@@ -11768,20 +11766,34 @@ ring isomorphisms:
                                   ∞-magma-identity.sns-data))
 \end{code}
 
-The underlying type of a ring:
+Commutative rng:
+
+\begin{code}
+ is-commutative : Rng → 𝓤 ̇
+ is-commutative (R , (_+_ , _·_) , _) = (x y : R) → x · y ≡ y · x
+
+ being-commutative-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-commutative 𝓡)
+ being-commutative-is-subsingleton (R , (_+_ , _·_) , i , ii-vii) =
+
+   Π-is-subsingleton fe
+   (λ x → Π-is-subsingleton fe
+   (λ y → i (x · y) (y · x)))
+\end{code}
+
+The underlying type of a rng:
 
 \begin{code}
 
  ⟨_⟩ : (𝓡 : Rng) → 𝓤 ̇
- ⟨ R , (_+_ , _·_) , s ⟩ = R
+ ⟨ R , _ ⟩ = R
 \end{code}
 
 Its addition and multiplication:
 
 \begin{code}
  addition multiplication : (𝓡 : Rng) → ⟨ 𝓡 ⟩ → ⟨ 𝓡 ⟩ → ⟨ 𝓡 ⟩
- addition       (R , (_+_ , _·_) , s) = _+_
- multiplication (R , (_+_ , _·_) , s) = _·_
+ addition       (R , (_+_ , _·_) , _) = _+_
+ multiplication (R , (_+_ , _·_) , _) = _·_
 
  syntax addition       𝓡 x y = x +⟨ 𝓡 ⟩ y
  syntax multiplication 𝓡 x y = x ·⟨ 𝓡 ⟩ y
@@ -11797,11 +11809,78 @@ the powerset `𝓟 ⟨ 𝓡 ⟩` of the underlying set `⟨ 𝓡 ⟩` of `𝓡`:
                               × (y ∈ I → (x ·⟨ 𝓡 ⟩ y) ∈ I)
 \end{code}
 
-We now consider Noetherian rings. We assume that subsingleton
-truncations exist, to have the existential quantifier `∃` available:
+A rng is local if it has a unique maximal ideal:
 
 \begin{code}
- module noetherian (pt : subsingleton-truncations-exist) where
+ is-local : Rng → 𝓤 ⁺ ̇
+ is-local 𝓡 = ∃! \(I : 𝓟 ⟨ 𝓡 ⟩)
+            → is-ideal 𝓡 I
+            → (J : 𝓟 ⟨ 𝓡 ⟩) → is-ideal 𝓡 J → J ⊆ I
+
+ being-local-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-local 𝓡)
+ being-local-is-subsingleton 𝓡 = ∃!-is-subsingleton _ fe
+\end{code}
+
+We now add units to rngs to get rings.
+
+\begin{code}
+ ring-structure : 𝓤 ̇ → 𝓤 ̇
+ ring-structure X = X × rng-structure X
+
+ ring-axioms : (R : 𝓤 ̇ ) → ring-structure R → 𝓤 ̇
+ ring-axioms R (𝟏 , _+_ , _·_) = rng-axioms R (_+_ , _·_) × VIII
+  where
+   VIII = (x : R) → (x · 𝟏 ≡ x) × (𝟏 · x ≡ x)
+
+ ring-axioms-is-subsingleton : (R : 𝓤 ̇ ) (s : ring-structure R)
+                             → is-subsingleton (ring-axioms R s)
+
+ ring-axioms-is-subsingleton R (𝟏 , _+_ , _·_) ((i , ii-vii) , viii) = γ ((i , ii-vii) , viii)
+  where
+   γ : is-subsingleton (ring-axioms R (𝟏 , _+_ , _·_))
+   γ = ×-is-subsingleton
+         (rng-axioms-is-subsingleton R (_+_ , _·_))
+         (Π-is-subsingleton fe (λ x → ×-is-subsingleton (i (x · 𝟏) x) (i (𝟏 · x) x)))
+\end{code}
+
+The type of rings with unit:
+
+\begin{code}
+ Ring : 𝓤 ⁺ ̇
+ Ring = Σ \(R : 𝓤 ̇ ) → Σ \(s : ring-structure R) → ring-axioms R s
+
+ _≅[Ring]_ : Ring → Ring → 𝓤 ̇
+
+ (R , (𝟏 , _+_ , _·_) , _) ≅[Ring] (R' , (𝟏' , _+'_ , _·'_) , _) =
+
+                           Σ \(f : R → R')
+                         → is-equiv f
+                         × (f 𝟏 ≡ 𝟏')
+                         × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
+                         × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
+
+
+ characterization-of-ring-≡ : (𝓡 𝓡' : Ring)
+                            → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[Ring] 𝓡')
+
+ characterization-of-ring-≡ = sip.characterization-of-≡ (ua 𝓤)
+                                (sip-with-axioms.add-axioms
+                                  ring-axioms
+                                  ring-axioms-is-subsingleton
+                                  (sip-join.join
+                                    pointed-type-identity.sns-data
+                                      (sip-join.join
+                                        ∞-magma-identity.sns-data
+                                        ∞-magma-identity.sns-data)))
+
+\end{code}
+
+We now consider Noetherian rngs and commutative Noetherian local rings
+as examples. We assume that subsingleton truncations exist, to have
+the existential quantifier `∃` available:
+
+\begin{code}
+ module _ (pt : subsingleton-truncations-exist) where
 
   open ℕ-order
   open basic-truncation-development pt hfe
@@ -11812,54 +11891,58 @@ truncations exist, to have the existential quantifier `∃` available:
                   → ((n : ℕ) → I n ⊆ I (succ n))
                   → ∃ \(m : ℕ) → (n : ℕ) → m ≤ n → I m ≡ I n
 
-
   NoetherianRng : 𝓤 ⁺ ̇
   NoetherianRng = Σ \(𝓡 : Rng) → is-noetherian 𝓡
 \end{code}
 
-In order to be able to characterize equality of Noetherian rings, we
+In order to be able to characterize equality of Noetherian rngs, we
 again need to show that `is-noetherian` is property rather than data:
 
 \begin{code}
-  Noetherian-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-noetherian 𝓡)
-  Noetherian-is-subsingleton 𝓡 = Π-is-subsingleton fe
-                                 (λ I → Π-is-subsingleton fe
-                                 (λ _ → Π-is-subsingleton fe
-                                 (λ _ → ∃-is-subsingleton)))
+  being-noetherian-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-noetherian 𝓡)
 
+  being-noetherian-is-subsingleton 𝓡 = Π-is-subsingleton fe
+                                       (λ I → Π-is-subsingleton fe
+                                       (λ _ → Π-is-subsingleton fe
+                                       (λ _ → ∃-is-subsingleton)))
 
   forget-Noether : NoetherianRng → Rng
   forget-Noether (𝓡 , _) = 𝓡
 
   forget-Noether-is-embedding : is-embedding forget-Noether
-  forget-Noether-is-embedding = pr₁-embedding Noetherian-is-subsingleton
+  forget-Noether-is-embedding = pr₁-embedding being-noetherian-is-subsingleton
 \end{code}
 
-Isomorphism of Noetherian rings:
+Isomorphism of Noetherian rngs:
 
 \begin{code}
-  _≅ₙ_ : NoetherianRng → NoetherianRng → 𝓤 ̇
+  _≅[NoetherianRng]_ : NoetherianRng → NoetherianRng → 𝓤 ̇
 
-  (R , (_+_ , _·_) , _) , _ ≅ₙ (R' , (_+'_ , _·'_) , _) , _ =
+  ((R , (_+_ , _·_) , _) , _) ≅[NoetherianRng] ((R' , (_+'_ , _·'_) , _) , _) =
 
-                            Σ \(f : R → R') → is-equiv f
-                                            × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
-                                            × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
+                              Σ \(f : R → R')
+                            → is-equiv f
+                            × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
+                            × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
 
-  NB : (𝓡 𝓡' : NoetherianRng) → (𝓡 ≅ₙ 𝓡') ≡ forget-Noether 𝓡 ≅ forget-Noether 𝓡'
+  NB : (𝓡 𝓡' : NoetherianRng)
+     → (𝓡 ≅[NoetherianRng] 𝓡') ≡ (forget-Noether 𝓡 ≅[Rng] forget-Noether 𝓡')
+
   NB 𝓡 𝓡' = refl _
 \end{code}
 
-Again the identity type of Noetherian rings is in bijection with the
-type of Noetherian ring isomorphisms:
+Again the identity type of Noetherian rngs is in bijection with the
+type of Noetherian rng isomorphisms:
 
 \begin{code}
-  characterization-of-nrng-≡ : (𝓡 𝓡' : NoetherianRng) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅ₙ 𝓡')
+  characterization-of-nrng-≡ : (𝓡 𝓡' : NoetherianRng)
+                             → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[NoetherianRng] 𝓡')
+
   characterization-of-nrng-≡ 𝓡 𝓡' =
 
     (𝓡 ≡ 𝓡')                               ≃⟨ i  ⟩
     (forget-Noether 𝓡 ≡ forget-Noether 𝓡') ≃⟨ ii ⟩
-    (𝓡 ≅ₙ 𝓡')                              ■
+    (𝓡 ≅[NoetherianRng] 𝓡')                ■
 
     where
      i = ≃-sym (embedding-criterion-converse forget-Noether
@@ -11867,16 +11950,16 @@ type of Noetherian ring isomorphisms:
      ii = characterization-of-rng-≡ (forget-Noether 𝓡) (forget-Noether 𝓡')
 \end{code}
 
-Hence properties of Noetherian rings are invariant under
+Hence properties of Noetherian rngs are invariant under
 isomorphism. More generally, we can transport along type-valued
-functions of Noetherian rings, with values in an arbitrary universe
+functions of Noetherian rngs, with values in an arbitrary universe
 `𝓥`, rather than just truth-valued ones:
 
 \begin{code}
   isomorphic-NoetherianRng-transport :
 
       (A : NoetherianRng → 𝓥 ̇ )
-    → (𝓡 𝓡' : NoetherianRng) → 𝓡 ≅ₙ 𝓡' → A 𝓡 → A 𝓡'
+    → (𝓡 𝓡' : NoetherianRng) → 𝓡 ≅[NoetherianRng] 𝓡' → A 𝓡 → A 𝓡'
 
   isomorphic-NoetherianRng-transport A 𝓡 𝓡' i a = a'
    where
@@ -11887,8 +11970,81 @@ functions of Noetherian rings, with values in an arbitrary universe
     a' = transport A p a
 \end{code}
 
-In particular, any theorem about a Noetherian ring automatically
-applies to any Noetherian ring isomorphic to it.
+In particular, any theorem about a Noetherian rng automatically
+applies to any Noetherian rng isomorphic to it.
+
+We now consider commutative Noetherian local rings as a second example.
+
+\begin{code}
+  is-CNL : Ring → 𝓤 ⁺ ̇
+  is-CNL (R , (𝟏 , _+_ , _·_) , i-vii , viii) = is-commutative 𝓡
+                                              × is-noetherian 𝓡
+                                              × is-local 𝓡
+   where
+    𝓡 : Rng
+    𝓡 = (R , (_+_ , _·_) , i-vii)
+
+  being-CNL-is-subsingleton : (𝓡 : Ring) → is-subsingleton (is-CNL 𝓡)
+  being-CNL-is-subsingleton (R , (𝟏 , _+_ , _·_) , i-vii , viii) =
+
+     ×-is-subsingleton (being-commutative-is-subsingleton 𝓡)
+    (×-is-subsingleton (being-noetherian-is-subsingleton 𝓡)
+                       (being-local-is-subsingleton 𝓡))
+   where
+    𝓡 : Rng
+    𝓡 = (R , (_+_ , _·_) , i-vii)
+
+  CNL-Ring : 𝓤 ⁺ ̇
+  CNL-Ring = Σ \(𝓡 : Ring) → is-CNL 𝓡
+
+  _≅[CNL]_ : CNL-Ring → CNL-Ring → 𝓤 ̇
+
+  ((R , (𝟏 , _+_ , _·_) , _) , _) ≅[CNL] ((R' , (𝟏' , _+'_ , _·'_) , _) , _) =
+
+                                  Σ \(f : R → R')
+                                → is-equiv f
+                                × (f 𝟏 ≡ 𝟏')
+                                × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
+                                × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
+
+  forget-CNL : CNL-Ring → Ring
+  forget-CNL (𝓡 , _) = 𝓡
+
+  forget-CNL-is-embedding : is-embedding forget-CNL
+  forget-CNL-is-embedding = pr₁-embedding being-CNL-is-subsingleton
+
+  NB' : (𝓡 𝓡' : CNL-Ring)
+      → (𝓡 ≅[CNL] 𝓡') ≡ (forget-CNL 𝓡 ≅[Ring] forget-CNL 𝓡')
+
+  NB' 𝓡 𝓡' = refl _
+
+  characterization-of-CNL-ring-≡ : (𝓡 𝓡' : CNL-Ring)
+                                 → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[CNL] 𝓡')
+
+  characterization-of-CNL-ring-≡ 𝓡 𝓡' =
+
+     (𝓡 ≡ 𝓡')                               ≃⟨ i  ⟩
+     (forget-CNL 𝓡 ≡ forget-CNL 𝓡')         ≃⟨ ii ⟩
+     (𝓡 ≅[CNL] 𝓡')                          ■
+
+     where
+      i = ≃-sym (embedding-criterion-converse forget-CNL
+                   forget-CNL-is-embedding 𝓡 𝓡')
+      ii = characterization-of-ring-≡ (forget-CNL 𝓡) (forget-CNL 𝓡')
+
+  isomorphic-CNL-Ring-transport :
+
+      (A : CNL-Ring → 𝓥 ̇ )
+    → (𝓡 𝓡' : CNL-Ring) → 𝓡 ≅[CNL] 𝓡' → A 𝓡 → A 𝓡'
+
+  isomorphic-CNL-Ring-transport A 𝓡 𝓡' i a = a'
+   where
+    p : 𝓡 ≡ 𝓡'
+    p = Eq→fun (≃-sym (characterization-of-CNL-ring-≡ 𝓡 𝓡')) i
+
+    a' : A 𝓡'
+    a' = transport A p a
+\end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="choice"></a> Choice in univalent mathematics

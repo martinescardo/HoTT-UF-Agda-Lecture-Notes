@@ -2814,11 +2814,11 @@ vv-and-hfunext-are-singletons {𝓤} {𝓥} ua =
 ∃! : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 ∃! A = is-singleton (Σ A)
 
-unique-existence-is-subsingleton : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
-                                 → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
-                                 → is-subsingleton (∃! A)
+∃!-is-subsingleton : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                   → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+                   → is-subsingleton (∃! A)
 
-unique-existence-is-subsingleton A fe = being-singleton-is-subsingleton fe
+∃!-is-subsingleton A fe = being-singleton-is-subsingleton fe
 
 unique-existence-gives-weak-unique-existence : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) →
 
@@ -6361,7 +6361,7 @@ module exit-∥∥
    f' : ∥ X ∥ → Y
    f' = h ∘ g
 
-module rng-identity {𝓤 : Universe} (ua : Univalence) where
+module ring-identity {𝓤 : Universe} (ua : Univalence) where
 
  fe : global-dfunext
  fe = univalence-gives-global-dfunext ua
@@ -6465,15 +6465,17 @@ module rng-identity {𝓤 : Universe} (ua : Univalence) where
     δ : (α : rng-axioms R (_+_ , _·_)) → (i , ii , iii , iv-vii) ≡ α
     δ = γ (i , ii , iii , iv-vii)
 
- _≅_ : Rng → Rng → 𝓤 ̇
+ _≅[Rng]_ : Rng → Rng → 𝓤 ̇
 
- (R , (_+_ , _·_) , _) ≅ (R' , (_+'_ , _·'_) , _) =
+ (R , (_+_ , _·_) , _) ≅[Rng] (R' , (_+'_ , _·'_) , _) =
 
-                       Σ \(f : R → R') → is-equiv f
-                                       × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
-                                       × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
+                       Σ \(f : R → R')
+                     → is-equiv f
+                     × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
+                     × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
 
- characterization-of-rng-≡ : (𝓡 𝓡' : Rng) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅ 𝓡')
+ characterization-of-rng-≡ : (𝓡 𝓡' : Rng)
+                           → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[Rng] 𝓡')
 
  characterization-of-rng-≡ = sip.characterization-of-≡ (ua 𝓤)
                               (sip-with-axioms.add-axioms
@@ -6483,12 +6485,22 @@ module rng-identity {𝓤 : Universe} (ua : Univalence) where
                                   ∞-magma-identity.sns-data
                                   ∞-magma-identity.sns-data))
 
+ is-commutative : Rng → 𝓤 ̇
+ is-commutative (R , (_+_ , _·_) , _) = (x y : R) → x · y ≡ y · x
+
+ being-commutative-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-commutative 𝓡)
+ being-commutative-is-subsingleton (R , (_+_ , _·_) , i , ii-vii) =
+
+   Π-is-subsingleton fe
+   (λ x → Π-is-subsingleton fe
+   (λ y → i (x · y) (y · x)))
+
  ⟨_⟩ : (𝓡 : Rng) → 𝓤 ̇
- ⟨ R , (_+_ , _·_) , s ⟩ = R
+ ⟨ R , _ ⟩ = R
 
  addition multiplication : (𝓡 : Rng) → ⟨ 𝓡 ⟩ → ⟨ 𝓡 ⟩ → ⟨ 𝓡 ⟩
- addition       (R , (_+_ , _·_) , s) = _+_
- multiplication (R , (_+_ , _·_) , s) = _·_
+ addition       (R , (_+_ , _·_) , _) = _+_
+ multiplication (R , (_+_ , _·_) , _) = _·_
 
  syntax addition       𝓡 x y = x +⟨ 𝓡 ⟩ y
  syntax multiplication 𝓡 x y = x ·⟨ 𝓡 ⟩ y
@@ -6498,7 +6510,59 @@ module rng-identity {𝓤 : Universe} (ua : Univalence) where
                               × (x ∈ I → (x ·⟨ 𝓡 ⟩ y) ∈ I)
                               × (y ∈ I → (x ·⟨ 𝓡 ⟩ y) ∈ I)
 
- module noetherian (pt : subsingleton-truncations-exist) where
+ is-local : Rng → 𝓤 ⁺ ̇
+ is-local 𝓡 = ∃! \(I : 𝓟 ⟨ 𝓡 ⟩)
+            → is-ideal 𝓡 I
+            → (J : 𝓟 ⟨ 𝓡 ⟩) → is-ideal 𝓡 J → J ⊆ I
+
+ being-local-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-local 𝓡)
+ being-local-is-subsingleton 𝓡 = ∃!-is-subsingleton _ fe
+
+ ring-structure : 𝓤 ̇ → 𝓤 ̇
+ ring-structure X = X × rng-structure X
+
+ ring-axioms : (R : 𝓤 ̇ ) → ring-structure R → 𝓤 ̇
+ ring-axioms R (𝟏 , _+_ , _·_) = rng-axioms R (_+_ , _·_) × VIII
+  where
+   VIII = (x : R) → (x · 𝟏 ≡ x) × (𝟏 · x ≡ x)
+
+ ring-axioms-is-subsingleton : (R : 𝓤 ̇ ) (s : ring-structure R)
+                             → is-subsingleton (ring-axioms R s)
+
+ ring-axioms-is-subsingleton R (𝟏 , _+_ , _·_) ((i , ii-vii) , viii) = γ ((i , ii-vii) , viii)
+  where
+   γ : is-subsingleton (ring-axioms R (𝟏 , _+_ , _·_))
+   γ = ×-is-subsingleton
+         (rng-axioms-is-subsingleton R (_+_ , _·_))
+         (Π-is-subsingleton fe (λ x → ×-is-subsingleton (i (x · 𝟏) x) (i (𝟏 · x) x)))
+
+ Ring : 𝓤 ⁺ ̇
+ Ring = Σ \(R : 𝓤 ̇ ) → Σ \(s : ring-structure R) → ring-axioms R s
+
+ _≅[Ring]_ : Ring → Ring → 𝓤 ̇
+
+ (R , (𝟏 , _+_ , _·_) , _) ≅[Ring] (R' , (𝟏' , _+'_ , _·'_) , _) =
+
+                           Σ \(f : R → R')
+                         → is-equiv f
+                         × (f 𝟏 ≡ 𝟏')
+                         × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
+                         × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
+
+ characterization-of-ring-≡ : (𝓡 𝓡' : Ring)
+                            → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[Ring] 𝓡')
+
+ characterization-of-ring-≡ = sip.characterization-of-≡ (ua 𝓤)
+                                (sip-with-axioms.add-axioms
+                                  ring-axioms
+                                  ring-axioms-is-subsingleton
+                                  (sip-join.join
+                                    pointed-type-identity.sns-data
+                                      (sip-join.join
+                                        ∞-magma-identity.sns-data
+                                        ∞-magma-identity.sns-data)))
+
+ module _ (pt : subsingleton-truncations-exist) where
 
   open ℕ-order
   open basic-truncation-development pt hfe
@@ -6512,35 +6576,41 @@ module rng-identity {𝓤 : Universe} (ua : Univalence) where
   NoetherianRng : 𝓤 ⁺ ̇
   NoetherianRng = Σ \(𝓡 : Rng) → is-noetherian 𝓡
 
-  Noetherian-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-noetherian 𝓡)
-  Noetherian-is-subsingleton 𝓡 = Π-is-subsingleton fe
-                                 (λ I → Π-is-subsingleton fe
-                                 (λ _ → Π-is-subsingleton fe
-                                 (λ _ → ∃-is-subsingleton)))
+  being-noetherian-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-noetherian 𝓡)
+
+  being-noetherian-is-subsingleton 𝓡 = Π-is-subsingleton fe
+                                       (λ I → Π-is-subsingleton fe
+                                       (λ _ → Π-is-subsingleton fe
+                                       (λ _ → ∃-is-subsingleton)))
 
   forget-Noether : NoetherianRng → Rng
   forget-Noether (𝓡 , _) = 𝓡
 
   forget-Noether-is-embedding : is-embedding forget-Noether
-  forget-Noether-is-embedding = pr₁-embedding Noetherian-is-subsingleton
+  forget-Noether-is-embedding = pr₁-embedding being-noetherian-is-subsingleton
 
-  _≅ₙ_ : NoetherianRng → NoetherianRng → 𝓤 ̇
+  _≅[NoetherianRng]_ : NoetherianRng → NoetherianRng → 𝓤 ̇
 
-  (R , (_+_ , _·_) , _) , _ ≅ₙ (R' , (_+'_ , _·'_) , _) , _ =
+  ((R , (_+_ , _·_) , _) , _) ≅[NoetherianRng] ((R' , (_+'_ , _·'_) , _) , _) =
 
-                            Σ \(f : R → R') → is-equiv f
-                                            × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
-                                            × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
+                              Σ \(f : R → R')
+                            → is-equiv f
+                            × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
+                            × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
 
-  NB : (𝓡 𝓡' : NoetherianRng) → (𝓡 ≅ₙ 𝓡') ≡ forget-Noether 𝓡 ≅ forget-Noether 𝓡'
+  NB : (𝓡 𝓡' : NoetherianRng)
+     → (𝓡 ≅[NoetherianRng] 𝓡') ≡ (forget-Noether 𝓡 ≅[Rng] forget-Noether 𝓡')
+
   NB 𝓡 𝓡' = refl _
 
-  characterization-of-nrng-≡ : (𝓡 𝓡' : NoetherianRng) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅ₙ 𝓡')
+  characterization-of-nrng-≡ : (𝓡 𝓡' : NoetherianRng)
+                             → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[NoetherianRng] 𝓡')
+
   characterization-of-nrng-≡ 𝓡 𝓡' =
 
     (𝓡 ≡ 𝓡')                               ≃⟨ i  ⟩
     (forget-Noether 𝓡 ≡ forget-Noether 𝓡') ≃⟨ ii ⟩
-    (𝓡 ≅ₙ 𝓡')                              ■
+    (𝓡 ≅[NoetherianRng] 𝓡')                ■
 
     where
      i = ≃-sym (embedding-criterion-converse forget-Noether
@@ -6550,12 +6620,81 @@ module rng-identity {𝓤 : Universe} (ua : Univalence) where
   isomorphic-NoetherianRng-transport :
 
       (A : NoetherianRng → 𝓥 ̇ )
-    → (𝓡 𝓡' : NoetherianRng) → 𝓡 ≅ₙ 𝓡' → A 𝓡 → A 𝓡'
+    → (𝓡 𝓡' : NoetherianRng) → 𝓡 ≅[NoetherianRng] 𝓡' → A 𝓡 → A 𝓡'
 
   isomorphic-NoetherianRng-transport A 𝓡 𝓡' i a = a'
    where
     p : 𝓡 ≡ 𝓡'
     p = Eq→fun (≃-sym (characterization-of-nrng-≡ 𝓡 𝓡')) i
+
+    a' : A 𝓡'
+    a' = transport A p a
+
+  is-CNL : Ring → 𝓤 ⁺ ̇
+  is-CNL (R , (𝟏 , _+_ , _·_) , i-vii , viii) = is-commutative 𝓡
+                                              × is-noetherian 𝓡
+                                              × is-local 𝓡
+   where
+    𝓡 : Rng
+    𝓡 = (R , (_+_ , _·_) , i-vii)
+
+  being-CNL-is-subsingleton : (𝓡 : Ring) → is-subsingleton (is-CNL 𝓡)
+  being-CNL-is-subsingleton (R , (𝟏 , _+_ , _·_) , i-vii , viii) =
+
+     ×-is-subsingleton (being-commutative-is-subsingleton 𝓡)
+    (×-is-subsingleton (being-noetherian-is-subsingleton 𝓡)
+                       (being-local-is-subsingleton 𝓡))
+   where
+    𝓡 : Rng
+    𝓡 = (R , (_+_ , _·_) , i-vii)
+
+  CNL-Ring : 𝓤 ⁺ ̇
+  CNL-Ring = Σ \(𝓡 : Ring) → is-CNL 𝓡
+
+  _≅[CNL]_ : CNL-Ring → CNL-Ring → 𝓤 ̇
+
+  ((R , (𝟏 , _+_ , _·_) , _) , _) ≅[CNL] ((R' , (𝟏' , _+'_ , _·'_) , _) , _) =
+
+                                  Σ \(f : R → R')
+                                → is-equiv f
+                                × (f 𝟏 ≡ 𝟏')
+                                × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
+                                × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
+
+  forget-CNL : CNL-Ring → Ring
+  forget-CNL (𝓡 , _) = 𝓡
+
+  forget-CNL-is-embedding : is-embedding forget-CNL
+  forget-CNL-is-embedding = pr₁-embedding being-CNL-is-subsingleton
+
+  NB' : (𝓡 𝓡' : CNL-Ring)
+      → (𝓡 ≅[CNL] 𝓡') ≡ (forget-CNL 𝓡 ≅[Ring] forget-CNL 𝓡')
+
+  NB' 𝓡 𝓡' = refl _
+
+  characterization-of-CNL-ring-≡ : (𝓡 𝓡' : CNL-Ring)
+                                 → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[CNL] 𝓡')
+
+  characterization-of-CNL-ring-≡ 𝓡 𝓡' =
+
+     (𝓡 ≡ 𝓡')                               ≃⟨ i  ⟩
+     (forget-CNL 𝓡 ≡ forget-CNL 𝓡')         ≃⟨ ii ⟩
+     (𝓡 ≅[CNL] 𝓡')                          ■
+
+     where
+      i = ≃-sym (embedding-criterion-converse forget-CNL
+                   forget-CNL-is-embedding 𝓡 𝓡')
+      ii = characterization-of-ring-≡ (forget-CNL 𝓡) (forget-CNL 𝓡')
+
+  isomorphic-CNL-Ring-transport :
+
+      (A : CNL-Ring → 𝓥 ̇ )
+    → (𝓡 𝓡' : CNL-Ring) → 𝓡 ≅[CNL] 𝓡' → A 𝓡 → A 𝓡'
+
+  isomorphic-CNL-Ring-transport A 𝓡 𝓡' i a = a'
+   where
+    p : 𝓡 ≡ 𝓡'
+    p = Eq→fun (≃-sym (characterization-of-CNL-ring-≡ 𝓡 𝓡')) i
 
     a' : A 𝓡'
     a' = transport A p a
