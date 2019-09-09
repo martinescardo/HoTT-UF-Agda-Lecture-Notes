@@ -429,6 +429,7 @@ to practice univalent mathematics should consult the above references.
         1. [Monoids](HoTT-UF-Agda.html#monoids-sip)
         1. [Groups](HoTT-UF-Agda.html#groups-sip)
         1. [Subgroups](HoTT-UF-Agda.html#subgroups-sip)
+        1. [Rings](HoTT-UF-Agda.html#ring1-sip)
         1. [The slice type](HoTT-UF-Agda.html#slice-sip)
         1. [Metric spaces, graphs and ordered structures](HoTT-UF-Agda.html#metric-sip)
         1. [Topological spaces](HoTT-UF-Agda.html#topological-sip)
@@ -9805,6 +9806,13 @@ homomorphisms.
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+#### <a id="ring1-sip"></a> Rings
+
+Rings, Noetherian rings, and local rings are discussed
+[below](HoTT-UF-Agda.html#ring-sip), after we discuss [unspecified
+existence](HoTT-UF-Agda.html#disjunction-and-existence).
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="slice-sip"></a> The slice type
 
 \begin{code}
@@ -11860,7 +11868,6 @@ The type of rings with unit:
                                       (sip-join.join
                                         ∞-magma-identity.sns-data
                                         ∞-magma-identity.sns-data)))
-
 \end{code}
 
 We now consider Noetherian rngs and commutative Noetherian local rings
