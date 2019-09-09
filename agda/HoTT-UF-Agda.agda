@@ -6498,17 +6498,10 @@ module ring-identity {𝓤 : Universe} (ua : Univalence) where
  ⟨_⟩ : (𝓡 : Rng) → 𝓤 ̇
  ⟨ R , _ ⟩ = R
 
- addition multiplication : (𝓡 : Rng) → ⟨ 𝓡 ⟩ → ⟨ 𝓡 ⟩ → ⟨ 𝓡 ⟩
- addition       (R , (_+_ , _·_) , _) = _+_
- multiplication (R , (_+_ , _·_) , _) = _·_
-
- syntax addition       𝓡 x y = x +⟨ 𝓡 ⟩ y
- syntax multiplication 𝓡 x y = x ·⟨ 𝓡 ⟩ y
-
  is-ideal : (𝓡 : Rng) → 𝓟 ⟨ 𝓡 ⟩ → 𝓤 ̇
- is-ideal 𝓡 I = (x y : ⟨ 𝓡 ⟩) → (x ∈ I → y ∈ I → (x +⟨ 𝓡 ⟩ y) ∈ I)
-                              × (x ∈ I → (x ·⟨ 𝓡 ⟩ y) ∈ I)
-                              × (y ∈ I → (x ·⟨ 𝓡 ⟩ y) ∈ I)
+ is-ideal (R , (_+_ , _·_) , _) I = (x y : R) → (x ∈ I → y ∈ I → (x + y) ∈ I)
+                                              × (x ∈ I → (x · y) ∈ I)
+                                              × (y ∈ I → (x · y) ∈ I)
 
  is-local : Rng → 𝓤 ⁺ ̇
  is-local 𝓡 = ∃! \(I : 𝓟 ⟨ 𝓡 ⟩)

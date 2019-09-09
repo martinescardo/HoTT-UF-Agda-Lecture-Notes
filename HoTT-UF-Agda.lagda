@@ -11783,20 +11783,8 @@ Commutative rng:
 The underlying type of a rng:
 
 \begin{code}
-
  ⟨_⟩ : (𝓡 : Rng) → 𝓤 ̇
  ⟨ R , _ ⟩ = R
-\end{code}
-
-Its addition and multiplication:
-
-\begin{code}
- addition multiplication : (𝓡 : Rng) → ⟨ 𝓡 ⟩ → ⟨ 𝓡 ⟩ → ⟨ 𝓡 ⟩
- addition       (R , (_+_ , _·_) , _) = _+_
- multiplication (R , (_+_ , _·_) , _) = _·_
-
- syntax addition       𝓡 x y = x +⟨ 𝓡 ⟩ y
- syntax multiplication 𝓡 x y = x ·⟨ 𝓡 ⟩ y
 \end{code}
 
 The notion of (two-sided) ideal of a ring `𝓡`, which is an element of
@@ -11804,9 +11792,9 @@ the powerset `𝓟 ⟨ 𝓡 ⟩` of the underlying set `⟨ 𝓡 ⟩` of `𝓡`:
 
 \begin{code}
  is-ideal : (𝓡 : Rng) → 𝓟 ⟨ 𝓡 ⟩ → 𝓤 ̇
- is-ideal 𝓡 I = (x y : ⟨ 𝓡 ⟩) → (x ∈ I → y ∈ I → (x +⟨ 𝓡 ⟩ y) ∈ I)
-                              × (x ∈ I → (x ·⟨ 𝓡 ⟩ y) ∈ I)
-                              × (y ∈ I → (x ·⟨ 𝓡 ⟩ y) ∈ I)
+ is-ideal (R , (_+_ , _·_) , _) I = (x y : R) → (x ∈ I → y ∈ I → (x + y) ∈ I)
+                                              × (x ∈ I → (x · y) ∈ I)
+                                              × (y ∈ I → (x · y) ∈ I)
 \end{code}
 
 A rng is local if it has a unique maximal ideal:
