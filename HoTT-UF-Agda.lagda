@@ -2598,7 +2598,7 @@ That there is no general way to *determine which of the two cases*
 `is-singleton X` and `is-empty X` applies for a given subsingleton
 `X`. This kind of phenomenon should be familiar even in classical,
 non-constructive mathematics: although we are entitled to believe that
-the Goldblach conjecture either holds or fails, we still don't know
+the Goldbach conjecture either holds or fails, we still don't know
 which one is the case, despite efforts by the sharpest mathematical
 minds. A hypothetical element of the type `EM` would, in particular,
 be able to solve the Goldbach conjecture. There is nothing wrong or
@@ -3227,10 +3227,12 @@ Hedberg : {X : 𝓤 ̇ } (x : X)
         → (y : X) → is-subsingleton (x ≡ y)
 
 Hedberg {𝓤} {X} x c y p q =
+
  p                       ≡⟨ a y p                                     ⟩
  f x (refl x)⁻¹ ∙ f y p  ≡⟨ ap (λ - → (f x (refl x))⁻¹ ∙ -) (κ y p q) ⟩
  f x (refl x)⁻¹ ∙ f y q  ≡⟨ (a y q)⁻¹                                 ⟩
  q                       ∎
+
  where
   f : (y : X) → x ≡ y → x ≡ y
   f y = wcmap (x ≡ y) (c y)
@@ -3245,12 +3247,17 @@ Hedberg {𝓤} {X} x c y p q =
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="setscharacterization"></a> A characterization of sets
 
-The following is immediate from the definitions:
+We consider types whose identity types all have designated constant
+endomaps:
 
 \begin{code}
 wconstant-≡-endomaps : 𝓤 ̇ → 𝓤 ̇
 wconstant-≡-endomaps X = (x y : X) → wconstant-endomap (x ≡ y)
+\end{code}
 
+The following is immediate from the definitions.
+
+\begin{code}
 sets-have-wconstant-≡-endomaps : (X : 𝓤 ̇ ) → is-set X → wconstant-≡-endomaps X
 sets-have-wconstant-≡-endomaps X s x y = (f , κ)
  where
@@ -3266,6 +3273,7 @@ And the converse is the content of Hedberg's Theorem.
 \begin{code}
 types-with-wconstant-≡-endomaps-are-sets : (X : 𝓤 ̇ )
                                          → wconstant-≡-endomaps X → is-set X
+
 types-with-wconstant-≡-endomaps-are-sets X c x = Hedberg x
                                                   (λ y → wcmap (x ≡ y) (c x y) ,
                                                    wcmap-constancy (x ≡ y) (c x y))
@@ -3424,11 +3432,9 @@ pointed-types-have-wconstant-endomap x = ((λ y → x) , (λ y y' → refl x))
 empty-types-have-wconstant-endomap : {X : 𝓤 ̇ } → is-empty X → wconstant-endomap X
 empty-types-have-wconstant-endomap e = (id , (λ x x' → !𝟘 (x ≡ x') (e x)))
 
-
 decidable-has-wconstant-endomap : {X : 𝓤 ̇ } → decidable X → wconstant-endomap X
 decidable-has-wconstant-endomap (inl x) = pointed-types-have-wconstant-endomap x
 decidable-has-wconstant-endomap (inr e) = empty-types-have-wconstant-endomap e
-
 
 hedberg-lemma : {X : 𝓤 ̇ } → has-decidable-equality X → wconstant-≡-endomaps X
 hedberg-lemma {𝓤} {X} d x y = decidable-has-wconstant-endomap (d x y)
@@ -3497,12 +3503,16 @@ retraction (r , s , η) = r
 section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ◁ Y → X → Y
 section (r , s , η) = s
 
+
 retract-equation : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (ρ : X ◁ Y)
                  → retraction ρ ∘ section ρ ∼ 𝑖𝑑 X
+
 retract-equation (r , s , η) = η
+
 
 retraction-has-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (ρ : X ◁ Y)
                        → has-section (retraction ρ)
+
 retraction-has-section (r , h) = h
 \end{code}
 
@@ -3622,7 +3632,6 @@ is indeed a singleton in the sense defined above.
 singleton-type : {X : 𝓤 ̇ } → X → 𝓤 ̇
 singleton-type x = Σ \y → y ≡ x
 
-
 singleton-type-center : {X : 𝓤 ̇ } (x : X) → singleton-type x
 singleton-type-center x = (x , refl x)
 
@@ -3658,7 +3667,6 @@ Sometimes we need the following symmetric versions of the above:
 \begin{code}
 singleton-type' : {X : 𝓤 ̇ } → X → 𝓤 ̇
 singleton-type' x = Σ \y → x ≡ y
-
 
 singleton-type'-center : {X : 𝓤 ̇ } (x : X) → singleton-type' x
 singleton-type'-center x = (x , refl x)
@@ -3919,8 +3927,9 @@ id-is-equiv = singleton-types-are-singletons
 \end{code}
 
 An `abstract` definition is not expanded during type checking. One
-possible use of this is efficiency. In our case, it saves 30s in the
-checking of this file for correctness in the uses of `∘-is-equiv`:
+possible use of this is efficiency. In our case, it saves about half a
+minute in the checking of this file for correctness in the uses of
+`∘-is-equiv`:
 
 \begin{code}
 ∘-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {g : Y → Z}
@@ -4048,8 +4057,10 @@ Here is the promised characterization of equality in `Σ` types:
   η : (q : σ ≡ τ) → to-Σ-≡ (from-Σ-≡ q) ≡ q
   η (refl σ) = refl (refl σ)
 
+
   ε : (w : Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
     → from-Σ-≡ (to-Σ-≡ w) ≡ w
+
   ε (refl p , refl q) = refl (refl p , refl q)
 \end{code}
 
@@ -4196,8 +4207,8 @@ equivalence. Univalence *is* a fundamental ingredient, but first we
 need the correct notion of equivalence to be able to formulate it.
 
 *Remark*. If we formulate univalence with invertible maps instead of
-equivalences, we get a statement that is provably false, and this is
-one of the reasons why Voevodsky's notion of equivalence is
+equivalences, we get a statement that is provably false in MLTT, and
+this is one of the reasons why Voevodsky's notion of equivalence is
 important. This is Exercise 4.6 of the [HoTT
 book](https://homotopytypetheory.org/book/). There is a [solution in
 Coq](https://github.com/HoTT/HoTT/blob/master/contrib/HoTTBookExercises.v)
@@ -4217,7 +4228,11 @@ swap₂ ₁ = ₀
 swap₂-involutive : (n : 𝟚) → swap₂ (swap₂ n) ≡ n
 swap₂-involutive ₀ = refl ₀
 swap₂-involutive ₁ = refl ₁
+\end{code}
 
+That is, `swap₂` is its own inverse and hence it is an equivalence:
+
+\begin{code}
 swap₂-is-equiv : is-equiv swap₂
 swap₂-is-equiv = invertibles-are-equivs
                   swap₂
@@ -5572,7 +5587,7 @@ indicated with `refl` here:
   γ' : f₀ ∼ f₁ → f₀ ≡ f₁
   γ' h = f₀                             ≡⟨ refl _                               ⟩
          (λ x → f₀ x)                   ≡⟨ refl _                               ⟩
-         (λ x → π₀ (f₀ x , f₁ x , h x)) ≡⟨ ap (λ π x → π (f₀ x , f₁ x , h x)) q ⟩
+         (λ x → π₀ (f₀ x , f₁ x , h x)) ≡⟨ ap (λ - x → - (f₀ x , f₁ x , h x)) q ⟩
          (λ x → π₁ (f₀ x , f₁ x , h x)) ≡⟨ refl _                               ⟩
          (λ x → f₁ x)                   ≡⟨ refl _                               ⟩
          f₁                             ∎
@@ -6577,7 +6592,7 @@ at-most-one-section {𝓥} {𝓤} fe hfe {X} {Y} f (g , gf) (h , fh) = d
   fe' = hfunext-gives-dfunext hfe
 
   a : invertible f
-  a = joyal-equivs-are-invertible f (((h , fh) , g , gf))
+  a = joyal-equivs-are-invertible f ((h , fh) , (g , gf))
 
   b : is-singleton (fiber (λ h →  f ∘ h) id)
   b = invertibles-are-equivs (λ h → f ∘ h) (postcomp-invertible fe fe' f a) id
@@ -6642,6 +6657,7 @@ being-joyal-equiv-is-subsingleton : hfunext 𝓤 𝓤 → hfunext 𝓥 𝓥 → 
                                   → is-subsingleton (is-joyal-equiv f)
 
 being-joyal-equiv-is-subsingleton fe₀ fe₁ fe₂ f =
+
  ×-is-subsingleton'
   (at-most-one-section fe₂ fe₁ f ,
    at-most-one-retraction fe₀ fe₂ f)
@@ -6653,6 +6669,7 @@ subsingleton:
 \begin{code}
 emptiness-is-subsingleton : dfunext 𝓤 𝓤₀ → (X : 𝓤 ̇ )
                           → is-subsingleton (is-empty X)
+
 emptiness-is-subsingleton fe X f g = fe (λ x → !𝟘 (f x ≡ g x) (f x))
 \end{code}
 
@@ -6672,6 +6689,7 @@ generally:
   γ (inl p) (inr q)  = !𝟘 (inl p ≡ inr q) (f p q)
   γ (inr q) (inl p)  = !𝟘 (inr q ≡ inl p) (f p q)
   γ (inr q) (inr q') = ap inr (j q q')
+
 
 +-is-subsingleton' : dfunext 𝓤 𝓤₀
                    → {P : 𝓤 ̇ } → is-subsingleton P → is-subsingleton (P + ¬ P)
@@ -6701,9 +6719,10 @@ This is directly implied by univalence:
 
 \begin{code}
 univalence-gives-propext : is-univalent 𝓤 → propext 𝓤
-univalence-gives-propext ua {P} {Q} i j f g =
- Eq→Id ua P Q
-  (logically-equivalent-subsingletons-are-equivalent P Q i j (f , g))
+univalence-gives-propext ua {P} {Q} i j f g = Eq→Id ua P Q γ
+ where
+  γ : P ≃ Q
+  γ = logically-equivalent-subsingletons-are-equivalent P Q i j (f , g)
 \end{code}
 
 Under the additional hypothesis of function extensionality, the converse of the above holds. We need a lemma for that.
@@ -6819,8 +6838,10 @@ With this and Hedberg, we get that `Ω` is a set:
    where
     a : p holds ≡ q holds
     a = ap _holds e
+
     u : p holds → q holds
     u = Id→fun a
+
     v : q holds → p holds
     v = Id→fun (a ⁻¹)
 
@@ -6856,6 +6877,7 @@ The above considers `X : 𝓤` and `Ω 𝓥`. When the two universes `𝓤` and
 
 powersets-are-sets' : Univalence
                     → {X : 𝓤 ̇ } → is-set (𝓟 X)
+
 powersets-are-sets' {𝓤} ua = powersets-are-sets
                                (univalence-gives-hfunext' (ua 𝓤) (ua (𝓤 ⁺)))
                                (univalence-gives-dfunext (ua 𝓤))
@@ -7076,12 +7098,15 @@ is an embedding if `A x` is a subsingleton for every `x : X`:
 \begin{code}
 pr₁-embedding : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
               → ((x : X) → is-subsingleton (A x))
-              → is-embedding (pr₁ {𝓤} {𝓥} {X} {A})
+              → is-embedding (λ (σ : Σ A) → pr₁ σ)
 
 pr₁-embedding i x ((x , a) , refl x) ((x , a') , refl x) = γ
  where
+  p : a ≡ a'
+  p = i x a a'
+
   γ : (x , a) , refl x ≡ (x , a') , refl x
-  γ = ap (λ - → (x , -) , refl x) (i x a a')
+  γ = ap (λ - → (x , -) , refl x) p
 \end{code}
 
 *Exercise*. Show that the converse of `pr₁-embedding` holds.
@@ -7374,6 +7399,7 @@ retract-universal-lemma A x ρ = i
 fiberwise-equiv-universal : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X) (a : A x)
                           → is-fiberwise-equiv (𝓝 A x a)
                           → ∃! A
+
 fiberwise-equiv-universal A x a e = retract-universal-lemma A x ρ
  where
   ρ : ∀ y → A y ◁ (x ≡ y)
@@ -7481,8 +7507,7 @@ being-fiberwise-equiv-is-subsingleton : global-dfunext
                                       → is-subsingleton (is-fiberwise-equiv τ)
 
 being-fiberwise-equiv-is-subsingleton fe τ =
- Π-is-subsingleton fe
-  (λ y → being-equiv-is-subsingleton fe fe (τ y))
+ Π-is-subsingleton fe (λ y → being-equiv-is-subsingleton fe fe (τ y))
 
 
 being-representable-is-subsingleton : global-dfunext
