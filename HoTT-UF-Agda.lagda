@@ -11654,7 +11654,7 @@ Ring structure is the product of two magma structures:
 \end{code}
 
 The axioms are the usual ones, with the additional requirement that
-the underlying type is a set (as opposed to an ∞-groupoid):
+the underlying type is a set, as opposed to an arbitrary ∞-groupoid:
 
 \begin{code}
  rng-axioms : (R : 𝓤 ̇ ) → rng-structure R → 𝓤 ̇
@@ -11767,7 +11767,7 @@ routine.
     δ = γ (i , ii , iii , iv-vii)
 \end{code}
 
-We define a rng isomorphism to be a bijection which preserves
+We define a rng isomorphism to be a bijection that preserves
 addition and multiplication, and collect all isomorphisms of two rngs
 `𝓡` and `𝓡'` in a type `𝓡 ≅[Rng] 𝓡'`:
 
@@ -11805,6 +11805,7 @@ Commutative rng:
  is-commutative : Rng → 𝓤 ̇
  is-commutative (R , (_+_ , _·_) , _) = (x y : R) → x · y ≡ y · x
 
+
  being-commutative-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-commutative 𝓡)
  being-commutative-is-subsingleton (R , (_+_ , _·_) , i , ii-vii) =
 
@@ -11838,6 +11839,7 @@ A rng is local if it has a unique maximal ideal:
             → is-ideal 𝓡 I
             → (J : 𝓟 ⟨ 𝓡 ⟩) → is-ideal 𝓡 J → J ⊆ I
 
+
  being-local-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-local 𝓡)
  being-local-is-subsingleton 𝓡 = ∃!-is-subsingleton _ fe
 \end{code}
@@ -11848,10 +11850,12 @@ We now add units to rngs to get rings.
  ring-structure : 𝓤 ̇ → 𝓤 ̇
  ring-structure X = X × rng-structure X
 
+
  ring-axioms : (R : 𝓤 ̇ ) → ring-structure R → 𝓤 ̇
  ring-axioms R (𝟏 , _+_ , _·_) = rng-axioms R (_+_ , _·_) × VIII
   where
    VIII = (x : R) → (x · 𝟏 ≡ x) × (𝟏 · x ≡ x)
+
 
  ring-axioms-is-subsingleton : (R : 𝓤 ̇ ) (s : ring-structure R)
                              → is-subsingleton (ring-axioms R s)
@@ -11870,6 +11874,7 @@ The type of rings with unit:
  Ring : 𝓤 ⁺ ̇
  Ring = Σ \(R : 𝓤 ̇ ) → Σ \(s : ring-structure R) → ring-axioms R s
 
+
  _≅[Ring]_ : Ring → Ring → 𝓤 ̇
 
  (R , (𝟏 , _+_ , _·_) , _) ≅[Ring] (R' , (𝟏' , _+'_ , _·'_) , _) =
@@ -11879,6 +11884,7 @@ The type of rings with unit:
                          × (f 𝟏 ≡ 𝟏')
                          × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
                          × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
+
 
 
  characterization-of-ring-≡ : (𝓡 𝓡' : Ring)
@@ -11905,11 +11911,13 @@ the existential quantifier `∃` available:
   open ℕ-order
   open basic-truncation-development pt hfe
 
+
   is-noetherian : (𝓡 : Rng) → 𝓤 ⁺ ̇
   is-noetherian 𝓡 = (I : ℕ → 𝓟 ⟨ 𝓡 ⟩)
                   → ((n : ℕ) → is-ideal 𝓡 (I n))
                   → ((n : ℕ) → I n ⊆ I (succ n))
                   → ∃ \(m : ℕ) → (n : ℕ) → m ≤ n → I m ≡ I n
+
 
   NoetherianRng : 𝓤 ⁺ ̇
   NoetherianRng = Σ \(𝓡 : Rng) → is-noetherian 𝓡
@@ -11925,6 +11933,7 @@ again need to show that `is-noetherian` is property rather than data:
                                        (λ I → Π-is-subsingleton fe
                                        (λ _ → Π-is-subsingleton fe
                                        (λ _ → ∃-is-subsingleton)))
+
 
   forget-Noether : NoetherianRng → Rng
   forget-Noether (𝓡 , _) = 𝓡
@@ -11944,6 +11953,7 @@ Isomorphism of Noetherian rngs:
                             → is-equiv f
                             × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
                             × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
+
 
   NB : (𝓡 𝓡' : NoetherianRng)
      → (𝓡 ≅[NoetherianRng] 𝓡') ≡ (forget-Noether 𝓡 ≅[Rng] forget-Noether 𝓡')
@@ -12004,6 +12014,7 @@ We now consider commutative Noetherian local rings as a second example.
     𝓡 : Rng
     𝓡 = (R , (_+_ , _·_) , i-vii)
 
+
   being-CNL-is-subsingleton : (𝓡 : Ring) → is-subsingleton (is-CNL 𝓡)
   being-CNL-is-subsingleton (R , (𝟏 , _+_ , _·_) , i-vii , viii) =
 
@@ -12014,8 +12025,10 @@ We now consider commutative Noetherian local rings as a second example.
     𝓡 : Rng
     𝓡 = (R , (_+_ , _·_) , i-vii)
 
+
   CNL-Ring : 𝓤 ⁺ ̇
   CNL-Ring = Σ \(𝓡 : Ring) → is-CNL 𝓡
+
 
   _≅[CNL]_ : CNL-Ring → CNL-Ring → 𝓤 ̇
 
@@ -12027,16 +12040,19 @@ We now consider commutative Noetherian local rings as a second example.
                                 × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
                                 × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
 
+
   forget-CNL : CNL-Ring → Ring
   forget-CNL (𝓡 , _) = 𝓡
 
   forget-CNL-is-embedding : is-embedding forget-CNL
   forget-CNL-is-embedding = pr₁-embedding being-CNL-is-subsingleton
 
+
   NB' : (𝓡 𝓡' : CNL-Ring)
       → (𝓡 ≅[CNL] 𝓡') ≡ (forget-CNL 𝓡 ≅[Ring] forget-CNL 𝓡')
 
   NB' 𝓡 𝓡' = refl _
+
 
   characterization-of-CNL-ring-≡ : (𝓡 𝓡' : CNL-Ring)
                                  → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[CNL] 𝓡')
@@ -12051,6 +12067,7 @@ We now consider commutative Noetherian local rings as a second example.
       i = ≃-sym (embedding-criterion-converse forget-CNL
                    forget-CNL-is-embedding 𝓡 𝓡')
       ii = characterization-of-ring-≡ (forget-CNL 𝓡) (forget-CNL 𝓡')
+
 
   isomorphic-CNL-Ring-transport :
 
@@ -12125,8 +12142,12 @@ Unique-Choice : (𝓤 𝓥 𝓦 : Universe) → (𝓤 ⊔ 𝓥 ⊔ 𝓦)⁺ ̇
 Unique-Choice 𝓤 𝓥 𝓦 = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
                      → ((x : X) → ∃! \(a : A x) → R x a)
                      → ∃! \(f : Π A) → (x : X) → R x (f x)
+\end{code}
 
+This can be read as saying that every single-valued relation is the
+graph of a unique function.
 
+\begin{code}
 vvfunext-gives-unique-choice : vvfunext 𝓤 (𝓥 ⊔ 𝓦) → Unique-Choice 𝓤 𝓥 𝓦
 vvfunext-gives-unique-choice vv X A R s = c
  where
