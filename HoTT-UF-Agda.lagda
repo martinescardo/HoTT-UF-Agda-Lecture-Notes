@@ -12211,6 +12211,21 @@ unique-choice-gives-vvfunext {𝓤} {𝓥} uc {X} {A} φ = γ
   γ = retract-of-singleton ρ e'
 \end{code}
 
+Here is an alternative proof that derives `hfunext` instead:
+
+\begin{code}
+unique-choice-gives-hfunext : Unique-Choice 𝓤 𝓥 𝓥 → hfunext 𝓤 𝓥
+unique-choice-gives-hfunext {𝓤} {𝓥} uc = →hfunext γ
+ where
+  γ : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (f : Π A) → ∃! \(g : Π A) → f ∼ g
+  γ X A f = uc X A R e
+   where
+    R : (x : X) → A x → 𝓥 ̇
+    R x a = f x ≡ a
+    e : (x : X) → ∃! \(a : A x) → f x ≡ a
+    e x = singleton-types'-are-singletons (A x) (f x)
+\end{code}
+
 The above is not quite the converse of the previous, as there is a
 universe mismatch, but we do get a logical equivalence by taking `𝓦`
 to be `𝓥`:

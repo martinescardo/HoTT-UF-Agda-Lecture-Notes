@@ -6773,6 +6773,17 @@ unique-choice-gives-vvfunext {𝓤} {𝓥} uc {X} {A} φ = γ
   γ : is-singleton (Π A)
   γ = retract-of-singleton ρ e'
 
+unique-choice-gives-hfunext : Unique-Choice 𝓤 𝓥 𝓥 → hfunext 𝓤 𝓥
+unique-choice-gives-hfunext {𝓤} {𝓥} uc = →hfunext γ
+ where
+  γ : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (f : Π A) → ∃! \(g : Π A) → f ∼ g
+  γ X A f = uc X A R e
+   where
+    R : (x : X) → A x → 𝓥 ̇
+    R x a = f x ≡ a
+    e : (x : X) → ∃! \(a : A x) → f x ≡ a
+    e x = singleton-types'-are-singletons (A x) (f x)
+
 unique-choice⇔vvfunext : Unique-Choice 𝓤 𝓥 𝓥 ⇔ vvfunext 𝓤 𝓥
 unique-choice⇔vvfunext = unique-choice-gives-vvfunext ,
                          vvfunext-gives-unique-choice
