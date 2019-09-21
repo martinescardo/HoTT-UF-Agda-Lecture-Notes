@@ -3671,27 +3671,14 @@ retract-universal-lemma A x ρ = i
   i : ∃! A
   i = retract-of-singleton σ (singleton-types'-are-singletons (domain A) x)
 
-fiberwise-equiv-universal : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X) (a : A x)
-                          → is-fiberwise-equiv (𝓝 A x a)
+fiberwise-equiv-universal : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X) (τ : Nat (𝓨 x) A)
+                          → is-fiberwise-equiv τ
                           → ∃! A
 
-fiberwise-equiv-universal A x a e = retract-universal-lemma A x ρ
+fiberwise-equiv-universal A x τ e = retract-universal-lemma A x ρ
  where
   ρ : ∀ y → A y ◁ (x ≡ y)
-  ρ y = ≃-gives-▷ (𝓝 A x a y , e y)
-
-_≃̇_ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-A ≃̇ B = ∀ x → A x ≃ B x
-
-is-representable : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-is-representable A = Σ \(x : domain A) → 𝓨 x ≃̇ A
-
-representable-universal : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
-                        → is-representable A
-                        → ∃! A
-
-representable-universal A (x , e) = retract-universal-lemma A x
-                                     (λ x → ≃-gives-▷ (e x))
+  ρ y = ≃-gives-▷ ((τ y) , e y)
 
 universal-fiberwise-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
                           → ∃! A
@@ -3707,6 +3694,29 @@ universal-fiberwise-equiv {𝓤} {𝓥} {X} A x u τ = γ
 
   γ : is-fiberwise-equiv τ
   γ = NatΣ-equiv-gives-fiberwise-equiv τ e
+
+hfunext→ : hfunext 𝓤 𝓥
+         → ((X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (f : Π A) → ∃! \(g : Π A) → f ∼ g)
+
+hfunext→ hfe X A f = fiberwise-equiv-universal (f ∼_) f (happly f) (hfe f)
+
+→hfunext : ((X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (f : Π A) → ∃! \(g : Π A) → f ∼ g)
+         → hfunext 𝓤 𝓥
+
+→hfunext {𝓤} {𝓥} φ {X} {A} f = universal-fiberwise-equiv (f ∼_) f (φ X A f) (happly f)
+
+_≃̇_ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+A ≃̇ B = ∀ x → A x ≃ B x
+
+is-representable : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+is-representable A = Σ \(x : domain A) → 𝓨 x ≃̇ A
+
+representable-universal : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                        → is-representable A
+                        → ∃! A
+
+representable-universal A (x , e) = retract-universal-lemma A x
+                                     (λ x → ≃-gives-▷ (e x))
 
 universal-representable : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                         → ∃! A

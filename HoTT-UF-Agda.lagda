@@ -7396,14 +7396,53 @@ retract-universal-lemma A x ρ = i
   i = retract-of-singleton σ (singleton-types'-are-singletons (domain A) x)
 
 
-fiberwise-equiv-universal : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X) (a : A x)
-                          → is-fiberwise-equiv (𝓝 A x a)
+fiberwise-equiv-universal : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X) (τ : Nat (𝓨 x) A)
+                          → is-fiberwise-equiv τ
                           → ∃! A
 
-fiberwise-equiv-universal A x a e = retract-universal-lemma A x ρ
+fiberwise-equiv-universal A x τ e = retract-universal-lemma A x ρ
  where
   ρ : ∀ y → A y ◁ (x ≡ y)
-  ρ y = ≃-gives-▷ (𝓝 A x a y , e y)
+  ρ y = ≃-gives-▷ ((τ y) , e y)
+\end{code}
+
+Conversely:
+
+\begin{code}
+universal-fiberwise-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
+                          → ∃! A
+                          → (τ : Nat (𝓨 x) A) → is-fiberwise-equiv τ
+
+universal-fiberwise-equiv {𝓤} {𝓥} {X} A x u τ = γ
+ where
+  g : singleton-type' x → Σ A
+  g = NatΣ τ
+
+  e : is-equiv g
+  e = maps-of-singletons-are-equivs g (singleton-types'-are-singletons X x) u
+
+  γ : is-fiberwise-equiv τ
+  γ = NatΣ-equiv-gives-fiberwise-equiv τ e
+\end{code}
+
+In particular, the induced transport transformation `𝓝 A x a` is a fiberwise equivalence if and only if `∃! A`.
+
+A corollary is the following characterization of function
+extensionality, similar to the [above characterization of
+univalence](HoTT-UF-Agda.html#unicharac), by taking the transformation
+`τ = happly f`, because `hfe f` says that `τ` is a fiberwise equivalence:
+
+\begin{code}
+hfunext→ : hfunext 𝓤 𝓥
+         → ((X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (f : Π A) → ∃! \(g : Π A) → f ∼ g)
+
+hfunext→ hfe X A f = fiberwise-equiv-universal (f ∼_) f (happly f) (hfe f)
+
+
+→hfunext : ((X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (f : Π A) → ∃! \(g : Π A) → f ∼ g)
+         → hfunext 𝓤 𝓥
+
+→hfunext {𝓤} {𝓥} φ {X} {A} f = universal-fiberwise-equiv (f ∼_) f (φ X A f) (happly f)
 \end{code}
 
 A presheaf is called *representable* if it is pointwise equivalent to a
@@ -7424,22 +7463,6 @@ representable-universal : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
 
 representable-universal A (x , e) = retract-universal-lemma A x
                                      (λ x → ≃-gives-▷ (e x))
-
-
-universal-fiberwise-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
-                          → ∃! A
-                          → (τ : Nat (𝓨 x) A) → is-fiberwise-equiv τ
-
-universal-fiberwise-equiv {𝓤} {𝓥} {X} A x u τ = γ
- where
-  g : singleton-type' x → Σ A
-  g = NatΣ τ
-
-  e : is-equiv g
-  e = maps-of-singletons-are-equivs g (singleton-types'-are-singletons X x) u
-
-  γ : is-fiberwise-equiv τ
-  γ = NatΣ-equiv-gives-fiberwise-equiv τ e
 
 
 universal-representable : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
