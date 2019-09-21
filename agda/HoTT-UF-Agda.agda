@@ -3703,7 +3703,7 @@ hfunext→ hfe X A f = fiberwise-equiv-universal (f ∼_) f (happly f) (hfe f)
 →hfunext : ((X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (f : Π A) → ∃! \(g : Π A) → f ∼ g)
          → hfunext 𝓤 𝓥
 
-→hfunext {𝓤} {𝓥} φ {X} {A} f = universal-fiberwise-equiv (f ∼_) f (φ X A f) (happly f)
+→hfunext φ {X} {A} f = universal-fiberwise-equiv (f ∼_) f (φ X A f) (happly f)
 
 _≃̇_ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 A ≃̇ B = ∀ x → A x ≃ B x
