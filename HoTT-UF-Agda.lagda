@@ -7396,7 +7396,8 @@ retract-universal-lemma A x ρ = i
   i = retract-of-singleton σ (singleton-types'-are-singletons (domain A) x)
 
 
-fiberwise-equiv-universal : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X) (τ : Nat (𝓨 x) A)
+fiberwise-equiv-universal : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                            (x : X) (τ : Nat (𝓨 x) A)
                           → is-fiberwise-equiv τ
                           → ∃! A
 
@@ -7409,11 +7410,11 @@ fiberwise-equiv-universal A x τ e = retract-universal-lemma A x ρ
 Conversely:
 
 \begin{code}
-universal-fiberwise-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
+universal-fiberwise-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
                           → ∃! A
-                          → (τ : Nat (𝓨 x) A) → is-fiberwise-equiv τ
+                          → (x : X) (τ : Nat (𝓨 x) A) → is-fiberwise-equiv τ
 
-universal-fiberwise-equiv {𝓤} {𝓥} {X} A x u τ = γ
+universal-fiberwise-equiv {𝓤} {𝓥} {X} A u x τ = γ
  where
   g : singleton-type' x → Σ A
   g = NatΣ τ
@@ -7425,7 +7426,7 @@ universal-fiberwise-equiv {𝓤} {𝓥} {X} A x u τ = γ
   γ = NatΣ-equiv-gives-fiberwise-equiv τ e
 \end{code}
 
-In particular, the induced transport transformation `𝓝 A x a` is a fiberwise equivalence if and only if `∃! A`.
+In particular, the induced transport transformation `τ = 𝓝 A x a` is a fiberwise equivalence if and only if `∃! A`.
 
 A corollary is the following characterization of function
 extensionality, similar to the [above characterization of
@@ -7442,7 +7443,7 @@ hfunext→ hfe X A f = fiberwise-equiv-universal (f ∼_) f (happly f) (hfe f)
 →hfunext : ((X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (f : Π A) → ∃! \(g : Π A) → f ∼ g)
          → hfunext 𝓤 𝓥
 
-→hfunext φ {X} {A} f = universal-fiberwise-equiv (f ∼_) f (φ X A f) (happly f)
+→hfunext φ {X} {A} f = universal-fiberwise-equiv (f ∼_) (φ X A f) f (happly f)
 \end{code}
 
 A presheaf is called *representable* if it is pointwise equivalent to a
@@ -7472,7 +7473,7 @@ universal-representable : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
 universal-representable {𝓤} {𝓥} {X} {A} ((x , a) , p) = x , φ
  where
   e : is-fiberwise-equiv (𝓝 A x a)
-  e = universal-fiberwise-equiv A x ((x , a) , p) (𝓝 A x a)
+  e = universal-fiberwise-equiv A ((x , a) , p) x (𝓝 A x a)
 
   φ : (y : X) → (x ≡ y) ≃ A y
   φ y = (𝓝 A x a y , e y)
@@ -7496,7 +7497,7 @@ fiberwise-retractions-are-equivs {𝓤} {𝓥} {X} A x τ s = γ
   i = retract-universal-lemma A x ρ
 
   γ : is-fiberwise-equiv τ
-  γ = universal-fiberwise-equiv A x i τ
+  γ = universal-fiberwise-equiv A i x τ
 \end{code}
 
 Perhaps the following formulation is more appealing:
@@ -7545,7 +7546,7 @@ being-representable-is-subsingleton fe {X} A r₀ r₁ = γ
   i : (x : X) (τ : Nat (𝓨 x) A) → is-singleton (is-fiberwise-equiv τ)
   i x τ = pointed-subsingletons-are-singletons
            (is-fiberwise-equiv τ)
-           (universal-fiberwise-equiv A x u τ)
+           (universal-fiberwise-equiv A u x τ)
            (being-fiberwise-equiv-is-subsingleton fe τ)
 
   ε : (x : X) → (𝓨 x ≃̇ A) ≃ A x
