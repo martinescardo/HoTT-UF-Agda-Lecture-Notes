@@ -2805,9 +2805,7 @@ to be the case, it is absolutely necessary that the carrier of a
 monoid is a set rather than an arbitrary type, for otherwise the
 monoid equations can hold in many possible ways, and we would need to
 consider a notion of monoid isomorphism that in addition to preserving
-the neutral element and the multiplication, preserves the identifications, and
-the preservations of the identifications, and the preservation of the
-preservations of the identifications, *ad infinitum*.
+the neutral element and the multiplication, preserves the identifications.
 
 *Exercise*. Define the type of [groups](https://en.wikipedia.org/wiki/Group_(mathematics)) (with sets as carriers).
 
