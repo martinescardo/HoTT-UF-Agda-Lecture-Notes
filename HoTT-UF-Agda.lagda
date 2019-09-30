@@ -5754,43 +5754,44 @@ We have the following corollaries. We first formulate the types of
 some functions:
 
 \begin{code}
-funext-gives-hfunext       : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → hfunext 𝓤 𝓥
-dfunext-gives-hfunext      : dfunext 𝓤 𝓥 → hfunext 𝓤 𝓥
-funext-gives-dfunext       : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → dfunext 𝓤 𝓥
-univalence-gives-dfunext'  : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
-univalence-gives-hfunext'  : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → hfunext 𝓤 𝓥
-univalence-gives-vvfunext' : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → vvfunext 𝓤 𝓥
-univalence-gives-hfunext   : is-univalent 𝓤 → hfunext 𝓤 𝓤
-univalence-gives-dfunext   : is-univalent 𝓤 → dfunext 𝓤 𝓤
-univalence-gives-vvfunext  : is-univalent 𝓤 → vvfunext 𝓤 𝓤
+abstract
+ funext-gives-hfunext       : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → hfunext 𝓤 𝓥
+ dfunext-gives-hfunext      : dfunext 𝓤 𝓥 → hfunext 𝓤 𝓥
+ funext-gives-dfunext       : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → dfunext 𝓤 𝓥
+ univalence-gives-dfunext'  : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
+ univalence-gives-hfunext'  : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → hfunext 𝓤 𝓥
+ univalence-gives-vvfunext' : is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → vvfunext 𝓤 𝓥
+ univalence-gives-hfunext   : is-univalent 𝓤 → hfunext 𝓤 𝓤
+ univalence-gives-dfunext   : is-univalent 𝓤 → dfunext 𝓤 𝓤
+ univalence-gives-vvfunext  : is-univalent 𝓤 → vvfunext 𝓤 𝓤
 \end{code}
 
 And then we give their definitions (Agda makes sure there are no circularities):
 
 \begin{code}
-funext-gives-hfunext fe fe' = vvfunext-gives-hfunext (funext-gives-vvfunext fe fe')
+ funext-gives-hfunext fe fe' = vvfunext-gives-hfunext (funext-gives-vvfunext fe fe')
 
-funext-gives-dfunext fe fe' = hfunext-gives-dfunext (funext-gives-hfunext fe fe')
+ funext-gives-dfunext fe fe' = hfunext-gives-dfunext (funext-gives-hfunext fe fe')
 
-dfunext-gives-hfunext fe = vvfunext-gives-hfunext (dfunext-gives-vvfunext fe)
+ dfunext-gives-hfunext fe = vvfunext-gives-hfunext (dfunext-gives-vvfunext fe)
 
-univalence-gives-dfunext' ua ua' = funext-gives-dfunext
-                                    (univalence-gives-funext ua')
-                                    (univalence-gives-funext ua)
-
-univalence-gives-hfunext' ua ua' = funext-gives-hfunext
+ univalence-gives-dfunext' ua ua' = funext-gives-dfunext
                                      (univalence-gives-funext ua')
                                      (univalence-gives-funext ua)
 
-univalence-gives-vvfunext' ua ua' = funext-gives-vvfunext
-                                     (univalence-gives-funext ua')
-                                     (univalence-gives-funext ua)
+ univalence-gives-hfunext' ua ua' = funext-gives-hfunext
+                                      (univalence-gives-funext ua')
+                                      (univalence-gives-funext ua)
 
-univalence-gives-hfunext ua = univalence-gives-hfunext' ua ua
+ univalence-gives-vvfunext' ua ua' = funext-gives-vvfunext
+                                      (univalence-gives-funext ua')
+                                      (univalence-gives-funext ua)
 
-univalence-gives-dfunext ua = univalence-gives-dfunext' ua ua
+ univalence-gives-hfunext ua = univalence-gives-hfunext' ua ua
 
-univalence-gives-vvfunext ua = univalence-gives-vvfunext' ua ua
+ univalence-gives-dfunext ua = univalence-gives-dfunext' ua ua
+
+ univalence-gives-vvfunext ua = univalence-gives-vvfunext' ua ua
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -8701,6 +8702,35 @@ is itself an equivalence:
    γ = equivs-closed-under-∼
        (Eq→fun-is-equiv (characterization-of-≡ ua σ A B))
        (h A B)
+\end{code}
+
+We conclude this submodule with the following characterization of the canonical map and of when it is an equivalence, applying Yoneda:
+
+\begin{code}
+ canonical-map-charac : {S : 𝓤 ̇ → 𝓥 ̇ }
+                        (ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
+                        (ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
+                        {X : 𝓤 ̇ }
+                        (s t : S X)
+                        (p : s ≡ t)
+                      → canonical-map ι ρ s t p
+                      ≡ transport (λ - → ι (X , s) (X , -) (id-≃ X)) p (ρ (X , s))
+
+ canonical-map-charac ι ρ {X} s = transport-lemma (λ t → ι (X , s) (X , t) (id-≃ X)) s
+                                                  (canonical-map ι ρ s)
+
+ when-canonical-map-is-equiv : {S : 𝓤 ̇ → 𝓥 ̇ }
+                               (ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
+                               (ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
+                               {X : 𝓤 ̇ }
+                             → ((s t : S X) → is-equiv (canonical-map ι ρ s t))
+                             ⇔ ((s : S X) → ∃! \(t : S X) → ι (X , s) (X , t) (id-≃ X))
+
+ when-canonical-map-is-equiv ι ρ {X} = (λ e s → fiberwise-equiv-universal (A s) s (τ s) (e s)) ,
+                                       (λ φ s → universal-fiberwise-equiv (A s) (φ s) s (τ s))
+  where
+   A = λ s t → ι (X , s) (X , t) (id-≃ X)
+   τ = canonical-map ι ρ
 \end{code}
 
 This concludes the module `sip`, and we now consider some examples of uses of this.
