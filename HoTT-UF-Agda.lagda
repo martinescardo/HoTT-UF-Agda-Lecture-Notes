@@ -8719,6 +8719,7 @@ We conclude this submodule with the following characterization of the canonical 
  canonical-map-charac ι ρ {X} s = transport-lemma (λ t → ι (X , s) (X , t) (id-≃ X)) s
                                                   (canonical-map ι ρ s)
 
+
  when-canonical-map-is-equiv : {S : 𝓤 ̇ → 𝓥 ̇ }
                                (ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
                                (ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
