@@ -1,0 +1,6 @@
+#!/bin/bash
+
+ghc --make illiterator.hs
+
+cat HoTT-UF-Agda.lagda | ./illiterator > agda/HoTT-UF-Agda.agda
+cat Universes.lagda    | ./illiterator > agda/Universes.agda
