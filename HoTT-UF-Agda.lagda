@@ -2974,8 +2974,7 @@ Nats-are-natural : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (τ 
 Nats-are-natural A B τ (refl x) = refl (τ x)
 \end{code}
 
-We will have the opportunity to use the following constructions a
-number of times:
+We will use the following constructions a number of times:
 
 \begin{code}
 NatΣ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → Σ A → Σ B
@@ -2988,6 +2987,35 @@ transport-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ )
 
 transport-ap A f (refl x) a = refl a
 \end{code}
+
+We take the opportunity to establish more equations for transport and to define a dependent version of transport:
+
+\begin{code}
+transport-× : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
+                {x y : X} (p : x ≡ y) {c : A x × B x}
+
+            → transport (λ x → A x × B x) p c
+            ≡ (transport A p (pr₁ c) , transport B p (pr₂ c))
+
+transport-× A B (refl _) = refl _
+
+
+transportd : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
+             {x : X} (a : A x) (σ : Σ \(a : A x) → B x a) {y : X} (p : x ≡ y)
+           → B x (pr₁ σ) → B y (transport A p (pr₁ σ))
+
+transportd A B a σ (refl y) = id
+
+
+transport-Σ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
+              {x : X} (y : X) (p : x ≡ y) (a : A x) {σ : Σ \(a : A x) → B x a}
+
+            → transport (λ x → Σ \(y : A x) → B x y) p σ
+            ≡ transport A p (pr₁ σ) , transportd A B a σ p (pr₂ σ)
+
+transport-Σ A B {x} x (refl x) a {σ} = refl σ
+\end{code}
+
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="dependentequality"></a> Identifications that depend on identifications
@@ -5117,6 +5145,14 @@ the induction principle `𝕁-≃` lets both vary:
     → (X Y : 𝓤 ̇ ) (e : X ≃ Y) → A X Y e
 
 𝕁-≃ ua A φ X = ℍ-≃ ua X (A X) (φ X)
+
+
+𝕁-≃-equation : (ua : is-univalent 𝓤)
+             → (A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
+             → (φ : (X : 𝓤 ̇ ) → A X X (id-≃ X))
+             → (X : 𝓤 ̇ ) → 𝕁-≃ ua A φ X X (id-≃ X) ≡ φ X
+
+𝕁-≃-equation ua A φ X = ℍ-≃-equation ua X (A X) (φ X)
 \end{code}
 
 A second set of equivalence induction principles refer to `is-equiv`
@@ -5128,13 +5164,13 @@ rather than `≃` and are proved by reduction to the first version
         → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → (X → Y) → 𝓥 ̇ )
         → A X (𝑖𝑑 X) → (Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → A Y f
 
-ℍ-equiv {𝓤} {𝓥} ua X A a Y f i = γ (f , i) i
+ℍ-equiv {𝓤} {𝓥} ua X A a Y f i = γ (f , i)
  where
-  B : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓤 ⊔ 𝓥 ̇
-  B Y (f , i) = is-equiv f → A Y f
+  B : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇
+  B Y (f , i) = A Y f
 
   b : B X (id-≃ X)
-  b = λ (_ : is-equiv (𝑖𝑑 X)) → a
+  b = a
 
   γ : (e : X ≃ Y) → B Y e
   γ = ℍ-≃ ua X B b Y
@@ -7877,13 +7913,13 @@ H↑-equiv : is-univalent (𝓤 ⊔ 𝓥)
          → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
          → A (Lift 𝓥 X) lift → (Y : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → is-equiv f → A Y f
 
-H↑-equiv {𝓤} {𝓥} {𝓦} ua X A a Y f i = γ (f , i) i
+H↑-equiv {𝓤} {𝓥} {𝓦} ua X A a Y f i = γ (f , i)
  where
-  B : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-  B Y (f , i) = is-equiv f → A Y f
+  B : (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇
+  B Y (f , i) = A Y f
 
   b : B (Lift 𝓥 X) (≃-Lift X)
-  b = λ (_ : is-equiv lift) → a
+  b = a
 
   γ : (e : X ≃ Y) → B Y e
   γ = H↑-≃ ua X B b Y
@@ -7973,13 +8009,13 @@ H↓-equiv : is-univalent (𝓤 ⊔ 𝓥)
          → (Y : 𝓤 ̇ ) (A : (X : 𝓤 ⊔ 𝓥 ̇ ) → (X → Y) → 𝓦 ̇ )
          → A (Lift 𝓥 Y) lower → (X : 𝓤 ⊔ 𝓥 ̇ ) (f : X → Y) → is-equiv f → A X f
 
-H↓-equiv {𝓤} {𝓥} {𝓦} ua Y A a X f i = γ (f , i) i
+H↓-equiv {𝓤} {𝓥} {𝓦} ua Y A a X f i = γ (f , i)
  where
-  B : (X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-  B X (f , i) = is-equiv f → A X f
+  B : (X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇
+  B X (f , i) = A X f
 
   b : B (Lift 𝓥 Y) (Lift-≃ Y)
-  b = λ (_ : is-equiv lower) → a
+  b = a
 
   γ : (e : X ≃ Y) → B X e
   γ = H↓-≃ ua Y B b X
@@ -8318,6 +8354,7 @@ set by definition.
                                  → is-subsingleton (is-magma-hom M N f)
 
  being-magma-hom-is-subsingleton M N f =
+
   Π-is-subsingleton dfe
    (λ x → Π-is-subsingleton dfe
    (λ y → magma-is-set N (f (x ·⟨ M ⟩ y)) (f x ·⟨ N ⟩ f y)))
@@ -8448,11 +8485,13 @@ equal, to the type of magma isomorphisms.
 
  ≅ₘ-charac : (M N : Magma 𝓤)
            → (M ≅ₘ N) ≃ (M ≃ₘ N)
+
  ≅ₘ-charac M N = Σ-cong (magma-iso-charac M N)
 
 
  ≅ₘ-charac' : (M N : Magma 𝓤)
             → (M ≅ₘ N) ≡ (M ≃ₘ N)
+
  ≅ₘ-charac' M N = ap Σ (magma-iso-charac'' M N)
 \end{code}
 
@@ -8568,7 +8607,7 @@ The idea is that
   * `ρ` then stipulates that all identity equivalences are homomorphisms.
 
 We require that any two structures on the same type making the identity
-equivalence a homomorphism must be equal in a canonical way:
+equivalence a homomorphism must be identified in a canonical way:
 
  * The canonical map
 
@@ -8680,6 +8719,7 @@ identity on `Σ S`:
 
   where
    ι   = homomorphic σ
+
    i   = Σ-≡-≃ A B
    ii  = Σ-cong (homomorphism-lemma σ A B)
    iii = ≃-sym (Σ-change-of-variable (ι A B) (Id→Eq ⟨ A ⟩ ⟨ B ⟩) (ua ⟨ A ⟩ ⟨ B ⟩))
@@ -8713,6 +8753,7 @@ We conclude this submodule with the following characterization of the canonical 
                         {X : 𝓤 ̇ }
                         (s t : S X)
                         (p : s ≡ t)
+
                       → canonical-map ι ρ s t p
                       ≡ transport (λ - → ι (X , s) (X , -) (id-≃ X)) p (ρ (X , s))
 
@@ -8724,6 +8765,7 @@ We conclude this submodule with the following characterization of the canonical 
                                (ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
                                (ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
                                {X : 𝓤 ̇ }
+
                              → ((s t : S X) → is-equiv (canonical-map ι ρ s t))
                              ⇔ ((s : S X) → ∃! \(t : S X) → ι (X , s) (X , t) (id-≃ X))
 
@@ -8858,6 +8900,7 @@ In the following construction:
  add-axioms : {S : 𝓤 ̇ → 𝓥 ̇ }
               (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
             → ((X : 𝓤 ̇ ) (s : S X) → is-subsingleton (axioms X s))
+
             → SNS S 𝓣
             → SNS (λ X → Σ \(s : S X) → axioms X s) 𝓣
 
@@ -8886,6 +8929,7 @@ In the following construction:
 
      l : canonical-map ι' ρ' (s , a) (t , b)
        ∼ canonical-map ι ρ s t ∘ ap π {s , a} {t , b}
+
      l (refl (s , a)) = refl (ρ (X , s))
 
      e : is-equiv (canonical-map ι ρ s t ∘ ap π {s , a} {t , b})
@@ -9576,7 +9620,7 @@ However, for some purposes, we may wish to consider two groups to be
 the same if they have the same elements. For example, in order to show
 that the subgroups of a group form an [algebraic
 lattice](https://ncatlab.org/nlab/show/algebraic+lattice) with the
-finitely generated subgroups an the compact elements, it is this
+finitely generated subgroups as the compact elements, it is this
 notion of equality that is used, with subgroup containment
 as the lattice order.
 
@@ -9595,7 +9639,7 @@ formulated and proved in two equivalent ways.
   equality from the powerset.
 
   1. A subgroup of a group `G` is a group `H` *together* with a
-  homomorphic embedding `H → G`. We leave it as an exercise to show
+  homomorphic embedding `H → G`. We leave as an exercise to show
   that this second definition of the type of subgroups produces a type
   that is equivalent to the previous. With this second definition, two
   subgroups `H` and `H'` are equal iff the embeddings `H → G` and `H'
@@ -11130,6 +11174,7 @@ further details about these notions of disjunction and existence.
                        → ((y : Y) → is-subsingleton (P y))
                        → ((x : X) → P (f x))
                        → (y : Y) → P y
+
   surjection-induction f i P j α y = ∥∥-recursion (j y) φ (i y)
    where
     φ : (σ : fiber f y) → P y
@@ -11204,6 +11249,7 @@ subsingleton:
                                        ⇔ (∥ X ∥ × is-subsingleton X)
 
   singleton-iff-inhabited-subsingleton X =
+
     (λ (s : is-singleton X) → singletons-are-inhabited     X s ,
                               singletons-are-subsingletons X s) ,
     Σ-induction (inhabited-subsingletons-are-singletons X)
