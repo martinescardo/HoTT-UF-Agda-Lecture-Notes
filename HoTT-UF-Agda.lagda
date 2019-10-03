@@ -445,7 +445,7 @@ to practice univalent mathematics should consult the above references.
         1. [Images and surjections](HoTT-UF-Agda.html#images-and-surjections)
         1. [A characterization of equivalences](HoTT-UF-Agda.html#equivalence-characterization)
         1. [Exiting truncations](HoTT-UF-Agda.html#exiting-truncations)
-        1. [Noetherian local rings](HoTT-UF-Agda.html#ring-sip)
+        1. [Equality of Noetherian local rings](HoTT-UF-Agda.html#ring-sip)
      1. [Choice in univalent mathematics](HoTT-UF-Agda.html#choice)
         1. [Unique choice](HoTT-UF-Agda.html#unique-choice)
         1. [Univalent choice](HoTT-UF-Agda.html#univalent-choice)
@@ -1062,7 +1062,7 @@ module ℕ-order where
 \end{code}
 
 *Exercise*. After learning [`Σ`](HoTT-UF-Agda.html#sigmatypes)
- and [`_≡_`](HoTT-UF-Agda.html#identitytype) explained below, prove [that](HoTT-UF-Agda.html#BasicArithmetic)
+ and [`_≡_`](HoTT-UF-Agda.html#identitytype) explained below, prove [that](HoTT-UF-Agda.html#basicarithmetic)
 
    > `x ≤ y` if and only if `Σ \(z : ℕ) → x + z ≡ y`.
 
@@ -1533,7 +1533,7 @@ happens with all identifications `p : x ≡ y` between any two points
 `x` and `y` of a type `X`, it suffices to explain what happens with
 the identification `refl x : x ≡ x` for all points `x : X`. This is
 what the induction principle for identity given by Martin-Löf says,
-which he called `J` (we could have called it `≡-induction`, but we
+which he called J (we could have called it `≡-induction`, but we
 prefer to honour MLTT tradition):
 
 \begin{code}
@@ -1593,7 +1593,7 @@ Then we can define `𝕁` from `ℍ` as follows:
 𝕁s-agreement X A f x x (refl x) = refl (f x)
 \end{code}
 
-Similarly define `H'` from `𝕁` without using pattern matching on `refl`
+Similarly define `ℍ'` from `𝕁` without using pattern matching on `refl`
 and show that it coincides with `ℍ` (possibly using pattern matching
 on `refl`). This is [harder](http://www.cse.chalmers.se/~coquand/singl.pdf).
 
@@ -2602,12 +2602,12 @@ the Goldbach conjecture either holds or fails, we still don't know
 which one is the case, despite efforts by the sharpest mathematical
 minds. A hypothetical element of the type `EM` would, in particular,
 be able to solve the Goldbach conjecture. There is nothing wrong or
-contradictory with assuming the existence of such a magic box. There
+contradictory with assuming the existence of such a magic blackbox. There
 is only loss of the implicit algorithmic character of our type theory,
 which most mathematicians will be perfectly happy to live with. In
 these notes we don't advocate any particular philosophy for or against
 excluded middle and other non-constructive principles. We confine
-ourselves to discussing facts.
+ourselves to discussing mathematical facts.
 
 *Exercise*. We also have that it is impossible for `is-singleton X +
 is-empty X` to fail for a given subsingleton `X`, which amounts to
@@ -2988,35 +2988,6 @@ transport-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ )
 transport-ap A f (refl x) a = refl a
 \end{code}
 
-We take the opportunity to establish more equations for transport and to define a dependent version of transport:
-
-\begin{code}
-transport-× : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
-                {x y : X} (p : x ≡ y) {c : A x × B x}
-
-            → transport (λ x → A x × B x) p c
-            ≡ (transport A p (pr₁ c) , transport B p (pr₂ c))
-
-transport-× A B (refl _) = refl _
-
-
-transportd : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
-             {x : X} (a : A x) (σ : Σ \(a : A x) → B x a) {y : X} (p : x ≡ y)
-           → B x (pr₁ σ) → B y (transport A p (pr₁ σ))
-
-transportd A B a σ (refl y) = id
-
-
-transport-Σ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
-              {x : X} (y : X) (p : x ≡ y) (a : A x) {σ : Σ \(a : A x) → B x a}
-
-            → transport (λ x → Σ \(y : A x) → B x y) p σ
-            ≡ transport A p (pr₁ σ) , transportd A B a σ p (pr₂ σ)
-
-transport-Σ A B {x} x (refl x) a {σ} = refl σ
-\end{code}
-
-
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="dependentequality"></a> Identifications that depend on identifications
 
@@ -3171,7 +3142,8 @@ above.
 
 Voevodsky came up with a definition of a type "`f` is an equivalence"
 which is always a subsingleton: a given function `f` can be an
-equivalence in at most one way.
+equivalence in at most one way. In other words, being an equivalence
+is property of `f`, rather than data.
 
 The following special case of `to-Σ-≡` is often useful:
 
@@ -3182,6 +3154,34 @@ to-Σ-≡' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x : X} {a a' : A x}
 to-Σ-≡' {𝓤} {𝓥} {X} {A} {x} = ap (λ - → (x , -))
 \end{code}
 
+We take the opportunity to establish more equations for transport and to define a dependent version of transport:
+
+\begin{code}
+transport-× : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
+                {x y : X} (p : x ≡ y) {c : A x × B x}
+
+            → transport (λ x → A x × B x) p c
+            ≡ (transport A p (pr₁ c) , transport B p (pr₂ c))
+
+transport-× A B (refl _) = refl _
+
+
+transportd : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
+             {x : X} (a : A x) (σ : Σ \(a : A x) → B x a) {y : X} (p : x ≡ y)
+           → B x (pr₁ σ) → B y (transport A p (pr₁ σ))
+
+transportd A B a σ (refl y) = id
+
+
+transport-Σ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
+              {x : X} (y : X) (p : x ≡ y) (a : A x) {σ : Σ \(a : A x) → B x a}
+
+            → transport (λ x → Σ \(y : A x) → B x y) p σ
+            ≡ transport A p (pr₁ σ) , transportd A B a σ p (pr₂ σ)
+
+transport-Σ A B {x} x (refl x) a {σ} = refl σ
+\end{code}
+
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="hlevel"></a> Voevodsky's notion of hlevel
 
@@ -3189,7 +3189,7 @@ Voevodsky's hlevels `0,1,2,3,...` are shifted by `2` with respect to
 the `n`-groupoid numbering convention, and correspond to `-2`-groupoids
 (singletons), `-1`-groupoids (subsingletons), `0`-groupoids (sets),...
 
-The hlevel relation is defined by induction on `ℕ`, with the
+The `hlevel` relation is defined by induction on `ℕ`, with the
 induction step working with the identity types of the elements of the
 type in question:
 
@@ -3200,7 +3200,7 @@ X is-of-hlevel (succ n) = (x x' : X) → ((x ≡ x') is-of-hlevel n)
 \end{code}
 
 It is often convenient in practice to have equivalent formulations of
-the hlevels `1` (as subsingletons) and `2` (as sets), which we will
+the type of hlevel `1` (as subsingletons) and `2` (as sets), which we will
 develop [soon](HoTT-UF-Agda.html#setscharacterization).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -4327,7 +4327,7 @@ will need from the next section onwards. Sample solutions are given
 [below](HoTT-UF-Agda.html#solutions).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="solutions"></a> Formulations
+#### <a id="formulations"></a> Formulations
 
 Define functions for the following type declarations. As a matter of
 procedure, we suggest to import this file in a solutions file and add
@@ -5836,7 +5836,7 @@ And then we give their definitions (Agda makes sure there are no circularities):
 Under univalence, a universe `𝓤` becomes a map classifier, in the
 sense that maps from a type in `𝓤` into a type `Y : 𝓤` are in
 canonical bijection with functions `Y → 𝓤`. Using the following
-*slice* notation, this amounts to a bijection between `𝓤 / Y` and `Y → 𝓤`:
+[slice](https://ncatlab.org/nlab/show/over+category) notation, this amounts to a bijection between `𝓤 / Y` and `Y → 𝓤`:
 
 \begin{code}
 _/_ : (𝓤 : Universe) → 𝓤 ̇ → 𝓤 ⁺ ̇
@@ -7600,11 +7600,11 @@ being-representable-is-subsingleton fe {X} A r₀ r₁ = γ
   γ = singletons-are-subsingletons (is-representable A) v r₀ r₁
 \end{code}
 
-With this it is almost immediate that the Yoneda map is an embedding:
+With this it is almost immediate that the Yoneda map is an embedding of `X` into `X → 𝓤`:
 
 \begin{code}
-𝓨-embedding : Univalence → (X : 𝓤 ̇ ) → is-embedding (𝓨 {𝓤} {X})
-𝓨-embedding {𝓤} ua X A = γ
+𝓨-is-embedding : Univalence → (X : 𝓤 ̇ ) → is-embedding (𝓨 {𝓤} {X})
+𝓨-is-embedding {𝓤} ua X A = γ
  where
   hfe : global-hfunext
   hfe = univalence-gives-global-hfunext ua
@@ -11699,7 +11699,7 @@ If we try to do this with Voevodsky's truncation `is-inhabited`, we
 stumble into an insurmountable problem of size.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="ring-sip"></a> Noetherian local rings
+#### <a id="ring-sip"></a> Equality of Noetherian local rings
 
 A mathematician asked us what a formalization of Noetherian local rings
 would look like in univalent mathematics, in particular with respect

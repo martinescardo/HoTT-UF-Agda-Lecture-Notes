@@ -841,28 +841,6 @@ transport-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ )
 
 transport-ap A f (refl x) a = refl a
 
-transport-× : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
-                {x y : X} (p : x ≡ y) {c : A x × B x}
-
-            → transport (λ x → A x × B x) p c
-            ≡ (transport A p (pr₁ c) , transport B p (pr₂ c))
-
-transport-× A B (refl _) = refl _
-
-transportd : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
-             {x : X} (a : A x) (σ : Σ \(a : A x) → B x a) {y : X} (p : x ≡ y)
-           → B x (pr₁ σ) → B y (transport A p (pr₁ σ))
-
-transportd A B a σ (refl y) = id
-
-transport-Σ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
-              {x : X} (y : X) (p : x ≡ y) (a : A x) {σ : Σ \(a : A x) → B x a}
-
-            → transport (λ x → Σ \(y : A x) → B x y) p σ
-            ≡ transport A p (pr₁ σ) , transportd A B a σ p (pr₂ σ)
-
-transport-Σ A B {x} x (refl x) a {σ} = refl σ
-
 data Color : 𝓤₀ ̇  where
  Black White : Color
 
@@ -887,6 +865,28 @@ to-Σ-≡' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x : X} {a a' : A x}
         → a ≡ a' → Id (Σ A) (x , a) (x , a')
 
 to-Σ-≡' {𝓤} {𝓥} {X} {A} {x} = ap (λ - → (x , -))
+
+transport-× : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
+                {x y : X} (p : x ≡ y) {c : A x × B x}
+
+            → transport (λ x → A x × B x) p c
+            ≡ (transport A p (pr₁ c) , transport B p (pr₂ c))
+
+transport-× A B (refl _) = refl _
+
+transportd : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
+             {x : X} (a : A x) (σ : Σ \(a : A x) → B x a) {y : X} (p : x ≡ y)
+           → B x (pr₁ σ) → B y (transport A p (pr₁ σ))
+
+transportd A B a σ (refl y) = id
+
+transport-Σ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
+              {x : X} (y : X) (p : x ≡ y) (a : A x) {σ : Σ \(a : A x) → B x a}
+
+            → transport (λ x → Σ \(y : A x) → B x y) p σ
+            ≡ transport A p (pr₁ σ) , transportd A B a σ p (pr₂ σ)
+
+transport-Σ A B {x} x (refl x) a {σ} = refl σ
 
 _is-of-hlevel_ : 𝓤 ̇ → ℕ → 𝓤 ̇
 X is-of-hlevel 0        = is-singleton X
@@ -3830,8 +3830,8 @@ being-representable-is-subsingleton fe {X} A r₀ r₁ = γ
   γ : r₀ ≡ r₁
   γ = singletons-are-subsingletons (is-representable A) v r₀ r₁
 
-𝓨-embedding : Univalence → (X : 𝓤 ̇ ) → is-embedding (𝓨 {𝓤} {X})
-𝓨-embedding {𝓤} ua X A = γ
+𝓨-is-embedding : Univalence → (X : 𝓤 ̇ ) → is-embedding (𝓨 {𝓤} {X})
+𝓨-is-embedding {𝓤} ua X A = γ
  where
   hfe : global-hfunext
   hfe = univalence-gives-global-hfunext ua
