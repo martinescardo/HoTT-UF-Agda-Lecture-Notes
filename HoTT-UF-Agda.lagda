@@ -10908,7 +10908,7 @@ It will be convenient to work with the following more concise notation.
  happ₃ = happly₃ _ _
 \end{code}
 
-It will be more convenient to formulate associativity in the following
+It will be also more convenient to formulate associativity in the following
 way rather than the perhaps more familar, equivalent, way
 
    > `∀ x y z → (x · y) · z ≡ x · (y · z)`.
