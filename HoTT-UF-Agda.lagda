@@ -11055,7 +11055,7 @@ The promised characterization of associative ∞-magma equality follows directly
  (X , _·_ , α) ≅ (Y , _*_ , β) =
 
    Σ \(f : X → Y) → is-equiv f
-                  × (Σ \(h : homomorphic _·_ _*_ f) → respect-assoc _·_ _*_ α β f h)
+                  × Σ \(h : homomorphic _·_ _*_ f) → respect-assoc _·_ _*_ α β f h
 
  characterization-of-∞-aMagma-≡ : (A B : ∞-aMagma)
 
@@ -11101,6 +11101,11 @@ The promised characterization of associative ∞-magma equality follows directly
                        (happly₃ f)
                        (λ g → fe₃ f g , fe₃-is-section f g)
 \end{code}
+
+*Exercise*. Generalize the above types and make them as dependent as
+ possible, so that `Y` depends on `X`, and `Z` depends on `X` and `Y`,
+ and `T` depends on `X`, `Y` and `Z`. The constructions and proofs
+ should remain literally the same.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="truncation"></a> Subsingleton truncation

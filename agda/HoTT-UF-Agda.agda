@@ -6078,7 +6078,7 @@ module associative-∞-magma-identity
  (X , _·_ , α) ≅ (Y , _*_ , β) =
 
    Σ \(f : X → Y) → is-equiv f
-                  × (Σ \(h : homomorphic _·_ _*_ f) → respect-assoc _·_ _*_ α β f h)
+                  × Σ \(h : homomorphic _·_ _*_ f) → respect-assoc _·_ _*_ α β f h
 
  characterization-of-∞-aMagma-≡ : (A B : ∞-aMagma)
 
