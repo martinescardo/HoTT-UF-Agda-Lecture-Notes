@@ -438,6 +438,7 @@ to practice univalent mathematics should consult the above references.
         1. [Functor algebras](HoTT-UF-Agda.html#functor-algebras-sip)
         1. [Type-valued preorders](HoTT-UF-Agda.html#infty-preorders-sip)
         1. [Categories](HoTT-UF-Agda.html#categories-sip)
+        1. [Associative ∞-magmas](HoTT-UF-Agda.html#infty-amagmas)
      1. [Subsingleton truncation](HoTT-UF-Agda.html#truncation)
         1. [Voevodsky's approach to subsingleton truncation](HoTT-UF-Agda.html#vvaproach)
         1. [An axiomatic approach](HoTT-UF-Agda.html#axiomatic-approach)
@@ -1685,7 +1686,7 @@ Here we are considering the family `A t = (x ≡ t)`, and using the
 identification `q : y ≡ z` to transport `A y` to `A z`, that is `x ≡
 y` to `x ≡ z`.
 
-*Exercise*. Define an alternative version that uses `p` to
+*Exercise*. Can you define an alternative version that uses `p` to
 transport. Do the two versions give equal results?
 
 When writing `p ∙ q`, we lose information on the lhs and the rhs of the
@@ -1717,6 +1718,45 @@ x ∎ = refl x
 _⁻¹ : {X : 𝓤 ̇ } → {x y : X} → x ≡ y → y ≡ x
 p ⁻¹ = transport (_≡ lhs p) p (refl (lhs p))
 \end{code}
+
+We can define an alternative of identification composition with this:
+\begin{code}
+_∙'_ : {X : 𝓤 ̇ } {x y z : X} → x ≡ y → y ≡ z → x ≡ z
+p ∙' q = transport (_≡ rhs q) (p ⁻¹) q
+\end{code}
+
+This agrees with the previous one:
+
+\begin{code}
+∙agreement : {X : 𝓤 ̇ } {x y z : X} (p : x ≡ y) (q : y ≡ z)
+           → p ∙' q ≡ p ∙ q
+
+∙agreement (refl x) (refl x) = refl (refl x)
+\end{code}
+
+But `refl y` is a definitional neutral element for one of them on the right and for the other one on the left,
+
+ * `p ∙ refl y = p`,
+ * `refl y ∙' q = q`,
+
+which can be checked as follows
+\begin{code}
+rdnel : {X : 𝓤 ̇ } {x y : X} (p : x ≡ y)
+      → p ∙ refl y ≡ p
+
+rdnel p = refl p
+
+
+rdner : {X : 𝓤 ̇ } {y z : X} (q : y ≡ z)
+      → refl y  ∙' q ≡ q
+
+rdner q = refl q
+\end{code}
+
+*Exercise*. The identification `refl y` is neutral on both sides of
+ each of the two operations `_∙_` and `_∙'_`, although not
+ definitionally. This has to be proved by induction on
+ identifications, as in `∙-agreement`.
 
 *Application of a function to an identification*.
 Given an identification `p : x ≡ x'` we get an identification
@@ -10826,6 +10866,243 @@ here is not affected by the univalence requirement, or any
 subsingleton-valued property of categories.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+#### <a id="infty-amagmas"></a> Associative ∞-magmas
+
+In the absence of the requirement that the underlying type is a set,
+in the characterization of equality of associative ∞-magmas, the
+equivalences have to be not only homomorphic with respect to the magma
+operations but also with respect to the associativity data. Moreover,
+the notion of preservation of the associativity data depends on the
+homomorphism data for the equivalence, rather than only on the equivalence.
+
+\begin{code}
+module associative-∞-magma-identity
+        {𝓤 : Universe}
+        (ua : is-univalent 𝓤)
+       where
+\end{code}
+
+We first need some preparation.
+
+\begin{code}
+ hfe : hfunext 𝓤 𝓤
+ hfe = univalence-gives-hfunext ua
+
+ fe : {X : 𝓤 ̇ } {A : X → 𝓤 ̇ } {f g : Π A} → f ∼ g → f ≡ g
+ fe = inverse (happly _ _) (hfe _ _)
+
+ happly₃ : {X Y Z T : 𝓤 ̇ } (f g : X → Y → Z → T) → f ≡ g → ∀ x y z → f x y z ≡ g x y z
+ happly₃ f g p x y z = happly (f x y) (g x y) (happly (f x) (g x) (happly f g p x) y) z
+\end{code}
+
+*Exercise.*
+
+\begin{code}
+ happly₃-is-equiv : {X Y Z T : 𝓤 ̇ } (f g : X → Y → Z → T) → is-equiv (happly₃ f g)
+\end{code}
+This is solved at the end of this section.
+
+It will be convenient to work with the following more concise notation.
+\begin{code}
+ happ₃ : {X Y Z T : 𝓤 ̇ } {f g : X → Y → Z → T} → f ≡ g → ∀ x y z → f x y z ≡ g x y z
+ happ₃ = happly₃ _ _
+\end{code}
+
+It will be more convenient to formulate associativity in the following
+way rather than the perhaps more familar, equivalent, way
+
+   > `∀ x y z → (x · y) · z ≡ x · (y · z)`.
+
+\begin{code}
+ associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
+
+ associative _·_ =     (λ x y z → (x · y) · z)
+                     ≡ (λ x y z → x · (y · z))
+
+
+ ∞-amagma-structure : 𝓤 ̇ → 𝓤 ̇
+ ∞-amagma-structure X = Σ \(_·_ : X → X → X) → associative _·_
+
+ ∞-aMagma : 𝓤 ⁺ ̇
+ ∞-aMagma = Σ \(X : 𝓤 ̇ ) → ∞-amagma-structure X
+
+ homomorphic : {X Y : 𝓤 ̇ } → (X → X → X) → (Y → Y → Y) → (X → Y) → 𝓤 ̇
+
+ homomorphic _·_ _*_ f =    (λ x y → f (x · y))
+                          ≡ (λ x y → f x * f y)
+\end{code}
+
+As discussed above, the notion of preservation of the associativity
+depends not only on the homomorphism `f` but also on the data `h`
+making it homomorphic:
+
+\begin{code}
+ respect-assoc : {X A : 𝓤 ̇ } (_·_ : X → X → X) (_*_ : A → A → A)
+               → associative _·_ → associative _*_
+               → (f : X → A) → homomorphic _·_ _*_ f → 𝓤 ̇
+
+ respect-assoc _·_ _*_ α β f h  =  βf ≡ fα
+
+  where
+   l = λ x y z → f ((x · y) · z)   ≡⟨ ap (λ - → - (x · y) z) h ⟩
+                 f (x · y) * f z   ≡⟨ ap (λ - → - x y * f z) h ⟩
+                 (f x * f y) * f z ∎
+
+   r = λ x y z → f (x · (y · z))   ≡⟨ ap (λ - → - x (y · z)) h  ⟩
+                 f x * f (y · z)   ≡⟨ ap (λ - → f x * - y z) h ⟩
+                 f x * (f y * f z) ∎
+
+   βf : ∀ x y z → f ((x · y) · z) ≡ f x * (f y * f z)
+   βf x y z = l x y z ∙' happ₃ β (f x) (f y) (f z)
+
+   fα : ∀ x y z → f ((x · y) · z) ≡ f x * (f y * f z)
+   fα x y z = ap f (happ₃ α x y z) ∙ r x y z
+\end{code}
+
+The functions `l` and `r`, defined from the binary homomorphism
+condition `h`, give the homomorphism condition for the two induced
+ternary magma operations of each magma.
+
+Notice that we have used identitification composition `∙'` rather than
+the default one `∙` in one place, because its definitional behaviour
+consirably simplifies some proofs. In particular, the following holds by
+construction:
+
+\begin{code}
+ respect-assoc-obs : {X : 𝓤 ̇ } (_·_ : X → X → X)
+                   → (α β : associative _·_ )
+
+                   → respect-assoc _·_ _·_ α β id (refl _·_)
+                   ≡ (happ₃ β ≡ (λ x y z → ap id (happ₃ α x y z)))
+
+ respect-assoc-obs _·_ α β = refl _
+\end{code}
+
+Notice that `(λ x y z → ap id (happ₃ α x y z))) ≡ happ₃ α` (not
+definitionally) using function extensionality and the fact that `ap
+id` is an identity function itself.
+
+The homomorphism condition `ι` is then defined as expected and the
+reflexivity condition `ρ` relies on the above observation.
+
+\begin{code}
+ open sip hiding (homomorphic)
+
+ sns-data : SNS ∞-amagma-structure 𝓤
+ sns-data = (ι , ρ , θ)
+  where
+   ι : (𝓧 𝓐 : ∞-aMagma) → ⟨ 𝓧 ⟩ ≃ ⟨ 𝓐 ⟩ → 𝓤 ̇
+   ι (X , _·_ , α) (A , _*_ , β) (f , i) =
+
+       Σ \(h : homomorphic _·_ _*_ f) → respect-assoc _·_ _*_ α β f h
+
+
+   ρ : (𝓧 : ∞-aMagma) → ι 𝓧 𝓧 (id-≃ ⟨ 𝓧 ⟩)
+   ρ (X , _·_ , α) = p , q
+    where
+     p : homomorphic _·_ _·_ id
+     p = refl _·_
+
+     q : happ₃ α ≡ (λ x y z → ap id (happ₃ α x y z))
+     q = (fe (λ x → fe (λ y → fe (λ z → ap-id (happ₃ α x y z)))))⁻¹
+\end{code}
+
+We prove the canonicity condition `θ` with the Yoneda machinery, using
+the following lemma, whose essence is the fact that `happ₃` is an
+equivalence.
+
+\begin{code}
+   u : (X : 𝓤 ̇ ) → ∀ s → ∃! \t → ι (X , s) (X , t) (id-≃ X)
+   u X (_·_ , α) = c , φ
+    where
+     c : Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
+     c = (_·_ , α) , ρ (X , _·_ , α)
+
+     φ : (σ : Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)) → c ≡ σ
+     φ ((_·_ , β) , refl _·_  , k) = γ
+      where
+       a : (x y z : X) → ((x · y) · z) ≡ (x · (y · z))
+       a x y z = ap id (happ₃ α x y z)
+
+       i : is-singleton (fiber happ₃ a)
+       i = happly₃-is-equiv (λ x y z → (x · y) · z) (λ x y z → x · (y · z)) a
+
+       j : is-subsingleton (fiber happ₃ a)
+       j = singletons-are-subsingletons (fiber happ₃ a) i
+
+       g : fiber happ₃ a → Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
+       g (β , k) = (_·_ , β) , refl _·_ , k
+
+       q : (α ,  pr₂ (ρ (X , (_·_ , α)))) ≡ β , k
+       q = j _ _
+
+       γ : (_·_ , α) , (refl _·_ , pr₂ (ρ (X , (_·_ , α))))
+         ≡ (_·_ , β) , (refl _·_ , k)
+       γ = ap g q
+
+
+   θ : {X : 𝓤 ̇ } (s t : ∞-amagma-structure X) → is-equiv (canonical-map ι ρ s t)
+   θ {X} s = universal-fiberwise-equiv
+               (λ t → ι (X , s) (X , t) (id-≃ X))
+               (u X s) s (canonical-map ι ρ s)
+\end{code}
+
+The promised characterization of associative ∞-magma equality follows directly from the general structure of identity principle:
+
+\begin{code}
+ _≅_ : ∞-aMagma → ∞-aMagma → 𝓤 ̇
+
+ (X , _·_ , α) ≅ (Y , _*_ , β) =
+
+   Σ \(f : X → Y) → is-equiv f
+                  × (Σ \(h : homomorphic _·_ _*_ f) → respect-assoc _·_ _*_ α β f h)
+
+ characterization-of-∞-aMagma-≡ : (A B : ∞-aMagma)
+
+                                → (A ≡ B) ≃ (A ≅ B)
+
+ characterization-of-∞-aMagma-≡ = characterization-of-≡ ua sns-data
+\end{code}
+
+*Appendix to this section.* Solution to the previous exercise.
+
+\begin{code}
+ fe₃ : {X Y Z T : 𝓤 ̇ } (f g : X → Y → Z → T) → (∀ x y z → f x y z ≡ g x y z) → f ≡ g
+ fe₃ f g φ = fe (λ x → fe (λ y → fe (λ z → φ x y z)))
+
+ happ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ≡ g → f ∼ g
+ happ = happly _ _
+
+ fe₃-is-section : {X Y Z T : 𝓤 ̇ } (f g : X → Y → Z → T) → happly₃ f g ∘ fe₃ f g ∼ id
+ fe₃-is-section f g φ = fe (λ x → fe (λ y → fe (γ x y)))
+  where
+   γ : ∀ x y z → happ (happ (happ (fe (λ x → fe (λ y → fe (φ x y)))) x) y) z ≡ φ x y z
+
+   γ x y z = happ (happ (happ (fe (λ x → fe (λ y → fe (φ x y)))) x) y) z ≡⟨ a ⟩
+             happ (happ (fe (λ y → fe (φ x y))) y) z                     ≡⟨ b ⟩
+             happ (fe (φ x y)) z                                         ≡⟨ c ⟩
+             φ x y z                                                     ∎
+     where
+      j : happ (fe (λ x → fe (λ y → fe (φ x y)))) ≡ (λ x → fe (λ y → fe (φ x y)))
+      k : happ (fe (λ y → fe (λ z → φ x y z)))    ≡ (λ y → fe (λ z → φ x y z))
+      l : happ (fe (λ z → φ x y z))               ≡ (λ z → φ x y z)
+
+      j = inverse-is-section happ (hfe  f       g)      (λ x → fe (λ y → fe (φ x y)))
+      k = inverse-is-section happ (hfe (f x)   (g x))   (λ y → fe (λ z → φ x y z))
+      l = inverse-is-section happ (hfe (f x y) (g x y)) (λ z → φ x y z)
+
+      a = ap (λ - → happ (happ (- x ) y) z) j
+      b = ap (λ - → happ (- y) z)           k
+      c = ap (λ - → - z)                    l
+
+ happly₃-is-equiv f = fiberwise-retractions-are-equivs
+                       (λ g → ∀ x y z → f x y z ≡ g x y z)
+                       f
+                       (happly₃ f)
+                       (λ g → fe₃ f g , fe₃-is-section f g)
+\end{code}
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="truncation"></a> Subsingleton truncation
 
 #### <a id="vvaproach"> Voevodsky's approach to subsingleton truncation
@@ -12007,9 +12284,8 @@ the existential quantifier `∃` available:
 \begin{code}
  module _ (pt : subsingleton-truncations-exist) where
 
-  open ℕ-order
   open basic-truncation-development pt hfe
-
+  open ℕ-order
 
   is-noetherian : (𝓡 : Rng) → 𝓤 ⁺ ̇
   is-noetherian 𝓡 = (I : ℕ → 𝓟 ⟨ 𝓡 ⟩)

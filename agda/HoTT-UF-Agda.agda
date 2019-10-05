@@ -265,6 +265,24 @@ x ∎ = refl x
 _⁻¹ : {X : 𝓤 ̇ } → {x y : X} → x ≡ y → y ≡ x
 p ⁻¹ = transport (_≡ lhs p) p (refl (lhs p))
 
+_∙'_ : {X : 𝓤 ̇ } {x y z : X} → x ≡ y → y ≡ z → x ≡ z
+p ∙' q = transport (_≡ rhs q) (p ⁻¹) q
+
+∙agreement : {X : 𝓤 ̇ } {x y z : X} (p : x ≡ y) (q : y ≡ z)
+           → p ∙' q ≡ p ∙ q
+
+∙agreement (refl x) (refl x) = refl (refl x)
+
+rdnel : {X : 𝓤 ̇ } {x y : X} (p : x ≡ y)
+      → p ∙ refl y ≡ p
+
+rdnel p = refl p
+
+rdner : {X : 𝓤 ̇ } {y z : X} (q : y ≡ z)
+      → refl y  ∙' q ≡ q
+
+rdner q = refl q
+
 ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x x' : X} → x ≡ x' → f x ≡ f x'
 ap f {x} {x'} p = transport (λ - → f x ≡ f -) p (refl (f x))
 
@@ -5939,6 +5957,169 @@ module category-identity
    γ : (𝓧 𝓐 : Cat) → Id→EqCat 𝓧 𝓐 ∼ Eq→fun (characterization-of-category-≡ 𝓧 𝓐)
    γ 𝓧 𝓧 (refl 𝓧) = refl _
 
+module associative-∞-magma-identity
+        {𝓤 : Universe}
+        (ua : is-univalent 𝓤)
+       where
+
+ hfe : hfunext 𝓤 𝓤
+ hfe = univalence-gives-hfunext ua
+
+ fe : {X : 𝓤 ̇ } {A : X → 𝓤 ̇ } {f g : Π A} → f ∼ g → f ≡ g
+ fe = inverse (happly _ _) (hfe _ _)
+
+ happly₃ : {X Y Z T : 𝓤 ̇ } (f g : X → Y → Z → T) → f ≡ g → ∀ x y z → f x y z ≡ g x y z
+ happly₃ f g p x y z = happly (f x y) (g x y) (happly (f x) (g x) (happly f g p x) y) z
+
+ happly₃-is-equiv : {X Y Z T : 𝓤 ̇ } (f g : X → Y → Z → T) → is-equiv (happly₃ f g)
+
+ happ₃ : {X Y Z T : 𝓤 ̇ } {f g : X → Y → Z → T} → f ≡ g → ∀ x y z → f x y z ≡ g x y z
+ happ₃ = happly₃ _ _
+
+ associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
+
+ associative _·_ =     (λ x y z → (x · y) · z)
+                     ≡ (λ x y z → x · (y · z))
+
+ ∞-amagma-structure : 𝓤 ̇ → 𝓤 ̇
+ ∞-amagma-structure X = Σ \(_·_ : X → X → X) → associative _·_
+
+ ∞-aMagma : 𝓤 ⁺ ̇
+ ∞-aMagma = Σ \(X : 𝓤 ̇ ) → ∞-amagma-structure X
+
+ homomorphic : {X Y : 𝓤 ̇ } → (X → X → X) → (Y → Y → Y) → (X → Y) → 𝓤 ̇
+
+ homomorphic _·_ _*_ f =    (λ x y → f (x · y))
+                          ≡ (λ x y → f x * f y)
+
+ respect-assoc : {X A : 𝓤 ̇ } (_·_ : X → X → X) (_*_ : A → A → A)
+               → associative _·_ → associative _*_
+               → (f : X → A) → homomorphic _·_ _*_ f → 𝓤 ̇
+
+ respect-assoc _·_ _*_ α β f h  =  βf ≡ fα
+
+  where
+   l = λ x y z → f ((x · y) · z)   ≡⟨ ap (λ - → - (x · y) z) h ⟩
+                 f (x · y) * f z   ≡⟨ ap (λ - → - x y * f z) h ⟩
+                 (f x * f y) * f z ∎
+
+   r = λ x y z → f (x · (y · z))   ≡⟨ ap (λ - → - x (y · z)) h  ⟩
+                 f x * f (y · z)   ≡⟨ ap (λ - → f x * - y z) h ⟩
+                 f x * (f y * f z) ∎
+
+   βf : ∀ x y z → f ((x · y) · z) ≡ f x * (f y * f z)
+   βf x y z = l x y z ∙' happ₃ β (f x) (f y) (f z)
+
+   fα : ∀ x y z → f ((x · y) · z) ≡ f x * (f y * f z)
+   fα x y z = ap f (happ₃ α x y z) ∙ r x y z
+
+ respect-assoc-obs : {X : 𝓤 ̇ } (_·_ : X → X → X)
+                   → (α β : associative _·_ )
+
+                   → respect-assoc _·_ _·_ α β id (refl _·_)
+                   ≡ (happ₃ β ≡ (λ x y z → ap id (happ₃ α x y z)))
+
+ respect-assoc-obs _·_ α β = refl _
+
+ open sip hiding (homomorphic)
+
+ sns-data : SNS ∞-amagma-structure 𝓤
+ sns-data = (ι , ρ , θ)
+  where
+   ι : (𝓧 𝓐 : ∞-aMagma) → ⟨ 𝓧 ⟩ ≃ ⟨ 𝓐 ⟩ → 𝓤 ̇
+   ι (X , _·_ , α) (A , _*_ , β) (f , i) =
+
+       Σ \(h : homomorphic _·_ _*_ f) → respect-assoc _·_ _*_ α β f h
+
+   ρ : (𝓧 : ∞-aMagma) → ι 𝓧 𝓧 (id-≃ ⟨ 𝓧 ⟩)
+   ρ (X , _·_ , α) = p , q
+    where
+     p : homomorphic _·_ _·_ id
+     p = refl _·_
+
+     q : happ₃ α ≡ (λ x y z → ap id (happ₃ α x y z))
+     q = (fe (λ x → fe (λ y → fe (λ z → ap-id (happ₃ α x y z)))))⁻¹
+
+   u : (X : 𝓤 ̇ ) → ∀ s → ∃! \t → ι (X , s) (X , t) (id-≃ X)
+   u X (_·_ , α) = c , φ
+    where
+     c : Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
+     c = (_·_ , α) , ρ (X , _·_ , α)
+
+     φ : (σ : Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)) → c ≡ σ
+     φ ((_·_ , β) , refl _·_  , k) = γ
+      where
+       a : (x y z : X) → ((x · y) · z) ≡ (x · (y · z))
+       a x y z = ap id (happ₃ α x y z)
+
+       i : is-singleton (fiber happ₃ a)
+       i = happly₃-is-equiv (λ x y z → (x · y) · z) (λ x y z → x · (y · z)) a
+
+       j : is-subsingleton (fiber happ₃ a)
+       j = singletons-are-subsingletons (fiber happ₃ a) i
+
+       g : fiber happ₃ a → Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
+       g (β , k) = (_·_ , β) , refl _·_ , k
+
+       q : (α ,  pr₂ (ρ (X , (_·_ , α)))) ≡ β , k
+       q = j _ _
+
+       γ : (_·_ , α) , (refl _·_ , pr₂ (ρ (X , (_·_ , α))))
+         ≡ (_·_ , β) , (refl _·_ , k)
+       γ = ap g q
+
+   θ : {X : 𝓤 ̇ } (s t : ∞-amagma-structure X) → is-equiv (canonical-map ι ρ s t)
+   θ {X} s = universal-fiberwise-equiv
+               (λ t → ι (X , s) (X , t) (id-≃ X))
+               (u X s) s (canonical-map ι ρ s)
+
+ _≅_ : ∞-aMagma → ∞-aMagma → 𝓤 ̇
+
+ (X , _·_ , α) ≅ (Y , _*_ , β) =
+
+   Σ \(f : X → Y) → is-equiv f
+                  × (Σ \(h : homomorphic _·_ _*_ f) → respect-assoc _·_ _*_ α β f h)
+
+ characterization-of-∞-aMagma-≡ : (A B : ∞-aMagma)
+
+                                → (A ≡ B) ≃ (A ≅ B)
+
+ characterization-of-∞-aMagma-≡ = characterization-of-≡ ua sns-data
+
+ fe₃ : {X Y Z T : 𝓤 ̇ } (f g : X → Y → Z → T) → (∀ x y z → f x y z ≡ g x y z) → f ≡ g
+ fe₃ f g φ = fe (λ x → fe (λ y → fe (λ z → φ x y z)))
+
+ happ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ≡ g → f ∼ g
+ happ = happly _ _
+
+ fe₃-is-section : {X Y Z T : 𝓤 ̇ } (f g : X → Y → Z → T) → happly₃ f g ∘ fe₃ f g ∼ id
+ fe₃-is-section f g φ = fe (λ x → fe (λ y → fe (γ x y)))
+  where
+   γ : ∀ x y z → happ (happ (happ (fe (λ x → fe (λ y → fe (φ x y)))) x) y) z ≡ φ x y z
+
+   γ x y z = happ (happ (happ (fe (λ x → fe (λ y → fe (φ x y)))) x) y) z ≡⟨ a ⟩
+             happ (happ (fe (λ y → fe (φ x y))) y) z                     ≡⟨ b ⟩
+             happ (fe (φ x y)) z                                         ≡⟨ c ⟩
+             φ x y z                                                     ∎
+     where
+      j : happ (fe (λ x → fe (λ y → fe (φ x y)))) ≡ (λ x → fe (λ y → fe (φ x y)))
+      k : happ (fe (λ y → fe (λ z → φ x y z)))    ≡ (λ y → fe (λ z → φ x y z))
+      l : happ (fe (λ z → φ x y z))               ≡ (λ z → φ x y z)
+
+      j = inverse-is-section happ (hfe  f       g)      (λ x → fe (λ y → fe (φ x y)))
+      k = inverse-is-section happ (hfe (f x)   (g x))   (λ y → fe (λ z → φ x y z))
+      l = inverse-is-section happ (hfe (f x y) (g x y)) (λ z → φ x y z)
+
+      a = ap (λ - → happ (happ (- x ) y) z) j
+      b = ap (λ - → happ (- y) z)           k
+      c = ap (λ - → - z)                    l
+
+ happly₃-is-equiv f = fiberwise-retractions-are-equivs
+                       (λ g → ∀ x y z → f x y z ≡ g x y z)
+                       f
+                       (happly₃ f)
+                       (λ g → fe₃ f g , fe₃-is-section f g)
+
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
 
@@ -6648,8 +6829,8 @@ module ring-identity {𝓤 : Universe} (ua : Univalence) where
 
  module _ (pt : subsingleton-truncations-exist) where
 
-  open ℕ-order
   open basic-truncation-development pt hfe
+  open ℕ-order
 
   is-noetherian : (𝓡 : Rng) → 𝓤 ⁺ ̇
   is-noetherian 𝓡 = (I : ℕ → 𝓟 ⟨ 𝓡 ⟩)
