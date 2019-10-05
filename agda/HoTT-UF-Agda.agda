@@ -6043,10 +6043,12 @@ module associative-∞-magma-identity
    u : (X : 𝓤 ̇ ) → ∀ s → ∃! \t → ι (X , s) (X , t) (id-≃ X)
    u X (_·_ , α) = c , φ
     where
-     c : Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
+     S = Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
+
+     c : S
      c = (_·_ , α) , ρ (X , _·_ , α)
 
-     φ : (σ : Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)) → c ≡ σ
+     φ : (σ : S) → c ≡ σ
      φ ((_·_ , β) , refl _·_  , k) = γ
       where
        a : (x y z : X) → ((x · y) · z) ≡ (x · (y · z))
@@ -6058,7 +6060,7 @@ module associative-∞-magma-identity
        j : is-subsingleton (fiber happ₃ a)
        j = singletons-are-subsingletons (fiber happ₃ a) i
 
-       g : fiber happ₃ a → Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
+       g : fiber happ₃ a → S
        g (β , k) = (_·_ , β) , refl _·_ , k
 
        q : (α ,  pr₂ (ρ (X , (_·_ , α)))) ≡ β , k
