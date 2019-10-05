@@ -11051,7 +11051,7 @@ equivalence.
                (u X s) s (canonical-map ι ρ s)
 \end{code}
 
-The promised characterization of associative ∞-magma equality follows directly from the general structure of identity principle:
+The promised characterization of associative ∞-magma equality then follows directly from the general structure of identity principle:
 
 \begin{code}
  _≅_ : ∞-aMagma → ∞-aMagma → 𝓤 ̇
