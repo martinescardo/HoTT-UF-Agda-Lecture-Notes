@@ -10909,9 +10909,11 @@ It will be convenient to work with the following more concise notation.
 \end{code}
 
 It will be also more convenient to formulate associativity in the following
-way rather than the perhaps more familar, equivalent, way
+way rather than the traditional, equivalent, way
 
-   > `∀ x y z → (x · y) · z ≡ x · (y · z)`.
+   > `∀ x y z → (x · y) · z ≡ x · (y · z)`,
+
+although we will need to convert it to the traditional one, with `happ₃`, at some points of the development.
 
 \begin{code}
  associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
