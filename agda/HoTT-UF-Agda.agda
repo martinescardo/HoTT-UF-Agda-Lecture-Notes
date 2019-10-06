@@ -5983,7 +5983,7 @@ module associative-∞-magma-identity'
                → associative _·_ → associative _*_
                → (f : X → A) → homomorphic _·_ _*_ f → 𝓤 ̇
 
- respect-assoc _·_ _*_ α β f h  =  βf ≡ fα
+ respect-assoc _·_ _*_ α β f h  =  fα ≡ βf
 
   where
    l = λ x y z → f ((x · y) · z)   ≡⟨ ap (λ - → - (x · y) z) h ⟩
@@ -5994,17 +5994,17 @@ module associative-∞-magma-identity'
                  f x * f (y · z)   ≡⟨ ap (λ - → f x * - y z) h ⟩
                  f x * (f y * f z) ∎
 
-   βf : ∀ x y z → f ((x · y) · z) ≡ f x * (f y * f z)
-   βf x y z = l x y z ∙' β (f x) (f y) (f z)
-
    fα : ∀ x y z → f ((x · y) · z) ≡ f x * (f y * f z)
    fα x y z = ap f (α x y z) ∙ r x y z
+
+   βf : ∀ x y z → f ((x · y) · z) ≡ f x * (f y * f z)
+   βf x y z = l x y z ∙' β (f x) (f y) (f z)
 
  respect-assoc-obs : {X : 𝓤 ̇ } (_·_ : X → X → X)
                    → (α β : associative _·_ )
 
                    → respect-assoc _·_ _·_ α β id (refl _·_)
-                   ≡ (β ≡ (λ x y z → ap id (α x y z)))
+                   ≡ ((λ x y z → ap id (α x y z)) ≡ β)
 
  respect-assoc-obs _·_ α β = refl _
 
@@ -6024,8 +6024,8 @@ module associative-∞-magma-identity'
      p : homomorphic _·_ _·_ id
      p = refl _·_
 
-     q : α ≡ (λ x y z → ap id (α x y z))
-     q = fe (λ x → fe (λ y → fe (λ z → (ap-id (α x y z))⁻¹)))
+     q : (λ x y z → ap id (α x y z)) ≡ α
+     q = fe (λ x → fe (λ y → fe (λ z → ap-id (α x y z))))
 
    u : (X : 𝓤 ̇ ) → ∀ s → ∃! \t → ι (X , s) (X , t) (id-≃ X)
    u X (_·_ , α) = c , φ
@@ -6041,10 +6041,10 @@ module associative-∞-magma-identity'
        a : (x y z : X) → ((x · y) · z) ≡ (x · (y · z))
        a x y z = ap id (α x y z)
 
-       i : is-subsingleton (singleton-type a)
-       i = singletons-are-subsingletons _ (singleton-types-are-singletons _ a)
+       i : is-subsingleton (singleton-type' a)
+       i = singletons-are-subsingletons _ (singleton-types'-are-singletons _ a)
 
-       g : singleton-type a → S
+       g : singleton-type' a → S
        g (β , k) = (_·_ , β) , refl _·_ , k
 
        q : α , pr₂ (ρ (X , _·_ , α)) ≡ β , k
