@@ -5976,8 +5976,7 @@ module associative-∞-magma-identity
 
  homomorphic : {X Y : 𝓤 ̇ } → (X → X → X) → (Y → Y → Y) → (X → Y) → 𝓤 ̇
 
- homomorphic _·_ _*_ f =    (λ x y → f (x · y))
-                          ≡ (λ x y → f x * f y)
+ homomorphic _·_ _*_ f = (λ x y → f (x · y)) ≡ (λ x y → f x * f y)
 
  respect-assoc : {X A : 𝓤 ̇ } (_·_ : X → X → X) (_*_ : A → A → A)
                → associative _·_ → associative _*_
@@ -5994,15 +5993,13 @@ module associative-∞-magma-identity
                  f x * f (y · z)   ≡⟨ ap (λ - → f x * - y z) h ⟩
                  f x * (f y * f z) ∎
 
-   fα : ∀ x y z → f ((x · y) · z) ≡ f x * (f y * f z)
-   fα x y z = ap f (α x y z) ∙ r x y z
-
-   βf : ∀ x y z → f ((x · y) · z) ≡ f x * (f y * f z)
-   βf x y z = l x y z ∙' β (f x) (f y) (f z)
+   fα βf : ∀ x y z → (f x * f y) * f z ≡ f x * (f y * f z)
+   fα x y z = (l x y z)⁻¹ ∙ ap f (α x y z) ∙ r x y z
+   βf x y z = β (f x) (f y) (f z)
 
  remark : {X : 𝓤 ̇ } (_·_ : X → X → X) (α β : associative _·_ )
         → respect-assoc _·_ _·_ α β id (refl _·_)
-        ≡ ((λ x y z → ap id (α x y z)) ≡ β)
+        ≡ ((λ x y z → refl ((x · y) · z) ∙ ap id (α x y z)) ≡ β)
 
  remark _·_ α β = refl _
 
@@ -6022,8 +6019,8 @@ module associative-∞-magma-identity
      h : homomorphic _·_ _·_ id
      h = refl _·_
 
-     p : (λ x y z → ap id (α x y z)) ≡ α
-     p = fe (λ x → fe (λ y → fe (λ z → ap-id (α x y z))))
+     p : (λ x y z → refl ((x · y) · z) ∙ ap id (α x y z)) ≡ α
+     p = fe (λ x → fe (λ y → fe (λ z → refl-left ∙ ap-id (α x y z))))
 
    u : (X : 𝓤 ̇ ) → ∀ s → ∃! \t → ι (X , s) (X , t) (id-≃ X)
    u X (_·_ , α) = c , φ
@@ -6035,7 +6032,7 @@ module associative-∞-magma-identity
      φ ((_·_ , β) , refl _·_  , k) = γ
       where
        a : associative _·_
-       a x y z = ap id (α x y z)
+       a x y z = refl ((x · y) · z) ∙ ap id (α x y z)
 
        g : singleton-type' a → Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
        g (β , k) = (_·_ , β) , refl _·_ , k

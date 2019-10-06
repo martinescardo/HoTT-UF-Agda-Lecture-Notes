@@ -10894,12 +10894,11 @@ module associative-∞-magma-identity
 
  homomorphic : {X Y : 𝓤 ̇ } → (X → X → X) → (Y → Y → Y) → (X → Y) → 𝓤 ̇
 
- homomorphic _·_ _*_ f =    (λ x y → f (x · y))
-                          ≡ (λ x y → f x * f y)
+ homomorphic _·_ _*_ f = (λ x y → f (x · y)) ≡ (λ x y → f x * f y)
 \end{code}
 
-The notion of preservation of the associativity depends not only on
-the homomorphism `f` but also on the homomorphism data `h` for `f`:
+The notion of preservation of the associativity data depends not only
+on the homomorphism `f` but also on the homomorphism data `h` for `f`:
 
 \begin{code}
  respect-assoc : {X A : 𝓤 ̇ } (_·_ : X → X → X) (_*_ : A → A → A)
@@ -10917,26 +10916,21 @@ the homomorphism `f` but also on the homomorphism data `h` for `f`:
                  f x * f (y · z)   ≡⟨ ap (λ - → f x * - y z) h ⟩
                  f x * (f y * f z) ∎
 
-   fα : ∀ x y z → f ((x · y) · z) ≡ f x * (f y * f z)
-   fα x y z = ap f (α x y z) ∙ r x y z
-
-   βf : ∀ x y z → f ((x · y) · z) ≡ f x * (f y * f z)
-   βf x y z = l x y z ∙' β (f x) (f y) (f z)
+   fα βf : ∀ x y z → (f x * f y) * f z ≡ f x * (f y * f z)
+   fα x y z = (l x y z)⁻¹ ∙ ap f (α x y z) ∙ r x y z
+   βf x y z = β (f x) (f y) (f z)
 \end{code}
 
 The functions `l` and `r`, defined from the binary homomorphism
 condition `h`, give the homomorphism condition for the two induced
 ternary magma operations of each magma.
 
-Notice that we have used identitification composition `∙'` rather than
-the default one `∙` in one place, because its definitional behaviour
-simplifies some proofs. In particular, the following holds by
-construction:
+The following, which holds by construction, will be used implicitly:
 
 \begin{code}
  remark : {X : 𝓤 ̇ } (_·_ : X → X → X) (α β : associative _·_ )
         → respect-assoc _·_ _·_ α β id (refl _·_)
-        ≡ ((λ x y z → ap id (α x y z)) ≡ β)
+        ≡ ((λ x y z → refl ((x · y) · z) ∙ ap id (α x y z)) ≡ β)
 
  remark _·_ α β = refl _
 \end{code}
@@ -10966,8 +10960,8 @@ reflexivity condition `ρ` relies on the above observation.
      h : homomorphic _·_ _·_ id
      h = refl _·_
 
-     p : (λ x y z → ap id (α x y z)) ≡ α
-     p = fe (λ x → fe (λ y → fe (λ z → ap-id (α x y z))))
+     p : (λ x y z → refl ((x · y) · z) ∙ ap id (α x y z)) ≡ α
+     p = fe (λ x → fe (λ y → fe (λ z → refl-left ∙ ap-id (α x y z))))
 \end{code}
 
 We prove the canonicity condition `θ` with the Yoneda machinery.
@@ -10983,7 +10977,7 @@ We prove the canonicity condition `θ` with the Yoneda machinery.
      φ ((_·_ , β) , refl _·_  , k) = γ
       where
        a : associative _·_
-       a x y z = ap id (α x y z)
+       a x y z = refl ((x · y) · z) ∙ ap id (α x y z)
 
        g : singleton-type' a → Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
        g (β , k) = (_·_ , β) , refl _·_ , k
