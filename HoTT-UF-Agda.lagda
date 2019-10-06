@@ -10914,7 +10914,7 @@ the homomorphism `f` but also on the homomorphism data `h` for `f`:
                  f (x · y) * f z   ≡⟨ ap (λ - → - x y * f z) h ⟩
                  (f x * f y) * f z ∎
 
-   r = λ x y z → f (x · (y · z))   ≡⟨ ap (λ - → - x (y · z)) h  ⟩
+   r = λ x y z → f (x · (y · z))   ≡⟨ ap (λ - → - x (y · z)) h ⟩
                  f x * f (y · z)   ≡⟨ ap (λ - → f x * - y z) h ⟩
                  f x * (f y * f z) ∎
 
@@ -10986,17 +10986,18 @@ We prove the canonicity condition `θ` with the Yoneda machinery.
        a : associative _·_
        a x y z = ap id (α x y z)
 
-       i : is-subsingleton (singleton-type' a)
-       i = singletons-are-subsingletons _ (singleton-types'-are-singletons _ a)
-
        g : singleton-type' a → Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
        g (β , k) = (_·_ , β) , refl _·_ , k
+
+       i : is-subsingleton (singleton-type' a)
+       i = singletons-are-subsingletons _ (singleton-types'-are-singletons _ a)
 
        q : α , pr₂ (ρ (X , _·_ , α)) ≡ β , k
        q = i _ _
 
        γ : c ≡ (_·_ , β) , refl _·_ , k
        γ = ap g q
+
 
    θ : {X : 𝓤 ̇ } (s t : ∞-amagma-structure X) → is-equiv (canonical-map ι ρ s t)
    θ {X} s = universal-fiberwise-equiv
