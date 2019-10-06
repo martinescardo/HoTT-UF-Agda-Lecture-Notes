@@ -10935,12 +10935,8 @@ The following, which holds by construction, will be used implicitly:
  remark _·_ α β = refl _
 \end{code}
 
-Notice that `(λ x y z → ap id (α x y z))) ≡ α` (not definitionally)
-using function extensionality and the fact that `ap id` is an identity
-function itself.
-
 The homomorphism condition `ι` is then defined as expected and the
-reflexivity condition `ρ` relies on the above observation.
+reflexivity condition `ρ` relies on the above remark.
 
 \begin{code}
  open sip hiding (homomorphic)
