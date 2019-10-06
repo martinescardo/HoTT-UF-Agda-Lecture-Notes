@@ -10882,11 +10882,7 @@ module associative-∞-magma-identity'
         {𝓤 : Universe}
         (ua : is-univalent 𝓤)
        where
-\end{code}
 
-We first need some preparation.
-
-\begin{code}
  fe : dfunext 𝓤 𝓤
  fe = univalence-gives-dfunext ua
 
