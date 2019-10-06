@@ -25,6 +25,7 @@ _site/HoTT-UF-Agda.html : HoTT-UF-Agda.lagda
 	mv html/Universes.tex    Universes.md
 	time agda --html Universes.lagda
 	mv html/Agda.Primitive.html Agda.Primitive.html
+	$(info If the following fails you may need to run `bundler update`)
 	jekyll build
 
 pdf/all/HoTT-UF-Agda.pdf : _site/HoTT-UF-Agda.html

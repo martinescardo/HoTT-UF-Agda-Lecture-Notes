@@ -10935,8 +10935,8 @@ although we will need to convert it to the traditional one, with `happ₃`, at s
 \end{code}
 
 As discussed above, the notion of preservation of the associativity
-depends not only on the homomorphism `f` but also on the data `h`
-making it homomorphic:
+depends not only on the homomorphism `f` but also on the homomorphism
+data `h` for `f`:
 
 \begin{code}
  respect-assoc : {X A : 𝓤 ̇ } (_·_ : X → X → X) (_*_ : A → A → A)
