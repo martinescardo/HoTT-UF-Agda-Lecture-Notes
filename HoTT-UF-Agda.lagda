@@ -10866,7 +10866,6 @@ a 1-groupoid). In any case, the characterization of equality given
 here is not affected by the univalence requirement, or any
 subsingleton-valued property of categories.
 
-\end{code}
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="infty-amagmas"></a> Associative ∞-magmas
 
@@ -10876,7 +10875,7 @@ the equivalences in the characterization of equality of associative
 operations but also need to respect to the associativity data.
 
 \begin{code}
-module associative-∞-magma-identity'
+module associative-∞-magma-identity
         {𝓤 : Universe}
         (ua : is-univalent 𝓤)
        where

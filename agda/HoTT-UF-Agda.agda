@@ -5957,7 +5957,7 @@ module category-identity
    γ : (𝓧 𝓐 : Cat) → Id→EqCat 𝓧 𝓐 ∼ Eq→fun (characterization-of-category-≡ 𝓧 𝓐)
    γ 𝓧 𝓧 (refl 𝓧) = refl _
 
-module associative-∞-magma-identity'
+module associative-∞-magma-identity
         {𝓤 : Universe}
         (ua : is-univalent 𝓤)
        where
