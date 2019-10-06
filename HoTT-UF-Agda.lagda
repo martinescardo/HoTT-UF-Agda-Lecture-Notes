@@ -10871,11 +10871,9 @@ subsingleton-valued property of categories.
 #### <a id="infty-amagmas"></a> Associative ∞-magmas
 
 In the absence of the requirement that the underlying type is a set,
-in the characterization of equality of associative ∞-magmas, the
-equivalences have to be not only homomorphic with respect to the magma
-operations but also with respect to the associativity data. Moreover,
-the notion of preservation of the associativity data depends on the
-homomorphism data for the equivalence, rather than only on the equivalence.
+the equivalences in the characterization of equality of associative
+∞-magmas not only have to be homomorphic with respect to the magma
+operations but also need to respect to the associativity data.
 
 \begin{code}
 module associative-∞-magma-identity'
@@ -10901,9 +10899,8 @@ module associative-∞-magma-identity'
                           ≡ (λ x y → f x * f y)
 \end{code}
 
-As discussed above, the notion of preservation of the associativity
-depends not only on the homomorphism `f` but also on the homomorphism
-data `h` for `f`:
+The notion of preservation of the associativity depends not only on
+the homomorphism `f` but also on the homomorphism data `h` for `f`:
 
 \begin{code}
  respect-assoc : {X A : 𝓤 ̇ } (_·_ : X → X → X) (_*_ : A → A → A)
@@ -10938,18 +10935,18 @@ consirably simplifies some proofs. In particular, the following holds by
 construction:
 
 \begin{code}
- respect-assoc-obs : {X : 𝓤 ̇ } (_·_ : X → X → X)
-                   → (α β : associative _·_ )
+ remark : {X : 𝓤 ̇ } (_·_ : X → X → X)
+        → (α β : associative _·_ )
 
-                   → respect-assoc _·_ _·_ α β id (refl _·_)
-                   ≡ ((λ x y z → ap id (α x y z)) ≡ β)
+        → respect-assoc _·_ _·_ α β id (refl _·_)
+        ≡ ((λ x y z → ap id (α x y z)) ≡ β)
 
- respect-assoc-obs _·_ α β = refl _
+ remark _·_ α β = refl _
 \end{code}
 
-Notice that `(λ x y z → ap id (happ₃ α x y z))) ≡ α` (not
-definitionally) using function extensionality and the fact that `ap
-id` is an identity function itself.
+Notice that `(λ x y z → ap id (α x y z))) ≡ α` (not definitionally)
+using function extensionality and the fact that `ap id` is an identity
+function itself.
 
 The homomorphism condition `ι` is then defined as expected and the
 reflexivity condition `ρ` relies on the above observation.
@@ -10990,7 +10987,7 @@ We prove the canonicity condition `θ` with the Yoneda machinery.
      φ : (σ : S) → c ≡ σ
      φ ((_·_ , β) , refl _·_  , k) = γ
       where
-       a : (x y z : X) → ((x · y) · z) ≡ (x · (y · z))
+       a : associative _·_
        a x y z = ap id (α x y z)
 
        i : is-subsingleton (singleton-type' a)

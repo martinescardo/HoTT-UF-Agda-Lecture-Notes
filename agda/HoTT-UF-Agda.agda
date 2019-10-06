@@ -6000,13 +6000,13 @@ module associative-∞-magma-identity'
    βf : ∀ x y z → f ((x · y) · z) ≡ f x * (f y * f z)
    βf x y z = l x y z ∙' β (f x) (f y) (f z)
 
- respect-assoc-obs : {X : 𝓤 ̇ } (_·_ : X → X → X)
-                   → (α β : associative _·_ )
+ remark : {X : 𝓤 ̇ } (_·_ : X → X → X)
+        → (α β : associative _·_ )
 
-                   → respect-assoc _·_ _·_ α β id (refl _·_)
-                   ≡ ((λ x y z → ap id (α x y z)) ≡ β)
+        → respect-assoc _·_ _·_ α β id (refl _·_)
+        ≡ ((λ x y z → ap id (α x y z)) ≡ β)
 
- respect-assoc-obs _·_ α β = refl _
+ remark _·_ α β = refl _
 
  open sip hiding (homomorphic)
 
@@ -6038,7 +6038,7 @@ module associative-∞-magma-identity'
      φ : (σ : S) → c ≡ σ
      φ ((_·_ , β) , refl _·_  , k) = γ
       where
-       a : (x y z : X) → ((x · y) · z) ≡ (x · (y · z))
+       a : associative _·_
        a x y z = ap id (α x y z)
 
        i : is-subsingleton (singleton-type' a)
