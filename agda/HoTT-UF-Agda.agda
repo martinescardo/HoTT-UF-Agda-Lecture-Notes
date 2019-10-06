@@ -5975,7 +5975,6 @@ module associative-∞-magma-identity
  ∞-aMagma = Σ \(X : 𝓤 ̇ ) → ∞-amagma-structure X
 
  homomorphic : {X Y : 𝓤 ̇ } → (X → X → X) → (Y → Y → Y) → (X → Y) → 𝓤 ̇
-
  homomorphic _·_ _*_ f = (λ x y → f (x · y)) ≡ (λ x y → f x * f y)
 
  respect-assoc : {X A : 𝓤 ̇ } (_·_ : X → X → X) (_*_ : A → A → A)
@@ -6009,9 +6008,8 @@ module associative-∞-magma-identity
  sns-data = (ι , ρ , θ)
   where
    ι : (𝓧 𝓐 : ∞-aMagma) → ⟨ 𝓧 ⟩ ≃ ⟨ 𝓐 ⟩ → 𝓤 ̇
-   ι (X , _·_ , α) (A , _*_ , β) (f , i) =
-
-       Σ \(h : homomorphic _·_ _*_ f) → respect-assoc _·_ _*_ α β f h
+   ι (X , _·_ , α) (A , _*_ , β) (f , i) = Σ \(h : homomorphic _·_ _*_ f)
+                                                 → respect-assoc _·_ _*_ α β f h
 
    ρ : (𝓧 : ∞-aMagma) → ι 𝓧 𝓧 (id-≃ ⟨ 𝓧 ⟩)
    ρ (X , _·_ , α) = h , p
@@ -6052,16 +6050,12 @@ module associative-∞-magma-identity
                (u X s) s (canonical-map ι ρ s)
 
  _≅_ : ∞-aMagma → ∞-aMagma → 𝓤 ̇
+ (X , _·_ , α) ≅ (Y , _*_ , β) = Σ \(f : X → Y)
+                                       → is-equiv f
+                                       × Σ \(h : homomorphic _·_ _*_ f)
+                                               → respect-assoc _·_ _*_ α β f h
 
- (X , _·_ , α) ≅ (Y , _*_ , β) =
-
-   Σ \(f : X → Y) → is-equiv f
-                  × Σ \(h : homomorphic _·_ _*_ f) → respect-assoc _·_ _*_ α β f h
-
- characterization-of-∞-aMagma-≡ : (A B : ∞-aMagma)
-
-                                → (A ≡ B) ≃ (A ≅ B)
-
+ characterization-of-∞-aMagma-≡ : (A B : ∞-aMagma) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-∞-aMagma-≡ = characterization-of-≡ ua sns-data
 
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇

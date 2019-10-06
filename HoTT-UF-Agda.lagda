@@ -10893,7 +10893,6 @@ module associative-∞-magma-identity
  ∞-aMagma = Σ \(X : 𝓤 ̇ ) → ∞-amagma-structure X
 
  homomorphic : {X Y : 𝓤 ̇ } → (X → X → X) → (Y → Y → Y) → (X → Y) → 𝓤 ̇
-
  homomorphic _·_ _*_ f = (λ x y → f (x · y)) ≡ (λ x y → f x * f y)
 \end{code}
 
@@ -10945,10 +10944,8 @@ reflexivity condition `ρ` relies on the above remark.
  sns-data = (ι , ρ , θ)
   where
    ι : (𝓧 𝓐 : ∞-aMagma) → ⟨ 𝓧 ⟩ ≃ ⟨ 𝓐 ⟩ → 𝓤 ̇
-   ι (X , _·_ , α) (A , _*_ , β) (f , i) =
-
-       Σ \(h : homomorphic _·_ _*_ f) → respect-assoc _·_ _*_ α β f h
-
+   ι (X , _·_ , α) (A , _*_ , β) (f , i) = Σ \(h : homomorphic _·_ _*_ f)
+                                                 → respect-assoc _·_ _*_ α β f h
 
    ρ : (𝓧 : ∞-aMagma) → ι 𝓧 𝓧 (id-≃ ⟨ 𝓧 ⟩)
    ρ (X , _·_ , α) = h , p
@@ -10999,16 +10996,13 @@ follows directly from the general structure of identity principle:
 
 \begin{code}
  _≅_ : ∞-aMagma → ∞-aMagma → 𝓤 ̇
+ (X , _·_ , α) ≅ (Y , _*_ , β) = Σ \(f : X → Y)
+                                       → is-equiv f
+                                       × Σ \(h : homomorphic _·_ _*_ f)
+                                               → respect-assoc _·_ _*_ α β f h
 
- (X , _·_ , α) ≅ (Y , _*_ , β) =
 
-   Σ \(f : X → Y) → is-equiv f
-                  × Σ \(h : homomorphic _·_ _*_ f) → respect-assoc _·_ _*_ α β f h
-
- characterization-of-∞-aMagma-≡ : (A B : ∞-aMagma)
-
-                                → (A ≡ B) ≃ (A ≅ B)
-
+ characterization-of-∞-aMagma-≡ : (A B : ∞-aMagma) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-∞-aMagma-≡ = characterization-of-≡ ua sns-data
 \end{code}
 
