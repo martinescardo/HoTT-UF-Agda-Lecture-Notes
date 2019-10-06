@@ -6000,9 +6000,7 @@ module associative-∞-magma-identity'
    βf : ∀ x y z → f ((x · y) · z) ≡ f x * (f y * f z)
    βf x y z = l x y z ∙' β (f x) (f y) (f z)
 
- remark : {X : 𝓤 ̇ } (_·_ : X → X → X)
-        → (α β : associative _·_ )
-
+ remark : {X : 𝓤 ̇ } (_·_ : X → X → X) (α β : associative _·_ )
         → respect-assoc _·_ _·_ α β id (refl _·_)
         ≡ ((λ x y z → ap id (α x y z)) ≡ β)
 
@@ -6019,23 +6017,21 @@ module associative-∞-magma-identity'
        Σ \(h : homomorphic _·_ _*_ f) → respect-assoc _·_ _*_ α β f h
 
    ρ : (𝓧 : ∞-aMagma) → ι 𝓧 𝓧 (id-≃ ⟨ 𝓧 ⟩)
-   ρ (X , _·_ , α) = p , q
+   ρ (X , _·_ , α) = h , p
     where
-     p : homomorphic _·_ _·_ id
-     p = refl _·_
+     h : homomorphic _·_ _·_ id
+     h = refl _·_
 
-     q : (λ x y z → ap id (α x y z)) ≡ α
-     q = fe (λ x → fe (λ y → fe (λ z → ap-id (α x y z))))
+     p : (λ x y z → ap id (α x y z)) ≡ α
+     p = fe (λ x → fe (λ y → fe (λ z → ap-id (α x y z))))
 
    u : (X : 𝓤 ̇ ) → ∀ s → ∃! \t → ι (X , s) (X , t) (id-≃ X)
    u X (_·_ , α) = c , φ
     where
-     S = Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
-
-     c : S
+     c : Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
      c = (_·_ , α) , ρ (X , _·_ , α)
 
-     φ : (σ : S) → c ≡ σ
+     φ : (σ : Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)) → c ≡ σ
      φ ((_·_ , β) , refl _·_  , k) = γ
       where
        a : associative _·_
@@ -6044,7 +6040,7 @@ module associative-∞-magma-identity'
        i : is-subsingleton (singleton-type' a)
        i = singletons-are-subsingletons _ (singleton-types'-are-singletons _ a)
 
-       g : singleton-type' a → S
+       g : singleton-type' a → Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
        g (β , k) = (_·_ , β) , refl _·_ , k
 
        q : α , pr₂ (ρ (X , _·_ , α)) ≡ β , k
