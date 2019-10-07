@@ -427,6 +427,7 @@ to practice univalent mathematics should consult the above references.
         1. [Combining two mathematical structures](HoTT-UF-Agda.html#combining-structures)
         1. [Pointed ∞-magmas](HoTT-UF-Agda.html#pointed-infty-magmas)
         1. [Monoids](HoTT-UF-Agda.html#monoids-sip)
+        1. [Associative ∞-magmas](HoTT-UF-Agda.html#infty-amagmas)
         1. [Groups](HoTT-UF-Agda.html#groups-sip)
         1. [Subgroups](HoTT-UF-Agda.html#subgroups-sip)
         1. [Rings](HoTT-UF-Agda.html#ring1-sip)
@@ -438,7 +439,6 @@ to practice univalent mathematics should consult the above references.
         1. [Functor algebras](HoTT-UF-Agda.html#functor-algebras-sip)
         1. [Type-valued preorders](HoTT-UF-Agda.html#infty-preorders-sip)
         1. [Categories](HoTT-UF-Agda.html#categories-sip)
-        1. [Associative ∞-magmas](HoTT-UF-Agda.html#infty-amagmas)
      1. [Subsingleton truncation](HoTT-UF-Agda.html#truncation)
         1. [Voevodsky's approach to subsingleton truncation](HoTT-UF-Agda.html#vvaproach)
         1. [An axiomatic approach](HoTT-UF-Agda.html#axiomatic-approach)
@@ -5249,7 +5249,7 @@ For example, using `ℍ-equiv` we see that for any pair of functions
    > `𝓕 : {X Y : 𝓤 ̇ } → (X → Y) → F X → F Y`,
 
 if `𝓕` preserves identities then it automatically preserves
-composition of equivalences. More generally, it is enough that only
+composition of equivalences. More generally, it is enough that at least
 one of the factors is an equivalence:
 
 \begin{code}
@@ -9380,6 +9380,156 @@ identifications as the function that maps the reflexive identification
 to the identity equivalence.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+#### <a id="infty-amagmas"></a> Associative ∞-magmas
+
+In the absence of the requirement that the underlying type is a set,
+the equivalences in the characterization of equality of associative
+∞-magmas not only have to be homomorphic with respect to the magma
+operations but also need to respect to the associativity data.
+
+\begin{code}
+module associative-∞-magma-identity
+        {𝓤 : Universe}
+        (ua : is-univalent 𝓤)
+       where
+
+ fe : dfunext 𝓤 𝓤
+ fe = univalence-gives-dfunext ua
+
+ associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
+ associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
+
+ ∞-amagma-structure : 𝓤 ̇ → 𝓤 ̇
+ ∞-amagma-structure X = Σ \(_·_ : X → X → X) → associative _·_
+
+ ∞-aMagma : 𝓤 ⁺ ̇
+ ∞-aMagma = Σ \(X : 𝓤 ̇ ) → ∞-amagma-structure X
+
+ homomorphic : {X Y : 𝓤 ̇ } → (X → X → X) → (Y → Y → Y) → (X → Y) → 𝓤 ̇
+ homomorphic _·_ _*_ f = (λ x y → f (x · y)) ≡ (λ x y → f x * f y)
+\end{code}
+
+The notion of preservation of the associativity data depends not only
+on the homomorphism `f` but also on the homomorphism data `h` for `f`:
+
+\begin{code}
+ respect-assoc : {X A : 𝓤 ̇ } (_·_ : X → X → X) (_*_ : A → A → A)
+               → associative _·_ → associative _*_
+               → (f : X → A) → homomorphic _·_ _*_ f → 𝓤 ̇
+
+ respect-assoc _·_ _*_ α β f h  =  fα ≡ βf
+  where
+   l = λ x y z → f ((x · y) · z)   ≡⟨ ap (λ - → - (x · y) z) h ⟩
+                 f (x · y) * f z   ≡⟨ ap (λ - → - x y * f z) h ⟩
+                 (f x * f y) * f z ∎
+
+   r = λ x y z → f (x · (y · z))   ≡⟨ ap (λ - → - x (y · z)) h ⟩
+                 f x * f (y · z)   ≡⟨ ap (λ - → f x * - y z) h ⟩
+                 f x * (f y * f z) ∎
+
+   fα βf : ∀ x y z → (f x * f y) * f z ≡ f x * (f y * f z)
+   fα x y z = (l x y z)⁻¹ ∙ ap f (α x y z) ∙ r x y z
+   βf x y z = β (f x) (f y) (f z)
+\end{code}
+
+The functions `l` and `r`, defined from the binary homomorphism
+condition `h`, give the homomorphism condition for the two induced
+ternary magma operations of each magma.
+
+The following, which holds by construction, will be used implicitly:
+
+\begin{code}
+ remark : {X : 𝓤 ̇ } (_·_ : X → X → X) (α β : associative _·_ )
+        → respect-assoc _·_ _·_ α β id (refl _·_)
+        ≡ ((λ x y z → refl ((x · y) · z) ∙ ap id (α x y z)) ≡ β)
+
+ remark _·_ α β = refl _
+\end{code}
+
+The homomorphism condition `ι` is then defined as expected and the
+reflexivity condition `ρ` relies on the above remark.
+
+\begin{code}
+ open sip hiding (homomorphic)
+
+ sns-data : SNS ∞-amagma-structure 𝓤
+ sns-data = (ι , ρ , θ)
+  where
+   ι : (𝓧 𝓐 : ∞-aMagma) → ⟨ 𝓧 ⟩ ≃ ⟨ 𝓐 ⟩ → 𝓤 ̇
+   ι (X , _·_ , α) (A , _*_ , β) (f , i) = Σ \(h : homomorphic _·_ _*_ f)
+                                                 → respect-assoc _·_ _*_ α β f h
+
+   ρ : (𝓧 : ∞-aMagma) → ι 𝓧 𝓧 (id-≃ ⟨ 𝓧 ⟩)
+   ρ (X , _·_ , α) = h , p
+    where
+     h : homomorphic _·_ _·_ id
+     h = refl _·_
+
+     p : (λ x y z → refl ((x · y) · z) ∙ ap id (α x y z)) ≡ α
+     p = fe (λ x → fe (λ y → fe (λ z → refl-left ∙ ap-id (α x y z))))
+\end{code}
+
+We prove the canonicity condition `θ` with the Yoneda machinery.
+
+\begin{code}
+   u : (X : 𝓤 ̇ ) → ∀ s → ∃! \t → ι (X , s) (X , t) (id-≃ X)
+   u X (_·_ , α) = c , φ
+    where
+     c : Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
+     c = (_·_ , α) , ρ (X , _·_ , α)
+
+     φ : (σ : Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)) → c ≡ σ
+     φ ((_·_ , β) , refl _·_  , k) = γ
+      where
+       a : associative _·_
+       a x y z = refl ((x · y) · z) ∙ ap id (α x y z)
+
+       g : singleton-type' a → Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
+       g (β , k) = (_·_ , β) , refl _·_ , k
+
+       i : is-subsingleton (singleton-type' a)
+       i = singletons-are-subsingletons _ (singleton-types'-are-singletons _ a)
+
+       q : α , pr₂ (ρ (X , _·_ , α)) ≡ β , k
+       q = i _ _
+
+       γ : c ≡ (_·_ , β) , refl _·_ , k
+       γ = ap g q
+
+
+   θ : {X : 𝓤 ̇ } (s t : ∞-amagma-structure X) → is-equiv (canonical-map ι ρ s t)
+   θ {X} s = universal-fiberwise-equiv (λ t → ι (X , s) (X , t) (id-≃ X))
+              (u X s) s (canonical-map ι ρ s)
+\end{code}
+
+The promised characterization of associative ∞-magma equality then
+follows directly from the general structure of identity principle:
+
+\begin{code}
+ _≅_ : ∞-aMagma → ∞-aMagma → 𝓤 ̇
+ (X , _·_ , α) ≅ (Y , _*_ , β) = Σ \(f : X → Y)
+                                       → is-equiv f
+                                       × Σ \(h : homomorphic _·_ _*_ f)
+                                               → respect-assoc _·_ _*_ α β f h
+
+
+ characterization-of-∞-aMagma-≡ : (A B : ∞-aMagma) → (A ≡ B) ≃ (A ≅ B)
+ characterization-of-∞-aMagma-≡ = characterization-of-≡ ua sns-data
+\end{code}
+
+We may be tempted to refer to associative ∞-magmas as
+∞-[semigroups](https://en.wikipedia.org/wiki/Semigroup). However, in
+the absence of the requirement that the underlying type is set, it
+makes sense to consider equations for the associativity data, such as
+the
+[pentagon](https://groupprops.subwiki.org/wiki/Associativity_pentagon). This
+is a so-called [coherence
+condition](https://en.wikipedia.org/wiki/Coherence_condition). The
+pentagon is enough if the underlying type is a 1-groupoid. More
+generally, one needs to consider
+[associahedra](https://groupprops.subwiki.org/wiki/Associahedron).
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="groups-sip"></a> Groups
 
 We add an axiom to monoids to get groups.
@@ -10866,145 +11016,6 @@ a 1-groupoid). In any case, the characterization of equality given
 here is not affected by the univalence requirement, or any
 subsingleton-valued property of categories.
 
-[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="infty-amagmas"></a> Associative ∞-magmas
-
-In the absence of the requirement that the underlying type is a set,
-the equivalences in the characterization of equality of associative
-∞-magmas not only have to be homomorphic with respect to the magma
-operations but also need to respect to the associativity data.
-
-\begin{code}
-module associative-∞-magma-identity
-        {𝓤 : Universe}
-        (ua : is-univalent 𝓤)
-       where
-
- fe : dfunext 𝓤 𝓤
- fe = univalence-gives-dfunext ua
-
- associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
- associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
-
- ∞-amagma-structure : 𝓤 ̇ → 𝓤 ̇
- ∞-amagma-structure X = Σ \(_·_ : X → X → X) → associative _·_
-
- ∞-aMagma : 𝓤 ⁺ ̇
- ∞-aMagma = Σ \(X : 𝓤 ̇ ) → ∞-amagma-structure X
-
- homomorphic : {X Y : 𝓤 ̇ } → (X → X → X) → (Y → Y → Y) → (X → Y) → 𝓤 ̇
- homomorphic _·_ _*_ f = (λ x y → f (x · y)) ≡ (λ x y → f x * f y)
-\end{code}
-
-The notion of preservation of the associativity data depends not only
-on the homomorphism `f` but also on the homomorphism data `h` for `f`:
-
-\begin{code}
- respect-assoc : {X A : 𝓤 ̇ } (_·_ : X → X → X) (_*_ : A → A → A)
-               → associative _·_ → associative _*_
-               → (f : X → A) → homomorphic _·_ _*_ f → 𝓤 ̇
-
- respect-assoc _·_ _*_ α β f h  =  fα ≡ βf
-
-  where
-   l = λ x y z → f ((x · y) · z)   ≡⟨ ap (λ - → - (x · y) z) h ⟩
-                 f (x · y) * f z   ≡⟨ ap (λ - → - x y * f z) h ⟩
-                 (f x * f y) * f z ∎
-
-   r = λ x y z → f (x · (y · z))   ≡⟨ ap (λ - → - x (y · z)) h ⟩
-                 f x * f (y · z)   ≡⟨ ap (λ - → f x * - y z) h ⟩
-                 f x * (f y * f z) ∎
-
-   fα βf : ∀ x y z → (f x * f y) * f z ≡ f x * (f y * f z)
-   fα x y z = (l x y z)⁻¹ ∙ ap f (α x y z) ∙ r x y z
-   βf x y z = β (f x) (f y) (f z)
-\end{code}
-
-The functions `l` and `r`, defined from the binary homomorphism
-condition `h`, give the homomorphism condition for the two induced
-ternary magma operations of each magma.
-
-The following, which holds by construction, will be used implicitly:
-
-\begin{code}
- remark : {X : 𝓤 ̇ } (_·_ : X → X → X) (α β : associative _·_ )
-        → respect-assoc _·_ _·_ α β id (refl _·_)
-        ≡ ((λ x y z → refl ((x · y) · z) ∙ ap id (α x y z)) ≡ β)
-
- remark _·_ α β = refl _
-\end{code}
-
-The homomorphism condition `ι` is then defined as expected and the
-reflexivity condition `ρ` relies on the above remark.
-
-\begin{code}
- open sip hiding (homomorphic)
-
- sns-data : SNS ∞-amagma-structure 𝓤
- sns-data = (ι , ρ , θ)
-  where
-   ι : (𝓧 𝓐 : ∞-aMagma) → ⟨ 𝓧 ⟩ ≃ ⟨ 𝓐 ⟩ → 𝓤 ̇
-   ι (X , _·_ , α) (A , _*_ , β) (f , i) = Σ \(h : homomorphic _·_ _*_ f)
-                                                 → respect-assoc _·_ _*_ α β f h
-
-   ρ : (𝓧 : ∞-aMagma) → ι 𝓧 𝓧 (id-≃ ⟨ 𝓧 ⟩)
-   ρ (X , _·_ , α) = h , p
-    where
-     h : homomorphic _·_ _·_ id
-     h = refl _·_
-
-     p : (λ x y z → refl ((x · y) · z) ∙ ap id (α x y z)) ≡ α
-     p = fe (λ x → fe (λ y → fe (λ z → refl-left ∙ ap-id (α x y z))))
-\end{code}
-
-We prove the canonicity condition `θ` with the Yoneda machinery.
-
-\begin{code}
-   u : (X : 𝓤 ̇ ) → ∀ s → ∃! \t → ι (X , s) (X , t) (id-≃ X)
-   u X (_·_ , α) = c , φ
-    where
-     c : Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
-     c = (_·_ , α) , ρ (X , _·_ , α)
-
-     φ : (σ : Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)) → c ≡ σ
-     φ ((_·_ , β) , refl _·_  , k) = γ
-      where
-       a : associative _·_
-       a x y z = refl ((x · y) · z) ∙ ap id (α x y z)
-
-       g : singleton-type' a → Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
-       g (β , k) = (_·_ , β) , refl _·_ , k
-
-       i : is-subsingleton (singleton-type' a)
-       i = singletons-are-subsingletons _ (singleton-types'-are-singletons _ a)
-
-       q : α , pr₂ (ρ (X , _·_ , α)) ≡ β , k
-       q = i _ _
-
-       γ : c ≡ (_·_ , β) , refl _·_ , k
-       γ = ap g q
-
-
-   θ : {X : 𝓤 ̇ } (s t : ∞-amagma-structure X) → is-equiv (canonical-map ι ρ s t)
-   θ {X} s = universal-fiberwise-equiv
-               (λ t → ι (X , s) (X , t) (id-≃ X))
-               (u X s) s (canonical-map ι ρ s)
-\end{code}
-
-The promised characterization of associative ∞-magma equality then
-follows directly from the general structure of identity principle:
-
-\begin{code}
- _≅_ : ∞-aMagma → ∞-aMagma → 𝓤 ̇
- (X , _·_ , α) ≅ (Y , _*_ , β) = Σ \(f : X → Y)
-                                       → is-equiv f
-                                       × Σ \(h : homomorphic _·_ _*_ f)
-                                               → respect-assoc _·_ _*_ α β f h
-
-
- characterization-of-∞-aMagma-≡ : (A B : ∞-aMagma) → (A ≡ B) ≃ (A ≅ B)
- characterization-of-∞-aMagma-≡ = characterization-of-≡ ua sns-data
-\end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="truncation"></a> Subsingleton truncation

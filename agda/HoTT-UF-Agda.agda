@@ -4939,6 +4939,105 @@ module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  characterization-of-monoid-≡ ua = characterization-of-≡ ua sns-data
 
+module associative-∞-magma-identity
+        {𝓤 : Universe}
+        (ua : is-univalent 𝓤)
+       where
+
+ fe : dfunext 𝓤 𝓤
+ fe = univalence-gives-dfunext ua
+
+ associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
+ associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
+
+ ∞-amagma-structure : 𝓤 ̇ → 𝓤 ̇
+ ∞-amagma-structure X = Σ \(_·_ : X → X → X) → associative _·_
+
+ ∞-aMagma : 𝓤 ⁺ ̇
+ ∞-aMagma = Σ \(X : 𝓤 ̇ ) → ∞-amagma-structure X
+
+ homomorphic : {X Y : 𝓤 ̇ } → (X → X → X) → (Y → Y → Y) → (X → Y) → 𝓤 ̇
+ homomorphic _·_ _*_ f = (λ x y → f (x · y)) ≡ (λ x y → f x * f y)
+
+ respect-assoc : {X A : 𝓤 ̇ } (_·_ : X → X → X) (_*_ : A → A → A)
+               → associative _·_ → associative _*_
+               → (f : X → A) → homomorphic _·_ _*_ f → 𝓤 ̇
+
+ respect-assoc _·_ _*_ α β f h  =  fα ≡ βf
+  where
+   l = λ x y z → f ((x · y) · z)   ≡⟨ ap (λ - → - (x · y) z) h ⟩
+                 f (x · y) * f z   ≡⟨ ap (λ - → - x y * f z) h ⟩
+                 (f x * f y) * f z ∎
+
+   r = λ x y z → f (x · (y · z))   ≡⟨ ap (λ - → - x (y · z)) h ⟩
+                 f x * f (y · z)   ≡⟨ ap (λ - → f x * - y z) h ⟩
+                 f x * (f y * f z) ∎
+
+   fα βf : ∀ x y z → (f x * f y) * f z ≡ f x * (f y * f z)
+   fα x y z = (l x y z)⁻¹ ∙ ap f (α x y z) ∙ r x y z
+   βf x y z = β (f x) (f y) (f z)
+
+ remark : {X : 𝓤 ̇ } (_·_ : X → X → X) (α β : associative _·_ )
+        → respect-assoc _·_ _·_ α β id (refl _·_)
+        ≡ ((λ x y z → refl ((x · y) · z) ∙ ap id (α x y z)) ≡ β)
+
+ remark _·_ α β = refl _
+
+ open sip hiding (homomorphic)
+
+ sns-data : SNS ∞-amagma-structure 𝓤
+ sns-data = (ι , ρ , θ)
+  where
+   ι : (𝓧 𝓐 : ∞-aMagma) → ⟨ 𝓧 ⟩ ≃ ⟨ 𝓐 ⟩ → 𝓤 ̇
+   ι (X , _·_ , α) (A , _*_ , β) (f , i) = Σ \(h : homomorphic _·_ _*_ f)
+                                                 → respect-assoc _·_ _*_ α β f h
+
+   ρ : (𝓧 : ∞-aMagma) → ι 𝓧 𝓧 (id-≃ ⟨ 𝓧 ⟩)
+   ρ (X , _·_ , α) = h , p
+    where
+     h : homomorphic _·_ _·_ id
+     h = refl _·_
+
+     p : (λ x y z → refl ((x · y) · z) ∙ ap id (α x y z)) ≡ α
+     p = fe (λ x → fe (λ y → fe (λ z → refl-left ∙ ap-id (α x y z))))
+
+   u : (X : 𝓤 ̇ ) → ∀ s → ∃! \t → ι (X , s) (X , t) (id-≃ X)
+   u X (_·_ , α) = c , φ
+    where
+     c : Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
+     c = (_·_ , α) , ρ (X , _·_ , α)
+
+     φ : (σ : Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)) → c ≡ σ
+     φ ((_·_ , β) , refl _·_  , k) = γ
+      where
+       a : associative _·_
+       a x y z = refl ((x · y) · z) ∙ ap id (α x y z)
+
+       g : singleton-type' a → Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
+       g (β , k) = (_·_ , β) , refl _·_ , k
+
+       i : is-subsingleton (singleton-type' a)
+       i = singletons-are-subsingletons _ (singleton-types'-are-singletons _ a)
+
+       q : α , pr₂ (ρ (X , _·_ , α)) ≡ β , k
+       q = i _ _
+
+       γ : c ≡ (_·_ , β) , refl _·_ , k
+       γ = ap g q
+
+   θ : {X : 𝓤 ̇ } (s t : ∞-amagma-structure X) → is-equiv (canonical-map ι ρ s t)
+   θ {X} s = universal-fiberwise-equiv (λ t → ι (X , s) (X , t) (id-≃ X))
+              (u X s) s (canonical-map ι ρ s)
+
+ _≅_ : ∞-aMagma → ∞-aMagma → 𝓤 ̇
+ (X , _·_ , α) ≅ (Y , _*_ , β) = Σ \(f : X → Y)
+                                       → is-equiv f
+                                       × Σ \(h : homomorphic _·_ _*_ f)
+                                               → respect-assoc _·_ _*_ α β f h
+
+ characterization-of-∞-aMagma-≡ : (A B : ∞-aMagma) → (A ≡ B) ≃ (A ≅ B)
+ characterization-of-∞-aMagma-≡ = characterization-of-≡ ua sns-data
+
 module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  open sip
@@ -5956,107 +6055,6 @@ module category-identity
   where
    γ : (𝓧 𝓐 : Cat) → Id→EqCat 𝓧 𝓐 ∼ Eq→fun (characterization-of-category-≡ 𝓧 𝓐)
    γ 𝓧 𝓧 (refl 𝓧) = refl _
-
-module associative-∞-magma-identity
-        {𝓤 : Universe}
-        (ua : is-univalent 𝓤)
-       where
-
- fe : dfunext 𝓤 𝓤
- fe = univalence-gives-dfunext ua
-
- associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
- associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
-
- ∞-amagma-structure : 𝓤 ̇ → 𝓤 ̇
- ∞-amagma-structure X = Σ \(_·_ : X → X → X) → associative _·_
-
- ∞-aMagma : 𝓤 ⁺ ̇
- ∞-aMagma = Σ \(X : 𝓤 ̇ ) → ∞-amagma-structure X
-
- homomorphic : {X Y : 𝓤 ̇ } → (X → X → X) → (Y → Y → Y) → (X → Y) → 𝓤 ̇
- homomorphic _·_ _*_ f = (λ x y → f (x · y)) ≡ (λ x y → f x * f y)
-
- respect-assoc : {X A : 𝓤 ̇ } (_·_ : X → X → X) (_*_ : A → A → A)
-               → associative _·_ → associative _*_
-               → (f : X → A) → homomorphic _·_ _*_ f → 𝓤 ̇
-
- respect-assoc _·_ _*_ α β f h  =  fα ≡ βf
-
-  where
-   l = λ x y z → f ((x · y) · z)   ≡⟨ ap (λ - → - (x · y) z) h ⟩
-                 f (x · y) * f z   ≡⟨ ap (λ - → - x y * f z) h ⟩
-                 (f x * f y) * f z ∎
-
-   r = λ x y z → f (x · (y · z))   ≡⟨ ap (λ - → - x (y · z)) h ⟩
-                 f x * f (y · z)   ≡⟨ ap (λ - → f x * - y z) h ⟩
-                 f x * (f y * f z) ∎
-
-   fα βf : ∀ x y z → (f x * f y) * f z ≡ f x * (f y * f z)
-   fα x y z = (l x y z)⁻¹ ∙ ap f (α x y z) ∙ r x y z
-   βf x y z = β (f x) (f y) (f z)
-
- remark : {X : 𝓤 ̇ } (_·_ : X → X → X) (α β : associative _·_ )
-        → respect-assoc _·_ _·_ α β id (refl _·_)
-        ≡ ((λ x y z → refl ((x · y) · z) ∙ ap id (α x y z)) ≡ β)
-
- remark _·_ α β = refl _
-
- open sip hiding (homomorphic)
-
- sns-data : SNS ∞-amagma-structure 𝓤
- sns-data = (ι , ρ , θ)
-  where
-   ι : (𝓧 𝓐 : ∞-aMagma) → ⟨ 𝓧 ⟩ ≃ ⟨ 𝓐 ⟩ → 𝓤 ̇
-   ι (X , _·_ , α) (A , _*_ , β) (f , i) = Σ \(h : homomorphic _·_ _*_ f)
-                                                 → respect-assoc _·_ _*_ α β f h
-
-   ρ : (𝓧 : ∞-aMagma) → ι 𝓧 𝓧 (id-≃ ⟨ 𝓧 ⟩)
-   ρ (X , _·_ , α) = h , p
-    where
-     h : homomorphic _·_ _·_ id
-     h = refl _·_
-
-     p : (λ x y z → refl ((x · y) · z) ∙ ap id (α x y z)) ≡ α
-     p = fe (λ x → fe (λ y → fe (λ z → refl-left ∙ ap-id (α x y z))))
-
-   u : (X : 𝓤 ̇ ) → ∀ s → ∃! \t → ι (X , s) (X , t) (id-≃ X)
-   u X (_·_ , α) = c , φ
-    where
-     c : Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
-     c = (_·_ , α) , ρ (X , _·_ , α)
-
-     φ : (σ : Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)) → c ≡ σ
-     φ ((_·_ , β) , refl _·_  , k) = γ
-      where
-       a : associative _·_
-       a x y z = refl ((x · y) · z) ∙ ap id (α x y z)
-
-       g : singleton-type' a → Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
-       g (β , k) = (_·_ , β) , refl _·_ , k
-
-       i : is-subsingleton (singleton-type' a)
-       i = singletons-are-subsingletons _ (singleton-types'-are-singletons _ a)
-
-       q : α , pr₂ (ρ (X , _·_ , α)) ≡ β , k
-       q = i _ _
-
-       γ : c ≡ (_·_ , β) , refl _·_ , k
-       γ = ap g q
-
-   θ : {X : 𝓤 ̇ } (s t : ∞-amagma-structure X) → is-equiv (canonical-map ι ρ s t)
-   θ {X} s = universal-fiberwise-equiv
-               (λ t → ι (X , s) (X , t) (id-≃ X))
-               (u X s) s (canonical-map ι ρ s)
-
- _≅_ : ∞-aMagma → ∞-aMagma → 𝓤 ̇
- (X , _·_ , α) ≅ (Y , _*_ , β) = Σ \(f : X → Y)
-                                       → is-equiv f
-                                       × Σ \(h : homomorphic _·_ _*_ f)
-                                               → respect-assoc _·_ _*_ α β f h
-
- characterization-of-∞-aMagma-≡ : (A B : ∞-aMagma) → (A ≡ B) ≃ (A ≅ B)
- characterization-of-∞-aMagma-≡ = characterization-of-≡ ua sns-data
 
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
