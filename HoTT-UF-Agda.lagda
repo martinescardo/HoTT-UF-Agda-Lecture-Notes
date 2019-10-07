@@ -9525,9 +9525,13 @@ the
 [pentagon](https://groupprops.subwiki.org/wiki/Associativity_pentagon). This
 is a so-called [coherence
 condition](https://en.wikipedia.org/wiki/Coherence_condition). The
-pentagon is enough if the underlying type is a 1-groupoid. More
-generally, one needs to consider
-[associahedra](https://groupprops.subwiki.org/wiki/Associahedron).
+pentagon is enough if the underlying type is a 1-groupoid. In the more
+general case, one considers
+[associahedra](https://groupprops.subwiki.org/wiki/Associahedron). It
+makes more sense to reserve the terminology *∞-semigroup* for
+associative ∞-magmas subject to the natural coherence laws. But it is
+an open problem whether the tower of coherence laws can be formulated
+in a spartan univalent type theory such as ours.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="groups-sip"></a> Groups
