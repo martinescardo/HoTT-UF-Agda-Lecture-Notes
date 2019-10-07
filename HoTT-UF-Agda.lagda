@@ -9385,7 +9385,7 @@ to the identity equivalence.
 In the absence of the requirement that the underlying type is a set,
 the equivalences in the characterization of equality of associative
 ∞-magmas not only have to be homomorphic with respect to the magma
-operations but also need to respect to the associativity data.
+operations but also need to respect the associativity data.
 
 \begin{code}
 module associative-∞-magma-identity
@@ -9527,8 +9527,8 @@ is a so-called [coherence
 condition](https://en.wikipedia.org/wiki/Coherence_condition). The
 pentagon is enough if the underlying type is a 1-groupoid. In the more
 general case, one considers
-[associahedra](https://groupprops.subwiki.org/wiki/Associahedron). It
-makes more sense to reserve the terminology *∞-semigroup* for
+[associahedra](https://groupprops.subwiki.org/wiki/Associahedron). Thus,
+it makes more sense to reserve the terminology *∞-semigroup* for
 associative ∞-magmas subject to the natural coherence laws. But it is
 an open problem whether the tower of coherence laws can be formulated
 in a spartan univalent type theory such as ours.
