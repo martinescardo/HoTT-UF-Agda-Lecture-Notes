@@ -5880,7 +5880,7 @@ canonical bijection with functions `Y → 𝓤`. Using the following
 [slice](https://ncatlab.org/nlab/show/over+category) notation, this amounts to a bijection between `𝓤 / Y` and `Y → 𝓤`:
 
 \begin{code}
-_/_ : (𝓤 : Universe) → 𝓤 ̇ → 𝓤 ⁺ ̇
+_/_ : (𝓤 : Universe) → 𝓥 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
 𝓤 / Y = Σ \(X : 𝓤 ̇ ) → X → Y
 \end{code}
 
@@ -8862,11 +8862,7 @@ module ∞-magma-identity {𝓤 : Universe} where
                           × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 
 
- characterization-of-∞-Magma-≡ : is-univalent 𝓤
-                               → (A B : ∞-Magma)
-
-                               → (A ≡ B) ≃ (A ≅ B)
-
+ characterization-of-∞-Magma-≡ : is-univalent 𝓤 → (A B : ∞-Magma) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-∞-Magma-≡ ua = characterization-of-≡ ua sns-data
 \end{code}
 
@@ -8993,10 +8989,8 @@ same, ignoring the axioms:
      (σ : SNS S 𝓣)
      (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
    → ((X : 𝓤 ̇ ) (s : S X) → is-subsingleton (axioms X s))
-   →
-     (A B : Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s)
-   →
-     (A ≡ B) ≃ ([ A ] ≃[ σ ] [ B ])
+   → (A B : Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s)
+   → (A ≡ B) ≃ ([ A ] ≃[ σ ] [ B ])
 
  characterization-of-≡-with-axioms ua σ axioms i =
    characterization-of-≡ ua (add-axioms axioms i σ)
@@ -9024,11 +9018,7 @@ module magma-identity {𝓤 : Universe} where
                               × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 
 
- characterization-of-Magma-≡ : is-univalent 𝓤
-                             → (A B : Magma )
-
-                             → (A ≡ B) ≃ (A ≅ B)
-
+ characterization-of-Magma-≡ : is-univalent 𝓤 → (A B : Magma ) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-Magma-≡ ua =
    characterization-of-≡-with-axioms ua
      ∞-magma-identity.sns-data
@@ -9255,10 +9245,8 @@ general structure identity principle:
  characterization-of-join-≡ : is-univalent 𝓤
                             → {S₀ : 𝓤 ̇ → 𝓥 ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
                               (σ₀ : SNS S₀ 𝓦₀)  (σ₁ : SNS S₁ 𝓦₁)
-
                               (A B : Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X)
-                            →
-                              (A ≡ B) ≃ (A ≃⟦ σ₀ , σ₁ ⟧ B)
+                            → (A ≡ B) ≃ (A ≃⟦ σ₀ , σ₁ ⟧ B)
 
  characterization-of-join-≡ ua σ₀ σ₁ = characterization-of-≡ ua (join σ₀ σ₁)
 \end{code}
@@ -9607,7 +9595,6 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
 
  characterization-of-group-≡ : (A B : Group) → (A ≡ B) ≃ (A ≅ B)
-
  characterization-of-group-≡ = characterization-of-≡ ua sns-data
 \end{code}
 
@@ -10134,19 +10121,19 @@ existence](HoTT-UF-Agda.html#disjunction-and-existence).
 
 \begin{code}
 module slice-identity
-        {𝓤 : Universe}
-        (R : 𝓤 ̇ )
+        {𝓤 𝓥 : Universe}
+        (R : 𝓥 ̇ )
        where
 
  open sip
 
- S : 𝓤 ̇ → 𝓤 ̇
+ S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
  S X = X → R
 
- sns-data : SNS S 𝓤
+ sns-data : SNS S (𝓤 ⊔ 𝓥)
  sns-data = (ι , ρ , θ)
   where
-   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
+   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
    ι (X , g) (Y , h) (f , _) = (g ≡ h ∘ f)
 
    ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
@@ -10159,15 +10146,11 @@ module slice-identity
    θ g h = equivs-closed-under-∼ (id-is-equiv (g ≡ h)) k
 
 
- _≅_  : 𝓤 / R → 𝓤 / R → 𝓤 ̇
+ _≅_  : 𝓤 / R → 𝓤 / R → 𝓤 ⊔ 𝓥 ̇
  (X , g) ≅ (Y , h) = Σ \(f : X → Y) → is-equiv f × (g ≡ h ∘ f )
 
 
- characterization-of-/-≡ : is-univalent 𝓤
-                         → (A B : 𝓤 / R)
-
-                         → (A ≡ B) ≃ (A ≅ B)
-
+ characterization-of-/-≡ : is-univalent 𝓤 → (A B : 𝓤 / R) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-/-≡ ua = characterization-of-≡ ua sns-data
 \end{code}
 
@@ -10335,7 +10318,6 @@ We introduce notation for the type of homeomorphisms:
 
  characterization-of-Space-≡ : is-univalent 𝓤
                              → (A B : Space)
-
                              → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-Space-≡ ua = characterization-of-≡-with-axioms ua
@@ -10364,7 +10346,6 @@ prefer to rephrase the above as
 
  characterization-of-Space-≡' : is-univalent 𝓤
                               → (A B : Space)
-
                               → (A ≡ B) ≃ (A ≅' B)
 
  characterization-of-Space-≡' = characterization-of-Space-≡
@@ -10419,7 +10400,6 @@ module selection-space-identity
 
  characterization-of-selection-space-≡ : is-univalent 𝓤
                                        → (A B : SelectionSpace)
-
                                        → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-selection-space-≡ ua = characterization-of-≡-with-axioms ua
@@ -10510,11 +10490,9 @@ module generalized-functor-algebra-equality
      γ = equivs-closed-under-∼ i h
 
 
- characterization-of-functor-algebra-≡ : is-univalent 𝓤 →
-
-     (X Y : 𝓤 ̇ ) (α : F X → X) (β : F Y → Y)
-   →
-     ((X , α) ≡ (Y , β))  ≃  Σ \(f : X → Y) → is-equiv f × (f ∘ α ≡ β ∘ 𝓕 f)
+ characterization-of-functor-algebra-≡ : is-univalent 𝓤
+   → (X Y : 𝓤 ̇ ) (α : F X → X) (β : F Y → Y)
+   → ((X , α) ≡ (Y , β))  ≃  Σ \(f : X → Y) → is-equiv f × (f ∘ α ≡ β ∘ 𝓕 f)
 
  characterization-of-functor-algebra-≡ ua X Y α β =
    characterization-of-≡ ua sns-data (X , α) (Y , β)
@@ -12082,9 +12060,7 @@ show that the type of ring identities is in bijection with the type of
 ring isomorphisms:
 
 \begin{code}
- characterization-of-rng-≡ : (𝓡 𝓡' : Rng)
-                           → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[Rng] 𝓡')
-
+ characterization-of-rng-≡ : (𝓡 𝓡' : Rng) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[Rng] 𝓡')
  characterization-of-rng-≡ = sip.characterization-of-≡ (ua 𝓤)
                               (sip-with-axioms.add-axioms
                                 rng-axioms
@@ -12182,9 +12158,7 @@ The type of rings with unit:
 
 
 
- characterization-of-ring-≡ : (𝓡 𝓡' : Ring)
-                            → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[Ring] 𝓡')
-
+ characterization-of-ring-≡ : (𝓡 𝓡' : Ring) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[Ring] 𝓡')
  characterization-of-ring-≡ = sip.characterization-of-≡ (ua 𝓤)
                                 (sip-with-axioms.add-axioms
                                   ring-axioms
