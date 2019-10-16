@@ -415,7 +415,7 @@ to practice univalent mathematics should consult the above references.
      1. [Some constructions with types of equivalences](HoTT-UF-Agda.html#equivconstructions)
      1. [Type embeddings](HoTT-UF-Agda.html#embeddings)
      1. [The Yoneda Lemma for types](HoTT-UF-Agda.html#yoneda)
-     1. [What is a function?](HoTT-UF-Agda#whatisafunction)
+     1. [What is a function?](HoTT-UF-Agda.html#whatisafunction)
      1. [Universe lifting](HoTT-UF-Agda.html#universelifting)
      1. [The subtype classifier and other classifiers](HoTT-UF-Agda.html#subtypeclassifier)
      1. [Magma equivalences](HoTT-UF-Agda.html#magmaequivalences)
