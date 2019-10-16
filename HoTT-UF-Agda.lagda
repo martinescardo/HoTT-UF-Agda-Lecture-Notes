@@ -7758,7 +7758,8 @@ univalence.
 
 When the types under consideration are sets, the corresponding
 relations are *truth valued*. But for the equivalence between
-functions and functional relations to hold for arbitrary types.
+functions and functional relations to hold for arbitrary types, we
+need to work with *type valued* relations.
 
 More generally, we have a one-to-one correponce between dependent
 functions `(x : X) → A x` and dependent type-valued relations `(x : X)
