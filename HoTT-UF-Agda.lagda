@@ -7748,7 +7748,7 @@ With this it is almost immediate that the Yoneda map is an embedding of `X` into
 In set theory, [a function is a relation between two sets that
 associates to every element of the first set exactly one element of
 the second
-set](https://en.wikipedia.org/wiki/Function_(mathematics). We say that
+set](https://en.wikipedia.org/wiki/Function_(mathematics)). We say that
 the relation is *functional*.
 
 In type theory, on the other hand, the notion of function is
