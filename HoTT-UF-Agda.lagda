@@ -415,6 +415,7 @@ to practice univalent mathematics should consult the above references.
      1. [Some constructions with types of equivalences](HoTT-UF-Agda.html#equivconstructions)
      1. [Type embeddings](HoTT-UF-Agda.html#embeddings)
      1. [The Yoneda Lemma for types](HoTT-UF-Agda.html#yoneda)
+     1. [What is a function?](HoTT-UF-Agda#whatisafunction)
      1. [Universe lifting](HoTT-UF-Agda.html#universelifting)
      1. [The subtype classifier and other classifiers](HoTT-UF-Agda.html#subtypeclassifier)
      1. [Magma equivalences](HoTT-UF-Agda.html#magmaequivalences)
@@ -7311,7 +7312,57 @@ converse fails in general.
 
 *Exercise*. Left cancellable maps into *sets* are always embeddings.
 
-We now introduce notation for the type of embeddings.
+If an embedding has a section, then it is an equivalence.
+
+\begin{code}
+embedding-with-section-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                → is-embedding f
+                                → has-section f
+                                → is-equiv f
+embedding-with-section-is-equiv f i (g , η) y = pointed-subsingletons-are-singletons
+                                                 (fiber f y) (g y , η y) (i y)
+\end{code}
+
+Later we will see that a necessary and sufficient condition for an embedding to be an equivalence is that it is as surjection.
+
+If a type `Y` is embedded into `Z`, then the function type `X → Y` is
+embedded into `X → Z`. More generally, if `A x` is embedded into `B x`
+for every `x : X`, then the dependent function type `Π A` is embedded
+into `Π B`.
+
+\begin{code}
+NatΠ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → Π A → Π B
+NatΠ τ f x = τ x (f x)
+\end{code}
+
+(Notice that `NatΠ` is a dependently typed version of the combinator `S` from
+[combinatory logic](https://en.wikipedia.org/wiki/Combinatory_logic). Its logical interpretation, here, is that if `A x` implies `B x` for all `x : X`, and `A x` holds for all `x : X`, then `B x` holds for all `x : X` too.)
+
+\begin{code}
+NatΠ-is-embedding : hfunext 𝓤 𝓥
+                  → hfunext 𝓤 𝓦
+                  → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
+                  → (τ : Nat A B)
+                  → ((x : X) → is-embedding (τ x))
+                  → is-embedding (NatΠ τ)
+
+NatΠ-is-embedding v w {X} {A} τ i = embedding-criterion (NatΠ τ) γ
+ where
+  γ : (f g : Π A) → (NatΠ τ f ≡ NatΠ τ g) ≃ (f ≡ g)
+  γ f g = (NatΠ τ f ≡ NatΠ τ g) ≃⟨ hfunext-≃ w (NatΠ τ f) (NatΠ τ g) ⟩
+          (NatΠ τ f ∼ NatΠ τ g) ≃⟨ b                                 ⟩
+          (f ∼ g)               ≃⟨ ≃-sym (hfunext-≃ v f g)           ⟩
+          (f ≡ g)               ■
+
+   where
+    a : (x : X) → (NatΠ τ f x ≡ NatΠ τ g x) ≃ (f x ≡ g x)
+    a x = embedding-criterion-converse (τ x) (i x) (f x) (g x)
+
+    b : (NatΠ τ f ∼ NatΠ τ g) ≃ (f ∼ g)
+    b = Π-cong (hfunext-gives-dfunext w) (hfunext-gives-dfunext v) a
+\end{code}
+
+We conclude this section by introducing notation for the type of embeddings.
 
 \begin{code}
 _↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
@@ -7349,6 +7400,13 @@ of the [Yoneda embedding](https://ncatlab.org/nlab/show/Yoneda+embedding):
 \begin{code}
 𝓨 : {X : 𝓤 ̇ } → X → (X → 𝓤 ̇ )
 𝓨 {𝓤} {X} = Id X
+\end{code}
+
+Sometimes we want to make one of the parameters explicit:
+
+\begin{code}
+𝑌 : (X : 𝓤 ̇ ) → X → (X → 𝓤 ̇ )
+𝑌 {𝓤} X = 𝓨 {𝓤} {X}
 \end{code}
 
 By our definition of [`Nat`](HoTT-UF-Agda.html#Nat), for any
@@ -7595,6 +7653,21 @@ fiberwise-◁-gives-≃ X A x ρ = γ
   γ y = ≃-sym(f y , e y)
 \end{code}
 
+We have the following corollary:
+
+\begin{code}
+embedding-criterion' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                     → ((x x' : X) → (f x ≡ f x') ◁ (x ≡ x'))
+                     → is-embedding f
+
+embedding-criterion' f ρ = embedding-criterion f
+                            (λ x → fiberwise-◁-gives-≃ (domain f)
+                                    (λ - → f x ≡ f -) x (ρ x))
+\end{code}
+
+*Exercise.* It also follows that `f` is an embedding if and only if the map `ap f {x} {x'}` has a section.
+
+
 To prove that [`𝓨 {𝓤} {X}` is an
 embedding](https://arxiv.org/abs/1903.01211) of `X` into `X → 𝓤` for
 any type `X : 𝓤`, we need the following two lemmas, which are
@@ -7644,7 +7717,7 @@ being-representable-is-subsingleton fe {X} A r₀ r₁ = γ
 With this it is almost immediate that the Yoneda map is an embedding of `X` into `X → 𝓤`:
 
 \begin{code}
-𝓨-is-embedding : Univalence → (X : 𝓤 ̇ ) → is-embedding (𝓨 {𝓤} {X})
+𝓨-is-embedding : Univalence → (X : 𝓤 ̇ ) → is-embedding (𝑌 X)
 𝓨-is-embedding {𝓤} ua X A = γ
  where
   hfe : global-hfunext
@@ -7667,6 +7740,184 @@ With this it is almost immediate that the Yoneda map is an embedding of `X` into
 
   γ : is-subsingleton (fiber 𝓨 A)
   γ = equiv-to-subsingleton e (being-representable-is-subsingleton dfe A)
+\end{code}
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="whatisafunction"></a> What is a function?
+
+In set theory, [a function is a relation between two sets that
+associates to every element of the first set exactly one element of
+the second
+set](https://en.wikipedia.org/wiki/Function_(mathematics). We say that
+the relation is *functional*.
+
+In type theory, on the other hand, the notion of function is
+taken primitive. However, we can show that the type of functions is
+equivalent to the type of functional relations. When the types under
+consideration are sets, the corresponding relations are
+*truth valued*. But for the equivalence between functions and
+functional relations to hold for arbitrary types, we need to
+consider *type valued* relations and assume univalence.
+
+More generally, we have a one-to-one correponce between dependent
+functions `(x : X) → A x` and dependent type-valued relations `(x : X)
+→ A x ◂i 𝓥 `. We fix the domain `X` and codomain `A` as parameters for
+a submodule:
+
+\begin{code}
+module functions-as-single-valued-relations
+        {𝓤 𝓥 : Universe}
+        {X : 𝓤 ̇ }
+        (A : X → 𝓥 ̇ )
+        (ua : Univalence)
+       where
+
+ hfe : global-hfunext
+ hfe = univalence-gives-global-hfunext ua
+
+ fe : global-dfunext
+ fe = univalence-gives-global-dfunext ua
+\end{code}
+
+The type of dependent functions:
+
+\begin{code} Function : 𝓤 ⊔ 𝓥 ̇
+ Function = (x : X) → A x
+\end{code}
+
+That of dependent relations:
+
+\begin{code}
+ Relation : 𝓤 ⊔ (𝓥 ⁺) ̇
+ Relation = (x : X) → A x → 𝓥 ̇
+\end{code}
+
+A relation `R` is said to be functional if for every `x : X` there is
+a unique `a : X` with `R x a`:
+
+\begin{code}
+ is-functional : Relation → 𝓤 ⊔ 𝓥 ̇
+ is-functional R = (x : X) → ∃! \(a : A x) → R x a
+\end{code}
+
+Although the relation is allowed to take values in arbitrary types,
+its functionality condition is a truth value:
+
+\begin{code}
+ being-functional-is-subsingleton : (R : Relation)
+                                  → is-subsingleton (is-functional R)
+
+ being-functional-is-subsingleton R = Π-is-subsingleton fe
+                                          (λ x → being-singleton-is-subsingleton fe)
+\end{code}
+
+The type of functional relations:
+
+\begin{code}
+ Functional-Relation : 𝓤 ⊔ (𝓥 ⁺) ̇
+ Functional-Relation = Σ \(R : Relation) → is-functional R
+\end{code}
+
+To a function `f` we associate the relation `R` defined by `R x a = (f x ≡ a)`. Notice that `R` is truth valued if `A x` is a set for every `x : X`.
+
+\begin{code}
+ ρ : Function → Relation
+ ρ f = λ x a → f x ≡ a
+\end{code}
+
+To show that `ρ` is an embedding we apply the Yoneda embedding and the
+fact that `NatΠ` transforms natural embeddings into embeddings:
+
+\begin{code}
+ ρ-is-embedding : is-embedding ρ
+ ρ-is-embedding = NatΠ-is-embedding hfe hfe
+                   (λ x → 𝑌 (A x))
+                   (λ x → 𝓨-is-embedding ua (A x))
+  where
+\end{code}
+
+The following remarks are used automatically in the above proof.
+
+\begin{code}
+   τ : (x : X) → A x → (A x → 𝓥 ̇ )
+   τ x a b = a ≡ b
+
+   remark₀ : τ ≡ λ x → 𝑌 (A x)
+   remark₀ = refl _
+
+   remark₁ : ρ ≡ NatΠ τ
+   remark₁ = refl _
+\end{code}
+
+The relation induced by a function is functional, of course:
+
+\begin{code}
+ ρ-is-functional : (f : Function) → is-functional (ρ f)
+ ρ-is-functional f = σ
+  where
+   σ : (x : X) → ∃! \(a : A x) → f x ≡ a
+   σ x = singleton-types'-are-singletons (A x) (f x)
+\end{code}
+
+The graph map associates functional relations to functions:
+
+\begin{code}
+ γ : Function → Functional-Relation
+ γ f = ρ f , ρ-is-functional f
+\end{code}
+
+We get a function from a functional relation by unique choice, which is just
+projection:
+
+\begin{code}s
+ φ : Functional-Relation → Function
+ φ (R , σ) = λ x → pr₁ (center (Σ \(a : A x) → R x a) (σ x))
+\end{code}
+
+To show that these two constructions are mutually inverse, we again
+apply the Yoneda machinery, but in a different way.
+
+\begin{code}
+ γ-is-equiv : is-equiv γ
+ γ-is-equiv = invertibles-are-equivs γ (φ , η , ε)
+  where
+   η : φ ∘ γ ∼ id
+   η = refl
+
+   ε : γ ∘ φ ∼ id
+   ε (R , σ) = a
+    where
+     f : Function
+     f = φ (R , σ)
+
+     e : (x : X) → R x (f x)
+     e x = pr₂ (center (Σ \(a : A x) → R x a) (σ x))
+
+     τ : (x : X) → Nat (𝓨 (f x)) (R x)
+     τ x = 𝓝 (R x) (f x) (e x)
+
+     τ-is-fiberwise-equiv : (x : X) → is-fiberwise-equiv (τ x)
+     τ-is-fiberwise-equiv x = universal-fiberwise-equiv (R x) (σ x) (f x) (τ x)
+
+     d : (x : X) (a : A x) → (f x ≡ a) ≃ R x a
+     d x a = τ x a , τ-is-fiberwise-equiv x a
+
+     c : (x : X) (a : A x) → (f x ≡ a) ≡ R x a
+     c x a = Eq→Id (ua 𝓥) _ _ (d x a)
+
+     b : ρ f ≡ R
+     b = fe (λ x → fe (c x))
+
+     a : (ρ f , ρ-is-functional f) ≡ (R , σ)
+     a = to-subtype-≡ being-functional-is-subsingleton b
+\end{code}
+
+Therefore the graph map is a bijection between functions and
+functional relations:
+
+\begin{code}
+ Γ : Function ≃ Functional-Relation
+ Γ = γ , γ-is-equiv
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -9504,22 +9755,6 @@ follows directly from the general structure of identity principle:
  characterization-of-∞-aMagma-≡ : (A B : ∞-aMagma) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-∞-aMagma-≡ = characterization-of-≡ ua sns-data
 \end{code}
-
-We may be tempted to refer to associative ∞-magmas as
-∞-[semigroups](https://en.wikipedia.org/wiki/Semigroup). However, in
-the absence of the requirement that the underlying type is set, it
-makes sense to consider equations for the associativity data, such as
-the
-[pentagon](https://groupprops.subwiki.org/wiki/Associativity_pentagon). This
-is a so-called [coherence
-condition](https://en.wikipedia.org/wiki/Coherence_condition). The
-pentagon is enough if the underlying type is a 1-groupoid. In the more
-general case, one considers
-[associahedra](https://groupprops.subwiki.org/wiki/Associahedron). Thus,
-it makes more sense to reserve the terminology *∞-semigroup* for
-associative ∞-magmas subject to the natural coherence laws. But it is
-an open problem whether the tower of coherence laws can be formulated
-in a spartan univalent type theory such as ours.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="groups-sip"></a> Groups

@@ -2643,7 +2643,7 @@ abstract
 
  univalence-gives-vvfunext ua = univalence-gives-vvfunext' ua ua
 
-_/_ : (𝓤 : Universe) → 𝓤 ̇ → 𝓤 ⁺ ̇
+_/_ : (𝓤 : Universe) → 𝓥 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
 𝓤 / Y = Σ \(X : 𝓤 ̇ ) → X → Y
 
 total-fiber-is-domain : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -3646,6 +3646,38 @@ embedding-criterion-converse f e x' x = ≃-sym
                                          (ap f {x'} {x} ,
                                           embedding-gives-ap-is-equiv f e x' x)
 
+embedding-with-section-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                → is-embedding f
+                                → has-section f
+                                → is-equiv f
+embedding-with-section-is-equiv f i (g , η) y = pointed-subsingletons-are-singletons
+                                                 (fiber f y) (g y , η y) (i y)
+
+NatΠ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → Π A → Π B
+NatΠ τ f x = τ x (f x)
+
+NatΠ-is-embedding : hfunext 𝓤 𝓥
+                  → hfunext 𝓤 𝓦
+                  → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
+                  → (τ : Nat A B)
+                  → ((x : X) → is-embedding (τ x))
+                  → is-embedding (NatΠ τ)
+
+NatΠ-is-embedding v w {X} {A} τ i = embedding-criterion (NatΠ τ) γ
+ where
+  γ : (f g : Π A) → (NatΠ τ f ≡ NatΠ τ g) ≃ (f ≡ g)
+  γ f g = (NatΠ τ f ≡ NatΠ τ g) ≃⟨ hfunext-≃ w (NatΠ τ f) (NatΠ τ g) ⟩
+          (NatΠ τ f ∼ NatΠ τ g) ≃⟨ b                                 ⟩
+          (f ∼ g)               ≃⟨ ≃-sym (hfunext-≃ v f g)           ⟩
+          (f ≡ g)               ■
+
+   where
+    a : (x : X) → (NatΠ τ f x ≡ NatΠ τ g x) ≃ (f x ≡ g x)
+    a x = embedding-criterion-converse (τ x) (i x) (f x) (g x)
+
+    b : (NatΠ τ f ∼ NatΠ τ g) ≃ (f ∼ g)
+    b = Π-cong (hfunext-gives-dfunext w) (hfunext-gives-dfunext v) a
+
 _↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ↪ Y = Σ \(f : X → Y) → is-embedding f
 
@@ -3654,6 +3686,9 @@ Emb→fun (f , i) = f
 
 𝓨 : {X : 𝓤 ̇ } → X → (X → 𝓤 ̇ )
 𝓨 {𝓤} {X} = Id X
+
+𝑌 : (X : 𝓤 ̇ ) → X → (X → 𝓤 ̇ )
+𝑌 {𝓤} X = 𝓨 {𝓤} {X}
 
 transport-lemma : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
                 → (τ : Nat (𝓨 x) A)
@@ -3810,6 +3845,14 @@ fiberwise-◁-gives-≃ X A x ρ = γ
   γ : (y : X) → A y ≃ (x ≡ y)
   γ y = ≃-sym(f y , e y)
 
+embedding-criterion' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                     → ((x x' : X) → (f x ≡ f x') ◁ (x ≡ x'))
+                     → is-embedding f
+
+embedding-criterion' f ρ = embedding-criterion f
+                            (λ x → fiberwise-◁-gives-≃ (domain f)
+                                    (λ - → f x ≡ f -) x (ρ x))
+
 being-fiberwise-equiv-is-subsingleton : global-dfunext
                                       → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
                                       → (τ : Nat A B)
@@ -3848,7 +3891,7 @@ being-representable-is-subsingleton fe {X} A r₀ r₁ = γ
   γ : r₀ ≡ r₁
   γ = singletons-are-subsingletons (is-representable A) v r₀ r₁
 
-𝓨-is-embedding : Univalence → (X : 𝓤 ̇ ) → is-embedding (𝓨 {𝓤} {X})
+𝓨-is-embedding : Univalence → (X : 𝓤 ̇ ) → is-embedding (𝑌 X)
 𝓨-is-embedding {𝓤} ua X A = γ
  where
   hfe : global-hfunext
@@ -3871,6 +3914,102 @@ being-representable-is-subsingleton fe {X} A r₀ r₁ = γ
 
   γ : is-subsingleton (fiber 𝓨 A)
   γ = equiv-to-subsingleton e (being-representable-is-subsingleton dfe A)
+
+module functions-as-single-valued-relations
+        {𝓤 𝓥 : Universe}
+        {X : 𝓤 ̇ }
+        (A : X → 𝓥 ̇ )
+        (ua : Univalence)
+       where
+
+ hfe : global-hfunext
+ hfe = univalence-gives-global-hfunext ua
+
+ fe : global-dfunext
+ fe = univalence-gives-global-dfunext ua
+
+ Function = (x : X) → A x
+
+ Relation : 𝓤 ⊔ (𝓥 ⁺) ̇
+ Relation = (x : X) → A x → 𝓥 ̇
+
+ is-functional : Relation → 𝓤 ⊔ 𝓥 ̇
+ is-functional R = (x : X) → ∃! \(a : A x) → R x a
+
+ being-functional-is-subsingleton : (R : Relation)
+                                  → is-subsingleton (is-functional R)
+
+ being-functional-is-subsingleton R = Π-is-subsingleton fe
+                                          (λ x → being-singleton-is-subsingleton fe)
+
+ Functional-Relation : 𝓤 ⊔ (𝓥 ⁺) ̇
+ Functional-Relation = Σ \(R : Relation) → is-functional R
+
+ ρ : Function → Relation
+ ρ f = λ x a → f x ≡ a
+
+ ρ-is-embedding : is-embedding ρ
+ ρ-is-embedding = NatΠ-is-embedding hfe hfe
+                   (λ x → 𝑌 (A x))
+                   (λ x → 𝓨-is-embedding ua (A x))
+  where
+
+   τ : (x : X) → A x → (A x → 𝓥 ̇ )
+   τ x a b = a ≡ b
+
+   remark₀ : τ ≡ λ x → 𝑌 (A x)
+   remark₀ = refl _
+
+   remark₁ : ρ ≡ NatΠ τ
+   remark₁ = refl _
+
+ ρ-is-functional : (f : Function) → is-functional (ρ f)
+ ρ-is-functional f = σ
+  where
+   σ : (x : X) → ∃! \(a : A x) → f x ≡ a
+   σ x = singleton-types'-are-singletons (A x) (f x)
+
+ γ : Function → Functional-Relation
+ γ f = ρ f , ρ-is-functional f
+
+ φ : Functional-Relation → Function
+ φ (R , σ) = λ x → pr₁ (center (Σ \(a : A x) → R x a) (σ x))
+
+ γ-is-equiv : is-equiv γ
+ γ-is-equiv = invertibles-are-equivs γ (φ , η , ε)
+  where
+   η : φ ∘ γ ∼ id
+   η = refl
+
+   ε : γ ∘ φ ∼ id
+   ε (R , σ) = a
+    where
+     f : Function
+     f = φ (R , σ)
+
+     e : (x : X) → R x (f x)
+     e x = pr₂ (center (Σ \(a : A x) → R x a) (σ x))
+
+     τ : (x : X) → Nat (𝓨 (f x)) (R x)
+     τ x = 𝓝 (R x) (f x) (e x)
+
+     τ-is-fiberwise-equiv : (x : X) → is-fiberwise-equiv (τ x)
+     τ-is-fiberwise-equiv x = universal-fiberwise-equiv (R x) (σ x) (f x) (τ x)
+
+     d : (x : X) (a : A x) → (f x ≡ a) ≃ R x a
+     d x a = τ x a , τ-is-fiberwise-equiv x a
+
+     c : (x : X) (a : A x) → (f x ≡ a) ≡ R x a
+     c x a = Eq→Id (ua 𝓥) _ _ (d x a)
+
+     b : ρ f ≡ R
+     b = fe (λ x → fe (c x))
+
+     a : (ρ f , ρ-is-functional f) ≡ (R , σ)
+     a = to-subtype-≡ being-functional-is-subsingleton b
+
+ Γ : Function ≃ Functional-Relation
+ Γ = γ , γ-is-equiv
 
 record Lift {𝓤 : Universe} (𝓥 : Universe) (X : 𝓤 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
  constructor
@@ -4575,11 +4714,7 @@ module ∞-magma-identity {𝓤 : Universe} where
            Σ \(f : X → Y) → is-equiv f
                           × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 
- characterization-of-∞-Magma-≡ : is-univalent 𝓤
-                               → (A B : ∞-Magma)
-
-                               → (A ≡ B) ≃ (A ≅ B)
-
+ characterization-of-∞-Magma-≡ : is-univalent 𝓤 → (A B : ∞-Magma) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-∞-Magma-≡ ua = characterization-of-≡ ua sns-data
 
  characterization-of-characterization-of-∞-Magma-≡ :
@@ -4654,10 +4789,8 @@ module sip-with-axioms where
      (σ : SNS S 𝓣)
      (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
    → ((X : 𝓤 ̇ ) (s : S X) → is-subsingleton (axioms X s))
-   →
-     (A B : Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s)
-   →
-     (A ≡ B) ≃ ([ A ] ≃[ σ ] [ B ])
+   → (A B : Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s)
+   → (A ≡ B) ≃ ([ A ] ≃[ σ ] [ B ])
 
  characterization-of-≡-with-axioms ua σ axioms i =
    characterization-of-≡ ua (add-axioms axioms i σ)
@@ -4676,11 +4809,7 @@ module magma-identity {𝓤 : Universe} where
                Σ \(f : X → Y) → is-equiv f
                               × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 
- characterization-of-Magma-≡ : is-univalent 𝓤
-                             → (A B : Magma )
-
-                             → (A ≡ B) ≃ (A ≅ B)
-
+ characterization-of-Magma-≡ : is-univalent 𝓤 → (A B : Magma ) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-Magma-≡ ua =
    characterization-of-≡-with-axioms ua
      ∞-magma-identity.sns-data
@@ -4843,10 +4972,8 @@ module sip-join where
  characterization-of-join-≡ : is-univalent 𝓤
                             → {S₀ : 𝓤 ̇ → 𝓥 ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
                               (σ₀ : SNS S₀ 𝓦₀)  (σ₁ : SNS S₁ 𝓦₁)
-
                               (A B : Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X)
-                            →
-                              (A ≡ B) ≃ (A ≃⟦ σ₀ , σ₁ ⟧ B)
+                            → (A ≡ B) ≃ (A ≃⟦ σ₀ , σ₁ ⟧ B)
 
  characterization-of-join-≡ ua σ₀ σ₁ = characterization-of-≡ ua (join σ₀ σ₁)
 
@@ -5101,7 +5228,6 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
                            × (f d ≡ e)
 
  characterization-of-group-≡ : (A B : Group) → (A ≡ B) ≃ (A ≅ B)
-
  characterization-of-group-≡ = characterization-of-≡ ua sns-data
 
  _≅'_ : Group → Group → 𝓤 ̇
@@ -5467,19 +5593,19 @@ module subgroup-identity
                    inve x      ∎)
 
 module slice-identity
-        {𝓤 : Universe}
-        (R : 𝓤 ̇ )
+        {𝓤 𝓥 : Universe}
+        (R : 𝓥 ̇ )
        where
 
  open sip
 
- S : 𝓤 ̇ → 𝓤 ̇
+ S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
  S X = X → R
 
- sns-data : SNS S 𝓤
+ sns-data : SNS S (𝓤 ⊔ 𝓥)
  sns-data = (ι , ρ , θ)
   where
-   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
+   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
    ι (X , g) (Y , h) (f , _) = (g ≡ h ∘ f)
 
    ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
@@ -5491,14 +5617,10 @@ module slice-identity
    θ : {X : 𝓤 ̇ } (g h : S X) → is-equiv (canonical-map ι ρ g h)
    θ g h = equivs-closed-under-∼ (id-is-equiv (g ≡ h)) k
 
- _≅_  : 𝓤 / R → 𝓤 / R → 𝓤 ̇
+ _≅_  : 𝓤 / R → 𝓤 / R → 𝓤 ⊔ 𝓥 ̇
  (X , g) ≅ (Y , h) = Σ \(f : X → Y) → is-equiv f × (g ≡ h ∘ f )
 
- characterization-of-/-≡ : is-univalent 𝓤
-                         → (A B : 𝓤 / R)
-
-                         → (A ≡ B) ≃ (A ≅ B)
-
+ characterization-of-/-≡ : is-univalent 𝓤 → (A B : 𝓤 / R) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-/-≡ ua = characterization-of-≡ ua sns-data
 
 module generalized-metric-space-identity
@@ -5594,7 +5716,6 @@ module generalized-topological-space-identity
 
  characterization-of-Space-≡ : is-univalent 𝓤
                              → (A B : Space)
-
                              → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-Space-≡ ua = characterization-of-≡-with-axioms ua
@@ -5609,7 +5730,6 @@ module generalized-topological-space-identity
 
  characterization-of-Space-≡' : is-univalent 𝓤
                               → (A B : Space)
-
                               → (A ≡ B) ≃ (A ≅' B)
 
  characterization-of-Space-≡' = characterization-of-Space-≡
@@ -5657,7 +5777,6 @@ module selection-space-identity
 
  characterization-of-selection-space-≡ : is-univalent 𝓤
                                        → (A B : SelectionSpace)
-
                                        → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-selection-space-≡ ua = characterization-of-≡-with-axioms ua
@@ -5721,11 +5840,9 @@ module generalized-functor-algebra-equality
      γ : is-equiv (canonical-map ι ρ α β)
      γ = equivs-closed-under-∼ i h
 
- characterization-of-functor-algebra-≡ : is-univalent 𝓤 →
-
-     (X Y : 𝓤 ̇ ) (α : F X → X) (β : F Y → Y)
-   →
-     ((X , α) ≡ (Y , β))  ≃  Σ \(f : X → Y) → is-equiv f × (f ∘ α ≡ β ∘ 𝓕 f)
+ characterization-of-functor-algebra-≡ : is-univalent 𝓤
+   → (X Y : 𝓤 ̇ ) (α : F X → X) (β : F Y → Y)
+   → ((X , α) ≡ (Y , β))  ≃  Σ \(f : X → Y) → is-equiv f × (f ∘ α ≡ β ∘ 𝓕 f)
 
  characterization-of-functor-algebra-≡ ua X Y α β =
    characterization-of-≡ ua sns-data (X , α) (Y , β)
@@ -6682,9 +6799,7 @@ module ring-identity {𝓤 : Universe} (ua : Univalence) where
                      × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
                      × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
 
- characterization-of-rng-≡ : (𝓡 𝓡' : Rng)
-                           → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[Rng] 𝓡')
-
+ characterization-of-rng-≡ : (𝓡 𝓡' : Rng) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[Rng] 𝓡')
  characterization-of-rng-≡ = sip.characterization-of-≡ (ua 𝓤)
                               (sip-with-axioms.add-axioms
                                 rng-axioms
@@ -6750,9 +6865,7 @@ module ring-identity {𝓤 : Universe} (ua : Univalence) where
                          × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
                          × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
 
- characterization-of-ring-≡ : (𝓡 𝓡' : Ring)
-                            → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[Ring] 𝓡')
-
+ characterization-of-ring-≡ : (𝓡 𝓡' : Ring) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[Ring] 𝓡')
  characterization-of-ring-≡ = sip.characterization-of-≡ (ua 𝓤)
                                 (sip-with-axioms.add-axioms
                                   ring-axioms
