@@ -7752,7 +7752,7 @@ set](https://en.wikipedia.org/wiki/Function_(mathematics)). We say that
 the relation is *functional*.
 
 In type theory, on the other hand, the notion of function is
-taken primitive. However, we can show that the type of functions is
+taken as primitive. However, we can show that the type of functions is
 equivalent to the type of functional relations. When the types under
 consideration are sets, the corresponding relations are
 *truth valued*. But for the equivalence between functions and
