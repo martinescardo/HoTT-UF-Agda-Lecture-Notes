@@ -7751,17 +7751,18 @@ the second
 set](https://en.wikipedia.org/wiki/Function_(mathematics)). We say that
 the relation is *functional*.
 
-In type theory, on the other hand, the notion of function is
-taken as primitive. However, we can show that the type of functions is
-equivalent to the type of functional relations. When the types under
-consideration are sets, the corresponding relations are
-*truth valued*. But for the equivalence between functions and
-functional relations to hold for arbitrary types, we need to
-consider *type valued* relations and assume univalence.
+In type theory, on the other hand, the notion of function is taken as
+primitive. However, we can show that the type of functions is
+equivalent to the type of functional relations. This relies on
+univalence.
+
+When the types under consideration are sets, the corresponding
+relations are *truth valued*. But for the equivalence between
+functions and functional relations to hold for arbitrary types.
 
 More generally, we have a one-to-one correponce between dependent
 functions `(x : X) → A x` and dependent type-valued relations `(x : X)
-→ A x ◂i 𝓥 `. We fix the domain `X` and codomain `A` as parameters for
+→ A x → 𝓥 `. We fix the domain `X` and codomain `A` as parameters for
 a submodule:
 
 \begin{code}
