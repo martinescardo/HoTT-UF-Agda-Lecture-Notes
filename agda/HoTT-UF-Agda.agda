@@ -3941,7 +3941,7 @@ module functions-as-single-valued-relations
                                   → is-subsingleton (is-functional R)
 
  being-functional-is-subsingleton R = Π-is-subsingleton fe
-                                       (λ x → being-singleton-is-subsingleton fe)
+                                       (λ x → ∃!-is-subsingleton (R x) fe)
 
  Functional-Relation : 𝓤 ⊔ (𝓥 ⁺) ̇
  Functional-Relation = Σ \(R : Relation) → is-functional R

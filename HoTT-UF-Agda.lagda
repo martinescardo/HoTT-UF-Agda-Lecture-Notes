@@ -7811,7 +7811,7 @@ its functionality condition is a truth value:
                                   → is-subsingleton (is-functional R)
 
  being-functional-is-subsingleton R = Π-is-subsingleton fe
-                                       (λ x → being-singleton-is-subsingleton fe)
+                                       (λ x → ∃!-is-subsingleton (R x) fe)
 \end{code}
 
 The type of functional relations:
@@ -7821,15 +7821,15 @@ The type of functional relations:
  Functional-Relation = Σ \(R : Relation) → is-functional R
 \end{code}
 
-To a function `f` we associate the relation `R` defined by `R x a = (f x ≡ a)`. Notice that `R` is truth valued if the type `A x` is a set for every `x : X`.
+To a function `f` we associate the relation `R` defined by `R x a = (f x ≡ a)`. Notice that `R` is truth valued if the type `A x` is a set for every `x : X`, by definition of set.
 
 \begin{code}
  ρ : Function → Relation
  ρ f = λ x a → f x ≡ a
 \end{code}
 
-To show that `ρ` is an embedding we apply the Yoneda embedding and the
-fact that the map `NatΠ` transforms natural embeddings into
+To show that the map `ρ` is an embedding we apply the Yoneda embedding and the
+fact that the map `NatΠ` transforms fiberwise embeddings into
 embeddings:
 
 \begin{code}
