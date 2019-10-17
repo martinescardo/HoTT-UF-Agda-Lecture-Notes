@@ -4028,22 +4028,22 @@ module function-graphs
  functions-amount-to-functional-relations : Function ≃ Functional-Relation
  functions-amount-to-functional-relations = Γ , Γ-is-equiv
 
-pΠ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ (𝓥 ⁺) ̇
-pΠ {𝓤} {𝓥} {X} A = Σ \(R : (x : X) → A x → 𝓥 ̇ )
+Πₚ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ (𝓥 ⁺) ̇
+Πₚ {𝓤} {𝓥} {X} A = Σ \(R : (x : X) → A x → 𝓥 ̇ )
                          → (x : X) → is-subsingleton (Σ \(a : A x) → R x a)
 
 _⇀_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
-X ⇀ Y = pΠ (λ (_ : X) → Y)
+X ⇀ Y = Πₚ (λ (_ : X) → Y)
 
-is-defined : {X : 𝓤 ̇} {A : X → 𝓥 ̇ } → pΠ A → X → 𝓥 ̇
+is-defined : {X : 𝓤 ̇} {A : X → 𝓥 ̇ } → Πₚ A → X → 𝓥 ̇
 is-defined (R , σ) x = Σ \a → R x a
 
-being-defined-is-subsingleton : {X : 𝓤 ̇} {A : X → 𝓥 ̇ } (f : pΠ A) (x : X)
+being-defined-is-subsingleton : {X : 𝓤 ̇} {A : X → 𝓥 ̇ } (f : Πₚ A) (x : X)
                               → is-subsingleton (is-defined f x)
 
 being-defined-is-subsingleton (R , σ) x = σ x
 
-eval :  {X : 𝓤 ̇} {A : X → 𝓥 ̇ } (f : pΠ A) (x : X) → is-defined f x → A x
+eval :  {X : 𝓤 ̇} {A : X → 𝓥 ̇ } (f : Πₚ A) (x : X) → is-defined f x → A x
 eval (R , σ) x (a , r) = a
 
 module μ-operator (fe : dfunext 𝓤₀ 𝓤₀) where

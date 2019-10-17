@@ -7954,21 +7954,22 @@ relations:
 Based on the previous section, we can define a [*partial
 function*](https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf)
 to be a relation `R` such that for every `x : X` there is *at most
-one* `a : A x` with `R x a`. We use `pΠ` for the type of dependent
+one* `a : A x` with `R x a`. We use `Πₚ` for the type of dependent
 partial functions and `⇀` for the type of partial functions.
 
 \begin{code}
-pΠ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ (𝓥 ⁺) ̇
-pΠ {𝓤} {𝓥} {X} A = Σ \(R : (x : X) → A x → 𝓥 ̇ )
+Πₚ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ (𝓥 ⁺) ̇
+Πₚ {𝓤} {𝓥} {X} A = Σ \(R : (x : X) → A x → 𝓥 ̇ )
                          → (x : X) → is-subsingleton (Σ \(a : A x) → R x a)
 
 _⇀_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
-X ⇀ Y = pΠ (λ (_ : X) → Y)
+X ⇀ Y = Πₚ (λ (_ : X) → Y)
 
-is-defined : {X : 𝓤 ̇} {A : X → 𝓥 ̇ } → pΠ A → X → 𝓥 ̇
+is-defined : {X : 𝓤 ̇} {A : X → 𝓥 ̇ } → Πₚ A → X → 𝓥 ̇
 is-defined (R , σ) x = Σ \a → R x a
 
-being-defined-is-subsingleton : {X : 𝓤 ̇} {A : X → 𝓥 ̇ } (f : pΠ A) (x : X)
+
+being-defined-is-subsingleton : {X : 𝓤 ̇} {A : X → 𝓥 ̇ } (f : Πₚ A) (x : X)
                               → is-subsingleton (is-defined f x)
 
 being-defined-is-subsingleton (R , σ) x = σ x
@@ -7977,12 +7978,12 @@ being-defined-is-subsingleton (R , σ) x = σ x
 Notice that we have to write `is-defined f x`, and we say that `f` is
 defined at `x`, or that `x` is in the domain of definition of `f`,
 rather than `is-defined (f x)`. In fact, before being able to evaluate
-a partial function `f` at an argument `x`, we need to now that `f` is defined
-at `x`. However, in informal discussions we will say that `f x` is
-defined by the usual abuse of notation and terminology.
+a partial function `f` at an argument `x`, we need to know that `f` is defined
+at `x`. However, in informal discussions we will say "`f x` is
+defined" by the usual abuse of notation and terminology.
 
 \begin{code}
-eval :  {X : 𝓤 ̇} {A : X → 𝓥 ̇ } (f : pΠ A) (x : X) → is-defined f x → A x
+eval :  {X : 𝓤 ̇} {A : X → 𝓥 ̇ } (f : Πₚ A) (x : X) → is-defined f x → A x
 eval (R , σ) x (a , r) = a
 \end{code}
 
