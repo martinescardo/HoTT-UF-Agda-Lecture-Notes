@@ -2373,14 +2373,31 @@ The type of roots of a function:
 
   _has-no-root<_ : (ℕ → ℕ) → ℕ → 𝓤₀ ̇
   f has-no-root< k = (n : ℕ) → n < k → f n ≢ 0
+
+  is-minimal-root : (ℕ → ℕ) → ℕ → 𝓤₀ ̇
+  is-minimal-root f m = (f m ≡ 0) × (f has-no-root< m)
+
+
+  at-most-one-minimal-root : (f : ℕ → ℕ) (m n : ℕ)
+                           → is-minimal-root f m → is-minimal-root f n → m ≡ n
+
+  at-most-one-minimal-root f m n (p , φ) (q , ψ) = c m n a b
+   where
+    a : ¬(m < n)
+    a u = ψ m u p
+
+    b : ¬(n < m)
+    b v = φ n v q
+
+    c : (m n : ℕ) → ¬(m < n) → ¬(n < m) → m ≡ n
+    c m n u v = ≤-anti m n (not-<-gives-≥ m n v) (not-<-gives-≥ n m u)
 \end{code}
 
 The type of minimal roots of a function:
 
 \begin{code}
   minimal-root : (ℕ → ℕ) → 𝓤₀ ̇
-  minimal-root f = Σ \(m : ℕ) → (f m ≡ 0)
-                              × (f has-no-root< m)
+  minimal-root f = Σ \(m : ℕ) → is-minimal-root f m
 
   minimal-root-is-root : ∀ f → minimal-root f → root f
   minimal-root-is-root f (m , p , _) = m , p
@@ -2408,14 +2425,15 @@ The type of minimal roots of a function:
 Given any root, we can find a minimal root.
 
 \begin{code}
-  minimal-root-by-bounded-search-ℕ : ∀ f n → f n ≡ 0 → minimal-root f
-  minimal-root-by-bounded-search-ℕ f n p = γ
+  root-gives-minimal-root : ∀ f → root f → minimal-root f
+  root-gives-minimal-root f (n , p) = γ
    where
     g : ¬(f has-no-root< (succ n))
     g φ = φ n (≤-refl n) p
 
     γ : minimal-root f
     γ = right-fails-gives-left-holds (bounded-ℕ-search (succ n) f) g
+
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -7771,10 +7789,10 @@ a submodule:
 
 \begin{code}
 module function-graphs
-        {𝓤 𝓥 : Universe}
-        {X : 𝓤 ̇ }
-        (A : X → 𝓥 ̇ )
         (ua : Univalence)
+        {𝓤 𝓥 : Universe}
+        (X : 𝓤 ̇ )
+        (A : X → 𝓥 ̇ )
        where
 
  hfe : global-hfunext
@@ -7869,35 +7887,35 @@ The relation induced by a function is functional, of course:
 The graph map associates functional relations to functions:
 
 \begin{code}
- γ : Function → Functional-Relation
- γ f = ρ f , ρ-is-functional f
+ Γ : Function → Functional-Relation
+ Γ f = ρ f , ρ-is-functional f
 \end{code}
 
-The function `γ` can be seen as the corestriction of `ρ` to its image.
+The function `Γ` can be seen as the corestriction of `ρ` to its image.
 
 We get a function from a functional relation by unique choice, which is just
 projection:
 
 \begin{code}s
- φ : Functional-Relation → Function
- φ (R , σ) = λ x → pr₁ (center (Σ \(a : A x) → R x a) (σ x))
+ Φ : Functional-Relation → Function
+ Φ (R , σ) = λ x → pr₁ (center (Σ \(a : A x) → R x a) (σ x))
 \end{code}
 
 To show that these two constructions are mutually inverse, we again
 apply the Yoneda machinery, but in a different way.
 
 \begin{code}
- γ-is-equiv : is-equiv γ
- γ-is-equiv = invertibles-are-equivs γ (φ , η , ε)
+ Γ-is-equiv : is-equiv Γ
+ Γ-is-equiv = invertibles-are-equivs Γ (Φ , η , ε)
   where
-   η : φ ∘ γ ∼ id
+   η : Φ ∘ Γ ∼ id
    η = refl
 
-   ε : γ ∘ φ ∼ id
+   ε : Γ ∘ Φ ∼ id
    ε (R , σ) = a
     where
      f : Function
-     f = φ (R , σ)
+     f = Φ (R , σ)
 
      e : (x : X) → R x (f x)
      e x = pr₂ (center (Σ \(a : A x) → R x a) (σ x))
@@ -7925,8 +7943,98 @@ Therefore we have a bijection between functions and functional
 relations:
 
 \begin{code}
- Γ : Function ≃ Functional-Relation
- Γ = γ , γ-is-equiv
+ functions-amount-to-functional-relations : Function ≃ Functional-Relation
+ functions-amount-to-functional-relations = Γ , Γ-is-equiv
+\end{code}
+
+This is the end of the module `function-graphs`.
+
+We can then define a [*partial* function in type theory](https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf) to be a
+relation `R` such that for every `x : X` there is at most one `a : A
+x` with `R x a`. We use `pΠ` for the type of dependent partial
+functions and `⇀` for the type of partial functions.
+
+\begin{code}
+pΠ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ (𝓥 ⁺) ̇
+pΠ {𝓤} {𝓥} {X} A = Σ \(R : (x : X) → A x → 𝓥 ̇ )
+                          → (x : X) → is-subsingleton (Σ \(a : A x) → R x a)
+
+_⇀_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
+X ⇀ Y = pΠ (λ (x : X) → Y)
+
+is-defined : {X : 𝓤 ̇} {A : X → 𝓥 ̇ } → pΠ A → X → 𝓥 ̇
+is-defined (R , σ) x = Σ \a → R x a
+
+being-defined-is-subsingleton : {X : 𝓤 ̇} {A : X → 𝓥 ̇ } (f : pΠ A) (x : X)
+                              → is-subsingleton (is-defined f x)
+
+being-defined-is-subsingleton (R , σ) x = σ x
+\end{code}
+
+Notice that we have to write `is-defined f x`, and we say that `f` is
+defined at `x`, or that `x` is in the domain of definition of `f`),
+rather than `is-defined (f x)`. In fact, before being able to evaluate
+a partial `f` at an argument `x`, we need to now that `f` is defined
+at `x`:
+
+\begin{code}
+eval :  {X : 𝓤 ̇} {A : X → 𝓥 ̇ } (f : pΠ A) (x : X) → is-defined f x → A x
+eval (R , σ) x (a , r) = a
+\end{code}
+
+*Exercise.* Define partial function composition.
+
+*Example.* The famous
+ [μ-operator](https://en.wikipedia.org/wiki/%CE%9C_operator) from
+ recursion theory is a partial function.
+
+\begin{code}
+module μ-operator (fe : dfunext 𝓤₀ 𝓤₀) where
+
+ open basic-arithmetic-and-order
+\end{code}
+
+First we need to show that the property of being a minimal root is a
+truth value and that the type of minimal roots has at most one element.
+
+\begin{code}
+ being-minimal-root-is-subsingleton : (f : ℕ → ℕ) (m : ℕ)
+                                    → is-subsingleton (is-minimal-root f m)
+
+ being-minimal-root-is-subsingleton f m = ×-is-subsingleton
+                                           (ℕ-is-set (f m) 0)
+                                           (Π-is-subsingleton fe
+                                              (λ n → Π-is-subsingleton fe
+                                              (λ _ → Π-is-subsingleton fe
+                                              (λ _ → 𝟘-is-subsingleton))))
+
+ minimal-root-is-subsingleton : (f : ℕ → ℕ)
+                              → is-subsingleton (minimal-root f)
+
+ minimal-root-is-subsingleton f (m , p , φ) (m' , p' , φ') =
+   to-subtype-≡
+    (being-minimal-root-is-subsingleton f)
+    (at-most-one-minimal-root f m m' (p , φ) (p' , φ'))
+\end{code}
+
+We now define `μ f` so that if `f` has a root then `μ f` is defined,
+and conversly, if `μ f` is defined then it is the minimal root of `f`,
+most of the work has already been done in the module
+`basic-arithmetic-and-order`.
+
+\begin{code}
+ μ : (ℕ → ℕ) ⇀ ℕ
+ μ = is-minimal-root , minimal-root-is-subsingleton
+
+ μ-property₀ : (f : ℕ → ℕ) → (Σ \(n : ℕ) → f n ≡ 0) → is-defined μ f
+
+ μ-property₀ = root-gives-minimal-root
+
+ μ-property₁ : (f : ℕ → ℕ) (i : is-defined μ f)
+             → (f (eval μ f i) ≡ 0)
+             × ((n : ℕ) → n < eval μ f i → f n ≢ 0)
+
+ μ-property₁ f = pr₂
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -11855,7 +11963,7 @@ search, and this gives a constant endomap of the type of roots:
 
 \begin{code}
  μρ : (f : ℕ → ℕ) → root f → root f
- μρ f (n , p) = minimal-root-is-root f (minimal-root-by-bounded-search-ℕ f n p)
+ μρ f r = minimal-root-is-root f (root-gives-minimal-root f r)
 
  μρ-root : (f : ℕ → ℕ) → root f → ℕ
  μρ-root f r = pr₁ (μρ f r)
@@ -11869,7 +11977,7 @@ search, and this gives a constant endomap of the type of roots:
  μρ-root-minimal f m p n q = not-<-gives-≥ (μρ-root f (m , p)) n γ
   where
    φ : ¬(f n ≢ 0) → ¬(n < μρ-root f (m , p))
-   φ = contrapositive (pr₂(pr₂ (minimal-root-by-bounded-search-ℕ f m p)) n)
+   φ = contrapositive (pr₂(pr₂ (root-gives-minimal-root f (m , p))) n)
 
    γ : ¬ (n < μρ-root f (m , p))
    γ = φ (dni (f n ≡ 0) q)

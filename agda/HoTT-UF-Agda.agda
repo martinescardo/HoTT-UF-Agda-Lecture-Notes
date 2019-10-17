@@ -3970,23 +3970,23 @@ module function-graphs
    σ : (x : X) → ∃! \(a : A x) → f x ≡ a
    σ x = singleton-types'-are-singletons (A x) (f x)
 
- γ : Function → Functional-Relation
- γ f = ρ f , ρ-is-functional f
+ Γ : Function → Functional-Relation
+ Γ f = ρ f , ρ-is-functional f
 
- φ : Functional-Relation → Function
- φ (R , σ) = λ x → pr₁ (center (Σ \(a : A x) → R x a) (σ x))
+ Φ : Functional-Relation → Function
+ Φ (R , σ) = λ x → pr₁ (center (Σ \(a : A x) → R x a) (σ x))
 
- γ-is-equiv : is-equiv γ
- γ-is-equiv = invertibles-are-equivs γ (φ , η , ε)
+ Γ-is-equiv : is-equiv Γ
+ Γ-is-equiv = invertibles-are-equivs Γ (Φ , η , ε)
   where
-   η : φ ∘ γ ∼ id
+   η : Φ ∘ Γ ∼ id
    η = refl
 
-   ε : γ ∘ φ ∼ id
+   ε : Γ ∘ Φ ∼ id
    ε (R , σ) = a
     where
      f : Function
-     f = φ (R , σ)
+     f = Φ (R , σ)
 
      e : (x : X) → R x (f x)
      e x = pr₂ (center (Σ \(a : A x) → R x a) (σ x))
@@ -4009,8 +4009,8 @@ module function-graphs
      a : (ρ f , ρ-is-functional f) ≡ (R , σ)
      a = to-subtype-≡ being-functional-is-subsingleton b
 
- Γ : Function ≃ Functional-Relation
- Γ = γ , γ-is-equiv
+ functions-amount-to-functional-relations : Function ≃ Functional-Relation
+ functions-amount-to-functional-relations = Γ , Γ-is-equiv
 
 record Lift {𝓤 : Universe} (𝓥 : Universe) (X : 𝓤 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
  constructor
