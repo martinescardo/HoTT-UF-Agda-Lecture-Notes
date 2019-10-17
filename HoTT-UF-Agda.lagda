@@ -7991,9 +7991,9 @@ eval (R , σ) x (a , r) = a
 
 *Exercise.* Define [Kleene
  equality](https://ncatlab.org/nlab/show/Kleene+equality) of two
- partial functions `f g : Πₚ A` by saying that for all `x : X`, if one
- of `f x` and `g x` is defined then so is the other, and when they are
- both defined they are equal:
+ partial functions `f g : Πₚ A` by saying that for all `x : X`, if
+ whenever one of `f x` and `g x` is defined then so is the other, and
+ when they are both defined they are equal:
 
 \begin{code}
 _≡ₖ_ : {X : 𝓤 ̇} {A : X → 𝓥 ̇ } → Πₚ A → Πₚ A → 𝓤 ⊔ 𝓥 ̇
