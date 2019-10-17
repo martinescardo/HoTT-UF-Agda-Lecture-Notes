@@ -7870,6 +7870,8 @@ The graph map associates functional relations to functions:
  γ f = ρ f , ρ-is-functional f
 \end{code}
 
+The function `γ` can be seen as the corestriction of `ρ` to its image.
+
 We get a function from a functional relation by unique choice, which is just
 projection:
 
