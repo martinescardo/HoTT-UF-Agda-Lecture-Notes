@@ -8002,12 +8002,12 @@ f ≡ₖ g = ∀ x → (is-defined f x → is-defined g x)
              × ((i : is-defined f x) (j : is-defined g x) → eval f x i ≡ eval g x j)
 \end{code}
 
-Show that equality of partial functions is equivalent to their Kleene
-equality. This needs univalence. If all types `A x` are sets, then
-functional and propositional extensionality suffice. In the general
-case, it is easier, or less hard, to approach this problem using the
-chapter on [equality of mathematical
-structures](HoTT-UF-Agda.html#sip).
+Show that the equality of partial functions in the sense of the
+identity type is equivalent to their Kleene equality. This needs
+univalence. If all types `A x` are sets, then functional and
+propositional extensionality suffice. In the general case, it is
+easier, or less hard, to approach this problem using the chapter on
+[equality of mathematical structures](HoTT-UF-Agda.html#sip).
 
 For two other natural renderings of the notion of partial function,
 see [this
