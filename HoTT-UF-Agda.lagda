@@ -7762,8 +7762,8 @@ functions and functional relations to hold for arbitrary types, we
 need to work with *type valued* relations.
 
 More generally, we have a one-to-one correponce between dependent
-functions `(x : X) → A x` and dependent type-valued relations `(x : X)
-→ A x → 𝓥 `. We fix the domain `X` and codomain `A` as parameters for
+functions `f : (x : X) → A x` and dependent type-valued relations `R : (x : X)
+→ A x → 𝓥 `. We take the domain `X` and codomain `A` as parameters for
 a submodule:
 
 \begin{code}
@@ -7828,7 +7828,8 @@ To a function `f` we associate the relation `R` defined by `R x a = (f x ≡ a)`
 \end{code}
 
 To show that `ρ` is an embedding we apply the Yoneda embedding and the
-fact that `NatΠ` transforms natural embeddings into embeddings:
+fact that the map `NatΠ` transforms natural embeddings into
+embeddings:
 
 \begin{code}
  ρ-is-embedding : is-embedding ρ
@@ -7914,8 +7915,8 @@ apply the Yoneda machinery, but in a different way.
      a = to-subtype-≡ being-functional-is-subsingleton b
 \end{code}
 
-Therefore the graph map is a bijection between functions and
-functional relations:
+Therefore we have a bijection between functions and functional
+relations:
 
 \begin{code}
  Γ : Function ≃ Functional-Relation
