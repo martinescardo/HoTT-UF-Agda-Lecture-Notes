@@ -7997,8 +7997,7 @@ eval (R , σ) x (a , r) = a
 
 \begin{code}
 _≡ₖ_ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → Πₚ A → Πₚ A → 𝓤 ⊔ 𝓥 ̇
-f ≡ₖ g = ∀ x → (is-defined f x → is-defined g x)
-             × (is-defined g x → is-defined f x)
+f ≡ₖ g = ∀ x → (is-defined f x ⇔ is-defined g x)
              × ((i : is-defined f x) (j : is-defined g x) → eval f x i ≡ eval g x j)
 \end{code}
 
