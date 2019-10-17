@@ -8002,7 +8002,7 @@ f ≡ₖ g = ∀ x → (is-defined f x → is-defined g x)
              × ((i : is-defined f x) (j : is-defined g x) → eval f x i ≡ eval g x j)
 \end{code}
 
-Show that the equality of partial functions in the sense of the
+Show that the equality of two partial functions in the sense of the
 identity type is equivalent to their Kleene equality. This needs
 univalence. If all types `A x` are sets, then functional and
 propositional extensionality suffice. In the general case, it is
@@ -8013,7 +8013,7 @@ For two other natural renderings of the notion of partial function,
 see [this
 paper](https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf).
 A further exercise is to write them down in Agda and prove their
-equivalence with the notion formulated here.
+equivalence with the formulation given here.
 
 *Example.* The famous
  [μ-operator](https://en.wikipedia.org/wiki/%CE%9C_operator) from
