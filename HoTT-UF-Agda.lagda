@@ -7965,11 +7965,11 @@ partial functions and `⇀` for the type of partial functions.
 _⇀_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
 X ⇀ Y = Πₚ (λ (_ : X) → Y)
 
-is-defined : {X : 𝓤 ̇} {A : X → 𝓥 ̇ } → Πₚ A → X → 𝓥 ̇
+is-defined : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → Πₚ A → X → 𝓥 ̇
 is-defined (R , σ) x = Σ \a → R x a
 
 
-being-defined-is-subsingleton : {X : 𝓤 ̇} {A : X → 𝓥 ̇ } (f : Πₚ A) (x : X)
+being-defined-is-subsingleton : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : Πₚ A) (x : X)
                               → is-subsingleton (is-defined f x)
 
 being-defined-is-subsingleton (R , σ) x = σ x
@@ -7983,7 +7983,7 @@ at `x`. However, in informal discussions we will say "`f x` is
 defined" by the usual abuse of notation and terminology.
 
 \begin{code}
-eval :  {X : 𝓤 ̇} {A : X → 𝓥 ̇ } (f : Πₚ A) (x : X) → is-defined f x → A x
+eval :  {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : Πₚ A) (x : X) → is-defined f x → A x
 eval (R , σ) x (a , r) = a
 \end{code}
 
@@ -7996,7 +7996,7 @@ eval (R , σ) x (a , r) = a
  when they are both defined they are equal:
 
 \begin{code}
-_≡ₖ_ : {X : 𝓤 ̇} {A : X → 𝓥 ̇ } → Πₚ A → Πₚ A → 𝓤 ⊔ 𝓥 ̇
+_≡ₖ_ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → Πₚ A → Πₚ A → 𝓤 ⊔ 𝓥 ̇
 f ≡ₖ g = ∀ x → (is-defined f x → is-defined g x)
              × (is-defined g x → is-defined f x)
              × ((i : is-defined f x) (j : is-defined g x) → eval f x i ≡ eval g x j)
