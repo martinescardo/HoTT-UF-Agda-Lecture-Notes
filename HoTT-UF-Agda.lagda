@@ -416,6 +416,7 @@ to practice univalent mathematics should consult the above references.
      1. [Type embeddings](HoTT-UF-Agda.html#embeddings)
      1. [The Yoneda Lemma for types](HoTT-UF-Agda.html#yoneda)
      1. [What is a function?](HoTT-UF-Agda.html#whatisafunction)
+     1. [Partial functions](HoTT-UF-Agda.html#partialfunctions)
      1. [Universe lifting](HoTT-UF-Agda.html#universelifting)
      1. [The subtype classifier and other classifiers](HoTT-UF-Agda.html#subtypeclassifier)
      1. [Magma equivalences](HoTT-UF-Agda.html#magmaequivalences)
@@ -7947,20 +7948,22 @@ relations:
  functions-amount-to-functional-relations = Γ , Γ-is-equiv
 \end{code}
 
-This is the end of the module `function-graphs`.
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="partialfunctions"></a> Partial functions
 
-We can then define a [*partial* function in type theory](https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf) to be a
-relation `R` such that for every `x : X` there is at most one `a : A
-x` with `R x a`. We use `pΠ` for the type of dependent partial
-functions and `⇀` for the type of partial functions.
+Based on the previous section, we can define a [*partial
+function*](https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf)
+to be a relation `R` such that for every `x : X` there is *at most
+one* `a : A x` with `R x a`. We use `pΠ` for the type of dependent
+partial functions and `⇀` for the type of partial functions.
 
 \begin{code}
 pΠ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ (𝓥 ⁺) ̇
 pΠ {𝓤} {𝓥} {X} A = Σ \(R : (x : X) → A x → 𝓥 ̇ )
-                          → (x : X) → is-subsingleton (Σ \(a : A x) → R x a)
+                         → (x : X) → is-subsingleton (Σ \(a : A x) → R x a)
 
 _⇀_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
-X ⇀ Y = pΠ (λ (x : X) → Y)
+X ⇀ Y = pΠ (λ (_ : X) → Y)
 
 is-defined : {X : 𝓤 ̇} {A : X → 𝓥 ̇ } → pΠ A → X → 𝓥 ̇
 is-defined (R , σ) x = Σ \a → R x a
@@ -7972,10 +7975,11 @@ being-defined-is-subsingleton (R , σ) x = σ x
 \end{code}
 
 Notice that we have to write `is-defined f x`, and we say that `f` is
-defined at `x`, or that `x` is in the domain of definition of `f`),
+defined at `x`, or that `x` is in the domain of definition of `f`,
 rather than `is-defined (f x)`. In fact, before being able to evaluate
-a partial `f` at an argument `x`, we need to now that `f` is defined
-at `x`:
+a partial function `f` at an argument `x`, we need to now that `f` is defined
+at `x`. However, in informal discussions we will say that `f x` is
+defined by the usual abuse of notation and terminology.
 
 \begin{code}
 eval :  {X : 𝓤 ̇} {A : X → 𝓥 ̇ } (f : pΠ A) (x : X) → is-defined f x → A x
@@ -7995,7 +7999,8 @@ module μ-operator (fe : dfunext 𝓤₀ 𝓤₀) where
 \end{code}
 
 First we need to show that the property of being a minimal root is a
-truth value and that the type of minimal roots has at most one element.
+truth value and that the type of minimal roots has at most one
+element. It is this that requires function extensionality.
 
 \begin{code}
  being-minimal-root-is-subsingleton : (f : ℕ → ℕ) (m : ℕ)
@@ -8017,9 +8022,9 @@ truth value and that the type of minimal roots has at most one element.
     (at-most-one-minimal-root f m m' (p , φ) (p' , φ'))
 \end{code}
 
-We now define `μ f` so that if `f` has a root then `μ f` is defined,
-and conversly, if `μ f` is defined then it is the minimal root of `f`,
-most of the work has already been done in the module
+We now define `μ` so that if `f` has a root then `μ f` is defined,
+and, conversely, if `μ f` is defined then it is the minimal root of `f`.
+Most of the work has already been done in the module
 `basic-arithmetic-and-order`.
 
 \begin{code}
@@ -8027,8 +8032,8 @@ most of the work has already been done in the module
  μ = is-minimal-root , minimal-root-is-subsingleton
 
  μ-property₀ : (f : ℕ → ℕ) → (Σ \(n : ℕ) → f n ≡ 0) → is-defined μ f
-
  μ-property₀ = root-gives-minimal-root
+
 
  μ-property₁ : (f : ℕ → ℕ) (i : is-defined μ f)
              → (f (eval μ f i) ≡ 0)

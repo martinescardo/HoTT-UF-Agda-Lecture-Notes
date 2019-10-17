@@ -603,9 +603,25 @@ module basic-arithmetic-and-order where
   _has-no-root<_ : (ℕ → ℕ) → ℕ → 𝓤₀ ̇
   f has-no-root< k = (n : ℕ) → n < k → f n ≢ 0
 
+  is-minimal-root : (ℕ → ℕ) → ℕ → 𝓤₀ ̇
+  is-minimal-root f m = (f m ≡ 0) × (f has-no-root< m)
+
+  at-most-one-minimal-root : (f : ℕ → ℕ) (m n : ℕ)
+                           → is-minimal-root f m → is-minimal-root f n → m ≡ n
+
+  at-most-one-minimal-root f m n (p , φ) (q , ψ) = c m n a b
+   where
+    a : ¬(m < n)
+    a u = ψ m u p
+
+    b : ¬(n < m)
+    b v = φ n v q
+
+    c : (m n : ℕ) → ¬(m < n) → ¬(n < m) → m ≡ n
+    c m n u v = ≤-anti m n (not-<-gives-≥ m n v) (not-<-gives-≥ n m u)
+
   minimal-root : (ℕ → ℕ) → 𝓤₀ ̇
-  minimal-root f = Σ \(m : ℕ) → (f m ≡ 0)
-                              × (f has-no-root< m)
+  minimal-root f = Σ \(m : ℕ) → is-minimal-root f m
 
   minimal-root-is-root : ∀ f → minimal-root f → root f
   minimal-root-is-root f (m , p , _) = m , p
@@ -629,8 +645,8 @@ module basic-arithmetic-and-order where
       γ₁ : f k ≢ 0 → A (succ k) f
       γ₁ v = inr (bounded-∀-next (λ n → f n ≢ 0) k v u)
 
-  minimal-root-by-bounded-search-ℕ : ∀ f n → f n ≡ 0 → minimal-root f
-  minimal-root-by-bounded-search-ℕ f n p = γ
+  root-gives-minimal-root : ∀ f → root f → minimal-root f
+  root-gives-minimal-root f (n , p) = γ
    where
     g : ¬(f has-no-root< (succ n))
     g φ = φ n (≤-refl n) p
@@ -3916,10 +3932,10 @@ being-representable-is-subsingleton fe {X} A r₀ r₁ = γ
   γ = equiv-to-subsingleton e (being-representable-is-subsingleton dfe A)
 
 module function-graphs
-        {𝓤 𝓥 : Universe}
-        {X : 𝓤 ̇ }
-        (A : X → 𝓥 ̇ )
         (ua : Univalence)
+        {𝓤 𝓥 : Universe}
+        (X : 𝓤 ̇ )
+        (A : X → 𝓥 ̇ )
        where
 
  hfe : global-hfunext
@@ -4011,6 +4027,58 @@ module function-graphs
 
  functions-amount-to-functional-relations : Function ≃ Functional-Relation
  functions-amount-to-functional-relations = Γ , Γ-is-equiv
+
+pΠ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ (𝓥 ⁺) ̇
+pΠ {𝓤} {𝓥} {X} A = Σ \(R : (x : X) → A x → 𝓥 ̇ )
+                         → (x : X) → is-subsingleton (Σ \(a : A x) → R x a)
+
+_⇀_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
+X ⇀ Y = pΠ (λ (_ : X) → Y)
+
+is-defined : {X : 𝓤 ̇} {A : X → 𝓥 ̇ } → pΠ A → X → 𝓥 ̇
+is-defined (R , σ) x = Σ \a → R x a
+
+being-defined-is-subsingleton : {X : 𝓤 ̇} {A : X → 𝓥 ̇ } (f : pΠ A) (x : X)
+                              → is-subsingleton (is-defined f x)
+
+being-defined-is-subsingleton (R , σ) x = σ x
+
+eval :  {X : 𝓤 ̇} {A : X → 𝓥 ̇ } (f : pΠ A) (x : X) → is-defined f x → A x
+eval (R , σ) x (a , r) = a
+
+module μ-operator (fe : dfunext 𝓤₀ 𝓤₀) where
+
+ open basic-arithmetic-and-order
+
+ being-minimal-root-is-subsingleton : (f : ℕ → ℕ) (m : ℕ)
+                                    → is-subsingleton (is-minimal-root f m)
+
+ being-minimal-root-is-subsingleton f m = ×-is-subsingleton
+                                           (ℕ-is-set (f m) 0)
+                                           (Π-is-subsingleton fe
+                                              (λ n → Π-is-subsingleton fe
+                                              (λ _ → Π-is-subsingleton fe
+                                              (λ _ → 𝟘-is-subsingleton))))
+
+ minimal-root-is-subsingleton : (f : ℕ → ℕ)
+                              → is-subsingleton (minimal-root f)
+
+ minimal-root-is-subsingleton f (m , p , φ) (m' , p' , φ') =
+   to-subtype-≡
+    (being-minimal-root-is-subsingleton f)
+    (at-most-one-minimal-root f m m' (p , φ) (p' , φ'))
+
+ μ : (ℕ → ℕ) ⇀ ℕ
+ μ = is-minimal-root , minimal-root-is-subsingleton
+
+ μ-property₀ : (f : ℕ → ℕ) → (Σ \(n : ℕ) → f n ≡ 0) → is-defined μ f
+ μ-property₀ = root-gives-minimal-root
+
+ μ-property₁ : (f : ℕ → ℕ) (i : is-defined μ f)
+             → (f (eval μ f i) ≡ 0)
+             × ((n : ℕ) → n < eval μ f i → f n ≢ 0)
+
+ μ-property₁ f = pr₂
 
 record Lift {𝓤 : Universe} (𝓥 : Universe) (X : 𝓤 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
  constructor
@@ -6492,7 +6560,7 @@ module find-hidden-root where
  open basic-arithmetic-and-order public
 
  μρ : (f : ℕ → ℕ) → root f → root f
- μρ f (n , p) = minimal-root-is-root f (minimal-root-by-bounded-search-ℕ f n p)
+ μρ f r = minimal-root-is-root f (root-gives-minimal-root f r)
 
  μρ-root : (f : ℕ → ℕ) → root f → ℕ
  μρ-root f r = pr₁ (μρ f r)
@@ -6506,7 +6574,7 @@ module find-hidden-root where
  μρ-root-minimal f m p n q = not-<-gives-≥ (μρ-root f (m , p)) n γ
   where
    φ : ¬(f n ≢ 0) → ¬(n < μρ-root f (m , p))
-   φ = contrapositive (pr₂(pr₂ (minimal-root-by-bounded-search-ℕ f m p)) n)
+   φ = contrapositive (pr₂(pr₂ (root-gives-minimal-root f (m , p))) n)
 
    γ : ¬ (n < μρ-root f (m , p))
    γ = φ (dni (f n ≡ 0) q)
