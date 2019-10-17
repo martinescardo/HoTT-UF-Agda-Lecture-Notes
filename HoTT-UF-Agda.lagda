@@ -7761,8 +7761,8 @@ relations are *truth valued*. But for the equivalence between
 functions and functional relations to hold for arbitrary types, we
 need to work with *type valued* relations.
 
-More generally, we have a one-to-one correponce between dependent
-functions `f : (x : X) → A x` and dependent type-valued relations `R : (x : X)
+More generally, we have a one-to-one corresponce between dependent
+functions `f : (x : X) → A x` and dependent type valued relations `R : (x : X)
 → A x → 𝓥 `. We take the domain `X` and codomain `A` as parameters for
 a submodule:
 
@@ -7784,6 +7784,7 @@ module functions-as-single-valued-relations
 The type of dependent functions:
 
 \begin{code} Function : 𝓤 ⊔ 𝓥 ̇
+ Function : 𝓤 ⊔ 𝓥 ̇
  Function = (x : X) → A x
 \end{code}
 
@@ -7810,7 +7811,7 @@ its functionality condition is a truth value:
                                   → is-subsingleton (is-functional R)
 
  being-functional-is-subsingleton R = Π-is-subsingleton fe
-                                          (λ x → being-singleton-is-subsingleton fe)
+                                       (λ x → being-singleton-is-subsingleton fe)
 \end{code}
 
 The type of functional relations:
@@ -7820,7 +7821,7 @@ The type of functional relations:
  Functional-Relation = Σ \(R : Relation) → is-functional R
 \end{code}
 
-To a function `f` we associate the relation `R` defined by `R x a = (f x ≡ a)`. Notice that `R` is truth valued if `A x` is a set for every `x : X`.
+To a function `f` we associate the relation `R` defined by `R x a = (f x ≡ a)`. Notice that `R` is truth valued if the type `A x` is a set for every `x : X`.
 
 \begin{code}
  ρ : Function → Relation

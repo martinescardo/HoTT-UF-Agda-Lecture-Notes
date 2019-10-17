@@ -3928,6 +3928,7 @@ module functions-as-single-valued-relations
  fe : global-dfunext
  fe = univalence-gives-global-dfunext ua
 
+ Function : 𝓤 ⊔ 𝓥 ̇
  Function = (x : X) → A x
 
  Relation : 𝓤 ⊔ (𝓥 ⁺) ̇
@@ -3940,7 +3941,7 @@ module functions-as-single-valued-relations
                                   → is-subsingleton (is-functional R)
 
  being-functional-is-subsingleton R = Π-is-subsingleton fe
-                                          (λ x → being-singleton-is-subsingleton fe)
+                                       (λ x → being-singleton-is-subsingleton fe)
 
  Functional-Relation : 𝓤 ⊔ (𝓥 ⁺) ̇
  Functional-Relation = Σ \(R : Relation) → is-functional R
