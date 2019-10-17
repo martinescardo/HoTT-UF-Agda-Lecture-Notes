@@ -4046,6 +4046,11 @@ being-defined-is-subsingleton (R , σ) x = σ x
 eval :  {X : 𝓤 ̇} {A : X → 𝓥 ̇ } (f : Πₚ A) (x : X) → is-defined f x → A x
 eval (R , σ) x (a , r) = a
 
+_≡ₖ_ : {X : 𝓤 ̇} {A : X → 𝓥 ̇ } → Πₚ A → Πₚ A → 𝓤 ⊔ 𝓥 ̇
+f ≡ₖ g = ∀ x → (is-defined f x → is-defined g x)
+             × (is-defined g x → is-defined f x)
+             × ((i : is-defined f x) (j : is-defined g x) → eval f x i ≡ eval g x j)
+
 module μ-operator (fe : dfunext 𝓤₀ 𝓤₀) where
 
  open basic-arithmetic-and-order

@@ -7989,6 +7989,26 @@ eval (R , σ) x (a , r) = a
 
 *Exercise.* Define partial function composition.
 
+*Exercise.* Define [Kleene
+ equality](https://ncatlab.org/nlab/show/Kleene+equality) of two
+ partial functions `f g : Πₚ A` by saying that for all `x : X`, if one
+ of `f x` and `g x` is defined then so is the other, and when they are
+ both defined they are equal:
+
+\begin{code}
+_≡ₖ_ : {X : 𝓤 ̇} {A : X → 𝓥 ̇ } → Πₚ A → Πₚ A → 𝓤 ⊔ 𝓥 ̇
+f ≡ₖ g = ∀ x → (is-defined f x → is-defined g x)
+             × (is-defined g x → is-defined f x)
+             × ((i : is-defined f x) (j : is-defined g x) → eval f x i ≡ eval g x j)
+\end{code}
+
+Show that equality of partial functions is equivalent to their Kleene
+equality. This needs univalence. If all types `A x` are sets, then
+functional and propositional extensionality suffice. In the general
+case, it is easier, or less hard, to approach this problem using the
+chapter on [equality of mathematical
+structures](HoTT-UF-Agda.html#sip).
+
 *Example.* The famous
  [μ-operator](https://en.wikipedia.org/wiki/%CE%9C_operator) from
  recursion theory is a partial function.
