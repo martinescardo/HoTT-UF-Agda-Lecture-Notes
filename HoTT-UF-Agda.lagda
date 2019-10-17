@@ -7560,7 +7560,9 @@ universal-fiberwise-equiv {𝓤} {𝓥} {X} A u x τ = γ
   γ = NatΣ-equiv-gives-fiberwise-equiv τ e
 \end{code}
 
-In particular, the induced transport transformation `τ = 𝓝 A x a` is a fiberwise equivalence if and only if `∃! A`.
+In particular, the induced transport transformation `τ = 𝓝 A x a` is a
+fiberwise equivalence if and only if there is a unique `x : X` with `A
+x`, which we abbreviate as `∃! A`.
 
 A corollary is the following characterization of function
 extensionality, similar to the [above characterization of
@@ -7714,7 +7716,8 @@ being-representable-is-subsingleton fe {X} A r₀ r₁ = γ
   γ = singletons-are-subsingletons (is-representable A) v r₀ r₁
 \end{code}
 
-With this it is almost immediate that the Yoneda map is an embedding of `X` into `X → 𝓤`:
+With this it is almost immediate that the Yoneda map `𝑌 X` is an
+embedding of `X` into `X → 𝓤`:
 
 \begin{code}
 𝓨-is-embedding : Univalence → (X : 𝓤 ̇ ) → is-embedding (𝑌 X)
@@ -7733,7 +7736,7 @@ With this it is almost immediate that the Yoneda map is an embedding of `X` into
      i  = λ x → (happly (𝓨 x) A , hfe (𝓨 x) A)
      ii = λ x → Π-cong dfe dfe
                  (λ y → univalence-≃ (ua 𝓤)
-                 (𝓨 x y) (A y))
+                         (𝓨 x y) (A y))
 
   e : fiber 𝓨 A ≃ is-representable A
   e = Σ-cong p
@@ -7767,7 +7770,7 @@ functions `f : (x : X) → A x` and dependent type valued relations `R : (x : X)
 a submodule:
 
 \begin{code}
-module functions-as-single-valued-relations
+module function-graphs
         {𝓤 𝓥 : Universe}
         {X : 𝓤 ̇ }
         (A : X → 𝓥 ̇ )

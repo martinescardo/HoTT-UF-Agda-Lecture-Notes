@@ -3907,7 +3907,7 @@ being-representable-is-subsingleton fe {X} A r₀ r₁ = γ
      i  = λ x → (happly (𝓨 x) A , hfe (𝓨 x) A)
      ii = λ x → Π-cong dfe dfe
                  (λ y → univalence-≃ (ua 𝓤)
-                 (𝓨 x y) (A y))
+                         (𝓨 x y) (A y))
 
   e : fiber 𝓨 A ≃ is-representable A
   e = Σ-cong p
@@ -3915,7 +3915,7 @@ being-representable-is-subsingleton fe {X} A r₀ r₁ = γ
   γ : is-subsingleton (fiber 𝓨 A)
   γ = equiv-to-subsingleton e (being-representable-is-subsingleton dfe A)
 
-module functions-as-single-valued-relations
+module function-graphs
         {𝓤 𝓥 : Universe}
         {X : 𝓤 ̇ }
         (A : X → 𝓥 ̇ )
