@@ -7796,7 +7796,7 @@ That of dependent relations:
 \end{code}
 
 A relation `R` is said to be functional if for every `x : X` there is
-a unique `a : X` with `R x a`:
+a unique `a : A x` with `R x a`:
 
 \begin{code}
  is-functional : Relation → 𝓤 ⊔ 𝓥 ̇
