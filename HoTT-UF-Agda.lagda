@@ -8009,6 +8009,12 @@ case, it is easier, or less hard, to approach this problem using the
 chapter on [equality of mathematical
 structures](HoTT-UF-Agda.html#sip).
 
+For two other natural renderings of the notion of partial function,
+see [this
+paper](https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf).
+A further exercise is to write them down in Agda and prove their
+equivalence with the notion formulated here.
+
 *Example.* The famous
  [μ-operator](https://en.wikipedia.org/wiki/%CE%9C_operator) from
  recursion theory is a partial function.
