@@ -7985,7 +7985,7 @@ defined at `x`, or that `x` is in the domain of definition of `f`,
 rather than `is-defined (f x)`. In fact, before being able to evaluate
 a partial function `f` at an argument `x`, we need to know that `f` is defined
 at `x`. However, in informal discussions we will say "`f x` is
-defined" by the usual abuse of notation and terminology. We will write the application of a partial function `f` to an argument `f x` under the information `i` that `f x` is defined as `f [ x , i ]`:
+defined" by the usual abuse of notation and terminology. We will write the application of a partial function `f` to an argument `x` under the information `i` that `f x` is defined as `f [ x , i ]`:
 
 \begin{code}
 _[_,_] :  {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : Πₚ A) (x : X) → is-defined f x → A x
