@@ -1062,6 +1062,9 @@ module ℕ-order where
   succ x ≤ succ y = x ≤ y
 
   x ≥ y = y ≤ x
+
+  infix 10 _≤_
+  infix 10 _≥_
 \end{code}
 
 *Exercise*. After learning [`Σ`](HoTT-UF-Agda.html#sigmatypes)
@@ -2344,6 +2347,8 @@ on natural numbers. First, it is reflexive, transitive and antisymmetric:
 
   _<_ : ℕ → ℕ → 𝓤₀ ̇
   x < y = succ x ≤ y
+
+  infix 10 _<_
 
   not-<-gives-≥ : (m n : ℕ) → ¬(n < m) → m ≤ n
   not-<-gives-≥ zero n u = zero-minimal n
@@ -7785,7 +7790,7 @@ need to work with *type valued* relations.
 
 More generally, we have a one-to-one corresponce between dependent
 functions `f : (x : X) → A x` and dependent type valued relations `R : (x : X)
-→ A x → 𝓥 `. We take the domain `X` and codomain `A` as parameters for
+→ A x → 𝓥 ̇`. We take the domain `X` and codomain `A` as parameters for
 a submodule:
 
 \begin{code}
@@ -7862,7 +7867,7 @@ embeddings:
   where
 \end{code}
 
-The following remarks are used automatically in the above proof.
+This relies implicitly on the following remarks:
 
 \begin{code}
    τ : (x : X) → A x → (A x → 𝓥 ̇ )
@@ -7980,11 +7985,11 @@ defined at `x`, or that `x` is in the domain of definition of `f`,
 rather than `is-defined (f x)`. In fact, before being able to evaluate
 a partial function `f` at an argument `x`, we need to know that `f` is defined
 at `x`. However, in informal discussions we will say "`f x` is
-defined" by the usual abuse of notation and terminology.
+defined" by the usual abuse of notation and terminology. We will write the application of a partial function `f` to an argument `f x` under the information `i` that `f x` is defined as `f [ x , i ]`:
 
 \begin{code}
-eval :  {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : Πₚ A) (x : X) → is-defined f x → A x
-eval (R , σ) x (a , r) = a
+_[_,_] :  {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : Πₚ A) (x : X) → is-defined f x → A x
+(R , s) [ x , (a , r)] = a
 \end{code}
 
 *Exercise.* Define partial function composition.
@@ -7998,7 +8003,7 @@ eval (R , σ) x (a , r) = a
 \begin{code}
 _≡ₖ_ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → Πₚ A → Πₚ A → 𝓤 ⊔ 𝓥 ̇
 f ≡ₖ g = ∀ x → (is-defined f x ⇔ is-defined g x)
-             × ((i : is-defined f x) (j : is-defined g x) → eval f x i ≡ eval g x j)
+             × ((i : is-defined f x) (j : is-defined g x) → f [ x , i ] ≡ g [ x , j ])
 \end{code}
 
 Show that the equality of two partial functions in the sense of the
@@ -8062,8 +8067,8 @@ Most of the work has already been done in the module
 
 
  μ-property₁ : (f : ℕ → ℕ) (i : is-defined μ f)
-             → (f (eval μ f i) ≡ 0)
-             × ((n : ℕ) → n < eval μ f i → f n ≢ 0)
+             → (f (μ [ f , i ]) ≡ 0)
+             × ((n : ℕ) → n < μ [ f , i ] → f n ≢ 0)
 
  μ-property₁ f = pr₂
 \end{code}
@@ -14761,7 +14766,7 @@ infixl 30 _●_
 infixr  0 _≃⟨_⟩_
 infix   1 _■
 infix  40 _∈_
-
+infix  30 _[_,_]
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)

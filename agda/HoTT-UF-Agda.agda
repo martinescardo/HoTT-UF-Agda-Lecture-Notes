@@ -109,6 +109,9 @@ module ℕ-order where
 
   x ≥ y = y ≤ x
 
+  infix 10 _≤_
+  infix 10 _≥_
+
 data _+_ {𝓤 𝓥} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
  inl : X → X + Y
  inr : Y → X + Y
@@ -576,6 +579,8 @@ module basic-arithmetic-and-order where
 
   _<_ : ℕ → ℕ → 𝓤₀ ̇
   x < y = succ x ≤ y
+
+  infix 10 _<_
 
   not-<-gives-≥ : (m n : ℕ) → ¬(n < m) → m ≤ n
   not-<-gives-≥ zero n u = zero-minimal n
@@ -4043,12 +4048,12 @@ being-defined-is-subsingleton : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : Πₚ A
 
 being-defined-is-subsingleton (R , σ) x = σ x
 
-eval :  {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : Πₚ A) (x : X) → is-defined f x → A x
-eval (R , σ) x (a , r) = a
+_[_,_] :  {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : Πₚ A) (x : X) → is-defined f x → A x
+(R , s) [ x , (a , r)] = a
 
 _≡ₖ_ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → Πₚ A → Πₚ A → 𝓤 ⊔ 𝓥 ̇
 f ≡ₖ g = ∀ x → (is-defined f x ⇔ is-defined g x)
-             × ((i : is-defined f x) (j : is-defined g x) → eval f x i ≡ eval g x j)
+             × ((i : is-defined f x) (j : is-defined g x) → f [ x , i ] ≡ g [ x , j ])
 
 module μ-operator (fe : dfunext 𝓤₀ 𝓤₀) where
 
@@ -4079,8 +4084,8 @@ module μ-operator (fe : dfunext 𝓤₀ 𝓤₀) where
  μ-property₀ = root-gives-minimal-root
 
  μ-property₁ : (f : ℕ → ℕ) (i : is-defined μ f)
-             → (f (eval μ f i) ≡ 0)
-             × ((n : ℕ) → n < eval μ f i → f n ≢ 0)
+             → (f (μ [ f , i ]) ≡ 0)
+             × ((n : ℕ) → n < μ [ f , i ] → f n ≢ 0)
 
  μ-property₁ f = pr₂
 
@@ -8480,4 +8485,5 @@ infixl 30 _●_
 infixr  0 _≃⟨_⟩_
 infix   1 _■
 infix  40 _∈_
+infix  30 _[_,_]
 
