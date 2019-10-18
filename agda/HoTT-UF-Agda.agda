@@ -4065,7 +4065,7 @@ module μ-operator (fe : dfunext 𝓤₀ 𝓤₀) where
  being-minimal-root-is-subsingleton f m = ×-is-subsingleton
                                            (ℕ-is-set (f m) 0)
                                            (Π-is-subsingleton fe
-                                              (λ n → Π-is-subsingleton fe
+                                              (λ _ → Π-is-subsingleton fe
                                               (λ _ → Π-is-subsingleton fe
                                               (λ _ → 𝟘-is-subsingleton))))
 
@@ -4088,6 +4088,9 @@ module μ-operator (fe : dfunext 𝓤₀ 𝓤₀) where
              × ((n : ℕ) → n < μ [ f , i ] → f n ≢ 0)
 
  μ-property₁ f = pr₂
+
+is-total : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → Πₚ A → 𝓤 ⊔ 𝓥 ̇
+is-total f = ∀ x → is-defined f x
 
 record Lift {𝓤 : Universe} (𝓥 : Universe) (X : 𝓤 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
  constructor

@@ -7990,7 +7990,10 @@ defined at `x`, or that `x` is in the domain of definition of `f`,
 rather than `is-defined (f x)`. In fact, before being able to evaluate
 a partial function `f` at an argument `x`, we need to know that `f` is defined
 at `x`. However, in informal discussions we will say "`f x` is
-defined" by the usual abuse of notation and terminology. We will write the application of a partial function `f` to an argument `x` under the information `i` that `f x` is defined as `f [ x , i ]`:
+defined" by the usual abuse of notation and terminology.
+
+We will write the application of a partial function `f` to `x`, under
+the information `i` that `f x` is defined, as `f [ x , i ]`.
 
 \begin{code}
 _[_,_] :  {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : Πₚ A) (x : X) → is-defined f x → A x
@@ -8001,7 +8004,7 @@ _[_,_] :  {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : Πₚ A) (x : X) → is-defin
  equality](https://ncatlab.org/nlab/show/Kleene+equality) of two
  partial functions `f g : Πₚ A` by saying that for all `x : X`, if
  whenever one of `f x` and `g x` is defined then so is the other, and
- when they are both defined they are equal:
+ whenever they are both defined, then they are equal:
 
 \begin{code}
 _≡ₖ_ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → Πₚ A → Πₚ A → 𝓤 ⊔ 𝓥 ̇
@@ -8009,8 +8012,8 @@ f ≡ₖ g = ∀ x → (is-defined f x ⇔ is-defined g x)
              × ((i : is-defined f x) (j : is-defined g x) → f [ x , i ] ≡ g [ x , j ])
 \end{code}
 
-Show that the equality of two partial functions in the sense of the
-identity type is equivalent to their Kleene equality. This needs
+Show that the equality of two partial functions, in the sense of the
+identity type, is equivalent to their Kleene equality. This needs
 univalence. If all types `A x` are sets, then functional and
 propositional extensionality suffice. In the general case, it is
 easier, or less hard, to approach this problem using the chapter on
@@ -8037,7 +8040,7 @@ element. It is this that requires function extensionality.
  being-minimal-root-is-subsingleton f m = ×-is-subsingleton
                                            (ℕ-is-set (f m) 0)
                                            (Π-is-subsingleton fe
-                                              (λ n → Π-is-subsingleton fe
+                                              (λ _ → Π-is-subsingleton fe
                                               (λ _ → Π-is-subsingleton fe
                                               (λ _ → 𝟘-is-subsingleton))))
 
@@ -8069,6 +8072,15 @@ Most of the work has already been done in the module
 
  μ-property₁ f = pr₂
 \end{code}
+
+*Exercise*. Define
+
+\begin{code}
+is-total : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → Πₚ A → 𝓤 ⊔ 𝓥 ̇
+is-total f = ∀ x → is-defined f x
+\end{code}
+
+Show that the type `(Σ \(f : Πₚ A) → is-total f)` of total partial functions is equivalent to the type `Π A` of functions. In particular, the type `Σ \(f : X ⇀ Y) → is-total f` is equivalent to the type `X → Y`.
 
 *Exercise.*
 [Two other](https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf) natural renderings of the notion of partial function are given by the equivalences
