@@ -8080,13 +8080,13 @@ is-total : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → Πₚ A → 𝓤 ⊔ 𝓥 ̇
 is-total f = ∀ x → is-defined f x
 \end{code}
 
-Show that the type `(Σ \(f : Πₚ A) → is-total f)` of total partial functions is equivalent to the type `Π A` of functions. In particular, the type `Σ \(f : X ⇀ Y) → is-total f` is equivalent to the type `X → Y`.
+Show that the type `Σ \(f : Πₚ A) → is-total f` of total partial functions is equivalent to the type `Π A` of functions. In particular, the type `Σ \(f : X ⇀ Y) → is-total f` is equivalent to the type `X → Y`.
 
 *Exercise.*
 [Two other](https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf) natural renderings of the notion of partial function are given by the equivalences
 ```
    (X ⇀ Y) ≃ (X → 𝓛 Y)
-           ≃ Σ \(e : D → X) → is-embedding e × (D → Y)
+           ≃ Σ \(D : 𝓤 ̇) → (D ↪ X) × (D → Y)
 ```
 where
 ```
