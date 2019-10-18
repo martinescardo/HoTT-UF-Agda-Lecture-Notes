@@ -7969,7 +7969,12 @@ partial functions and `⇀` for the type of partial functions.
 
 _⇀_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
 X ⇀ Y = Πₚ (λ (_ : X) → Y)
+\end{code}
 
+*Exercise.* Define partial function composition, both in non-dependent
+ and dependent versions.
+
+\begin{code}
 is-defined : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → Πₚ A → X → 𝓥 ̇
 is-defined (R , σ) x = Σ \a → R x a
 
@@ -7992,8 +7997,6 @@ _[_,_] :  {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : Πₚ A) (x : X) → is-defin
 (R , s) [ x , (a , r)] = a
 \end{code}
 
-*Exercise.* Define partial function composition.
-
 *Exercise.* Define [Kleene
  equality](https://ncatlab.org/nlab/show/Kleene+equality) of two
  partial functions `f g : Πₚ A` by saying that for all `x : X`, if
@@ -8012,12 +8015,6 @@ univalence. If all types `A x` are sets, then functional and
 propositional extensionality suffice. In the general case, it is
 easier, or less hard, to approach this problem using the chapter on
 [equality of mathematical structures](HoTT-UF-Agda.html#sip).
-
-For two other natural renderings of the notion of partial function,
-see [this
-paper](https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf).
-A further exercise is to write them down in Agda and prove their
-equivalence with the formulation given here.
 
 *Example.* The famous
  [μ-operator](https://en.wikipedia.org/wiki/%CE%9C_operator) from
@@ -8072,6 +8069,21 @@ Most of the work has already been done in the module
 
  μ-property₁ f = pr₂
 \end{code}
+
+*Exercise.*
+[Two other](https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf) natural renderings of the notion of partial function are given by the equivalences
+```
+   (X ⇀ Y) ≃ (X → 𝓛 Y)
+           ≃ Σ \(e : D → X) → is-embedding e × (D → Y)
+```
+where
+```
+       𝓛 Y = Σ \(P : 𝓥 ̇ ) → (P → X) × is-subsingleton P
+           ≃ (1 ⇀ X)
+```
+are two equivalent formulations of the type of partial elements of
+`Y`. Generalize these alternative descriptions of the type
+of partial functions to dependent partial functions, and prove them.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="universelifting"></a> Universe lifting
