@@ -8083,18 +8083,18 @@ is-total f = ∀ x → is-defined f x
 Show that the type `Σ \(f : Πₚ A) → is-total f` of total partial functions is equivalent to the type `Π A` of functions. In particular, the type `Σ \(f : X ⇀ Y) → is-total f` is equivalent to the type `X → Y`.
 
 *Exercise.*
-[Two other](https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf) natural renderings of the notion of partial function are given by the equivalences
+[Two other](https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf) natural renderings of the notion of partial function, for `X Y : 𝓤 ̇', are given by the equivalences
 ```
    (X ⇀ Y) ≃ (X → 𝓛 Y)
            ≃ Σ \(D : 𝓤 ̇) → (D ↪ X) × (D → Y)
 ```
 where
 ```
-       𝓛 Y = Σ \(P : 𝓥 ̇ ) → (P → X) × is-subsingleton P
-           ≃ (1 ⇀ X)
+       𝓛 Y = Σ \(P : 𝓤 ̇ ) → is-subsingleton P × (P → Y)
+           ≃ (1 ⇀ Y)
 ```
 are two equivalent formulations of the type of partial elements of
-`Y`. Generalize these alternative descriptions of the type
+`Y`. Generalize the universes, and generalize these alternative descriptions of the type
 of partial functions to dependent partial functions, and prove them.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
