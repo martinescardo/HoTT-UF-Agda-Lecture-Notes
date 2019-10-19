@@ -1102,9 +1102,9 @@ are stipulated to be of the forms
    > `inl x` and `inr y`
 
 with `x : X` and `y : Y`. If `X : 𝓤` and `Y : 𝓥`, we stipulate that
-`X + Y : 𝓤 ⊔ 𝓥 `, where
+`X + Y : 𝓤 ⊔ 𝓥`, where
 
-   > `𝓤 ⊔ 𝓥 `
+   > `𝓤 ⊔ 𝓥`
 
 is the [least upper bound](HoTT-UF-Agda.html#universes) of the two universes `𝓤` and
 `𝓥`.  In Agda we can define this as follows.
@@ -1180,7 +1180,7 @@ Given universes `𝓤` and `𝓥`, a type
 
 and a type family
 
-   > `Y : X → 𝓥 `,
+   > `Y : X → 𝓥`,
 
 we want to construct its sum, which
 is a type whose elements are of the form
@@ -7790,7 +7790,7 @@ need to work with *type valued* relations.
 
 More generally, we have a one-to-one corresponce between dependent
 functions `f : (x : X) → A x` and dependent type valued relations `R : (x : X)
-→ A x → 𝓥 ̇`. We take the domain `X` and codomain `A` as parameters for
+→ A x → 𝓥`. We take the domain `X` and codomain `A` as parameters for
 a submodule:
 
 \begin{code}
@@ -8083,15 +8083,15 @@ is-total f = ∀ x → is-defined f x
 Show that the type `Σ \(f : Πₚ A) → is-total f` of total partial functions is equivalent to the type `Π A` of functions. In particular, the type `Σ \(f : X ⇀ Y) → is-total f` is equivalent to the type `X → Y`.
 
 *Exercise.*
-[Two other](https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf) natural renderings of the notion of partial function, for `X Y : 𝓤 ̇', are given by the equivalences
+[Two other](https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf) natural renderings of the notion of partial function, for `X Y : 𝓤`, are given by the equivalences
 ```
    (X ⇀ Y) ≃ (X → 𝓛 Y)
-           ≃ Σ \(D : 𝓤 ̇) → (D ↪ X) × (D → Y)
+           ≃ Σ \(D : 𝓤 ̇ ) → (D ↪ X) × (D → Y)
 ```
 where
 ```
        𝓛 Y = Σ \(P : 𝓤 ̇ ) → is-subsingleton P × (P → Y)
-           ≃ (1 ⇀ Y)
+           ≃ (𝟙 ⇀ Y)
 ```
 are two equivalent formulations of the type of partial elements of
 `Y`. Generalize the universes, and generalize these alternative descriptions of the type
@@ -8158,7 +8158,7 @@ Lift-recursion 𝓥 {X} {B} = Lift-induction 𝓥 X (λ _ → B)
 \end{code}
 
 This gives an equivalence `lift : X → Lift 𝓥 X` and hence an embedding
-`Lift 𝓥 : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇`. The following two constructions can be
+`Lift 𝓥 : 𝓤 ̇ → 𝓤 ⊔ 𝓥`. The following two constructions can be
 performed with induction, but actually hold on the nose by the so-called [`η` rule
 for
 records](https://agda.readthedocs.io/en/latest/language/record-types.html#eta-expansion):
@@ -9086,7 +9086,7 @@ equivalence a homomorphism must be identified in a canonical way:
 
    > `refl s ↦ ρ (X , s)`
 
-   must be an equivalence for all `X : 𝓤 ` and `s t : S X` .
+   must be an equivalence for all `X : 𝓤` and `s t : S X` .
 
 This may sound a bit abstract at this point, but in practical examples
 of interest it is easy to fulfill these requirements, as we will
