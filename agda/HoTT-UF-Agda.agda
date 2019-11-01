@@ -4966,13 +4966,13 @@ module sip-join where
        r (s (a , b))                              ≡⟨ refl _ ⟩
        r (to-×-≡  (f' a , g' b))                  ≡⟨ refl _ ⟩
        (f x₀ x₁ (ap pr₁ (to-×-≡ (f' a , g' b))) ,
-        g y₀ y₁ (ap pr₂ (to-×-≡ (f' a , g' b))))  ≡⟨ ii  ⟩
-       (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ≡⟨ iii ⟩
+        g y₀ y₁ (ap pr₂ (to-×-≡ (f' a , g' b))))  ≡⟨ ii     ⟩
+       (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ≡⟨ iii    ⟩
        a , b                                      ∎
       where
-       ii = ap₂ (λ p q → f x₀ x₁ p , g y₀ y₁ q)
-                (ap-pr₁-to-×-≡ (f' a) (g' b))
-                (ap-pr₂-to-×-≡ (f' a) (g' b))
+       ii  = ap₂ (λ p q → f x₀ x₁ p , g y₀ y₁ q)
+                 (ap-pr₁-to-×-≡ (f' a) (g' b))
+                 (ap-pr₂-to-×-≡ (f' a) (g' b))
        iii = to-×-≡ (inverse-is-section (f x₀ x₁) (i x₀ x₁) a ,
                      inverse-is-section (g y₀ y₁) (j y₀ y₁) b)
 

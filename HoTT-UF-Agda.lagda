@@ -64,7 +64,7 @@ Compared to most expositions of the subject, we work with explicit
 universe levels.
 
 We also [fully discuss and emphasize](HoTT-UF-Agda.html#summary) that
-classical axioms can be assumed consistently in univalent mathematics.
+non-constructive classical axioms can be assumed consistently in univalent mathematics.
 
 **Keywords.** Univalent mathematics. Univalent foundations. Univalent
   type theory. Univalence axiom. `∞`-Groupoid. Homotopy type. Type
@@ -4295,8 +4295,9 @@ What characterizes univalent mathematics is not the univalence
 axiom. We have defined and studied the main concepts of univalent
 mathematics in a pure, spartan MLTT. It is the concepts of hlevel,
 including singleton, subsingleton and set, and the notion of
-equivalence. Univalence *is* a fundamental ingredient, but first we
-need the correct notion of equivalence to be able to formulate it.
+equivalence that are at the heart of univalent mathematics. Univalence
+*is* a fundamental ingredient, but first we need the correct notion of
+equivalence to be able to formulate it.
 
 *Remark*. If we formulate univalence with invertible maps instead of
 equivalences, we get a statement that is provably false in MLTT, and
@@ -9562,13 +9563,13 @@ We begin with the following technical lemma:
        r (s (a , b))                              ≡⟨ refl _ ⟩
        r (to-×-≡  (f' a , g' b))                  ≡⟨ refl _ ⟩
        (f x₀ x₁ (ap pr₁ (to-×-≡ (f' a , g' b))) ,
-        g y₀ y₁ (ap pr₂ (to-×-≡ (f' a , g' b))))  ≡⟨ ii  ⟩
-       (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ≡⟨ iii ⟩
+        g y₀ y₁ (ap pr₂ (to-×-≡ (f' a , g' b))))  ≡⟨ ii     ⟩
+       (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ≡⟨ iii    ⟩
        a , b                                      ∎
       where
-       ii = ap₂ (λ p q → f x₀ x₁ p , g y₀ y₁ q)
-                (ap-pr₁-to-×-≡ (f' a) (g' b))
-                (ap-pr₂-to-×-≡ (f' a) (g' b))
+       ii  = ap₂ (λ p q → f x₀ x₁ p , g y₀ y₁ q)
+                 (ap-pr₁-to-×-≡ (f' a) (g' b))
+                 (ap-pr₂-to-×-≡ (f' a) (g' b))
        iii = to-×-≡ (inverse-is-section (f x₀ x₁) (i x₀ x₁) a ,
                      inverse-is-section (g y₀ y₁) (j y₀ y₁) b)
 
