@@ -7406,7 +7406,7 @@ The following justifies the terminology *subsingleton*:
  extensionality, conclude that `is-subsingleton X ≡ (X ↪ 𝟙)`.
 
 *Exercise*. Show that the map `Fin : ℕ → 𝓤₀` defined
- [above](HoTT-UF-Agda.html#finite-types] is left-cancellable but not
+ [above](HoTT-UF-Agda.html#finite-types) is left-cancellable but not
  an embedding.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
