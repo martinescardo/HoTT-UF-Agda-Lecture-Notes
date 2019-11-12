@@ -3266,7 +3266,7 @@ X is-of-hlevel (succ n) = (x x' : X) → ((x ≡ x') is-of-hlevel n)
 \end{code}
 
 It is often convenient in practice to have equivalent formulations of
-the type of hlevel `1` (as subsingletons) and `2` (as sets), which we will
+the types of hlevel `1` (as subsingletons) and `2` (as sets), which we will
 develop [soon](HoTT-UF-Agda.html#setscharacterization).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
