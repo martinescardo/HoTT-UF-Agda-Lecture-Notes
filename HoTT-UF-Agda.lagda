@@ -4323,7 +4323,7 @@ swap₂-involutive ₀ = refl ₀
 swap₂-involutive ₁ = refl ₁
 \end{code}
 
-That is, `swap₂` is its own inverse and hence it is an equivalence:
+That is, `swap₂` is its own inverse and hence is an equivalence:
 
 \begin{code}
 swap₂-is-equiv : is-equiv swap₂
@@ -6465,7 +6465,7 @@ and the examples
  Fin-equation₃ = refl _
 \end{code}
 
-*Exercises*. Assume univalence. The equation
+*Exercise*. Assume univalence. The equation
 
    > `Fin ∘ succ ≡ λ n → Fin n + 𝟙`
 
@@ -7404,6 +7404,10 @@ The following justifies the terminology *subsingleton*:
  𝟙)`. [(2)](HoTT-UF-Agda.html#the-subsingletons-are-the-subtypes-of-a-singleton)
  Hence assuming function extensionality and propositional
  extensionality, conclude that `is-subsingleton X ≡ (X ↪ 𝟙)`.
+
+*Exercise*. Show that the map `Fin : ℕ → 𝓤₀` defined
+ [above](HoTT-UF-Agda.html#finite-types] is left-cancellable but not
+ an embedding.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="yoneda"></a> The Yoneda Lemma for types
