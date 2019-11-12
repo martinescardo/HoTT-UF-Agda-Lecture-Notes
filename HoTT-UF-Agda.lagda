@@ -5,6 +5,19 @@ date : 2019-03-04
 ---
 <!--
 
+LICENSE:
+
+The software in this file is subject to the GNU General Public License v3.0.
+https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes/blob/master/LICENSE
+
+The text other than software is copyright of the author. It can be
+used for scholarly purposes subject to the usual academic conventions
+of citation.
+
+-->
+
+<!--
+
   * The file HoTT-UF-Agda.lagda is *not* meant to be read by people.
 
   * It is used to automatically generate the following files, which are
