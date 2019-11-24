@@ -2790,11 +2790,11 @@ homomorphism when it commutes with the magma operations:
 Any identification of magmas gives rise to a magma isomorphism by transport:
 
 \begin{code}
- ⌜_⌝ : {M N : Magma 𝓤} → M ≡ N → ⟨ M ⟩ → ⟨ N ⟩
- ⌜ p ⌝ = transport ⟨_⟩ p
+ Id→iso : {M N : Magma 𝓤} → M ≡ N → ⟨ M ⟩ → ⟨ N ⟩
+ Id→iso p = transport ⟨_⟩ p
 
- ⌜⌝-is-iso : {M N : Magma 𝓤} (p : M ≡ N) → is-magma-iso M N (⌜ p ⌝)
- ⌜⌝-is-iso (refl M) = id-is-magma-iso M
+ Id→iso-is-iso : {M N : Magma 𝓤} (p : M ≡ N) → is-magma-iso M N (Id→iso p)
+ Id→iso-is-iso (refl M) = id-is-magma-iso M
 \end{code}
 
 The isomorphisms can be collected in a type:
@@ -2810,7 +2810,7 @@ correspondence with the magma isomorphisms:
 
 \begin{code}
  magma-Id→iso : {M N : Magma 𝓤} → M ≡ N → M ≅ₘ N
- magma-Id→iso p = (⌜ p ⌝ , ⌜⌝-is-iso p )
+ magma-Id→iso p = (Id→iso p , Id→iso-is-iso p)
 \end{code}
 
 If we omit the sethood condition in the definition of the type of
@@ -4093,12 +4093,13 @@ Again it is convenient to have special names for its first and second
 projections:
 
 \begin{code}
-Eq→fun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X → Y
+Eq→fun ⌜_⌝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X → Y
 Eq→fun (f , i) = f
+⌜_⌝            = Eq→fun
 
-Eq→fun-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X ≃ Y) → is-equiv (Eq→fun e)
+Eq→fun-is-equiv ⌜⌝-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X ≃ Y) → is-equiv (⌜ e ⌝)
 Eq→fun-is-equiv (f , i) = i
-
+⌜⌝-is-equiv             = Eq→fun-is-equiv
 
 invertibility-gives-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                       → invertible f → X ≃ Y
@@ -4223,16 +4224,16 @@ ap-pr₂-to-×-≡ (refl x) (refl y) = refl (refl y)
   invertibility-gives-≃ (NatΣ f) (NatΣ g , NatΣ-η , NatΣ-ε)
  where
   f : (x : X) → A x → B x
-  f x = Eq→fun (φ x)
+  f x = ⌜ φ x ⌝
 
   g : (x : X) → B x → A x
-  g x = inverse (f x) (Eq→fun-is-equiv (φ x))
+  g x = inverse (f x) (⌜⌝-is-equiv (φ x))
 
   η : (x : X) (a : A x) → g x (f x a) ≡ a
-  η x = inverse-is-retraction (f x) (Eq→fun-is-equiv (φ x))
+  η x = inverse-is-retraction (f x) (⌜⌝-is-equiv (φ x))
 
   ε : (x : X) (b : B x) → f x (g x b) ≡ b
-  ε x = inverse-is-section (f x) (Eq→fun-is-equiv (φ x))
+  ε x = inverse-is-section (f x) (⌜⌝-is-equiv (φ x))
 
   NatΣ-η : (w : Σ A) → NatΣ g (NatΣ f w) ≡ w
   NatΣ-η (x , a) = x , g x (f x a) ≡⟨ to-Σ-≡' (η x a) ⟩
@@ -4297,7 +4298,7 @@ function](HoTT-UF-Agda.html#Id→Fun):
 
 \begin{code}
 Id→fun : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
-Id→fun {𝓤} {X} {Y} p = Eq→fun (Id→Eq X Y p)
+Id→fun {𝓤} {X} {Y} p = ⌜ Id→Eq X Y p ⌝
 
 Id→funs-agree : {X Y : 𝓤 ̇ } (p : X ≡ Y)
               → Id→fun p ≡ Id→Fun p
@@ -4363,7 +4364,7 @@ The above gives two distinct equivalences:
  e₀-is-not-e₁ p = ₁-is-not-₀ r
   where
    q : id ≡ swap₂
-   q = ap Eq→fun p
+   q = ap ⌜_⌝ p
 
    r : ₁ ≡ ₀
    r = ap (λ - → - ₁) q
@@ -4725,9 +4726,7 @@ comp-inverses = sol
 equiv-to-set = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → is-set Y → is-set X
-  sol e = subtypes-of-sets-are-sets
-            (Eq→fun e)
-            (equivs-are-lc (Eq→fun e) (Eq→fun-is-equiv e))
+  sol e = subtypes-of-sets-are-sets ⌜ e ⌝ (equivs-are-lc ⌜ e ⌝ (⌜⌝-is-equiv e))
 
 
 sections-closed-under-∼ = sol
@@ -5376,13 +5375,13 @@ transport-map-along-≡ (refl X) = refl
 transport-map-along-≃ : (ua : is-univalent 𝓤) {X Y Z : 𝓤 ̇ }
                         (e : X ≃ Y) (g : X → Z)
                       → transport (λ - → - → Z) (Eq→Id ua X Y e) g
-                      ≡ g ∘ Eq→fun (≃-sym e)
+                      ≡ g ∘ ⌜ ≃-sym e ⌝
 
 transport-map-along-≃ {𝓤} ua {X} {Y} {Z} = 𝕁-≃ ua A a X Y
  where
   A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓤 ̇
   A X Y e = (g : X → Z) → transport (λ - → - → Z) (Eq→Id ua X Y e) g
-                        ≡ g ∘ Eq→fun (≃-sym e)
+                        ≡ g ∘ ⌜ ≃-sym e ⌝
   a : (X : 𝓤 ̇ ) → A X X (id-≃ X)
   a X g = transport (λ - → - → Z) (Eq→Id ua X X (id-≃ X)) g ≡⟨ q      ⟩
           transport (λ - → - → Z) (refl X) g                ≡⟨ refl _ ⟩
@@ -5976,11 +5975,11 @@ taking its total space and the first projection:
   p : Σ (fiber f) ≡ X
   p = Eq→Id ua (Σ (fiber f)) X e
 
-  observation : Eq→fun (≃-sym e) ≡ (λ x → f x , x , refl (f x))
+  observation : ⌜ ≃-sym e ⌝ ≡ (λ x → f x , x , refl (f x))
   observation = refl _
 
   q = transport (λ - → - → Y) p pr₁ ≡⟨ transport-map-along-≃ ua e pr₁ ⟩
-      pr₁ ∘ Eq→fun (≃-sym e)        ≡⟨ refl _                         ⟩
+      pr₁ ∘ ⌜ ≃-sym e ⌝             ≡⟨ refl _                         ⟩
       f                             ∎
 
   r : (Σ (fiber f) , pr₁) ≡ (X , f)
@@ -6612,10 +6611,10 @@ closed under equivalence first.)
 Π-cong fe fe' {X} {Y} {Y'} φ = invertibility-gives-≃ F (G , GF , FG)
  where
   f : (x : X) → Y x → Y' x
-  f x = Eq→fun (φ x)
+  f x = ⌜ φ x ⌝
 
   e : (x : X) → is-equiv (f x)
-  e x = Eq→fun-is-equiv (φ x)
+  e x = ⌜⌝-is-equiv (φ x)
 
   g : (x : X) → Y' x → Y x
   g x = inverse (f x) (e x)
@@ -6883,7 +6882,7 @@ subsingleton-univalence {𝓤} pe fe P i X = γ
 
   eqtoid : P ≃ X → P ≡ X
   eqtoid e = pe i (equiv-to-subsingleton (≃-sym e) i)
-                  (Eq→fun e) (Eq→fun (≃-sym e))
+                  ⌜ e ⌝ ⌜ ≃-sym e ⌝
 
   m : is-subsingleton (P ≃ X)
   m (f , k) (f' , k') = to-subtype-≡
@@ -8701,11 +8700,11 @@ mc-gives-sc {𝓤} s P Y = γ
     b = Σ-change-of-variable (λ A → Π (P ∘ A)) (χ Y) (s Y)
     c = ΠΣ-distr-≃
 
-  observation : χ-special P Y ≡ Eq→fun e
+  observation : χ-special P Y ≡ ⌜ e ⌝
   observation = refl _
 
   γ : is-equiv (χ-special P Y)
-  γ = Eq→fun-is-equiv e
+  γ = ⌜⌝-is-equiv e
 \end{code}
 
 Therefore we have the following canonical equivalence:
@@ -9222,12 +9221,12 @@ is itself an equivalence:
 
  Id→homEq-is-equiv ua {S} σ A B = γ
   where
-   h : (A B : Σ S) → Id→homEq σ A B ∼ Eq→fun (characterization-of-≡ ua σ A B)
+   h : (A B : Σ S) → Id→homEq σ A B ∼ ⌜ characterization-of-≡ ua σ A B ⌝
    h A A (refl A) = refl _
 
    γ : is-equiv (Id→homEq σ A B)
    γ = equivs-closed-under-∼
-       (Eq→fun-is-equiv (characterization-of-≡ ua σ A B))
+       (⌜⌝-is-equiv (characterization-of-≡ ua σ A B))
        (h A B)
 \end{code}
 
@@ -9321,7 +9320,7 @@ equivalence:
 
     (ua : is-univalent 𝓤) (A : ∞-Magma)
   →
-    Eq→fun (characterization-of-∞-Magma-≡ ua A A) (refl A)
+    ⌜ characterization-of-∞-Magma-≡ ua A A ⌝ (refl A)
   ≡
     (𝑖𝑑 ⟨ A ⟩ , id-is-equiv ⟨ A ⟩ , refl _)
 
@@ -10206,13 +10205,13 @@ This equivalence is that which forgets the preservation of the unit:
  forget-unit-preservation : (G H : Group) → (G ≅ H) → (G ≅' H)
  forget-unit-preservation G H (f , e , m , _) = f , e , m
 
- NB : (G H : Group) → Eq→fun (≅-agreement G H) ≡ forget-unit-preservation G H
+ NB : (G H : Group) → ⌜ ≅-agreement G H ⌝ ≡ forget-unit-preservation G H
  NB G H = refl _
 
  forget-unit-preservation-is-equiv : (G H : Group)
                                    → is-equiv (forget-unit-preservation G H)
 
- forget-unit-preservation-is-equiv G H = Eq→fun-is-equiv (≅-agreement G H)
+ forget-unit-preservation-is-equiv G H = ⌜⌝-is-equiv (≅-agreement G H)
 \end{code}
 
 This completes the solution of the exercise.
@@ -11135,28 +11134,28 @@ definition of item `v`:
 \begin{code}
    v : (p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
      → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)
-     ≃ functorial 𝓧 𝓐 F (pr₁ (Eq→fun e p))
+     ≃ functorial 𝓧 𝓐 F (pr₁ (⌜ e ⌝ p))
 
    v (refl _) = id-≃ _
 
    γ =
 
     (Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
-           → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p))   ≃⟨ vi   ⟩
+           → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)) ≃⟨ vi   ⟩
 
     (Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
-           → functorial 𝓧 𝓐 F (pr₁ (Eq→fun e p)))                    ≃⟨ vii  ⟩
+           → functorial 𝓧 𝓐 F (pr₁ (⌜ e ⌝ p)))                     ≃⟨ vii  ⟩
 
     (Σ \(σ : Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
                    → (∀ x y → is-equiv (𝓕 x y)))
-           → functorial 𝓧 𝓐 F (pr₁ σ))                               ≃⟨ viii ⟩
+           → functorial 𝓧 𝓐 F (pr₁ σ))                             ≃⟨ viii ⟩
 
     (Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
                   → (∀ x y → is-equiv (𝓕 x y))
-                  × functorial 𝓧 𝓐 F 𝓕)                              ■
+                  × functorial 𝓧 𝓐 F 𝓕)                            ■
     where
      vi   = Σ-cong v
-     vii  = ≃-sym (Σ-change-of-variable _ (Eq→fun e) (Eq→fun-is-equiv e))
+     vii  = ≃-sym (Σ-change-of-variable _ ⌜ e ⌝ (⌜⌝-is-equiv e))
      viii = Σ-assoc
 \end{code}
 
@@ -11410,10 +11409,10 @@ get the following characterization of identity of categories:
 
  Id→EqCat-is-equiv : (𝓧 𝓐 : Cat) → is-equiv (Id→EqCat 𝓧 𝓐)
  Id→EqCat-is-equiv 𝓧 𝓐 = equivs-closed-under-∼
-                           (Eq→fun-is-equiv (characterization-of-category-≡ 𝓧 𝓐))
+                           (⌜⌝-is-equiv (characterization-of-category-≡ 𝓧 𝓐))
                            (γ 𝓧 𝓐)
   where
-   γ : (𝓧 𝓐 : Cat) → Id→EqCat 𝓧 𝓐 ∼ Eq→fun (characterization-of-category-≡ 𝓧 𝓐)
+   γ : (𝓧 𝓐 : Cat) → Id→EqCat 𝓧 𝓐 ∼ ⌜ characterization-of-category-≡ 𝓧 𝓐 ⌝
    γ 𝓧 𝓧 (refl 𝓧) = refl _
 \end{code}
 
@@ -12692,7 +12691,7 @@ functions of Noetherian rngs, with values in an arbitrary universe
   isomorphic-NoetherianRng-transport A 𝓡 𝓡' i a = a'
    where
     p : 𝓡 ≡ 𝓡'
-    p = Eq→fun (≃-sym (characterization-of-nrng-≡ 𝓡 𝓡')) i
+    p = ⌜ ≃-sym (characterization-of-nrng-≡ 𝓡 𝓡') ⌝ i
 
     a' : A 𝓡'
     a' = transport A p a
@@ -12775,7 +12774,7 @@ We now consider commutative Noetherian local rings as a second example.
   isomorphic-CNL-Ring-transport A 𝓡 𝓡' i a = a'
    where
     p : 𝓡 ≡ 𝓡'
-    p = Eq→fun (≃-sym (characterization-of-CNL-ring-≡ 𝓡 𝓡')) i
+    p = ⌜ ≃-sym (characterization-of-CNL-ring-≡ 𝓡 𝓡') ⌝ i
 
     a' : A 𝓡'
     a' = transport A p a
@@ -13537,14 +13536,14 @@ to-resize : (ρ : propositional-resizing 𝓤 𝓥)
             (P : 𝓤 ̇ ) (i : is-subsingleton P)
           → P → resize ρ P i
 
-to-resize ρ P i = Eq→fun (pr₂ (ρ P i))
+to-resize ρ P i = ⌜ pr₂ (ρ P i) ⌝
 
 
 from-resize : (ρ : propositional-resizing 𝓤 𝓥)
               (P : 𝓤 ̇ ) (i : is-subsingleton P)
             → resize ρ P i → P
 
-from-resize ρ P i = Eq→fun (≃-sym(pr₂ (ρ P i)))
+from-resize ρ P i = ⌜ ≃-sym(pr₂ (ρ P i)) ⌝
 
 
 Propositional-resizing : 𝓤ω
@@ -13719,7 +13718,7 @@ Impredicativity-gives-PR {𝓤} {𝓥} pe fe (O , e) P i = Q , ε
   k (lift ⋆) (lift ⋆) = refl (lift ⋆)
 
   down : Ω 𝓤 → O
-  down = Eq→fun e
+  down = ⌜ e ⌝
 
   O-is-set : is-set O
   O-is-set = equiv-to-set (≃-sym e) (Ω-is-a-set fe pe)
@@ -13732,7 +13731,7 @@ Impredicativity-gives-PR {𝓤} {𝓥} pe fe (O , e) P i = Q , ε
 
   φ : Q → P
   φ q = Id→fun
-         (ap _holds (equivs-are-lc down (Eq→fun-is-equiv e) q))
+         (ap _holds (equivs-are-lc down (⌜⌝-is-equiv e) q))
          (lift ⋆)
 
   γ : P → Q
