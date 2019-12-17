@@ -8388,7 +8388,7 @@ And we have a similar development with a similar example:
 
 \begin{code}
 J↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
-     → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓥 ̇ )
+     → (A : (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y → 𝓦 ̇ )
      → ((X : 𝓤 ̇ ) → A X (Lift 𝓥 X) (≃-Lift X))
      → (X : 𝓤 ̇ ) (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A X Y e
 
