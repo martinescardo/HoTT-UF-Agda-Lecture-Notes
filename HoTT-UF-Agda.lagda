@@ -13871,7 +13871,7 @@ following.
 
 To get the universe assigments explicitly, using Agda's interactive
 mode, we can write holes `?` instead of `_` and then ask Agda to fill
-them uniquely by solving constrains, which is what we did to construct
+them uniquely by solving constraints, which is what we did to construct
 `existence-of-unions₂`.
 
 *Exercise*. Show that the existence of unions is a subsingleton type.
