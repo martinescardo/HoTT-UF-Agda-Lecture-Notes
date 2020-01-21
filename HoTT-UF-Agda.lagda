@@ -6125,7 +6125,7 @@ fundamental reason why it couldn't have it).
 In the absence of a universe `𝓤ω` in our MLTT, we can simply have an
 [axiom schema](https://en.wikipedia.org/wiki/Axiom_schema), consisting
 of `ω`-many axioms, stating that each universe is univalent. Then we
-can prove in our MLTT that the univalence property for each inverse is
+can prove in our MLTT that the univalence property for each universe is
 a (sub)singleton, with `ω`-many proofs (or just one schematic proof
 with a free variable for a universe `𝓤ₙ`).
 
