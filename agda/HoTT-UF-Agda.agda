@@ -736,7 +736,7 @@ EM'-gives-EM em' X s = γ (em' X s)
   γ (inl i) = inl (center X i)
   γ (inr x) = inr x
 
-no-unicorns : ¬(Σ X ꞉ 𝓤 ̇  , is-subsingleton X × ¬(is-singleton X) × ¬(is-empty X))
+no-unicorns : ¬(Σ X ꞉ 𝓤 ̇ , is-subsingleton X × ¬(is-singleton X) × ¬(is-empty X))
 no-unicorns (X , i , f , g) = c
  where
   e : is-empty X
@@ -748,7 +748,7 @@ no-unicorns (X , i , f , g) = c
 module magmas where
 
  Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
- Magma 𝓤 = Σ X ꞉ 𝓤 ̇  , is-set X × (X → X → X)
+ Magma 𝓤 = Σ X ꞉ 𝓤 ̇ , is-set X × (X → X → X)
 
  ⟨_⟩ : Magma 𝓤 → 𝓤 ̇
  ⟨ X , i , _·_ ⟩ = X
@@ -807,11 +807,10 @@ module monoids where
  associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
 
  Monoid : (𝓤 : Universe) → 𝓤 ⁺ ̇
- Monoid 𝓤 = Σ X ꞉ 𝓤 ̇ , is-set X
-                       × Σ \(_·_ : X → X → X)
-                       → Σ e ꞉ X , left-neutral e _·_
-                                 × right-neutral e _·_
-                                 × associative _·_
+ Monoid 𝓤 = Σ X ꞉ 𝓤  ̇ , is-set X
+                      × (Σ · ꞉ (X → X → X) , (Σ e ꞉ X , (left-neutral e ·)
+                                                       × (right-neutral e ·)
+                                                       × (associative ·)))
 
 refl-left : {X : 𝓤 ̇ } {x y : X} {p : x ≡ y} → refl x ∙ p ≡ p
 refl-left {𝓤} {X} {x} {x} {refl x} = refl (refl x)
@@ -2160,14 +2159,14 @@ univalence→ ua X = singletons-are-subsingletons
 
 𝔾-≃ {𝓤} ua X A a Y e = transport A p a
  where
-  t : Σ Y ꞉ 𝓤 ̇  , X ≃ Y
+  t : Σ Y ꞉ 𝓤 ̇ , X ≃ Y
   t = (X , id-≃ X)
 
   p : t ≡ (Y , e)
   p = univalence→ {𝓤} ua X t (Y , e)
 
 𝔾-≃-equation : (ua : is-univalent 𝓤)
-             → (X : 𝓤 ̇ ) (A : (Σ Y ꞉ 𝓤 ̇  , X ≃ Y) → 𝓥 ̇ )
+             → (X : 𝓤 ̇ ) (A : (Σ Y ꞉ 𝓤 ̇ , X ≃ Y) → 𝓥 ̇ )
              → (a : A (X  , id-≃ X))
              → 𝔾-≃ ua X A a X (id-≃ X) ≡ a
 
@@ -2179,14 +2178,14 @@ univalence→ ua X = singletons-are-subsingletons
   a                       ∎
 
  where
-  t : Σ Y ꞉ 𝓤 ̇  , X ≃ Y
+  t : Σ Y ꞉ 𝓤 ̇ , X ≃ Y
   t = (X  , id-≃ X)
 
   p : t ≡ t
   p = univalence→ {𝓤} ua X t t
 
   q : p ≡ refl t
-  q = subsingletons-are-sets (Σ Y ꞉ 𝓤 ̇  , X ≃ Y)
+  q = subsingletons-are-sets (Σ Y ꞉ 𝓤 ̇ , X ≃ Y)
        (univalence→ {𝓤} ua X) t t p (refl t)
 
 ℍ-≃ : is-univalent 𝓤
@@ -3366,7 +3365,7 @@ subsingleton-univalence-≃ pe fe X P i = Id→Eq P X ,
                                         subsingleton-univalence pe fe P i X
 
 Ω : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Ω 𝓤 = Σ P ꞉ 𝓤 ̇  , is-subsingleton P
+Ω 𝓤 = Σ P ꞉ 𝓤 ̇ , is-subsingleton P
 
 _holds : Ω 𝓤 → 𝓤 ̇
 _holds (P , i) = P
@@ -4219,7 +4218,7 @@ module _ {𝓤 𝓥 : Universe}
   fe₃ : dfunext 𝓤 𝓤
   fe₃ = lower-dfunext 𝓥 𝓥 𝓤 𝓤 fe
 
- univalence→' : (X : 𝓤 ̇ ) → is-subsingleton (Σ Y ꞉ 𝓥 ̇  , X ≃ Y)
+ univalence→' : (X : 𝓤 ̇ ) → is-subsingleton (Σ Y ꞉ 𝓥 ̇ , X ≃ Y)
  univalence→' X = s
   where
    abstract
@@ -4234,41 +4233,41 @@ module _ {𝓤 𝓥 : Universe}
                fe fe fe fe (≃-Lift Y) (≃-Lift X)
        iii =  ≃-sym (univalence-≃ ua' (Lift 𝓤 Y) (Lift 𝓥 X))
 
-     d : (Σ Y ꞉ 𝓥 ̇  , X ≃ Y) ≃ (Σ Y ꞉ 𝓥 ̇  , Lift 𝓤 Y ≡ Lift 𝓥 X)
+     d : (Σ Y ꞉ 𝓥 ̇ , X ≃ Y) ≃ (Σ Y ꞉ 𝓥 ̇ , Lift 𝓤 Y ≡ Lift 𝓥 X)
      d = Σ-cong e
 
-     j : is-subsingleton (Σ Y ꞉ 𝓥 ̇  , Lift 𝓤 Y ≡ Lift 𝓥 X)
+     j : is-subsingleton (Σ Y ꞉ 𝓥 ̇ , Lift 𝓤 Y ≡ Lift 𝓥 X)
      j = Lift-is-embedding ua ua' (Lift 𝓥 X)
 
-     s : is-subsingleton (Σ Y ꞉ 𝓥 ̇  , X ≃ Y)
+     s : is-subsingleton (Σ Y ꞉ 𝓥 ̇ , X ≃ Y)
      s = equiv-to-subsingleton d j
 
- univalence→'-dual : (Y : 𝓤 ̇ ) → is-subsingleton (Σ X ꞉ 𝓥 ̇  , X ≃ Y)
+ univalence→'-dual : (Y : 𝓤 ̇ ) → is-subsingleton (Σ X ꞉ 𝓥 ̇ , X ≃ Y)
  univalence→'-dual Y = equiv-to-subsingleton e i
   where
-   e : (Σ X ꞉ 𝓥 ̇  , X ≃ Y) ≃ (Σ X ꞉ 𝓥 ̇  , Y ≃ X)
+   e : (Σ X ꞉ 𝓥 ̇ , X ≃ Y) ≃ (Σ X ꞉ 𝓥 ̇ , Y ≃ X)
    e = Σ-cong (λ X → ≃-Sym fe₁ fe₀ fe)
 
-   i : is-subsingleton (Σ X ꞉ 𝓥 ̇  , Y ≃ X)
+   i : is-subsingleton (Σ X ꞉ 𝓥 ̇ , Y ≃ X)
    i = univalence→' Y
 
 univalence→'' : is-univalent (𝓤 ⊔ 𝓥)
-              → (X : 𝓤 ̇ ) → is-subsingleton (Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇  , X ≃ Y)
+              → (X : 𝓤 ̇ ) → is-subsingleton (Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇ , X ≃ Y)
 
 univalence→'' ua = univalence→' ua ua
 
 univalence→''-dual : is-univalent (𝓤 ⊔ 𝓥)
-                   → (Y : 𝓤 ̇ ) → is-subsingleton (Σ X ꞉ 𝓤 ⊔ 𝓥 ̇  , X ≃ Y)
+                   → (Y : 𝓤 ̇ ) → is-subsingleton (Σ X ꞉ 𝓤 ⊔ 𝓥 ̇ , X ≃ Y)
 
 univalence→''-dual ua = univalence→'-dual ua ua
 
 G↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
-     → (X : 𝓤 ̇ ) (A : (Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇  , X ≃ Y) → 𝓦 ̇ )
+     → (X : 𝓤 ̇ ) (A : (Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇ , X ≃ Y) → 𝓦 ̇ )
      → A (Lift 𝓥 X , ≃-Lift X) → (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A (Y , e)
 
 G↑-≃ {𝓤} {𝓥} ua X A a Y e = transport A p a
  where
-  t : Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇  , X ≃ Y
+  t : Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇ , X ≃ Y
   t = (Lift 𝓥 X , ≃-Lift X)
 
   p : t ≡ (Y , e)
@@ -4330,12 +4329,12 @@ equivs-are-haes↑ {𝓤} {𝓥} ua {X} {Y} = J↑-equiv {𝓤} {𝓥} ua (λ X 
                                        lift-is-hae X Y
 
 G↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
-     → (Y : 𝓤 ̇ ) (A : (Σ X ꞉ 𝓤 ⊔ 𝓥 ̇  , X ≃ Y) → 𝓦 ̇ )
+     → (Y : 𝓤 ̇ ) (A : (Σ X ꞉ 𝓤 ⊔ 𝓥 ̇ , X ≃ Y) → 𝓦 ̇ )
      → A (Lift 𝓥 Y , Lift-≃ Y) → (X : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A (X , e)
 
 G↓-≃ {𝓤} {𝓥} ua Y A a X e = transport A p a
  where
-  t : Σ X ꞉ 𝓤 ⊔ 𝓥 ̇  , X ≃ Y
+  t : Σ X ꞉ 𝓤 ⊔ 𝓥 ̇ , X ≃ Y
   t = (Lift 𝓥 Y , Lift-≃ Y)
 
   p : t ≡ (X , e)
@@ -4446,7 +4445,7 @@ global-≃-ap' {𝓤} {𝓥} ua F A φ X Y e =
 global-≃-ap ua = global-≃-ap' ua id
 
 subtypes : 𝓤 ̇ → 𝓤 ⁺ ̇
-subtypes {𝓤} Y = Σ X ꞉ 𝓤 ̇  , X ↪ Y
+subtypes {𝓤} Y = Σ X ꞉ 𝓤 ̇ , X ↪ Y
 
 _/[_]_ : (𝓤 : Universe) → (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
 𝓤 /[ P ] Y = Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , ((y : Y) → P (fiber f y))
@@ -4502,10 +4501,10 @@ subtypes-form-set {𝓤} ua Y = equiv-to-set
                               (powersets-are-sets' ua)
 
 𝓢 : (𝓤 : Universe) → 𝓤 ⁺ ̇
-𝓢 𝓤 = Σ S ꞉ 𝓤 ̇  , is-singleton S
+𝓢 𝓤 = Σ S ꞉ 𝓤 ̇ , is-singleton S
 
 equiv-classification : Univalence
-                     → (Y : 𝓤 ̇ ) → (Σ X ꞉ 𝓤 ̇  , X ≃ Y) ≃ (Y → 𝓢 𝓤)
+                     → (Y : 𝓤 ̇ ) → (Σ X ꞉ 𝓤 ̇ , X ≃ Y) ≃ (Y → 𝓢 𝓤)
 
 equiv-classification {𝓤} ua = special-map-classifier (ua 𝓤)
                                (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
@@ -4529,7 +4528,7 @@ the-singletons-form-a-singleton {𝓤} pe fe = c , φ
            (λ _ → center S s) (λ _ → center (Lift 𝓤 𝟙) i)
 
 univalence-→-again : Univalence
-                   → (Y : 𝓤 ̇ ) → is-singleton (Σ X ꞉ 𝓤 ̇  , X ≃ Y)
+                   → (Y : 𝓤 ̇ ) → is-singleton (Σ X ꞉ 𝓤 ̇ , X ≃ Y)
 
 univalence-→-again {𝓤} ua Y = equiv-to-singleton (equiv-classification ua Y) i
  where
@@ -4781,7 +4780,7 @@ module ∞-magma-identity {𝓤 : Universe} where
  ∞-magma-structure X = X → X → X
 
  ∞-Magma : 𝓤 ⁺ ̇
- ∞-Magma = Σ X ꞉ 𝓤 ̇  , ∞-magma-structure X
+ ∞-Magma = Σ X ꞉ 𝓤 ̇ , ∞-magma-structure X
 
  sns-data : SNS ∞-magma-structure 𝓤
  sns-data = (ι , ρ , θ)
@@ -4827,12 +4826,12 @@ module sip-with-axioms where
  open sip
 
  [_] : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ }
-     → (Σ X ꞉ 𝓤 ̇  , Σ s ꞉ S X , axioms X s) → Σ S
+     → (Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , axioms X s) → Σ S
 
  [ X , s , _ ] = (X , s)
 
  ⟪_⟫ : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ }
-     → (Σ X ꞉ 𝓤 ̇  , Σ s ꞉ S X , axioms X s) → 𝓤 ̇
+     → (Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , axioms X s) → 𝓤 ̇
 
  ⟪ X , _ , _ ⟫ = X
 
@@ -4884,7 +4883,7 @@ module sip-with-axioms where
      (σ : SNS S 𝓣)
      (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
    → ((X : 𝓤 ̇ ) (s : S X) → is-subsingleton (axioms X s))
-   → (A B : Σ X ꞉ 𝓤 ̇  , Σ s ꞉ S X , axioms X s)
+   → (A B : Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , axioms X s)
    → (A ≡ B) ≃ ([ A ] ≃[ σ ] [ B ])
 
  characterization-of-≡-with-axioms ua σ axioms i =
@@ -4895,7 +4894,7 @@ module magma-identity {𝓤 : Universe} where
  open sip-with-axioms
 
  Magma : 𝓤 ⁺ ̇
- Magma = Σ X ꞉ 𝓤 ̇  , (X → X → X) × is-set X
+ Magma = Σ X ꞉ 𝓤 ̇ , (X → X → X) × is-set X
 
  _≅_ : Magma → Magma → 𝓤 ̇
 
@@ -5000,17 +4999,17 @@ module sip-join where
  open sip
 
  ⟪_⟫ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
-     → (Σ X ꞉ 𝓤 ̇  , S₀ X × S₁ X) → 𝓤 ̇
+     → (Σ X ꞉ 𝓤 ̇ , S₀ X × S₁ X) → 𝓤 ̇
 
  ⟪ X , s₀ , s₁ ⟫ = X
 
  [_]₀ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
-      → (Σ X ꞉ 𝓤 ̇  , S₀ X × S₁ X) → Σ S₀
+      → (Σ X ꞉ 𝓤 ̇ , S₀ X × S₁ X) → Σ S₀
 
  [ X , s₀ , s₁ ]₀ = (X , s₀)
 
  [_]₁ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
-      → (Σ X ꞉ 𝓤 ̇  , S₀ X × S₁ X) → Σ S₁
+      → (Σ X ꞉ 𝓤 ̇ , S₀ X × S₁ X) → Σ S₁
 
  [ X , s₀ , s₁ ]₁ = (X , s₁)
 
@@ -5053,10 +5052,10 @@ module sip-join where
 
  _≃⟦_,_⟧_ : {S₀ : 𝓤 ̇ → 𝓥 ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
 
-          → (Σ X ꞉ 𝓤 ̇  , S₀ X × S₁ X)
+          → (Σ X ꞉ 𝓤 ̇ , S₀ X × S₁ X)
           → SNS S₀ 𝓦₀
           → SNS S₁ 𝓦₁
-          → (Σ X ꞉ 𝓤 ̇  , S₀ X × S₁ X)
+          → (Σ X ꞉ 𝓤 ̇ , S₀ X × S₁ X)
 
           → 𝓤 ⊔ 𝓦₀ ⊔ 𝓦₁ ̇
 
@@ -5067,7 +5066,7 @@ module sip-join where
  characterization-of-join-≡ : is-univalent 𝓤
                             → {S₀ : 𝓤 ̇ → 𝓥 ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
                               (σ₀ : SNS S₀ 𝓦₀)  (σ₁ : SNS S₁ 𝓦₁)
-                              (A B : Σ X ꞉ 𝓤 ̇  , S₀ X × S₁ X)
+                              (A B : Σ X ꞉ 𝓤 ̇ , S₀ X × S₁ X)
                             → (A ≡ B) ≃ (A ≃⟦ σ₀ , σ₁ ⟧ B)
 
  characterization-of-join-≡ ua σ₀ σ₁ = characterization-of-≡ ua (join σ₀ σ₁)
@@ -5077,7 +5076,7 @@ module pointed-∞-magma-identity {𝓤 : Universe} where
  open sip-join
 
  ∞-Magma· : 𝓤 ⁺ ̇
- ∞-Magma· = Σ X ꞉ 𝓤 ̇  , (X → X → X) × X
+ ∞-Magma· = Σ X ꞉ 𝓤 ̇ , (X → X → X) × X
 
  _≅_ : ∞-Magma· → ∞-Magma· → 𝓤 ̇
 
@@ -5115,7 +5114,7 @@ module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
                            × monoids.associative     _·_
 
  Monoid : 𝓤 ⁺ ̇
- Monoid = Σ X ꞉ 𝓤 ̇  , Σ s ꞉ monoid-structure X , monoid-axioms X s
+ Monoid = Σ X ꞉ 𝓤 ̇ , Σ s ꞉ monoid-structure X , monoid-axioms X s
 
  monoid-axioms-subsingleton : (X : 𝓤 ̇ ) (s : monoid-structure X)
                             → is-subsingleton (monoid-axioms X s)
@@ -5173,10 +5172,10 @@ module associative-∞-magma-identity
  associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
 
  ∞-amagma-structure : 𝓤 ̇ → 𝓤 ̇
- ∞-amagma-structure X = Σ \(_·_ : (X → X → X)) → (associative _·_)
+ ∞-amagma-structure X = Σ _·_ ꞉ (X → X → X), (associative _·_)
 
  ∞-aMagma : 𝓤 ⁺ ̇
- ∞-aMagma = Σ X ꞉ 𝓤 ̇  , ∞-amagma-structure X
+ ∞-aMagma = Σ X ꞉ 𝓤 ̇ , ∞-amagma-structure X
 
  homomorphic : {X Y : 𝓤 ̇ } → (X → X → X) → (Y → Y → Y) → (X → Y) → 𝓤 ̇
  homomorphic _·_ _*_ f = (λ x y → f (x · y)) ≡ (λ x y → f x * f y)
@@ -5211,8 +5210,8 @@ module associative-∞-magma-identity
  sns-data = (ι , ρ , θ)
   where
    ι : (𝓧 𝓐 : ∞-aMagma) → ⟨ 𝓧 ⟩ ≃ ⟨ 𝓐 ⟩ → 𝓤 ̇
-   ι (X , _·_ , α) (A , _*_ , β) (f , i) = Σ \(h : homomorphic _·_ _*_ f)
-                                                 → respect-assoc _·_ _*_ α β f h
+   ι (X , _·_ , α) (A , _*_ , β) (f , i) = Σ h ꞉ homomorphic _·_ _*_ f
+                                               , respect-assoc _·_ _*_ α β f h
 
    ρ : (𝓧 : ∞-aMagma) → ι 𝓧 𝓧 (id-≃ ⟨ 𝓧 ⟩)
    ρ (X , _·_ , α) = h , p
@@ -5273,7 +5272,7 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
  group-axiom X (_·_ , e) = (x : X) → Σ x' ꞉ X , (x · x' ≡ e) × (x' · x ≡ e)
 
  Group : 𝓤 ⁺ ̇
- Group = Σ X ꞉ 𝓤 ̇  , Σ s ꞉ group-structure X , group-axiom X (pr₁ s)
+ Group = Σ X ꞉ 𝓤 ̇ , Σ s ꞉ group-structure X , group-axiom X (pr₁ s)
 
  inv-lemma : (X : 𝓤 ̇ ) (_·_ : X → X → X) (e : X)
            → monoid-axioms X (_·_ , e)
@@ -5784,7 +5783,7 @@ module generalized-topological-space-identity
  ℙℙ X = ℙ (ℙ X)
 
  Space : 𝓤 ⁺ ⊔ 𝓥  ̇
- Space = Σ X ꞉ 𝓤 ̇  , Σ 𝓞 ꞉ ℙℙ X , axioms X 𝓞
+ Space = Σ X ꞉ 𝓤 ̇ , Σ 𝓞 ꞉ ℙℙ X , axioms X 𝓞
 
  sns-data : SNS ℙℙ (𝓤 ⊔ 𝓥)
  sns-data = (ι , ρ , θ)
@@ -5842,7 +5841,7 @@ module selection-space-identity
  S X = (X → R) → X
 
  SelectionSpace : 𝓤 ⁺ ⊔ 𝓥  ̇
- SelectionSpace = Σ X ꞉ 𝓤 ̇  , Σ ε ꞉ S X , axioms X ε
+ SelectionSpace = Σ X ꞉ 𝓤 ̇ , Σ ε ꞉ S X , axioms X ε
 
  sns-data : SNS S (𝓤 ⊔ 𝓥)
  sns-data = (ι , ρ , θ)
@@ -5942,9 +5941,9 @@ module generalized-functor-algebra-equality
    characterization-of-≡ ua sns-data (X , α) (Y , β)
 
 type-valued-preorder-S : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
-type-valued-preorder-S {𝓤} {𝓥} X = Σ \(_≤_ : X → X → 𝓥 ̇ )
-                                 → ((x : X) → x ≤ x)
-                                 × ((x y z : X) → x ≤ y → y ≤ z → x ≤ z)
+type-valued-preorder-S {𝓤} {𝓥} X = Σ _≤_ ꞉ (X → X → 𝓥 ̇ )
+                                         , ((x : X) → x ≤ x)
+                                         × ((x y z : X) → x ≤ y → y ≤ z → x ≤ z)
 
 module type-valued-preorder-identity
         (𝓤 𝓥 : Universe)
@@ -6208,7 +6207,7 @@ module category-identity
                         (compX x z t (compX x y z f g) h))))))))
 
  Cat : (𝓤 ⊔ 𝓥)⁺ ̇
- Cat = Σ X ꞉ 𝓤 ̇  , Σ s ꞉ S X , category-axioms X s
+ Cat = Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , category-axioms X s
 
  Ob : Cat → 𝓤 ̇
  Ob (X , (homX , idX , compX) , _) = X
@@ -6815,7 +6814,7 @@ module ring-identity {𝓤 : Universe} (ua : Univalence) where
     VII = (x y z : R) → (y + z) · x ≡ (y · x) + (z · x)
 
  Rng : 𝓤 ⁺ ̇
- Rng = Σ R ꞉ 𝓤 ̇  , Σ s ꞉ rng-structure R , rng-axioms R s
+ Rng = Σ R ꞉ 𝓤 ̇ , Σ s ꞉ rng-structure R , rng-axioms R s
 
  rng-axioms-is-subsingleton : (R : 𝓤 ̇ ) (s : rng-structure R)
                             → is-subsingleton (rng-axioms R s)
@@ -6957,7 +6956,7 @@ module ring-identity {𝓤 : Universe} (ua : Univalence) where
          (Π-is-subsingleton fe (λ x → ×-is-subsingleton (i (x · 𝟏) x) (i (𝟏 · x) x)))
 
  Ring : 𝓤 ⁺ ̇
- Ring = Σ R ꞉ 𝓤 ̇  , Σ s ꞉ ring-structure R , ring-axioms R s
+ Ring = Σ R ꞉ 𝓤 ̇ , Σ s ꞉ ring-structure R , ring-axioms R s
 
  _≅[Ring]_ : Ring → Ring → 𝓤 ̇
 
@@ -7580,7 +7579,7 @@ module choice
   global-choice-gives-all-types-are-sets {𝓤} c X = hedberg (λ x y → c (x ≡ y))
 
 _has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
-X has-size 𝓥 = Σ Y ꞉ 𝓥 ̇  , X ≃ Y
+X has-size 𝓥 = Σ Y ꞉ 𝓥 ̇ , X ≃ Y
 
 propositional-resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 propositional-resizing 𝓤 𝓥 = (P : 𝓤 ̇ ) → is-subsingleton P → P has-size 𝓥
@@ -8216,7 +8215,7 @@ the-subsingletons-are-the-subtypes-of-a-singleton' pe fe X = γ
 
 G↑-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
               → (X : 𝓤 ̇ )
-              → (A : (Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇  , X ≃ Y) → 𝓦 ̇ )
+              → (A : (Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇ , X ≃ Y) → 𝓦 ̇ )
               → (a : A (Lift 𝓥 X , ≃-Lift X))
               → G↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡ a
 G↑-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
@@ -8225,14 +8224,14 @@ G↑-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
   transport A (refl t) a              ≡⟨ refl a                       ⟩
   a                                   ∎
  where
-  t : (Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇  , X ≃ Y)
+  t : (Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇ , X ≃ Y)
   t = (Lift 𝓥 X , ≃-Lift X)
 
   p : t ≡ t
   p = univalence→'' {𝓤} {𝓤 ⊔ 𝓥} ua X t t
 
   q : p ≡ refl t
-  q = subsingletons-are-sets (Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇  , X ≃ Y)
+  q = subsingletons-are-sets (Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇ , X ≃ Y)
        (univalence→'' {𝓤} {𝓤 ⊔ 𝓥} ua X) t t p (refl t)
 
 H↑-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
@@ -8247,16 +8246,16 @@ has-section-charac : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 has-section-charac f = ΠΣ-distr-≃
 
 retractions-into : 𝓤 ̇ → 𝓤 ⁺ ̇
-retractions-into {𝓤} Y = Σ X ꞉ 𝓤 ̇  , Y ◁ X
+retractions-into {𝓤} Y = Σ X ꞉ 𝓤 ̇ , Y ◁ X
 
 pointed-types : (𝓤 : Universe) → 𝓤 ⁺ ̇
-pointed-types 𝓤 = Σ X ꞉ 𝓤 ̇  , X
+pointed-types 𝓤 = Σ X ꞉ 𝓤 ̇ , X
 
 retraction-classifier : Univalence
                       → (Y : 𝓤 ̇ ) → retractions-into Y ≃ (Y → pointed-types 𝓤)
 retraction-classifier {𝓤} ua Y =
  retractions-into Y                                              ≃⟨ i      ⟩
- (Σ X ꞉ 𝓤 ̇  , Σ f ꞉ (X → Y) , ((y : Y) → Σ x ꞉ X , f x ≡ y))     ≃⟨ id-≃ _ ⟩
+ (Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , ((y : Y) → Σ x ꞉ X , f x ≡ y))     ≃⟨ id-≃ _ ⟩
  ((𝓤 /[ id ] Y))                                                 ≃⟨ ii     ⟩
  (Y → pointed-types 𝓤)                                           ■
  where
@@ -8279,10 +8278,10 @@ module surjection-classifier
   X ↠ Y = Σ f ꞉ (X → Y), is-surjection f
 
   surjections-into : 𝓤 ̇ → 𝓤 ⁺ ̇
-  surjections-into {𝓤} Y = Σ X ꞉ 𝓤 ̇  , X ↠ Y
+  surjections-into {𝓤} Y = Σ X ꞉ 𝓤 ̇ , X ↠ Y
 
   inhabited-types : (𝓤 : Universe) → 𝓤 ⁺ ̇
-  inhabited-types 𝓤 = Σ X ꞉ 𝓤 ̇  , ∥ X ∥
+  inhabited-types 𝓤 = Σ X ꞉ 𝓤 ̇ , ∥ X ∥
 
   surjection-classifier : Univalence
                         → (Y : 𝓤 ̇ )
@@ -8309,7 +8308,7 @@ DNE-gives-EM : dfunext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
 EM-gives-DNE : EM 𝓤 → DNE 𝓤
 
 SN : ∀ 𝓤 → 𝓤 ⁺ ̇
-SN 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → Σ X ꞉ 𝓤 ̇  , P ⇔ ¬ X
+SN 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → Σ X ꞉ 𝓤 ̇ , P ⇔ ¬ X
 
 SN-gives-DNE : SN 𝓤 → DNE 𝓤
 
