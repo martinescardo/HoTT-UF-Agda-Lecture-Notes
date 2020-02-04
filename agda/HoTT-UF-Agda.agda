@@ -158,7 +158,7 @@ pr₂ (x , y) = y
 -Σ : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 -Σ X Y = Σ Y
 
-syntax -Σ A (λ x → b) = Σ x ꞉ A , b
+syntax -Σ X (λ x → y) = Σ x ꞉ X , y
 
 Σ-induction : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : Σ Y → 𝓦 ̇ }
             → ((x : X) (y : Y x) → A (x , y))
@@ -406,8 +406,8 @@ module twin-primes where
 
  twin-prime-conjecture : 𝓤₀ ̇
  twin-prime-conjecture = (n : ℕ) → Σ p ꞉ ℕ , (p ≥ n)
-                                              × is-prime p
-                                              × is-prime (p ∔ 2)
+                                           × is-prime p
+                                           × is-prime (p ∔ 2)
 
 positive-not-zero : (x : ℕ) → succ x ≢ 0
 positive-not-zero x p = 𝟙-is-not-𝟘 (g p)
@@ -512,7 +512,7 @@ module basic-arithmetic-and-order where
     IH = +-lc x y z (succ-lc q)
 
   _≼_ : ℕ → ℕ → 𝓤₀ ̇
-  x ≼ y = Σ z ꞉ ℕ , (x ∔ z ≡ y)
+  x ≼ y = Σ z ꞉ ℕ , x ∔ z ≡ y
 
   ≤-gives-≼ : (x y : ℕ) → x ≤ y → x ≼ y
   ≤-gives-≼ 0 0               l = 0 , refl 0
@@ -809,8 +809,8 @@ module monoids where
  Monoid : (𝓤 : Universe) → 𝓤 ⁺ ̇
  Monoid 𝓤 = Σ X ꞉ 𝓤  ̇ , is-set X
                       × (Σ · ꞉ (X → X → X) , (Σ e ꞉ X , (left-neutral e ·)
-                                                       × (right-neutral e ·)
-                                                       × (associative ·)))
+                                                      × (right-neutral e ·)
+                                                      × (associative ·)))
 
 refl-left : {X : 𝓤 ̇ } {x y : X} {p : x ≡ y} → refl x ∙ p ≡ p
 refl-left {𝓤} {X} {x} {x} {refl x} = refl (refl x)
@@ -2167,7 +2167,7 @@ univalence→ ua X = singletons-are-subsingletons
 
 𝔾-≃-equation : (ua : is-univalent 𝓤)
              → (X : 𝓤 ̇ ) (A : (Σ Y ꞉ 𝓤 ̇ , X ≃ Y) → 𝓥 ̇ )
-             → (a : A (X  , id-≃ X))
+             → (a : A (X , id-≃ X))
              → 𝔾-≃ ua X A a X (id-≃ X) ≡ a
 
 𝔾-≃-equation {𝓤} {𝓥} ua X A a =
@@ -2179,7 +2179,7 @@ univalence→ ua X = singletons-are-subsingletons
 
  where
   t : Σ Y ꞉ 𝓤 ̇ , X ≃ Y
-  t = (X  , id-≃ X)
+  t = (X , id-≃ X)
 
   p : t ≡ t
   p = univalence→ {𝓤} ua X t t
@@ -2283,7 +2283,7 @@ automatic-equiv-functoriality {𝓤} F 𝓕 𝓕-id {X} {Y} {Z} f g ua = γ
 Σ-change-of-variable' {𝓤} {𝓥} ua {X} {Y} A f i = ℍ-≃ ua X B b Y (f , i)
  where
    B : (Y : 𝓤 ̇ ) → X ≃ Y →  (𝓤 ⊔ 𝓥)⁺ ̇
-   B Y (f , i) = (Σ A) ≡ (Σ (A ∘ inverse f i))
+   B Y (f , i) = Σ A ≡ (Σ (A ∘ inverse f i))
 
    b : B X (id-≃ X)
    b = refl (Σ A)
@@ -2701,7 +2701,7 @@ is-map-classifier 𝓤 = (Y : 𝓤 ̇ ) → is-equiv (χ Y)
 𝕋 Y A = Σ A , pr₁
 
 χη : is-univalent 𝓤
-   → (Y : 𝓤 ̇ ) → (σ : 𝓤 / Y) → 𝕋 Y (χ Y σ) ≡ σ
+   → (Y : 𝓤 ̇ ) (σ : 𝓤 / Y) → 𝕋 Y (χ Y σ) ≡ σ
 
 χη ua Y (X , f) = r
  where
@@ -4718,11 +4718,11 @@ module sip where
 
  characterization-of-≡ ua {S} σ A B =
 
-    (A ≡ B)                                                              ≃⟨ i   ⟩
+    (A ≡ B)                                                           ≃⟨ i   ⟩
     (Σ p ꞉ ⟨ A ⟩ ≡ ⟨ B ⟩ , transport S p (structure A) ≡ structure B) ≃⟨ ii  ⟩
     (Σ p ꞉ ⟨ A ⟩ ≡ ⟨ B ⟩ , ι A B (Id→Eq ⟨ A ⟩ ⟨ B ⟩ p))               ≃⟨ iii ⟩
     (Σ e ꞉ ⟨ A ⟩ ≃ ⟨ B ⟩ , ι A B e)                                   ≃⟨ iv  ⟩
-    (A ≃[ σ ] B)                                                         ■
+    (A ≃[ σ ] B)                                                      ■
 
   where
    ι   = homomorphic σ
@@ -5229,7 +5229,7 @@ module associative-∞-magma-identity
      c = (_·_ , α) , ρ (X , _·_ , α)
 
      φ : (σ : Σ t ꞉ ∞-amagma-structure X , ι (X , _·_ , α) (X , t) (id-≃ X)) → c ≡ σ
-     φ ((_·_ , β) , refl _·_  , k) = γ
+     φ ((_·_ , β) , refl _·_ , k) = γ
       where
        a : associative _·_
        a x y z = refl ((x · y) · z) ∙ ap id (α x y z)

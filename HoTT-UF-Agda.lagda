@@ -1270,15 +1270,15 @@ pr₂ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → (z : Σ Y) → Y (pr₁ z)
 pr₂ (x , y) = y
 \end{code}
 
-We now introduce syntax to be able to write `Σ x ꞉ A , b` instead of
-`Σ (λ(x ꞉ A) → b)`. For this purpose, we first define a version of `Σ`
+We now introduce syntax to be able to write `Σ x ꞉ X , y` instead of
+`Σ λ(x ꞉ X) → y`. For this purpose, we first define a version of `Σ`
 with making the index type explicit.
 
 \begin{code}
 -Σ : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 -Σ X Y = Σ Y
 
-syntax -Σ A (λ x → b) = Σ x ꞉ A , b
+syntax -Σ X (λ x → y) = Σ x ꞉ X , y
 \end{code}
 
 For some reason, Agda has this kind of definition backwards: the
@@ -1287,8 +1287,8 @@ normal convention of writing what is defined on the left-hand side of
 the equality sign.
 
 (Notice also that "꞉" in the above syntax definition is not the same
-as ":", even though the look the same. For the above notation
-`Σ x ꞉ A , b`, the symbol "꞉" has to be typed "\:4" in the emacs Agda
+as ":", even though they may look the same. For the above notation `Σ
+x ꞉ A , b`, the symbol "꞉" has to be typed "\:4" in the emacs Agda
 mode.)
 
 To prove that `A z` holds for all `z : Σ Y`, for a given
@@ -1422,7 +1422,6 @@ above, but we can introduce the notation `Π` for them, similar to that for `Σ`
 -Π X Y = Π Y
 
 syntax -Π A (λ x → b) = Π x ꞉ A , b
-
 \end{code}
 
 Notice that the function type `X → Y` is the particular case of the `Π`
@@ -2116,8 +2115,8 @@ module twin-primes where
 
  twin-prime-conjecture : 𝓤₀ ̇
  twin-prime-conjecture = (n : ℕ) → Σ p ꞉ ℕ , (p ≥ n)
-                                              × is-prime p
-                                              × is-prime (p ∔ 2)
+                                           × is-prime p
+                                           × is-prime (p ∔ 2)
 \end{code}
 
 Thus, not only can we write down definitions, constructions, theorems
@@ -2295,7 +2294,7 @@ First we name the alternative definition of `≤`:
 
 \begin{code}
   _≼_ : ℕ → ℕ → 𝓤₀ ̇
-  x ≼ y = Σ z ꞉ ℕ , (x ∔ z ≡ y)
+  x ≼ y = Σ z ꞉ ℕ , x ∔ z ≡ y
 \end{code}
 
 Next we show that the two relations `≤` and `≼` imply each other.
@@ -2872,8 +2871,8 @@ three laws:
  Monoid : (𝓤 : Universe) → 𝓤 ⁺ ̇
  Monoid 𝓤 = Σ X ꞉ 𝓤  ̇ , is-set X
                       × (Σ · ꞉ (X → X → X) , (Σ e ꞉ X , (left-neutral e ·)
-                                                       × (right-neutral e ·)
-                                                       × (associative ·)))
+                                                      × (right-neutral e ·)
+                                                      × (associative ·)))
 \end{code}
 
 *Remark.* People are more likely to use
@@ -3214,7 +3213,7 @@ from-Σ-≡ (refl (x , a)) = (refl x , refl a)
 
 The above gives
 
-   > `(σ ≡ τ) ⇔ Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ`.
+   > `(σ ≡ τ) ⇔ (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ)`.
 
 But this is a very weak statement when the left- and right-hand
 identity types may have multiple elements, which is precisely the
@@ -3227,7 +3226,7 @@ Voevodsky](HoTT-UF-Agda.html#fibersandequivalences).
 Once we have defined this notion `_≃_` of type equivalence, this
 characterization will become an equivalence
 
-   > `(σ ≡ τ) ≃ Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p pr₂ σ ≡ pr₂ τ`.
+   > `(σ ≡ τ) ≃ (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p pr₂ σ ≡ pr₂ τ)`.
 
 But even this is not sufficiently precise, because in general there are
 many equivalences between two types. For example, there are precisely
@@ -5199,7 +5198,7 @@ any `X`.
 
 𝔾-≃-equation : (ua : is-univalent 𝓤)
              → (X : 𝓤 ̇ ) (A : (Σ Y ꞉ 𝓤 ̇ , X ≃ Y) → 𝓥 ̇ )
-             → (a : A (X  , id-≃ X))
+             → (a : A (X , id-≃ X))
              → 𝔾-≃ ua X A a X (id-≃ X) ≡ a
 
 𝔾-≃-equation {𝓤} {𝓥} ua X A a =
@@ -5211,7 +5210,7 @@ any `X`.
 
  where
   t : Σ Y ꞉ 𝓤 ̇ , X ≃ Y
-  t = (X  , id-≃ X)
+  t = (X , id-≃ X)
 
   p : t ≡ t
   p = univalence→ {𝓤} ua X t t
@@ -5357,7 +5356,7 @@ terminology):
 Σ-change-of-variable' {𝓤} {𝓥} ua {X} {Y} A f i = ℍ-≃ ua X B b Y (f , i)
  where
    B : (Y : 𝓤 ̇ ) → X ≃ Y →  (𝓤 ⊔ 𝓥)⁺ ̇
-   B Y (f , i) = (Σ A) ≡ (Σ (A ∘ inverse f i))
+   B Y (f , i) = Σ A ≡ (Σ (A ∘ inverse f i))
 
    b : B X (id-≃ X)
    b = refl (Σ A)
@@ -5986,7 +5985,7 @@ taking its total space and the first projection:
 
 
 χη : is-univalent 𝓤
-   → (Y : 𝓤 ̇ ) → (σ : 𝓤 / Y) → 𝕋 Y (χ Y σ) ≡ σ
+   → (Y : 𝓤 ̇ ) (σ : 𝓤 / Y) → 𝕋 Y (χ Y σ) ≡ σ
 
 χη ua Y (X , f) = r
  where
@@ -9225,11 +9224,11 @@ identity on `Σ S`:
 
  characterization-of-≡ ua {S} σ A B =
 
-    (A ≡ B)                                                              ≃⟨ i   ⟩
+    (A ≡ B)                                                           ≃⟨ i   ⟩
     (Σ p ꞉ ⟨ A ⟩ ≡ ⟨ B ⟩ , transport S p (structure A) ≡ structure B) ≃⟨ ii  ⟩
     (Σ p ꞉ ⟨ A ⟩ ≡ ⟨ B ⟩ , ι A B (Id→Eq ⟨ A ⟩ ⟨ B ⟩ p))               ≃⟨ iii ⟩
     (Σ e ꞉ ⟨ A ⟩ ≃ ⟨ B ⟩ , ι A B e)                                   ≃⟨ iv  ⟩
-    (A ≃[ σ ] B)                                                         ■
+    (A ≃[ σ ] B)                                                      ■
 
   where
    ι   = homomorphic σ
@@ -9940,7 +9939,7 @@ We prove the canonicity condition `θ` with the Yoneda machinery.
      c = (_·_ , α) , ρ (X , _·_ , α)
 
      φ : (σ : Σ t ꞉ ∞-amagma-structure X , ι (X , _·_ , α) (X , t) (id-≃ X)) → c ≡ σ
-     φ ((_·_ , β) , refl _·_  , k) = γ
+     φ ((_·_ , β) , refl _·_ , k) = γ
       where
        a : associative _·_
        a x y z = refl ((x · y) · z) ∙ ap id (α x y z)
@@ -13043,7 +13042,7 @@ can be read as
 So the hypothesis of the following is that there is at most one such
 `a` and at least one such `a`, which amounts to saying that there is a
 unique such `a`, and hence `simple-unique-choice'` amounts to the same
-things as `simple-unique-choice`. However, `simple-unique-choice` can
+thing as `simple-unique-choice`. However, `simple-unique-choice` can
 be formulated and proved in our spartan MLTT, whereas
 `simple-unique-choice'` requires the assumption of the existence of
 subsingleton truncations so that `∃` is available for its formulation.
