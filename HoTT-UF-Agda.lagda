@@ -1083,13 +1083,13 @@ module ℕ-order where
 *Exercise*. After learning [`Σ`](HoTT-UF-Agda.html#sigmatypes)
  and [`_≡_`](HoTT-UF-Agda.html#identitytype) explained below, prove [that](HoTT-UF-Agda.html#basicarithmetic)
 
-   > `x ≤ y` if and only if `Σ \(z : ℕ) → x + z ≡ y`.
+   > `x ≤ y` if and only if `Σ z ꞉ ℕ , x + z ≡ y`.
 
 Later, after learning
 [univalence](HoTT-UF-Agda.html#univalence) prove that in this case
 [this implies](HoTT-UF-Agda.html#additionalexercisessol)
 
-   > `(x ≤ y) ≡ Σ \(z : ℕ) → x + z ≡ y`.
+   > `(x ≤ y) ≡ Σ z ꞉ ℕ , x + z ≡ y`.
 
 That [bi-implication can be turned into
 equality](HoTT-UF-Agda.html#univalence-gives-propext) only holds for
@@ -1218,20 +1218,19 @@ algorithms in the implementation of Agda. In such cases we can write
    > `Σ λ(x : X) → Y x`,
 
 because `Y = λ (x : X) → Y x` by a so-called η-rule. However, we will
-often use the synonym `\` of `λ` for `Σ`, as if considering it as part
-of the `Σ` syntax:
+define syntax to be able to write this in more familiar form as
 
-   > `Σ \(x : X) → Y x`.
+   > `Σ x ꞉ X , Y x`.
 
-In MLTT we would write this as `Σ (x : X), Y x` or
-[similar](https://en.wikipedia.org/wiki/Summation), for example with
-the indexing `x : X` written as a subscript of `Σ` or under it.
+In MLTT we can write this in [other
+ways](https://en.wikipedia.org/wiki/Summation), for example with the
+indexing `x : X` written as a subscript of `Σ` or under it.
 
 
 Or it may be that the name `Y` is not defined, and we work with a
 nameless family defined on the fly, as in the exercise proposed above:
 
-   > `Σ \(z : ℕ) → x + z ≡ y`,
+   > `Σ z ꞉ ℕ , x + z ≡ y`,
 
 where `Y z = (x + z ≡ y)` in this case, and where we haven't defined
 the [identity type former](HoTT-UF-Agda.html#identitytype) `_≡_` yet.
@@ -1271,6 +1270,22 @@ pr₂ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → (z : Σ Y) → Y (pr₁ z)
 pr₂ (x , y) = y
 \end{code}
 
+We now introduce syntax to be able to write `Σ x ꞉ A , b` instead of
+`Σ (λ(x ꞉ A) → b)`. We first define a version of `Σ` with making the
+index type explicit.
+
+\begin{code}
+-Σ : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+-Σ X Y = Σ Y
+
+syntax -Σ A (λ x → b) = Σ x ꞉ A , b
+\end{code}
+
+For some reason, Agda has this kind of definition backwards: the
+*definiendum* and the *definiens* are swapped with respect to the
+normal convention of writing what is defined on the left-hand side of
+the equality sign.
+
 To prove that `A z` holds for all `z : Σ Y`, for a given
 property `A`, we just prove that we have `A (x , y)` for all `x :
 X` and `y : Y x`.  This is called `Σ` induction or `Σ`
@@ -1299,7 +1314,7 @@ product, when the type family doesn't depend on the indexing type:
 
 \begin{code}
 _×_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-X × Y = Σ \(x : X) → Y
+X × Y = Σ x ꞉ X , Y
 \end{code}
 
 We have seen by way of examples that the function type symbol `→`
@@ -1396,6 +1411,12 @@ above, but we can introduce the notation `Π` for them, similar to that for `Σ`
 \begin{code}
 Π : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 Π {𝓤} {𝓥} {X} A = (x : X) → A x
+
+-Π : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+-Π X Y = Π Y
+
+syntax -Π A (λ x → b) = Π x ꞉ A , b
+
 \end{code}
 
 Notice that the function type `X → Y` is the particular case of the `Π`
@@ -1487,7 +1508,7 @@ prove](HoTT-UF-Agda.html#singleton-type), namely that for any fixed
 element `x : X`, the type
 
 
-   > `Σ \(y : Y) → Id X x y`
+   > `Σ y ꞉ Y , Id X x y`
 
 is always a [singleton](HoTT-UF-Agda.html#hlevel).
 
@@ -2088,7 +2109,7 @@ module twin-primes where
  is-prime n = (n ≥ 2) × ((x y : ℕ) → x * y ≡ n → (x ≡ 1) + (x ≡ n))
 
  twin-prime-conjecture : 𝓤₀ ̇
- twin-prime-conjecture = (n : ℕ) → Σ \(p : ℕ) → (p ≥ n)
+ twin-prime-conjecture = (n : ℕ) → Σ p ꞉ ℕ , (p ≥ n)
                                               × is-prime p
                                               × is-prime (p ∔ 2)
 \end{code}
@@ -2262,13 +2283,13 @@ induction on the left argument:
     IH = +-lc x y z (succ-lc q)
 \end{code}
 
-Now we solve part of an exercise given above, namely that `(x ≤ y) ⇔ Σ \(z : ℕ) → x + z ≡ y`.
+Now we solve part of an exercise given above, namely that `(x ≤ y) ⇔ Σ z ꞉ ℕ , x + z ≡ y`.
 
 First we name the alternative definition of `≤`:
 
 \begin{code}
   _≼_ : ℕ → ℕ → 𝓤₀ ̇
-  x ≼ y = Σ \(z : ℕ) → x ∔ z ≡ y
+  x ≼ y = Σ z ꞉ ℕ , (x ∔ z ≡ y)
 \end{code}
 
 Next we show that the two relations `≤` and `≼` imply each other.
@@ -2320,7 +2341,7 @@ In both cases, we proceed by induction on both arguments.
 \end{code}
 
 [Later](HoTT-UF-Agda.html#additionalexercisesswol) we will show that
-`(x ≤ y) ≡ Σ \(z : ℕ) → x + z ≡ y`, using univalence.
+`(x ≤ y) ≡ Σ z ꞉ ℕ , x + z ≡ y`, using univalence.
 
 We now develop some generally useful material regarding the order `≤`
 on natural numbers. First, it is reflexive, transitive and antisymmetric:
@@ -2388,7 +2409,7 @@ The type of roots of a function:
 
 \begin{code}
   root : (ℕ → ℕ) → 𝓤₀ ̇
-  root f = Σ \(n : ℕ) → f n ≡ 0
+  root f = Σ n ꞉ ℕ , f n ≡ 0
 
   _has-no-root<_ : (ℕ → ℕ) → ℕ → 𝓤₀ ̇
   f has-no-root< k = (n : ℕ) → n < k → f n ≢ 0
@@ -2416,7 +2437,7 @@ The type of minimal roots of a function:
 
 \begin{code}
   minimal-root : (ℕ → ℕ) → 𝓤₀ ̇
-  minimal-root f = Σ \(m : ℕ) → is-minimal-root f m
+  minimal-root f = Σ m ꞉ ℕ , is-minimal-root f m
 
   minimal-root-is-root : ∀ f → minimal-root f → root f
   minimal-root-is-root f (m , p , _) = m , p
@@ -2483,7 +2504,7 @@ refer to here as *singleton type*.
 
 \begin{code}
 is-singleton : 𝓤 ̇ → 𝓤 ̇
-is-singleton X = Σ \(c : X) → (x : X) → c ≡ x
+is-singleton X = Σ c ꞉ X , ((x : X) → c ≡ x)
 \end{code}
 
 Such an element `c` is called a center of contraction of `X`.
@@ -2661,7 +2682,7 @@ singletons and also fail to be empty. No such things occur in
 mathematical nature:
 
 \begin{code}
-no-unicorns : ¬(Σ \(X : 𝓤 ̇ ) → is-subsingleton X × ¬(is-singleton X) × ¬(is-empty X))
+no-unicorns : ¬(Σ X ꞉ 𝓤 ̇  , is-subsingleton X × ¬(is-singleton X) × ¬(is-empty X))
 no-unicorns (X , i , f , g) = c
  where
   e : is-empty X
@@ -2724,7 +2745,7 @@ A [magma](https://en.wikipedia.org/wiki/Magma_(algebra)) is a *set* equipped wit
 module magmas where
 
  Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
- Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → is-set X × (X → X → X)
+ Magma 𝓤 = Σ X ꞉ 𝓤 ̇  , is-set X × (X → X → X)
 \end{code}
 
 The type `Magma 𝓤` collects all magmas in a universe `𝓤`, and lives in
@@ -2754,10 +2775,7 @@ allows us to write `x ·⟨ M ⟩ y` as an abbreviation of `magma-operation M x 
  syntax magma-operation M x y = x ·⟨ M ⟩ y
 \end{code}
 
-For some reason, Agda has this kind of definition backwards: the
-*definiendum* and the *definiens* are swapped with respect to the
-normal convention of writing what is defined on the left-hand side of
-the equality sign. In any case, the point is that this time we need
+The point is that this time we need
 such a mechanism because in order to be able to mention arbitrary `x`
 and `y`, we first need to know their types, which is `⟨ M ⟩` and hence
 `M` has to occur before `x` and `y` in the definition of
@@ -2775,9 +2793,9 @@ homomorphism when it commutes with the magma operations:
 
  is-magma-iso : (M N : Magma 𝓤) → (⟨ M ⟩ → ⟨ N ⟩) → 𝓤 ̇
  is-magma-iso M N f = is-magma-hom M N f
-                    × Σ \(g : ⟨ N ⟩ → ⟨ M ⟩) → is-magma-hom N M g
-                                             × (g ∘ f ∼ 𝑖𝑑 ⟨ M ⟩)
-                                             × (f ∘ g ∼ 𝑖𝑑 ⟨ N ⟩)
+                    × (Σ g ꞉ (⟨ N ⟩ → ⟨ M ⟩), is-magma-hom N M g
+                                            × (g ∘ f ∼ 𝑖𝑑 ⟨ M ⟩)
+                                            × (f ∘ g ∼ 𝑖𝑑 ⟨ N ⟩))
 
  id-is-magma-iso : (M : Magma 𝓤) → is-magma-iso M M (𝑖𝑑 ⟨ M ⟩)
  id-is-magma-iso M = id-is-magma-hom M ,
@@ -2801,7 +2819,7 @@ The isomorphisms can be collected in a type:
 
 \begin{code}
  _≅ₘ_ : Magma 𝓤 → Magma 𝓤 → 𝓤 ̇
- M ≅ₘ N = Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-magma-iso M N f
+ M ≅ₘ N = Σ f ꞉ (⟨ M ⟩ → ⟨ N ⟩), is-magma-iso M N f
 \end{code}
 
 The following function [will be](HoTT-UF-Agda.html#sns) a bijection in the presence of
@@ -2819,7 +2837,7 @@ type of magmas could be called `0-Magma`).
 
 \begin{code}
  ∞-Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
- ∞-Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → X → X → X
+ ∞-Magma 𝓤 = Σ X ꞉ 𝓤 ̇ , (X → X → X)
 \end{code}
 
 A [monoid](https://en.wikipedia.org/wiki/Monoid) is a set equipped with an associative binary operation and
@@ -2846,13 +2864,11 @@ three laws:
 
 \begin{code}
  Monoid : (𝓤 : Universe) → 𝓤 ⁺ ̇
- Monoid 𝓤 = Σ \(X : 𝓤 ̇ )
-          → is-set X
-          × Σ \(_·_ : X → X → X)
-          → Σ \(e : X)
-          → left-neutral e _·_
-          × right-neutral e _·_
-          × associative _·_
+ Monoid 𝓤 = Σ X ꞉ 𝓤 ̇ , is-set X
+                       × Σ \(_·_ : X → X → X)
+                       → Σ e ꞉ X , left-neutral e _·_
+                                 × right-neutral e _·_
+                                 × associative _·_
 \end{code}
 
 *Remark.* People are more likely to use
@@ -3178,7 +3194,7 @@ equality in `Σ` types as follows.
 
 \begin{code}
 to-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
-       → (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
+       → (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ)
        → σ ≡ τ
 
 to-Σ-≡ (refl x , refl a) = refl (x , a)
@@ -3186,14 +3202,14 @@ to-Σ-≡ (refl x , refl a) = refl (x , a)
 
 from-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
          → σ ≡ τ
-         → Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ
+         → Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ
 
 from-Σ-≡ (refl (x , a)) = (refl x , refl a)
 \end{code}
 
 The above gives
 
-   > `(σ ≡ τ) ⇔ Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ`.
+   > `(σ ≡ τ) ⇔ Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ`.
 
 But this is a very weak statement when the left- and right-hand
 identity types may have multiple elements, which is precisely the
@@ -3206,7 +3222,7 @@ Voevodsky](HoTT-UF-Agda.html#fibersandequivalences).
 Once we have defined this notion `_≃_` of type equivalence, this
 characterization will become an equivalence
 
-   > `(σ ≡ τ) ≃ Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p pr₂ σ ≡ pr₂ τ`.
+   > `(σ ≡ τ) ≃ Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p pr₂ σ ≡ pr₂ τ`.
 
 But even this is not sufficiently precise, because in general there are
 many equivalences between two types. For example, there are precisely
@@ -3246,16 +3262,16 @@ transport-× A B (refl _) = refl _
 
 
 transportd : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
-             {x : X} (a : A x) (σ : Σ \(a : A x) → B x a) {y : X} (p : x ≡ y)
+             {x : X} (a : A x) (σ : Σ a ꞉ A x , B x a) {y : X} (p : x ≡ y)
            → B x (pr₁ σ) → B y (transport A p (pr₁ σ))
 
 transportd A B a σ (refl y) = id
 
 
 transport-Σ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
-              {x : X} (y : X) (p : x ≡ y) (a : A x) {σ : Σ \(a : A x) → B x a}
+              {x : X} (y : X) (p : x ≡ y) (a : A x) {σ : Σ a ꞉ A x , B x a}
 
-            → transport (λ x → Σ \(y : A x) → B x y) p σ
+            → transport (λ x → Σ y ꞉ A x , B x y) p σ
             ≡ transport A p (pr₁ σ) , transportd A B a σ p (pr₂ σ)
 
 transport-Σ A B {x} x (refl x) a {σ} = refl σ
@@ -3313,7 +3329,7 @@ We first define the type of constant endomaps of a given type:
 
 \begin{code}
 wconstant-endomap : 𝓤 ̇ → 𝓤 ̇
-wconstant-endomap X = Σ \(f : X → X) → wconstant f
+wconstant-endomap X = Σ f ꞉ (X → X), wconstant f
 
 wcmap : (X : 𝓤 ̇ ) → wconstant-endomap X → (X → X)
 wcmap X (f , w) = f
@@ -3575,7 +3591,7 @@ A *section* of a function is simply a right inverse, by definition:
 
 \begin{code}
 has-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-has-section r = Σ \(s : codomain r → domain r) → r ∘ s ∼ id
+has-section r = Σ s ꞉ (codomain r → domain r), r ∘ s ∼ id
 \end{code}
 
 Notice that `has-section r` is the type of all sections `(s , η)` of
@@ -3590,7 +3606,7 @@ have a function `Y → X` which has a section:
 
 \begin{code}
 _◁_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-X ◁ Y = Σ \(r : Y → X) → has-section r
+X ◁ Y = Σ r ꞉ (Y → X), has-section r
 \end{code}
 
 This type actually collects *all* the ways in which the type `X` can
@@ -3713,7 +3729,7 @@ Using this, we have the following reindexing retraction of `Σ` types:
 \begin{code}
 Σ-reindexing-retract : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → 𝓦 ̇ } (r : Y → X)
                      → has-section r
-                     → (Σ \(x : X) → A x) ◁ (Σ \(y : Y) → A (r y))
+                     → (Σ x ꞉ X , A x) ◁ (Σ y ꞉ Y , A (r y))
 
 Σ-reindexing-retract {𝓤} {𝓥} {𝓦} {X} {Y} {A} r (s , η) = γ , φ , γφ
  where
@@ -3728,14 +3744,14 @@ Using this, we have the following reindexing retraction of `Σ` types:
 \end{code}
 
 We have defined [the property of a type being a
-singleton](HoTT-UF-Agda.html#hlevel). The singleton type `Σ \(y : X) →
+singleton](HoTT-UF-Agda.html#hlevel). The singleton type `Σ y ꞉ X ,
 x ≡ y` induced by a point `x : X` of a type `X` is denoted by
 `singleton-type x`. The terminology is justified by the fact that it
 is indeed a singleton in the sense defined above.
 
 \begin{code}
 singleton-type : {X : 𝓤 ̇ } → X → 𝓤 ̇
-singleton-type x = Σ \y → y ≡ x
+singleton-type {𝓤} {X} x = Σ y ꞉ X , y ≡ x
 
 singleton-type-center : {X : 𝓤 ̇ } (x : X) → singleton-type x
 singleton-type-center x = (x , refl x)
@@ -3771,7 +3787,7 @@ Sometimes we need the following symmetric versions of the above:
 
 \begin{code}
 singleton-type' : {X : 𝓤 ̇ } → X → 𝓤 ̇
-singleton-type' x = Σ \y → x ≡ y
+singleton-type' {𝓤} {X} x = Σ y ꞉ X , x ≡ y
 
 singleton-type'-center : {X : 𝓤 ̇ } (x : X) → singleton-type' x
 singleton-type'-center x = (x , refl x)
@@ -3805,7 +3821,7 @@ data rather than property:
 
 \begin{code}
 invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-invertible f = Σ \g → (g ∘ f ∼ id) × (f ∘ g ∼ id)
+invertible f = Σ g ꞉ (codomain f → domain f) , (g ∘ f ∼ id) × (f ∘ g ∼ id)
 \end{code}
 
 The situation is that we will have a logical equivalence between
@@ -3839,7 +3855,7 @@ equivalence in MLTT, which relies on the concept of `fiber`:
 
 \begin{code}
 fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
-fiber f y = Σ \(x : domain f) → f x ≡ y
+fiber f y = Σ x ꞉ domain f , f x ≡ y
 
 
 fiber-point : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y}
@@ -3923,7 +3939,7 @@ Suppose that invertibility data
 for a map `f : X → Y` is given, and that a point `y₀` in the codomain
 of `f` is given.
 
-We need to show that the fiber `Σ \(x : X) → f x ≡ y₀` of `y₀` is a
+We need to show that the fiber `Σ x ꞉ X , f x ≡ y₀` of `y₀` is a
 singleton.
 
   1. We first use the assumption `ε` to show that the type `f (g y) ≡
@@ -3940,10 +3956,10 @@ singleton.
      We already know that this gives a section-retraction pair by
      `transport-is-section`.
 
-  1. Next we have that the type `Σ \(x : X) → f x ≡ y₀` is a retract
-     of the type `Σ \(y : Y) → f (g y) ≡ y₀` by `Σ-reindexing-retract`
+  1. Next we have that the type `Σ x ꞉ X , f x ≡ y₀` is a retract
+     of the type `Σ y ꞉ Y , f (g y) ≡ y₀` by `Σ-reindexing-retract`
      using the assumption that `η` exibits `g` as a section of `f`,
-     which in turn is a retract of the type `Σ \(y : Y) → y ≡ y₀` by
+     which in turn is a retract of the type `Σ y ꞉ Y , y ≡ y₀` by
      applying `Σ` to both sides of the retraction `(f (g y) ≡ y₀) ◁ (y
      ≡ y₀)` of the previous step.
 
@@ -3969,9 +3985,9 @@ invertibles-are-equivs {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = iii
     r = transport (_≡ y₀) ((ε y)⁻¹)
 
   ii : fiber f y₀ ◁ singleton-type y₀
-  ii = (Σ \(x : X) → f x ≡ y₀)     ◁⟨ Σ-reindexing-retract g (f , η) ⟩
-       (Σ \(y : Y) → f (g y) ≡ y₀) ◁⟨ Σ-retract i                    ⟩
-       (Σ \(y : Y) → y ≡ y₀)       ◀
+  ii = (Σ x ꞉ X , f x ≡ y₀)     ◁⟨ Σ-reindexing-retract g (f , η) ⟩
+       (Σ y ꞉ Y , f (g y) ≡ y₀) ◁⟨ Σ-retract i                    ⟩
+       (Σ y ꞉ Y , y ≡ y₀)       ◀
 
   iii : is-singleton (fiber f y₀)
   iii = retract-of-singleton ii (singleton-types-are-singletons Y y₀)
@@ -4079,7 +4095,7 @@ The type of equivalences is defined as follows:
 
 \begin{code}
 _≃_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-X ≃ Y = Σ \(f : X → Y) → is-equiv f
+X ≃ Y = Σ f ꞉ (X → Y), is-equiv f
 \end{code}
 
 Notice that this doesn't just say that `X` and `Y` are equivalent: the
@@ -4156,7 +4172,7 @@ Here is the promised characterization of equality in `Σ` types:
 
 \begin{code}
 Σ-≡-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ τ : Σ A)
-      → (σ ≡ τ) ≃ (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
+      → (σ ≡ τ) ≃ (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ)
 
 Σ-≡-≃ {𝓤} {𝓥} {X} {A}  σ τ = invertibility-gives-≃ from-Σ-≡ (to-Σ-≡ , η , ε)
  where
@@ -4164,7 +4180,7 @@ Here is the promised characterization of equality in `Σ` types:
   η (refl σ) = refl (refl σ)
 
 
-  ε : (w : Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
+  ε : (w : Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ)
     → from-Σ-≡ (to-Σ-≡ w) ≡ w
 
   ε (refl p , refl q) = refl (refl p , refl q)
@@ -4438,7 +4454,7 @@ lc-maps-reflect-subsingletons : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 
 
 has-retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-has-retraction s = Σ \(r : codomain s → domain s) → r ∘ s ∼ id
+has-retraction s = Σ r ꞉ (codomain s → domain s), r ∘ s ∼ id
 
 
 sections-are-lc : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (s : X → A)
@@ -4545,7 +4561,7 @@ pr₁-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
 subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
                          → is-set X
                          → ((x : X) → is-subsingleton (A x))
-                         → is-set (Σ \(x : X) → A x)
+                         → is-set (Σ x ꞉ X , A x)
 
 
 to-subtype-≡ : {X : 𝓦 ̇ } {A : X → 𝓥 ̇ }
@@ -4568,12 +4584,12 @@ pr₁-≃ i = pr₁ , pr₁-equiv i
 
 
 ΠΣ-distr-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
-           → (Π \(x : X) → Σ \(a : A x) → P x a)
-           ≃ (Σ \(f : Π A) → Π \(x : X) → P x (f x))
+           → (Π x ꞉ X , Σ a ꞉ A x , P x a)
+           ≃ (Σ f ꞉ Π A , Π x ꞉ X , P x (f x))
 
 
 Σ-assoc : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : Σ Y → 𝓦 ̇ }
-        → Σ Z ≃ (Σ \(x : X) → Σ \(y : Y x) → Z (x , y))
+        → Σ Z ≃ (Σ x ꞉ X , Σ y ꞉ Y x , Z (x , y))
 
 
 ⁻¹-≃ : {X : 𝓤 ̇ } (x y : X) → (x ≡ y) ≃ (y ≡ x)
@@ -4839,7 +4855,7 @@ subsets-of-sets-are-sets = sol
   sol : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
      → is-set X
      → ((x : X) → is-subsingleton (A x))
-     → is-set (Σ \(x : X) → A x)
+     → is-set (Σ x ꞉ X , A x)
   sol X A h p = subtypes-of-sets-are-sets pr₁ (pr₁-lc p) h
 
 
@@ -4873,16 +4889,16 @@ pr₁-equiv = sol
 ΠΣ-distr-≃ = sol
  where
   sol : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
-      → (Π \(x : X) → Σ \(a : A x) → P x a)
-      ≃ (Σ \(f : Π A) → Π \(x : X) → P x (f x))
+      → (Π x ꞉ X , Σ a ꞉ A x , P x a)
+      ≃ (Σ f ꞉ Π A , Π x ꞉ X , P x (f x))
   sol {𝓤} {𝓥} {𝓦} {X} {A} {P} = invertibility-gives-≃ φ (γ , η , ε)
    where
-    φ : (Π \(x : X) → Σ \(a : A x) → P x a)
-      → Σ \(f : Π A) → Π \(x : X) → P x (f x)
+    φ : (Π x ꞉ X , Σ a ꞉ A x , P x a)
+      → Σ f ꞉ Π A , Π x ꞉ X , P x (f x)
     φ g = ((λ x → pr₁ (g x)) , λ x → pr₂ (g x))
 
-    γ : (Σ \(f : Π A) → Π \(x : X) → P x (f x))
-      → Π \(x : X) → Σ \(a : A x) → P x a
+    γ : (Σ f ꞉ Π A , Π x ꞉ X , P x (f x))
+      → Π x ꞉ X , Σ a ꞉ A x , P x a
     γ (f , φ) x = f x , φ x
 
     η : γ ∘ φ ∼ id
@@ -4895,13 +4911,13 @@ pr₁-equiv = sol
 Σ-assoc = sol
  where
   sol : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : Σ Y → 𝓦 ̇ }
-      → Σ Z ≃ (Σ \(x : X) → Σ \(y : Y x) → Z (x , y))
+      → Σ Z ≃ (Σ x ꞉ X , Σ y ꞉ Y x , Z (x , y))
   sol {𝓤} {𝓥} {𝓦} {X} {Y} {Z} = invertibility-gives-≃ f (g , refl , refl)
    where
-    f : Σ Z → Σ \x → Σ \y → Z (x , y)
+    f : Σ Z → Σ x ꞉ X , Σ y ꞉ Y x , Z (x , y)
     f ((x , y) , z) = (x , (y , z))
 
-    g : (Σ \x → Σ \y → Z (x , y)) → Σ Z
+    g : (Σ x ꞉ X , Σ y ꞉ Y x , Z (x , y)) → Σ Z
     g (x , (y , z)) = ((x , y) , z)
 
 
@@ -5121,12 +5137,12 @@ With this we can characterize univalence as follows:
 
 \begin{code}
 univalence⇒ : is-univalent 𝓤
-            → (X : 𝓤 ̇ ) → is-singleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+            → (X : 𝓤 ̇ ) → is-singleton (Σ Y ꞉ 𝓤 ̇ , X ≃ Y)
 
 univalence⇒ ua X = equiv-singleton-lemma X (Id→Eq X) (ua X)
 
 
-⇒univalence : ((X : 𝓤 ̇ ) → is-singleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y))
+⇒univalence : ((X : 𝓤 ̇ ) → is-singleton (Σ Y ꞉ 𝓤 ̇ , X ≃ Y))
             → is-univalent 𝓤
 
 ⇒univalence i X = singleton-equiv-lemma X (Id→Eq X) (i X)
@@ -5137,13 +5153,13 @@ equivalence, and we sometimes need the characterization in this form:
 
 \begin{code}
 univalence→ : is-univalent 𝓤
-            → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+            → (X : 𝓤 ̇ ) → is-subsingleton (Σ Y ꞉ 𝓤 ̇ , X ≃ Y)
 
 univalence→ ua X = singletons-are-subsingletons
                     (Σ (X ≃_)) (univalence⇒ ua X)
 
 
-→univalence : ((X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ̇ ) → X ≃ Y))
+→univalence : ((X : 𝓤 ̇ ) → is-subsingleton (Σ Y ꞉ 𝓤 ̇ , X ≃ Y))
             → is-univalent 𝓤
 
 →univalence i = ⇒univalence (λ X → pointed-subsingletons-are-singletons
@@ -5159,17 +5175,17 @@ and [`𝕁`](HoTT-UF-Agda.html#J) for identifications.  To prove a
 property of equivalences, it is enough to prove it for the identity
 equivalence `id-≃ X` for all `X`. In order to also easily derive an
 equation for this, we perform the construction using the fact that
-univalence implies that `Σ \(Y : 𝓤 ̇ ) → X ≃ Y` is a subsingleton for
+univalence implies that `Σ Y ꞉ 𝓤 ̇  , X ≃ Y` is a subsingleton for
 any `X`.
 
 \begin{code}
 𝔾-≃ : is-univalent 𝓤
-    → (X : 𝓤 ̇ ) (A : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇ )
+    → (X : 𝓤 ̇ ) (A : (Σ Y ꞉ 𝓤 ̇ , X ≃ Y) → 𝓥 ̇ )
     → A (X , id-≃ X) → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A (Y , e)
 
 𝔾-≃ {𝓤} ua X A a Y e = transport A p a
  where
-  t : Σ \(Y : 𝓤 ̇ ) → X ≃ Y
+  t : Σ Y ꞉ 𝓤 ̇  , X ≃ Y
   t = (X , id-≃ X)
 
   p : t ≡ (Y , e)
@@ -5177,7 +5193,7 @@ any `X`.
 
 
 𝔾-≃-equation : (ua : is-univalent 𝓤)
-             → (X : 𝓤 ̇ ) (A : (Σ \(Y : 𝓤 ̇ ) → X ≃ Y) → 𝓥 ̇ )
+             → (X : 𝓤 ̇ ) (A : (Σ Y ꞉ 𝓤 ̇  , X ≃ Y) → 𝓥 ̇ )
              → (a : A (X  , id-≃ X))
              → 𝔾-≃ ua X A a X (id-≃ X) ≡ a
 
@@ -5189,14 +5205,14 @@ any `X`.
   a                       ∎
 
  where
-  t : Σ \(Y : 𝓤 ̇ ) → X ≃ Y
+  t : Σ Y ꞉ 𝓤 ̇  , X ≃ Y
   t = (X  , id-≃ X)
 
   p : t ≡ t
   p = univalence→ {𝓤} ua X t t
 
   q : p ≡ refl t
-  q = subsingletons-are-sets (Σ \(Y : 𝓤 ̇ ) → X ≃ Y)
+  q = subsingletons-are-sets (Σ Y ꞉ 𝓤 ̇  , X ≃ Y)
        (univalence→ {𝓤} ua X) t t p (refl t)
 
 ℍ-≃ : is-univalent 𝓤
@@ -5331,7 +5347,7 @@ terminology):
 Σ-change-of-variable' : is-univalent 𝓤
                       → {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (f : X → Y)
                       → (i : is-equiv f)
-                      → (Σ \(x : X) → A x) ≡ (Σ \(y : Y) → A (inverse f i y))
+                      → (Σ x ꞉ X , A x) ≡ (Σ y ꞉ Y , A (inverse f i y))
 
 Σ-change-of-variable' {𝓤} {𝓥} ua {X} {Y} A f i = ℍ-≃ ua X B b Y (f , i)
  where
@@ -5353,7 +5369,7 @@ induction, but the following version is perhaps more natural.
 Σ-change-of-variable'' : is-univalent 𝓤
                        → {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (A : Y → 𝓥 ̇ ) (f : X → Y)
                        → is-equiv f
-                       → (Σ \(y : Y) → A y) ≡ (Σ \(x : X) → A (f x))
+                       → (Σ y ꞉ Y , A y) ≡ (Σ x ꞉ X , A (f x))
 
 Σ-change-of-variable'' ua A f i = Σ-change-of-variable' ua A
                                   (inverse f i)
@@ -5431,10 +5447,10 @@ as discussed in the HoTT book.
 
 \begin{code}
 is-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-is-hae f = Σ \(g : codomain f → domain f)
-         → Σ \(η : g ∘ f ∼ id)
-         → Σ \(ε : f ∘ g ∼ id)
-         → (x : domain f) → ap f (η x) ≡ ε (f x)
+is-hae f = Σ g ꞉ (codomain f → domain f)
+         , Σ η ꞉ g ∘ f ∼ id
+         , Σ ε ꞉ f ∘ g ∼ id
+         , ((x : domain f) → ap f (η x) ≡ ε (f x))
 \end{code}
 
 The following just forgets the constraint `τ`:
@@ -5658,7 +5674,7 @@ univalence-gives-funext : is-univalent 𝓤 → funext 𝓥 𝓤
 univalence-gives-funext {𝓤} {𝓥} ua {X} {Y} {f₀} {f₁} = γ
  where
   Δ : 𝓤 ̇
-  Δ = Σ \(y₀ : Y) → Σ \(y₁ : Y) → y₀ ≡ y₁
+  Δ = Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≡ y₁
 
   δ : Y → Δ
   δ y = (y , y , refl y)
@@ -5804,22 +5820,22 @@ postcomp-is-equiv fe fe' f e =
 vvfunext-gives-hfunext : vvfunext 𝓤 𝓥 → hfunext 𝓤 𝓥
 vvfunext-gives-hfunext vfe {X} {Y} f = γ
  where
-  a : (x : X) → is-singleton (Σ \(y : Y x) → f x ≡ y)
+  a : (x : X) → is-singleton (Σ y ꞉ Y x , f x ≡ y)
   a x = singleton-types'-are-singletons (Y x) (f x)
 
-  c : is-singleton ((x : X) → Σ \(y : Y x) → f x ≡ y)
+  c : is-singleton ((x : X) → Σ y ꞉ Y x , f x ≡ y)
   c = vfe a
 
-  R : (Σ \(g : Π Y) → f ∼ g) ◁ (Π \(x : X) → Σ \(y : Y x) → f x ≡ y)
+  R : (Σ g ꞉ Π Y , f ∼ g) ◁ (Π x ꞉ X , Σ y ꞉ Y x , f x ≡ y)
   R = ≃-gives-▷ ΠΣ-distr-≃
 
-  r : (Π \(x : X) → Σ \(y : Y x) → f x ≡ y) → Σ \(g : Π Y) → f ∼ g
+  r : (Π x ꞉ X , Σ y ꞉ Y x , f x ≡ y) → Σ g ꞉ Π Y , f ∼ g
   r = λ _ → f , (λ x → refl (f x))
 
-  d : is-singleton (Σ \(g : Π Y) → f ∼ g)
+  d : is-singleton (Σ g ꞉ Π Y , f ∼ g)
   d = retract-of-singleton R c
 
-  e : (Σ \(g : Π Y) → f ≡ g) → (Σ \(g : Π Y) → f ∼ g)
+  e : (Σ g ꞉ Π Y , f ≡ g) → (Σ g ꞉ Π Y , f ∼ g)
   e = NatΣ (happly f)
 
   i : is-equiv e
@@ -5849,13 +5865,13 @@ funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
   e : is-equiv g
   e = postcomp-is-equiv fe fe' f f-is-equiv
 
-  i : is-singleton (Σ \(h : X → Σ A) → f ∘ h ≡ 𝑖𝑑 X)
+  i : is-singleton (Σ h ꞉ (X → Σ A), f ∘ h ≡ 𝑖𝑑 X)
   i = e (𝑖𝑑 X)
 
-  r : (Σ \(h : X → Σ A) → f ∘ h ≡ 𝑖𝑑 X) → Π A
+  r : (Σ h ꞉ (X → Σ A), f ∘ h ≡ 𝑖𝑑 X) → Π A
   r (h , p) x = transport A (happly (f ∘ h) (𝑖𝑑 X) p x) (pr₂ (h x))
 
-  s : Π A → (Σ \(h : X → Σ A) → f ∘ h ≡ 𝑖𝑑 X)
+  s : Π A → (Σ h ꞉ (X → Σ A), f ∘ h ≡ 𝑖𝑑 X)
   s φ = (λ x → x , φ x) , refl (𝑖𝑑 X)
 
   η : ∀ φ → r (s φ) ≡ φ
@@ -5919,7 +5935,7 @@ canonical bijection with functions `Y → 𝓤`. Using the following
 
 \begin{code}
 _/_ : (𝓤 : Universe) → 𝓥 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
-𝓤 / Y = Σ \(X : 𝓤 ̇ ) → X → Y
+𝓤 / Y = Σ X ꞉ 𝓤 ̇ , (X → Y)
 \end{code}
 
 We need the following lemma, which has other uses:
@@ -5929,10 +5945,10 @@ total-fiber-is-domain : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 
 total-fiber-is-domain {𝓤} {𝓥} {X} {Y} f = invertibility-gives-≃ g (h , η , ε)
  where
-  g : (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) → X
+  g : (Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y) → X
   g (y , x , p) = x
 
-  h : X → Σ \(y : Y) → Σ \(x : X) → f x ≡ y
+  h : X → Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y
   h x = (f x , x , refl (f x))
 
   η : ∀ t → h (g t) ≡ t
@@ -6231,7 +6247,7 @@ HoTT book).
 
 Unique existence of `x : X` with `A x` in univalent mathematics, written
 
-   > `∃! \(x : X) → A x`
+   > `∃! x ꞉ X , A x`
 
 or simply
 
@@ -6250,6 +6266,12 @@ isomorphism.
 ∃! : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 ∃! A = is-singleton (Σ A)
 
+-∃! : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+-∃! X Y = ∃! Y
+
+syntax -∃! A (λ x → b) = ∃! x ꞉ A , b
+
+
 
 ∃!-is-subsingleton : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
                    → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
@@ -6260,8 +6282,8 @@ isomorphism.
 
 unique-existence-gives-weak-unique-existence : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) →
 
-    (∃! \(x : X) → A x)
-  → (Σ \(x : X) → A x) × ((x y : X) → A x → A y → x ≡ y)
+    (∃! x ꞉ X , A x)
+  → (Σ x ꞉ X , A x) × ((x y : X) → A x → A y → x ≡ y)
 
 unique-existence-gives-weak-unique-existence A s = center (Σ A) s , u
  where
@@ -6276,8 +6298,8 @@ weak-unique-existence-gives-unique-existence-sometimes : {X : 𝓤 ̇ } (A : X �
 
     ((x : X) → is-subsingleton (A x))
 
-  → ((Σ \(x : X) → A x) × ((x y : X) → A x → A y → x ≡ y))
-  → (∃! \(x : X) → A x)
+  → ((Σ x ꞉ X , A x) × ((x y : X) → A x → A y → x ≡ y))
+  → (∃! x ꞉ X , A x)
 
 weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , a) , φ
  where
@@ -6309,7 +6331,7 @@ univalence is not needed.  Function extensionality suffices.
 \begin{code}
 ℕ-is-nno : hfunext 𝓤₀ 𝓤
          → (Y : 𝓤 ̇ ) (y₀ : Y) (g : Y → Y)
-         → ∃! \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)
+         → ∃! h ꞉ (ℕ → Y), (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)
 
 ℕ-is-nno {𝓤} hfe Y y₀ g = γ
  where
@@ -6328,11 +6350,11 @@ is a retract of the type
 and hence, by function extensionality, we also have a retraction if we
 replace pointwise equality `∼` by equality `≡`.  Thus the type
 
-   > `Σ \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)`
+   > `Σ h ꞉ ℕ → Y , (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)`
 
 is a retract of the singleton type
 
-   > `Σ \(h : ℕ → Y) → h ≡ ℕ-iteration Y y₀ g`,
+   > `Σ h ꞉ ℕ → Y , h ≡ ℕ-iteration Y y₀ g`,
 
 and therefore is itself a singleton, as required.
 
@@ -6415,12 +6437,12 @@ The retraction property doesn't need induction on natural numbers:
     i  = λ h → Σ-retract (λ _ → ≃-gives-◁ (happly (h ∘ succ) (g ∘ h) , hfe _ _))
     ii = λ h → ≃-gives-▷ (happly h (ℕ-iteration Y y₀ g) , hfe _ _)
 
-  lemma₂ : (Σ \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h))
-         ◁ (Σ \(h : ℕ → Y) → h ≡ ℕ-iteration Y y₀ g)
+  lemma₂ : (Σ h ꞉ (ℕ → Y), (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h))
+         ◁ (Σ h ꞉ (ℕ → Y), h ≡ ℕ-iteration Y y₀ g)
 
   lemma₂ = Σ-retract lemma₁
 
-  γ : is-singleton (Σ \(h : ℕ → Y) → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h))
+  γ : is-singleton (Σ h ꞉ (ℕ → Y), (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h))
   γ = retract-of-singleton lemma₂
                            (singleton-types-are-singletons (ℕ → Y) (ℕ-iteration Y y₀ g))
 \end{code}
@@ -6436,9 +6458,9 @@ type with `n` elements (and decidable equality):
 \begin{code}
 module finite-types (hfe : hfunext 𝓤₀ 𝓤₁) where
 
- fin :  ∃! \(Fin : ℕ → 𝓤₀ ̇ )
-     → (Fin 0 ≡ 𝟘)
-     × (Fin ∘ succ ≡ λ n → Fin n + 𝟙)
+ fin :  ∃! Fin ꞉ (ℕ → 𝓤₀ ̇ )
+               , (Fin 0 ≡ 𝟘)
+               × (Fin ∘ succ ≡ λ n → Fin n + 𝟙)
 
  fin = ℕ-is-nno hfe (𝓤₀ ̇ ) 𝟘 (_+ 𝟙)
 
@@ -6489,7 +6511,7 @@ automorphisms. Construct an involutive fiberwise equivalence
 different from the identity and hence an identification `Fin ≡ Fin`
 different from `refl Fin`. Consider
 
-   > `∃! \(Fin' : ℕ → 𝓤₀ ̇ ) → (Fin' 0 ≡ 𝟘) × (Fin' ∘ succ ≡ λ n → 𝟙 + Fin' n)`
+   > `∃! Fin' ꞉ ℕ → 𝓤₀ ̇  , (Fin' 0 ≡ 𝟘) × (Fin' ∘ succ ≡ λ n → 𝟙 + Fin' n)`
 
 and show that `Fin' ∘ succ ≡ λ n → Fin' n + 𝟙` so that `Fin'`
 satisfies the defining equations of `Fin`, although not judgmentally,
@@ -6915,7 +6937,7 @@ which lives in the next universe:
 
 \begin{code}
 Ω : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Ω 𝓤 = Σ \(P : 𝓤 ̇ ) → is-subsingleton P
+Ω 𝓤 = Σ P ꞉ 𝓤 ̇  , is-subsingleton P
 
 _holds : Ω 𝓤 → 𝓤 ̇
 _holds (P , i) = P
@@ -6968,7 +6990,7 @@ With this and Hedberg, we get that `Ω` is a set:
   k : (p q : Ω 𝓤) (d e : p ≡ q) → f p q d ≡ f p q e
   k p q d e = ap (h p q) (i p q (g p q d) (g p q e))
 
-  c : (p q : Ω 𝓤) → Σ \(f : p ≡ q → p ≡ q) → wconstant f
+  c : (p q : Ω 𝓤) → Σ f ꞉ (p ≡ q → p ≡ q), wconstant f
   c p q = (f p q , k p q)
 \end{code}
 
@@ -7034,7 +7056,7 @@ A ⊆ B = ∀ x → x ∈ A → x ∈ B
 \end{code}
 
 Although `𝓟 X` is a set even if `X` is not, the total space
-`Σ \(x : X) → A x holds` of a member `A : 𝓟 X` of the powerset need not
+`Σ x ꞉ X , A x holds` of a member `A : 𝓟 X` of the powerset need not
 be a set. For instance, if `A x holds = 𝟙` for all `x : X`, then the total space is
 equivalent to `X`, which may not be a set.
 
@@ -7244,7 +7266,7 @@ id-is-embedding {𝓤} {X} = equivs-are-embeddings id (id-is-equiv X)
 ∘-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} d e = h
  where
   A : (z : Z) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-  A z = Σ \(w : fiber g z) → fiber f (pr₁ w)
+  A z = Σ w ꞉ fiber g z , fiber f (pr₁ w)
 
   i : (z : Z) → is-subsingleton (A z)
   i z = Σ-is-subsingleton (d z) (λ w → e (pr₁ w))
@@ -7292,7 +7314,7 @@ embedding-criterion f e = embedding-lemma f b
  where
   X = domain f
 
-  a : (x : X) → (Σ \(x' : X) → f x' ≡ f x) ≃ (Σ \(x' : X) → x' ≡ x)
+  a : (x : X) → (Σ x' ꞉ X , f x' ≡ f x) ≃ (Σ x' ꞉ X , x' ≡ x)
   a x = Σ-cong (λ x' → e x' x)
 
   a' : (x : X) → fiber f (f x) ≃ singleton-type x
@@ -7323,16 +7345,16 @@ embedding-gives-ap-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 
 embedding-gives-ap-is-equiv {𝓤} {𝓥} {X} f e = γ
  where
-  d : (x' : X) → (Σ \(x : X) → f x' ≡ f x) ≃ (Σ \(x : X) → f x ≡ f x')
+  d : (x' : X) → (Σ x ꞉ X , f x' ≡ f x) ≃ (Σ x ꞉ X , f x ≡ f x')
   d x' = Σ-cong (λ x → ⁻¹-≃ (f x') (f x))
 
-  s : (x' : X) → is-subsingleton (Σ \(x : X) → f x' ≡ f x)
+  s : (x' : X) → is-subsingleton (Σ x ꞉ X , f x' ≡ f x)
   s x' = equiv-to-subsingleton (d x') (e (f x'))
 
   γ : (x x' : X) → is-equiv (ap f {x} {x'})
   γ x = singleton-equiv-lemma x (λ x' → ap f {x} {x'})
          (pointed-subsingletons-are-singletons
-           (Σ \(x' : X) → f x ≡ f x') (x , (refl (f x))) (s x))
+           (Σ x' ꞉ X , f x ≡ f x') (x , (refl (f x))) (s x))
 
 
 embedding-criterion-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -7403,7 +7425,7 @@ We conclude this section by introducing notation for the type of embeddings.
 
 \begin{code}
 _↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-X ↪ Y = Σ \(f : X → Y) → is-embedding f
+X ↪ Y = Σ f ꞉ (X → Y), is-embedding f
 
 Emb→fun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ↪ Y → X → Y
 Emb→fun (f , i) = f
@@ -7612,12 +7634,12 @@ univalence](HoTT-UF-Agda.html#unicharac), by taking the transformation
 
 \begin{code}
 hfunext→ : hfunext 𝓤 𝓥
-         → ((X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (f : Π A) → ∃! \(g : Π A) → f ∼ g)
+         → ((X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (f : Π A) → ∃! g ꞉ Π A , f ∼ g)
 
 hfunext→ hfe X A f = fiberwise-equiv-universal (f ∼_) f (happly f) (hfe f)
 
 
-→hfunext : ((X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (f : Π A) → ∃! \(g : Π A) → f ∼ g)
+→hfunext : ((X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (f : Π A) → ∃! g ꞉ Π A , f ∼ g)
          → hfunext 𝓤 𝓥
 
 →hfunext φ {X} {A} f = universal-fiberwise-equiv (f ∼_) (φ X A f) f (happly f)
@@ -7632,7 +7654,7 @@ A ≃̇ B = ∀ x → A x ≃ B x
 
 
 is-representable : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-is-representable A = Σ \(x : domain A) → 𝓨 x ≃̇ A
+is-representable A = Σ x ꞉ domain A , 𝓨 x ≃̇ A
 
 
 representable-universal : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
@@ -7743,7 +7765,7 @@ being-representable-is-subsingleton fe {X} A r₀ r₁ = γ
 
   ε : (x : X) → (𝓨 x ≃̇ A) ≃ A x
   ε x = ((y : X) → 𝓨 x y ≃ A y)                       ≃⟨ ΠΣ-distr-≃             ⟩
-        (Σ \(τ : Nat (𝓨 x) A) → is-fiberwise-equiv τ) ≃⟨ pr₁-≃ (i x)            ⟩
+        (Σ τ ꞉ Nat (𝓨 x) A , is-fiberwise-equiv τ)    ≃⟨ pr₁-≃ (i x)            ⟩
         Nat (𝓨 x) A                                   ≃⟨ Yoneda-Lemma fe fe A x ⟩
         A x                                           ■
 
@@ -7844,7 +7866,7 @@ a unique `a : A x` with `R x a`:
 
 \begin{code}
  is-functional : Relation → 𝓤 ⊔ 𝓥 ̇
- is-functional R = (x : X) → ∃! \(a : A x) → R x a
+ is-functional R = (x : X) → ∃! a ꞉ A x , R x a
 \end{code}
 
 Although the relation is allowed to take values in arbitrary types,
@@ -7862,7 +7884,7 @@ The type of functional relations:
 
 \begin{code}
  Functional-Relation : 𝓤 ⊔ (𝓥 ⁺) ̇
- Functional-Relation = Σ \(R : Relation) → is-functional R
+ Functional-Relation = Σ R ꞉ Relation , is-functional R
 \end{code}
 
 To a function `f` we associate the relation `R` defined by `R x a = (f x ≡ a)`. Notice that `R` is truth valued if the type `A x` is a set for every `x : X`, by definition of set.
@@ -7903,7 +7925,7 @@ The relation induced by a function is functional, of course:
  ρ-is-functional : (f : Function) → is-functional (ρ f)
  ρ-is-functional f = σ
   where
-   σ : (x : X) → ∃! \(a : A x) → f x ≡ a
+   σ : (x : X) → ∃! a ꞉ A x , f x ≡ a
    σ x = singleton-types'-are-singletons (A x) (f x)
 \end{code}
 
@@ -7921,7 +7943,7 @@ projection:
 
 \begin{code}s
  Φ : Functional-Relation → Function
- Φ (R , σ) = λ x → pr₁ (center (Σ \(a : A x) → R x a) (σ x))
+ Φ (R , σ) = λ x → pr₁ (center (Σ a ꞉ A x , R x a) (σ x))
 \end{code}
 
 To show that these two constructions are mutually inverse, we again
@@ -7941,7 +7963,7 @@ apply the Yoneda machinery, but in a different way.
      f = Φ (R , σ)
 
      e : (x : X) → R x (f x)
-     e x = pr₂ (center (Σ \(a : A x) → R x a) (σ x))
+     e x = pr₂ (center (Σ a ꞉ A x , R x a) (σ x))
 
      τ : (x : X) → Nat (𝓨 (f x)) (R x)
      τ x = 𝓝 (R x) (f x) (e x)
@@ -7981,8 +8003,8 @@ partial functions and `⇀` for the type of partial functions.
 
 \begin{code}
 Πₚ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ (𝓥 ⁺) ̇
-Πₚ {𝓤} {𝓥} {X} A = Σ \(R : (x : X) → A x → 𝓥 ̇ )
-                         → (x : X) → is-subsingleton (Σ \(a : A x) → R x a)
+Πₚ {𝓤} {𝓥} {X} A = Σ R ꞉ ((x : X) → A x → 𝓥 ̇ )
+                       , ((x : X) → is-subsingleton (Σ a ꞉ A x , R x a))
 
 _⇀_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
 X ⇀ Y = Πₚ (λ (_ : X) → Y)
@@ -7993,7 +8015,7 @@ X ⇀ Y = Πₚ (λ (_ : X) → Y)
 
 \begin{code}
 is-defined : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → Πₚ A → X → 𝓥 ̇
-is-defined (R , σ) x = Σ \a → R x a
+is-defined (R , σ) x = Σ a ꞉ _ , R x a
 
 
 being-defined-is-subsingleton : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : Πₚ A) (x : X)
@@ -8079,7 +8101,7 @@ Most of the work has already been done in the module
  μ : (ℕ → ℕ) ⇀ ℕ
  μ = is-minimal-root , minimal-root-is-subsingleton
 
- μ-property₀ : (f : ℕ → ℕ) → (Σ \(n : ℕ) → f n ≡ 0) → is-defined μ f
+ μ-property₀ : (f : ℕ → ℕ) → (Σ n ꞉ ℕ , f n ≡ 0) → is-defined μ f
  μ-property₀ = root-gives-minimal-root
 
 
@@ -8097,17 +8119,17 @@ is-total : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → Πₚ A → 𝓤 ⊔ 𝓥 ̇
 is-total f = ∀ x → is-defined f x
 \end{code}
 
-Show that the type `Σ \(f : Πₚ A) → is-total f` of total partial functions is equivalent to the type `Π A` of functions. In particular, the type `Σ \(f : X ⇀ Y) → is-total f` is equivalent to the type `X → Y`.
+Show that the type `Σ f ꞉ Πₚ A , is-total f` of total partial functions is equivalent to the type `Π A` of functions. In particular, the type `Σ f ꞉ X ⇀ Y , is-total f` is equivalent to the type `X → Y`.
 
 *Exercise.*
 [Two other](https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf) natural renderings of the notion of partial function, for `X Y : 𝓤`, are given by the equivalences
 ```
    (X ⇀ Y) ≃ (X → 𝓛 Y)
-           ≃ Σ \(D : 𝓤 ̇ ) → (D ↪ X) × (D → Y)
+           ≃ Σ D ꞉ 𝓤 ̇  , (D ↪ X) × (D → Y)
 ```
 where
 ```
-       𝓛 Y = Σ \(P : 𝓤 ̇ ) → is-subsingleton P × (P → Y)
+       𝓛 Y = Σ P ꞉ 𝓤 ̇  , is-subsingleton P × (P → Y)
            ≃ (𝟙 ⇀ Y)
 ```
 are two equivalent formulations of the type of partial elements of
@@ -8298,7 +8320,7 @@ module _ {𝓤 𝓥 : Universe}
   fe₃ : dfunext 𝓤 𝓤
   fe₃ = lower-dfunext 𝓥 𝓥 𝓤 𝓤 fe
 
- univalence→' : (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
+ univalence→' : (X : 𝓤 ̇ ) → is-subsingleton (Σ Y ꞉ 𝓥 ̇  , X ≃ Y)
  univalence→' X = s
   where
    abstract
@@ -8313,23 +8335,23 @@ module _ {𝓤 𝓥 : Universe}
                fe fe fe fe (≃-Lift Y) (≃-Lift X)
        iii =  ≃-sym (univalence-≃ ua' (Lift 𝓤 Y) (Lift 𝓥 X))
 
-     d : (Σ \(Y : 𝓥 ̇ ) → X ≃ Y) ≃ (Σ \(Y : 𝓥 ̇ ) → Lift 𝓤 Y ≡ Lift 𝓥 X)
+     d : (Σ Y ꞉ 𝓥 ̇  , X ≃ Y) ≃ (Σ Y ꞉ 𝓥 ̇  , Lift 𝓤 Y ≡ Lift 𝓥 X)
      d = Σ-cong e
 
-     j : is-subsingleton (Σ \(Y : 𝓥 ̇ ) → Lift 𝓤 Y ≡ Lift 𝓥 X)
+     j : is-subsingleton (Σ Y ꞉ 𝓥 ̇  , Lift 𝓤 Y ≡ Lift 𝓥 X)
      j = Lift-is-embedding ua ua' (Lift 𝓥 X)
 
-     s : is-subsingleton (Σ \(Y : 𝓥 ̇ ) → X ≃ Y)
+     s : is-subsingleton (Σ Y ꞉ 𝓥 ̇  , X ≃ Y)
      s = equiv-to-subsingleton d j
 
 
- univalence→'-dual : (Y : 𝓤 ̇ ) → is-subsingleton (Σ \(X : 𝓥 ̇ ) → X ≃ Y)
+ univalence→'-dual : (Y : 𝓤 ̇ ) → is-subsingleton (Σ X ꞉ 𝓥 ̇  , X ≃ Y)
  univalence→'-dual Y = equiv-to-subsingleton e i
   where
-   e : (Σ \(X : 𝓥 ̇ ) → X ≃ Y) ≃ (Σ \(X : 𝓥 ̇ ) → Y ≃ X)
+   e : (Σ X ꞉ 𝓥 ̇  , X ≃ Y) ≃ (Σ X ꞉ 𝓥 ̇  , Y ≃ X)
    e = Σ-cong (λ X → ≃-Sym fe₁ fe₀ fe)
 
-   i : is-subsingleton (Σ \(X : 𝓥 ̇ ) → Y ≃ X)
+   i : is-subsingleton (Σ X ꞉ 𝓥 ̇  , Y ≃ X)
    i = univalence→' Y
 \end{code}
 
@@ -8337,13 +8359,13 @@ This is the end of the anonymous module. We are interested in these corollaries:
 
 \begin{code}
 univalence→'' : is-univalent (𝓤 ⊔ 𝓥)
-              → (X : 𝓤 ̇ ) → is-subsingleton (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+              → (X : 𝓤 ̇ ) → is-subsingleton (Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇  , X ≃ Y)
 
 univalence→'' ua = univalence→' ua ua
 
 
 univalence→''-dual : is-univalent (𝓤 ⊔ 𝓥)
-                   → (Y : 𝓤 ̇ ) → is-subsingleton (Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+                   → (Y : 𝓤 ̇ ) → is-subsingleton (Σ X ꞉ 𝓤 ⊔ 𝓥 ̇  , X ≃ Y)
 
 univalence→''-dual ua = univalence→'-dual ua ua
 \end{code}
@@ -8353,12 +8375,12 @@ universe above that of `X`:
 
 \begin{code}
 G↑-≃ : is-univalent (𝓤 ⊔ 𝓥)
-     → (X : 𝓤 ̇ ) (A : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇ )
+     → (X : 𝓤 ̇ ) (A : (Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇  , X ≃ Y) → 𝓦 ̇ )
      → A (Lift 𝓥 X , ≃-Lift X) → (Y : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A (Y , e)
 
 G↑-≃ {𝓤} {𝓥} ua X A a Y e = transport A p a
  where
-  t : Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
+  t : Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇  , X ≃ Y
   t = (Lift 𝓥 X , ≃-Lift X)
 
   p : t ≡ (Y , e)
@@ -8464,12 +8486,12 @@ consider `lower` in place of `lift`:
 
 \begin{code}
 G↓-≃ : is-univalent (𝓤 ⊔ 𝓥)
-     → (Y : 𝓤 ̇ ) (A : (Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇ )
+     → (Y : 𝓤 ̇ ) (A : (Σ X ꞉ 𝓤 ⊔ 𝓥 ̇  , X ≃ Y) → 𝓦 ̇ )
      → A (Lift 𝓥 Y , Lift-≃ Y) → (X : 𝓤 ⊔ 𝓥 ̇ ) (e : X ≃ Y) → A (X , e)
 
 G↓-≃ {𝓤} {𝓥} ua Y A a X e = transport A p a
  where
-  t : Σ \(X : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y
+  t : Σ X ꞉ 𝓤 ⊔ 𝓥 ̇  , X ≃ Y
   t = (Lift 𝓥 Y , Lift-≃ Y)
 
   p : t ≡ (X , e)
@@ -8652,7 +8674,7 @@ A subtype of a type `Y` is a type `X` *together* with an embedding of `X` into `
 
 \begin{code}
 subtypes : 𝓤 ̇ → 𝓤 ⁺ ̇
-subtypes {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↪ Y
+subtypes {𝓤} Y = Σ X ꞉ 𝓤 ̇  , X ↪ Y
 \end{code}
 
 The type `Ω 𝓤` of subsingletons in the universe `𝓤` is the subtype
@@ -8671,7 +8693,7 @@ constructor](HoTT-UF-Agda.html#typeclassifier) `_/_`:
 
 \begin{code}
 _/[_]_ : (𝓤 : Universe) → (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
-𝓤 /[ P ] Y = Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → (y : Y) → P (fiber f y)
+𝓤 /[ P ] Y = Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , ((y : Y) → P (fiber f y))
 
 
 χ-special : (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ ) → 𝓤 /[ P ] Y  → (Y → Σ P)
@@ -8692,8 +8714,8 @@ mc-gives-sc : is-map-classifier 𝓤
 mc-gives-sc {𝓤} s P Y = γ
  where
   e = (𝓤 /[ P ] Y)                               ≃⟨ ≃-sym a ⟩
-      (Σ \(σ : 𝓤 / Y) → (y : Y) → P ((χ Y) σ y)) ≃⟨ ≃-sym b ⟩
-      (Σ \(A : Y → 𝓤 ̇ ) → (y : Y) → P (A y))     ≃⟨ ≃-sym c ⟩
+      (Σ σ ꞉ 𝓤 / Y , ((y : Y) → P ((χ Y) σ y)))  ≃⟨ ≃-sym b ⟩
+      (Σ A ꞉ (Y → 𝓤 ̇ ), ((y : Y) → P (A y)))     ≃⟨ ≃-sym c ⟩
       (Y → Σ P)                                  ■
    where
     a = Σ-assoc
@@ -8749,11 +8771,11 @@ We now consider `P = is-singleton` and the type of singletons:
 
 \begin{code}
 𝓢 : (𝓤 : Universe) → 𝓤 ⁺ ̇
-𝓢 𝓤 = Σ \(S : 𝓤 ̇ ) → is-singleton S
+𝓢 𝓤 = Σ S ꞉ 𝓤 ̇  , is-singleton S
 
 
 equiv-classification : Univalence
-                     → (Y : 𝓤 ̇ ) → (Σ \(X : 𝓤 ̇ ) → X ≃ Y) ≃ (Y → 𝓢 𝓤)
+                     → (Y : 𝓤 ̇ ) → (Σ X ꞉ 𝓤 ̇  , X ≃ Y) ≃ (Y → 𝓢 𝓤)
 
 equiv-classification {𝓤} ua = special-map-classifier (ua 𝓤)
                                (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
@@ -8788,7 +8810,7 @@ What we [already knew](HoTT-UF-Agda.html#unicharac) is this:
 
 \begin{code}
 univalence-→-again : Univalence
-                   → (Y : 𝓤 ̇ ) → is-singleton (Σ \(X : 𝓤 ̇ ) → X ≃ Y)
+                   → (Y : 𝓤 ̇ ) → is-singleton (Σ X ꞉ 𝓤 ̇  , X ≃ Y)
 
 univalence-→-again {𝓤} ua Y = equiv-to-singleton (equiv-classification ua Y) i
  where
@@ -8802,11 +8824,11 @@ univalence-→-again {𝓤} ua Y = equiv-to-singleton (equiv-classification ua Y
 *Exercise*.
 [(1)](HoTT-UF-Agda.html#pointed-types)
 Show that the retractions into `Y` are classified by
-the type `Σ \(A : 𝓤 ̇ ) → A` of pointed types.
+the type `Σ A ꞉ 𝓤 ̇  , A` of pointed types.
 [(2)](HoTT-UF-Agda.html#surjections-into) After we have
 defined [propositional truncations](HoTT-UF-Agda.html#truncation) and
 surjections, show that the surjections into `Y` are classified by the
-type `Σ \(A : 𝓤 ̇ ) → ∥ A ∥` of inhabited types.
+type `Σ A ꞉ 𝓤 ̇  , ∥ A ∥` of inhabited types.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="magmaequivalences"></a> Magma equivalences
@@ -8966,7 +8988,7 @@ equal, to the type of magma isomorphisms.
 
 \begin{code}
  _≃ₘ_ : Magma 𝓤 → Magma 𝓤 → 𝓤 ̇
- M ≃ₘ N = Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-magma-equiv M N f
+ M ≃ₘ N = Σ f ꞉ (⟨ M ⟩ → ⟨ N ⟩), is-magma-equiv M N f
 
 
  ≅ₘ-charac : (M N : Magma 𝓤)
@@ -9059,7 +9081,7 @@ We consider mathematical structures specified by a function
 and we consider types `X : 𝓤` equipped with such structure `s : S X`,
 collected in the type
 
-   > `Σ \(X : 𝓤) → S X`,
+   > `Σ X ꞉ 𝓤 , S X`,
 
 which, as we have seen, can be abbreviated as
 
@@ -9133,9 +9155,9 @@ as follows:
 \begin{code}
  SNS : (𝓤 ̇ → 𝓥 ̇ ) → (𝓦 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
 
- SNS {𝓤} {𝓥} S 𝓦 = Σ \(ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
-                  → Σ \(ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
-                  → {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
+ SNS {𝓤} {𝓥} S 𝓦 = Σ ι ꞉ ((A B : Σ S) → (⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ ))
+                  , Σ ρ ꞉ ((A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
+                  , ({X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t))
 \end{code}
 
 We write `homomorphic` for the first projection (we don't need
@@ -9163,8 +9185,9 @@ used in the definition:
 \begin{code}
  _≃[_]_ : {S : 𝓤 ̇ → 𝓥 ̇ } → Σ S → SNS S 𝓦 → Σ S → 𝓤 ⊔ 𝓦 ̇
 
- A ≃[ σ ] B = Σ \(f : ⟨ A ⟩ → ⟨ B ⟩)
-            → Σ \(i : is-equiv f) → homomorphic σ A B (f , i)
+ A ≃[ σ ] B = Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
+            , Σ i ꞉ is-equiv f
+            , homomorphic σ A B (f , i)
 
 
  Id→homEq : {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
@@ -9198,9 +9221,9 @@ identity on `Σ S`:
  characterization-of-≡ ua {S} σ A B =
 
     (A ≡ B)                                                              ≃⟨ i   ⟩
-    (Σ \(p : ⟨ A ⟩ ≡ ⟨ B ⟩) → transport S p (structure A) ≡ structure B) ≃⟨ ii  ⟩
-    (Σ \(p : ⟨ A ⟩ ≡ ⟨ B ⟩) → ι A B (Id→Eq ⟨ A ⟩ ⟨ B ⟩ p))               ≃⟨ iii ⟩
-    (Σ \(e : ⟨ A ⟩ ≃ ⟨ B ⟩) → ι A B e)                                   ≃⟨ iv  ⟩
+    (Σ p ꞉ ⟨ A ⟩ ≡ ⟨ B ⟩ , transport S p (structure A) ≡ structure B) ≃⟨ ii  ⟩
+    (Σ p ꞉ ⟨ A ⟩ ≡ ⟨ B ⟩ , ι A B (Id→Eq ⟨ A ⟩ ⟨ B ⟩ p))               ≃⟨ iii ⟩
+    (Σ e ꞉ ⟨ A ⟩ ≃ ⟨ B ⟩ , ι A B e)                                   ≃⟨ iv  ⟩
     (A ≃[ σ ] B)                                                         ■
 
   where
@@ -9253,7 +9276,7 @@ We conclude this submodule with the following characterization of the canonical 
                                {X : 𝓤 ̇ }
 
                              → ((s t : S X) → is-equiv (canonical-map ι ρ s t))
-                             ⇔ ((s : S X) → ∃! \(t : S X) → ι (X , s) (X , t) (id-≃ X))
+                             ⇔ ((s : S X) → ∃! t ꞉ S X , ι (X , s) (X , t) (id-≃ X))
 
  when-canonical-map-is-equiv ι ρ {X} = (λ e s → fiberwise-equiv-universal (A s) s (τ s) (e s)) ,
                                        (λ φ s → universal-fiberwise-equiv (A s) (φ s) s (τ s))
@@ -9276,7 +9299,7 @@ module ∞-magma-identity {𝓤 : Universe} where
  ∞-magma-structure X = X → X → X
 
  ∞-Magma : 𝓤 ⁺ ̇
- ∞-Magma = Σ \(X : 𝓤 ̇ ) → ∞-magma-structure X
+ ∞-Magma = Σ X ꞉ 𝓤 ̇  , ∞-magma-structure X
 
  sns-data : SNS ∞-magma-structure 𝓤
  sns-data = (ι , ρ , θ)
@@ -9303,8 +9326,8 @@ module ∞-magma-identity {𝓤 : Universe} where
 
  (X , _·_) ≅ (Y , _*_) =
 
-           Σ \(f : X → Y) → is-equiv f
-                          × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+           Σ f ꞉ (X → Y), is-equiv f
+                        × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 
 
  characterization-of-∞-Magma-≡ : is-univalent 𝓤 → (A B : ∞-Magma) → (A ≡ B) ≃ (A ≅ B)
@@ -9346,7 +9369,7 @@ The first construction, given `S` as above, and given
 subsingleton-valued axioms for types equipped with structure specified
 by `S`, builds `SNS` data on `S'` defined by
 
-   > `S' X = Σ \(s : S X) → axioms X s`
+   > `S' X = Σ s ꞉ S X , axioms X s`
 
 from given `SNS` data on `S`.
 
@@ -9355,13 +9378,13 @@ an underlying-type function `Σ S → 𝓤`:
 
 \begin{code}
  [_] : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ }
-     → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s) → Σ S
+     → (Σ X ꞉ 𝓤 ̇  , Σ s ꞉ S X , axioms X s) → Σ S
 
  [ X , s , _ ] = (X , s)
 
 
  ⟪_⟫ : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ }
-     → (Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s) → 𝓤 ̇
+     → (Σ X ꞉ 𝓤 ̇  , Σ s ꞉ S X , axioms X s) → 𝓤 ̇
 
  ⟪ X , _ , _ ⟫ = X
 \end{code}
@@ -9384,12 +9407,12 @@ In the following construction:
             → ((X : 𝓤 ̇ ) (s : S X) → is-subsingleton (axioms X s))
 
             → SNS S 𝓣
-            → SNS (λ X → Σ \(s : S X) → axioms X s) 𝓣
+            → SNS (λ X → Σ s ꞉ S X , axioms X s) 𝓣
 
  add-axioms {𝓤} {𝓥} {𝓦} {𝓣} {S} axioms i (ι , ρ , θ) = ι' , ρ' , θ'
   where
    S' : 𝓤 ̇ → 𝓥 ⊔ 𝓦  ̇
-   S' X = Σ \(s : S X) → axioms X s
+   S' X = Σ s ꞉ S X , axioms X s
 
    ι' : (A B : Σ S') → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓣 ̇
    ι' A B = ι [ A ] [ B ]
@@ -9434,7 +9457,7 @@ same, ignoring the axioms:
      (σ : SNS S 𝓣)
      (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
    → ((X : 𝓤 ̇ ) (s : S X) → is-subsingleton (axioms X s))
-   → (A B : Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → axioms X s)
+   → (A B : Σ X ꞉ 𝓤 ̇  , Σ s ꞉ S X , axioms X s)
    → (A ≡ B) ≃ ([ A ] ≃[ σ ] [ B ])
 
  characterization-of-≡-with-axioms ua σ axioms i =
@@ -9453,14 +9476,14 @@ module magma-identity {𝓤 : Universe} where
  open sip-with-axioms
 
  Magma : 𝓤 ⁺ ̇
- Magma = Σ \(X : 𝓤 ̇ ) → (X → X → X) × is-set X
+ Magma = Σ X ꞉ 𝓤 ̇  , (X → X → X) × is-set X
 
  _≅_ : Magma → Magma → 𝓤 ̇
 
  (X , _·_ , _) ≅ (Y , _*_ , _) =
 
-               Σ \(f : X → Y) → is-equiv f
-                              × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+               Σ f ꞉ (X → Y), is-equiv f
+                            × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 
 
  characterization-of-Magma-≡ : is-univalent 𝓤 → (A B : Magma ) → (A ≡ B) ≃ (A ≅ B)
@@ -9508,7 +9531,7 @@ module pointed-type-identity {𝓤 : Universe} where
 
 
  _≅_ : Σ Pointed → Σ Pointed → 𝓤 ̇
- (X , x₀) ≅ (Y , y₀) = Σ \(f : X → Y) → is-equiv f × (f x₀ ≡ y₀)
+ (X , x₀) ≅ (Y , y₀) = Σ f ꞉ (X → Y), is-equiv f × (f x₀ ≡ y₀)
 
 
  characterization-of-pointed-type-≡ : is-univalent 𝓤
@@ -9605,21 +9628,21 @@ S₀ X × S₁ X`
  open sip
 
  ⟪_⟫ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
-     → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X) → 𝓤 ̇
+     → (Σ X ꞉ 𝓤 ̇  , S₀ X × S₁ X) → 𝓤 ̇
 
  ⟪ X , s₀ , s₁ ⟫ = X
 
 
 
  [_]₀ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
-      → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X) → Σ S₀
+      → (Σ X ꞉ 𝓤 ̇  , S₀ X × S₁ X) → Σ S₀
 
  [ X , s₀ , s₁ ]₀ = (X , s₀)
 
 
 
  [_]₁ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
-      → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X) → Σ S₁
+      → (Σ X ꞉ 𝓤 ̇  , S₀ X × S₁ X) → Σ S₁
 
  [ X , s₀ , s₁ ]₁ = (X , s₁)
 \end{code}
@@ -9671,16 +9694,16 @@ by the following relation:
 \begin{code}
  _≃⟦_,_⟧_ : {S₀ : 𝓤 ̇ → 𝓥 ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
 
-          → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X)
+          → (Σ X ꞉ 𝓤 ̇  , S₀ X × S₁ X)
           → SNS S₀ 𝓦₀
           → SNS S₁ 𝓦₁
-          → (Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X)
+          → (Σ X ꞉ 𝓤 ̇  , S₀ X × S₁ X)
 
           → 𝓤 ⊔ 𝓦₀ ⊔ 𝓦₁ ̇
 
- A ≃⟦ σ₀ , σ₁ ⟧ B = Σ \(f : ⟪ A ⟫ → ⟪ B ⟫)
-                  → Σ \(i : is-equiv f) → homomorphic σ₀ [ A ]₀ [ B ]₀ (f , i)
-                                        × homomorphic σ₁ [ A ]₁ [ B ]₁ (f , i)
+ A ≃⟦ σ₀ , σ₁ ⟧ B = Σ f ꞉ (⟪ A ⟫ → ⟪ B ⟫)
+                  , Σ i ꞉ is-equiv f , homomorphic σ₀ [ A ]₀ [ B ]₀ (f , i)
+                                     × homomorphic σ₁ [ A ]₁ [ B ]₁ (f , i)
 \end{code}
 
 The following is then immediate from the join construction and the
@@ -9690,7 +9713,7 @@ general structure identity principle:
  characterization-of-join-≡ : is-univalent 𝓤
                             → {S₀ : 𝓤 ̇ → 𝓥 ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
                               (σ₀ : SNS S₀ 𝓦₀)  (σ₁ : SNS S₁ 𝓦₁)
-                              (A B : Σ \(X : 𝓤 ̇ ) → S₀ X × S₁ X)
+                              (A B : Σ X ꞉ 𝓤 ̇  , S₀ X × S₁ X)
                             → (A ≡ B) ≃ (A ≃⟦ σ₀ , σ₁ ⟧ B)
 
  characterization-of-join-≡ ua σ₀ σ₁ = characterization-of-≡ ua (join σ₀ σ₁)
@@ -9707,16 +9730,16 @@ module pointed-∞-magma-identity {𝓤 : Universe} where
  open sip-join
 
  ∞-Magma· : 𝓤 ⁺ ̇
- ∞-Magma· = Σ \(X : 𝓤 ̇ ) → (X → X → X) × X
+ ∞-Magma· = Σ X ꞉ 𝓤 ̇  , (X → X → X) × X
 
 
  _≅_ : ∞-Magma· → ∞-Magma· → 𝓤 ̇
 
  (X ,  _·_ , x₀) ≅ (Y ,  _*_ , y₀) =
 
-                 Σ \(f : X → Y) → is-equiv f
-                                × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
-                                × (f x₀ ≡ y₀)
+                 Σ f ꞉ (X → Y), is-equiv f
+                              × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+                              × (f x₀ ≡ y₀)
 
 
  characterization-of-pointed-magma-≡ : is-univalent 𝓤
@@ -9759,7 +9782,7 @@ module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
                            × monoids.associative     _·_
 
  Monoid : 𝓤 ⁺ ̇
- Monoid = Σ \(X : 𝓤 ̇ ) → Σ \(s : monoid-structure X) → monoid-axioms X s
+ Monoid = Σ X ꞉ 𝓤 ̇  , Σ s ꞉ monoid-structure X , monoid-axioms X s
 
  monoid-axioms-subsingleton : (X : 𝓤 ̇ ) (s : monoid-structure X)
                             → is-subsingleton (monoid-axioms X s)
@@ -9784,7 +9807,7 @@ module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
            (λ z → i ((x · y) · z) (x · (y · z))))))))
 
 
- sns-data : SNS (λ X → Σ \(s : monoid-structure X) → monoid-axioms X s) 𝓤
+ sns-data : SNS (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s) 𝓤
  sns-data = add-axioms
               monoid-axioms monoid-axioms-subsingleton
               (join
@@ -9795,9 +9818,9 @@ module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  (X , (_·_ , d) , _) ≅ (Y , (_*_ , e) , _) =
 
-                     Σ \(f : X → Y) → is-equiv f
-                                    × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
-                                    × (f d ≡ e)
+                     Σ f ꞉ (X → Y), is-equiv f
+                                  × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+                                  × (f d ≡ e)
 
 
  characterization-of-monoid-≡ : is-univalent 𝓤
@@ -9833,10 +9856,10 @@ module associative-∞-magma-identity
  associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
 
  ∞-amagma-structure : 𝓤 ̇ → 𝓤 ̇
- ∞-amagma-structure X = Σ \(_·_ : X → X → X) → associative _·_
+ ∞-amagma-structure X = Σ \(_·_ : (X → X → X)) → (associative _·_)
 
  ∞-aMagma : 𝓤 ⁺ ̇
- ∞-aMagma = Σ \(X : 𝓤 ̇ ) → ∞-amagma-structure X
+ ∞-aMagma = Σ X ꞉ 𝓤 ̇  , ∞-amagma-structure X
 
  homomorphic : {X Y : 𝓤 ̇ } → (X → X → X) → (Y → Y → Y) → (X → Y) → 𝓤 ̇
  homomorphic _·_ _*_ f = (λ x y → f (x · y)) ≡ (λ x y → f x * f y)
@@ -9905,19 +9928,19 @@ reflexivity condition `ρ` relies on the above remark.
 We prove the canonicity condition `θ` with the Yoneda machinery.
 
 \begin{code}
-   u : (X : 𝓤 ̇ ) → ∀ s → ∃! \t → ι (X , s) (X , t) (id-≃ X)
+   u : (X : 𝓤 ̇ ) → ∀ s → ∃! t ꞉ ∞-amagma-structure X , ι (X , s) (X , t) (id-≃ X)
    u X (_·_ , α) = c , φ
     where
-     c : Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
+     c : Σ t ꞉ ∞-amagma-structure X , ι (X , _·_ , α) (X , t) (id-≃ X)
      c = (_·_ , α) , ρ (X , _·_ , α)
 
-     φ : (σ : Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)) → c ≡ σ
+     φ : (σ : Σ t ꞉ ∞-amagma-structure X , ι (X , _·_ , α) (X , t) (id-≃ X)) → c ≡ σ
      φ ((_·_ , β) , refl _·_  , k) = γ
       where
        a : associative _·_
        a x y z = refl ((x · y) · z) ∙ ap id (α x y z)
 
-       g : singleton-type' a → Σ \t → ι (X , _·_ , α) (X , t) (id-≃ X)
+       g : singleton-type' a → Σ t ꞉ ∞-amagma-structure X , ι (X , _·_ , α) (X , t) (id-≃ X)
        g (β , k) = (_·_ , β) , refl _·_ , k
 
        i : is-subsingleton (singleton-type' a)
@@ -9940,10 +9963,10 @@ follows directly from the general structure of identity principle:
 
 \begin{code}
  _≅_ : ∞-aMagma → ∞-aMagma → 𝓤 ̇
- (X , _·_ , α) ≅ (Y , _*_ , β) = Σ \(f : X → Y)
-                                       → is-equiv f
-                                       × Σ \(h : homomorphic _·_ _*_ f)
-                                               → respect-assoc _·_ _*_ α β f h
+ (X , _·_ , α) ≅ (Y , _*_ , β) = Σ f ꞉ (X → Y)
+                                     , is-equiv f
+                                     × (Σ h ꞉ homomorphic _·_ _*_ f
+                                            , respect-assoc _·_ _*_ α β f h)
 
 
  characterization-of-∞-aMagma-≡ : (A B : ∞-aMagma) → (A ≡ B) ≃ (A ≅ B)
@@ -9963,13 +9986,13 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
  open monoid-identity {𝓤} ua hiding (sns-data ; _≅_)
 
  group-structure : 𝓤 ̇ → 𝓤 ̇
- group-structure X = Σ \(s : monoid-structure X) → monoid-axioms X s
+ group-structure X = Σ s ꞉ monoid-structure X , monoid-axioms X s
 
  group-axiom : (X : 𝓤 ̇ ) → monoid-structure X → 𝓤 ̇
- group-axiom X (_·_ , e) = (x : X) → Σ \(x' : X) → (x · x' ≡ e) × (x' · x ≡ e)
+ group-axiom X (_·_ , e) = (x : X) → Σ x' ꞉ X , (x · x' ≡ e) × (x' · x ≡ e)
 
  Group : 𝓤 ⁺ ̇
- Group = Σ \(X : 𝓤 ̇ ) → Σ \(s : group-structure X) → group-axiom X (pr₁ s)
+ Group = Σ X ꞉ 𝓤 ̇  , Σ s ꞉ group-structure X , group-axiom X (pr₁ s)
 
 
  inv-lemma : (X : 𝓤 ̇ ) (_·_ : X → X → X) (e : X)
@@ -9995,7 +10018,7 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  group-axiom-is-subsingleton X ((_·_ , e) , (s , l , r , a)) = γ
   where
-   i : (x : X) → is-subsingleton (Σ \(x' : X) → (x · x' ≡ e) × (x' · x ≡ e))
+   i : (x : X) → is-subsingleton (Σ x' ꞉ X , (x · x' ≡ e) × (x' · x ≡ e))
    i x (y , _ , q) (z , p , _) = u
     where
      t : y ≡ z
@@ -10008,7 +10031,7 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
    γ = Π-is-subsingleton dfe i
 
 
- sns-data : SNS (λ X → Σ \(s : group-structure X) → group-axiom X (pr₁ s)) 𝓤
+ sns-data : SNS (λ X → Σ s ꞉ group-structure X , group-axiom X (pr₁ s)) 𝓤
  sns-data = add-axioms
              (λ X s → group-axiom X (pr₁ s)) group-axiom-is-subsingleton
              (monoid-identity.sns-data ua)
@@ -10018,9 +10041,9 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  (X , ((_·_ , d) , _) , _) ≅ (Y , ((_*_ , e) , _) , _) =
 
-            Σ \(f : X → Y) → is-equiv f
-                           × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
-                           × (f d ≡ e)
+            Σ f ꞉ (X → Y), is-equiv f
+                         × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+                         × (f d ≡ e)
 
 
  characterization-of-group-≡ : (A B : Group) → (A ≡ B) ≃ (A ≅ B)
@@ -10049,8 +10072,8 @@ to the identity equivalence.
 
  (X , ((_·_ , d) , _) , _) ≅' (Y , ((_*_ , e) , _) , _) =
 
-            Σ \(f : X → Y) → is-equiv f
-                           × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+            Σ f ꞉ (X → Y), is-equiv f
+                         × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 \end{code}
 
 We now solve this exercise and do a bit more on the way. We first
@@ -10284,10 +10307,9 @@ We assume an arbitrary ambient group `G` in the following discussion.
   infixl 42 _·_
 
   Subgroups : 𝓤 ⁺ ̇
-  Subgroups = Σ \(A : 𝓟 ⟨ G ⟩)
-            → (unit G ∈ A)
-            × ((x y : ⟨ G ⟩) → x ∈ A → y ∈ A → x · y ∈ A)
-            × ((x : ⟨ G ⟩) → x ∈ A → inve x ∈ A)
+  Subgroups = Σ A ꞉ 𝓟 ⟨ G ⟩ , (unit G ∈ A)
+                            × ((x y : ⟨ G ⟩) → x ∈ A → y ∈ A → x · y ∈ A)
+                            × ((x : ⟨ G ⟩) → x ∈ A → inve x ∈ A)
 
   ⟪_⟫ : Subgroups → 𝓟 ⟨ G ⟩
   ⟪ A , u , c , ι ⟫ = A
@@ -10384,7 +10406,7 @@ With this we can transform a subgroup into a genuine group. We call this the ind
   group : Subgroups → Group
   group S = Y , ((_*_ , e) , i , l , r , a) , γ
    where
-    Y = Σ \(x : ⟨ G ⟩) → x ∈ ⟪ S ⟫
+    Y = Σ x ꞉ ⟨ G ⟩ , x ∈ ⟪ S ⟫
 
     _*_ : Y → Y → Y
     (x , h) * (x' , h') = (x · x') , subgroup-multiplication S x x' h h'
@@ -10410,7 +10432,7 @@ With this we can transform a subgroup into a genuine group. We call this the ind
                                       (∈-is-subsingleton ⟪ S ⟫)
                                       (assoc G x₀ x₁ x₂)
 
-    γ : (y : Y) → Σ \(y' : Y) → (y * y' ≡ e) × (y' * y ≡ e)
+    γ : (y : Y) → Σ y' ꞉ Y , (y * y' ≡ e) × (y' * y ≡ e)
     γ (x , h) = (inve x , h') , ir , il
      where
       h' : (inv G x) ∈ ⟪ S ⟫
@@ -10452,9 +10474,9 @@ is the following:
 
 \begin{code}
   Subgroups' : 𝓤 ⁺ ̇
-  Subgroups' = Σ \(H : Group)
-             → Σ \(f : ⟨ H ⟩ → ⟨ G ⟩)
-             → is-embedding f
+  Subgroups' = Σ H ꞉ Group
+             , Σ f ꞉ (⟨ H ⟩ → ⟨ G ⟩)
+             , is-embedding f
              × is-homomorphism H G f
 
   α : Subgroups → Subgroups'
@@ -10576,7 +10598,7 @@ module slice-identity
 
 
  _≅_  : 𝓤 / R → 𝓤 / R → 𝓤 ⊔ 𝓥 ̇
- (X , g) ≅ (Y , h) = Σ \(f : X → Y) → is-equiv f × (g ≡ h ∘ f )
+ (X , g) ≅ (Y , h) = Σ f ꞉ (X → Y), is-equiv f × (g ≡ h ∘ f )
 
 
  characterization-of-/-≡ : is-univalent 𝓤 → (A B : 𝓤 / R) → (A ≡ B) ≃ (A ≅ B)
@@ -10621,11 +10643,11 @@ module generalized-metric-space-identity
 
 
  M : 𝓤 ⁺ ⊔ 𝓥  ̇
- M = Σ \(X : 𝓤 ̇ ) → Σ \(d : X → X → R) → axioms X d
+ M = Σ X ꞉ 𝓤 ̇ , Σ d ꞉ (X → X → R) , axioms X d
 
  _≅_  : M → M → 𝓤 ⊔ 𝓥 ̇
- (X , d , _) ≅ (Y , e , _) = Σ \(f : X → Y) → is-equiv f
-                                            × (d ≡ λ x x' → e (f x) (f x'))
+ (X , d , _) ≅ (Y , e , _) = Σ f ꞉ (X → Y), is-equiv f
+                                          × (d ≡ λ x x' → e (f x) (f x'))
 
  characterization-of-M-≡ : is-univalent 𝓤
                          → (A B : M)
@@ -10694,7 +10716,7 @@ powerset of `X`, and membership amounts to function application:
  ℙℙ X = ℙ (ℙ X)
 
  Space : 𝓤 ⁺ ⊔ 𝓥  ̇
- Space = Σ \(X : 𝓤 ̇ ) → Σ \(𝓞 : ℙℙ X) → axioms X 𝓞
+ Space = Σ X ꞉ 𝓤 ̇  , Σ 𝓞 ꞉ ℙℙ X , axioms X 𝓞
 \end{code}
 
 If `(X , 𝓞X , a)` and `(Y , 𝓞Y , b)` are spaces, a
@@ -10741,8 +10763,8 @@ We introduce notation for the type of homeomorphisms:
 
  (X , 𝓞X , _) ≅ (Y , 𝓞Y , _) =
 
-              Σ \(f : X → Y) → is-equiv f
-                             × ((λ V → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y)
+              Σ f ꞉ (X → Y), is-equiv f
+                           × ((λ V → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y)
 
 
  characterization-of-Space-≡ : is-univalent 𝓤
@@ -10769,8 +10791,8 @@ prefer to rephrase the above as
 
  (X , F , _) ≅' (Y , G , _) =
 
-             Σ \(f : X → Y) → is-equiv f
-                            × ((λ (v : Y → R) → F (v ∘ f)) ≡ G)
+             Σ f ꞉ (X → Y), is-equiv f
+                          × ((λ (v : Y → R) → F (v ∘ f)) ≡ G)
 
 
  characterization-of-Space-≡' : is-univalent 𝓤
@@ -10798,7 +10820,7 @@ module selection-space-identity
  S X = (X → R) → X
 
  SelectionSpace : 𝓤 ⁺ ⊔ 𝓥  ̇
- SelectionSpace = Σ \(X : 𝓤 ̇ ) → Σ \(ε : S X) → axioms X ε
+ SelectionSpace = Σ X ꞉ 𝓤 ̇  , Σ ε ꞉ S X , axioms X ε
 
  sns-data : SNS S (𝓤 ⊔ 𝓥)
  sns-data = (ι , ρ , θ)
@@ -10823,8 +10845,8 @@ module selection-space-identity
 
  (X , ε , _) ≅ (Y , δ , _) =
 
-             Σ \(f : X → Y) → is-equiv f
-                            × ((λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ)
+             Σ f ꞉ (X → Y), is-equiv f
+                          × ((λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ)
 
 
  characterization-of-selection-space-≡ : is-univalent 𝓤
@@ -10859,9 +10881,9 @@ module contrived-example-identity (𝓤 : Universe) where
 
     (X Y : 𝓤 ̇ ) (φ : (X → X) → X) (γ : (Y → Y) → Y)
   →
-    ((X , φ) ≡ (Y , γ)) ≃ Σ \(f : X → Y)
-                        → Σ \(i : is-equiv f)
-                        → (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ≡ γ
+    ((X , φ) ≡ (Y , γ)) ≃ (Σ f ꞉ (X → Y)
+                         , Σ i ꞉ is-equiv f
+                         , (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ≡ γ)
 
  contrived-≡ ua X Y φ γ =
    characterization-of-≡ ua
@@ -10921,7 +10943,7 @@ module generalized-functor-algebra-equality
 
  characterization-of-functor-algebra-≡ : is-univalent 𝓤
    → (X Y : 𝓤 ̇ ) (α : F X → X) (β : F Y → Y)
-   → ((X , α) ≡ (Y , β))  ≃  Σ \(f : X → Y) → is-equiv f × (f ∘ α ≡ β ∘ 𝓕 f)
+   → ((X , α) ≡ (Y , β))  ≃  (Σ f ꞉ (X → Y), is-equiv f × (f ∘ α ≡ β ∘ 𝓕 f))
 
  characterization-of-functor-algebra-≡ ua X Y α β =
    characterization-of-≡ ua sns-data (X , α) (Y , β)
@@ -11068,8 +11090,8 @@ standard notion of structure:
  sns-data = (ι , ρ , θ)
   where
    ι : (𝓧 𝓐 : Σ S) → ⟨ 𝓧 ⟩ ≃ ⟨ 𝓐 ⟩ → 𝓤 ⊔ (𝓥 ⁺) ̇
-   ι 𝓧 𝓐 (F , _) = Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
-                         → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)
+   ι 𝓧 𝓐 (F , _) = Σ p ꞉ hom 𝓧 ≡ (λ x y → hom 𝓐 (F x) (F y))
+                        , functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)
 
    ρ : (𝓧 : Σ S) → ι 𝓧 𝓧 (id-≃ ⟨ 𝓧 ⟩)
    ρ 𝓧 = refl (hom 𝓧) , refl (𝒾𝒹 𝓧) , refl (comp 𝓧)
@@ -11103,22 +11125,22 @@ types. The second step translates this equality into an equivalence:
 \begin{code}
  lemma : (𝓧 𝓐 : Σ S) (F : Ob 𝓧 → Ob 𝓐)
        →
-         (Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
-                → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p))
+         (Σ p ꞉ hom 𝓧 ≡ (λ x y → hom 𝓐 (F x) (F y))
+              , functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p))
        ≃
-          Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                → (∀ x y → is-equiv (𝓕 x y))
-                × functorial 𝓧 𝓐 F 𝓕
+         (Σ 𝓕 ꞉ ((x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+              , (∀ x y → is-equiv (𝓕 x y))
+              × functorial 𝓧 𝓐 F 𝓕)
 
  lemma 𝓧 𝓐 F = γ
   where
-   e = (hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))                                         ≃⟨ i   ⟩
-       (∀ x y → hom 𝓧 x y ≡ hom 𝓐 (F x) (F y))                                     ≃⟨ ii  ⟩
-       (∀ x y → hom 𝓧 x y ≃ hom 𝓐 (F x) (F y))                                     ≃⟨ iii ⟩
-       (∀ x → Σ \(φ : ∀ y → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                    → ∀ y → is-equiv (φ y))                                        ≃⟨ iv  ⟩
-       (Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-              → (∀ x y → is-equiv (𝓕 x y)))                                        ■
+   e = (hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))                            ≃⟨ i   ⟩
+       (∀ x y → hom 𝓧 x y ≡ hom 𝓐 (F x) (F y))                        ≃⟨ ii  ⟩
+       (∀ x y → hom 𝓧 x y ≃ hom 𝓐 (F x) (F y))                        ≃⟨ iii ⟩
+       (∀ x → Σ φ ꞉ (∀ y → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                  , ∀ y → is-equiv (φ y))                             ≃⟨ iv  ⟩
+       (Σ 𝓕 ꞉ ((x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+            , (∀ x y → is-equiv (𝓕 x y)))                             ■
     where
      i   = hfunext₂-≃ hfe hfe (hom 𝓧 )  λ x y → hom 𝓐 (F x) (F y)
      ii  = Π-cong fe fe
@@ -11140,19 +11162,19 @@ definition of item `v`:
 
    γ =
 
-    (Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
-           → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)) ≃⟨ vi   ⟩
+    (Σ p ꞉ hom 𝓧 ≡ (λ x y → hom 𝓐 (F x) (F y))
+         , functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)) ≃⟨ vi   ⟩
 
-    (Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
-           → functorial 𝓧 𝓐 F (pr₁ (⌜ e ⌝ p)))                     ≃⟨ vii  ⟩
+    (Σ p ꞉ hom 𝓧 ≡ (λ x y → hom 𝓐 (F x) (F y))
+         , functorial 𝓧 𝓐 F (pr₁ (⌜ e ⌝ p)))                     ≃⟨ vii  ⟩
 
-    (Σ \(σ : Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                   → (∀ x y → is-equiv (𝓕 x y)))
-           → functorial 𝓧 𝓐 F (pr₁ σ))                             ≃⟨ viii ⟩
+    (Σ σ ꞉ (Σ 𝓕 ꞉ ((x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                , (∀ x y → is-equiv (𝓕 x y)))
+         , functorial 𝓧 𝓐 F (pr₁ σ))                             ≃⟨ viii ⟩
 
-    (Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                  → (∀ x y → is-equiv (𝓕 x y))
-                  × functorial 𝓧 𝓐 F 𝓕)                            ■
+    (Σ 𝓕 ꞉ ((x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                  , (∀ x y → is-equiv (𝓕 x y))
+                  × functorial 𝓧 𝓐 F 𝓕)                          ■
     where
      vi   = Σ-cong v
      vii  = ≃-sym (Σ-change-of-variable _ ⌜ e ⌝ (⌜⌝-is-equiv e))
@@ -11169,20 +11191,24 @@ equality of type-valued preorders in terms of equivalences:
     →
       (𝓧 ≡ 𝓐)
     ≃
-      Σ \(F : Ob 𝓧 → Ob 𝓐)
-            → is-equiv F
-            × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                    → (∀ x y → is-equiv (𝓕 x y))
-                    × functorial 𝓧 𝓐 F 𝓕
+      (Σ F ꞉ (Ob 𝓧 → Ob 𝓐)
+           , is-equiv F
+           × (Σ 𝓕 ꞉ ((x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                  , (∀ x y → is-equiv (𝓕 x y))
+                  × functorial 𝓧 𝓐 F 𝓕))
 
  characterization-of-type-valued-preorder-≡ 𝓧 𝓐 =
 
-   (𝓧 ≡ 𝓐)                                                                ≃⟨ i  ⟩
-   (Σ \(F : Ob 𝓧 → Ob 𝓐)
-          → is-equiv F
-          × Σ \(p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
-                  → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)) ≃⟨ ii ⟩
-   _                                                                      ■
+   (𝓧 ≡ 𝓐)                                                              ≃⟨ i  ⟩
+   (Σ F ꞉ (Ob 𝓧 → Ob 𝓐)
+        , is-equiv F
+        × (Σ p ꞉ hom 𝓧 ≡ (λ x y → hom 𝓐 (F x) (F y))
+               , functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p))) ≃⟨ ii ⟩
+   (Σ F ꞉ (Ob 𝓧 → Ob 𝓐)
+     , is-equiv F
+     × (Σ 𝓕 ꞉ ((x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+            , (∀ x y → is-equiv (𝓕 x y))
+            × functorial 𝓧 𝓐 F 𝓕))                                      ■
 
   where
    i  = characterization-of-≡ (ua 𝓤) sns-data 𝓧 𝓐
@@ -11211,7 +11237,7 @@ module type-valued-preorder-with-axioms-identity
  open type-valued-preorder-identity 𝓤 𝓥 ua
 
  S' : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦 ̇
- S' X = Σ \(s : S X) → axioms X s
+ S' X = Σ s ꞉ S X , axioms X s
 
  sns-data' : SNS S' (𝓤 ⊔ (𝓥 ⁺))
  sns-data' = add-axioms axioms axiomss sns-data
@@ -11226,11 +11252,11 @@ Recall that `[_]` is the map that forgets the axioms.
     →
       (𝓧' ≡ 𝓐')
     ≃
-      Σ \(F : Ob [ 𝓧' ] → Ob [ 𝓐' ])
-            → is-equiv F
-            × Σ \(𝓕 : (x y : Ob [ 𝓧' ]) → hom [ 𝓧' ] x y → hom [ 𝓐' ] (F x) (F y))
-                    → (∀ x y → is-equiv (𝓕 x y))
-                    × functorial [ 𝓧' ] [ 𝓐' ] F 𝓕
+      (Σ F ꞉ (Ob [ 𝓧' ] → Ob [ 𝓐' ])
+           , is-equiv F
+           × (Σ 𝓕 ꞉ ((x y : Ob [ 𝓧' ]) → hom [ 𝓧' ] x y → hom [ 𝓐' ] (F x) (F y))
+                    , (∀ x y → is-equiv (𝓕 x y))
+                    × functorial [ 𝓧' ] [ 𝓐' ] F 𝓕))
 
  characterization-of-type-valued-preorder-≡-with-axioms 𝓧' 𝓐' =
 
@@ -11333,7 +11359,7 @@ that of type-valued preorders:
 
 \begin{code}
  Cat : (𝓤 ⊔ 𝓥)⁺ ̇
- Cat = Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → category-axioms X s
+ Cat = Σ X ꞉ 𝓤 ̇  , Σ s ꞉ S X , category-axioms X s
 \end{code}
 
 We reuse of above names in a slightly different way, taking into
@@ -11386,11 +11412,11 @@ get the following characterization of identity of categories:
 \begin{code}
  _⋍_ : Cat → Cat → 𝓤 ⊔ 𝓥 ̇
 
- 𝓧 ⋍ 𝓐 = Σ \(F : Ob 𝓧 → Ob 𝓐)
-               → is-equiv F
-               × Σ \(𝓕 : (x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                       → (∀ x y → is-equiv (𝓕 x y))
-                       × is-functorial 𝓧 𝓐 F 𝓕
+ 𝓧 ⋍ 𝓐 = Σ F ꞉ (Ob 𝓧 → Ob 𝓐)
+              , is-equiv F
+              × (Σ 𝓕 ꞉ ((x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                     , (∀ x y → is-equiv (𝓕 x y))
+                     × is-functorial 𝓧 𝓐 F 𝓕)
 
 
  Id→EqCat : (𝓧 𝓐 : Cat) → 𝓧 ≡ 𝓐 → 𝓧 ⋍ 𝓐
@@ -11552,13 +11578,13 @@ With this notion, we can define the image of a function as follows:
 
 \begin{code}
 image' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)⁺ ̇
-image' f = Σ \(y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
+image' f = Σ y ꞉ codomain f , is-inhabited (Σ x ꞉ domain f , f x ≡ y)
 \end{code}
 
 An attempt to define the image of `f` without the inhabitation
 predicate would be to take it to be
 
-   > `Σ \(y : codomain f) → Σ \(x : domain f) → f x ≡ y`.
+   > `Σ y ꞉ codomain f , Σ x ꞉ domain f , f x ≡ y`.
 
 But we [already know](HoTT-UF-Agda.html#total-fiber-is-domain) that
 this is equivalent to `X`.  This is similar to what happens in set
@@ -11584,11 +11610,11 @@ corestriction' f x = f x , inhabited-intro (x , refl (f x))
 And we can define the notion of surjection as follows:
 \begin{code}
 is-surjection' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓤 ⊔ 𝓥)⁺ ̇
-is-surjection' f = (y : codomain f) → is-inhabited (Σ \(x : domain f) → f x ≡ y)
+is-surjection' f = (y : codomain f) → is-inhabited (Σ x ꞉ domain f , f x ≡ y)
 \end{code}
 
 *Exercise*. The type
-`(y : codomain f) → Σ \(x : domain f) → f x ≡ y` [is equivalent
+`(y : codomain f) → Σ x ꞉ domain f , f x ≡ y` [is equivalent
  to](HoTT-UF-Agda.html#has-section-charac) the type `has-section f`,
  which is stronger than saying that `f` is a surjection.
 
@@ -11632,6 +11658,7 @@ record subsingleton-truncations-exist : 𝓤ω where
   ∣_∣                  : {𝓤 : Universe} {X : 𝓤 ̇ } → X → ∥ X ∥
   ∥∥-recursion         : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {P : 𝓥 ̇ }
                        → is-subsingleton P → (X → P) → ∥ X ∥ → P
+ infix 0 ∥_∥
 \end{code}
 
 This is the approach we adopt in our [personal Agda
@@ -11717,7 +11744,14 @@ Disjunction and existence are defined as the truncation of `+` and `Σ`:
   infixl 20 _∨_
 
   ∃ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-  ∃ A = ∥ Σ A ∥
+  ∃ A = (∥ Σ A ∥)
+
+  -∃ : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+  -∃ X Y = ∃ Y
+
+  syntax -∃ A (λ x → b) = ∃ x ꞉ A , b
+
+  infixr -1 -∃
 
   ∨-is-subsingleton : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → is-subsingleton (A ∨ B)
   ∨-is-subsingleton = ∥∥-is-subsingleton
@@ -11736,7 +11770,7 @@ further details about these notions of disjunction and existence.
 
 \begin{code}
   image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-  image f = Σ \(y : codomain f) → ∃ \(x : domain f) → f x ≡ y
+  image f = Σ y ꞉ codomain f , ∃ x ꞉ domain f , f x ≡ y
 
 
   restriction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -11752,7 +11786,7 @@ further details about these notions of disjunction and existence.
 
 
   is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-  is-surjection f = (y : codomain f) → ∃ \(x : domain f) → f x ≡ y
+  is-surjection f = (y : codomain f) → ∃ x ꞉ domain f , f x ≡ y
 
 
   being-surjection-is-subsingleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -11767,7 +11801,7 @@ further details about these notions of disjunction and existence.
 
   corestriction-surjection f (y , s) = ∥∥-functor g s
    where
-    g : (Σ \x → f x ≡ y) → Σ \x → corestriction f x ≡ y , s
+    g : (Σ x ꞉ domain f , f x ≡ y) → Σ x ꞉ domain f , corestriction f x ≡ (y , s)
     g (x , p) = x , to-subtype-≡ (λ _ → ∃-is-subsingleton) p
 
 
@@ -11794,10 +11828,10 @@ a surjection without the universe levels getting in our way:
   ∣∣-is-surjection : (X : 𝓤 ̇ ) → is-surjection (λ (x : X) → ∣ x ∣)
   ∣∣-is-surjection X s = γ
    where
-    f : X → ∃ \(x : X) → ∣ x ∣ ≡ s
+    f : X → ∃ x ꞉ X , ∣ x ∣ ≡ s
     f x = ∣ (x , ∥∥-is-subsingleton ∣ x ∣ s) ∣
 
-    γ : ∃ \(x : X) → ∣ x ∣ ≡ s
+    γ : ∃ x ꞉ X , ∣ x ∣ ≡ s
     γ = ∥∥-recursion ∥∥-is-subsingleton f s
 \end{code}
 
@@ -11925,7 +11959,7 @@ We first define the type of fixed points:
 
 \begin{code}
 fix : {X : 𝓤 ̇ } → (X → X) → 𝓤 ̇
-fix f = Σ \(x : domain f) → f x ≡ x
+fix f = Σ x ꞉ domain f , f x ≡ x
 \end{code}
 
 Of course any fixed point of `f` gives an element of `X`:
@@ -12163,8 +12197,8 @@ module exit-∥∥
  open find-hidden-root
 
  find-∥∥-existing-root : (f : ℕ → ℕ)
-                       → (∃ \(n : ℕ) → f n ≡ 0)
-                       →  Σ \(n : ℕ) → f n ≡ 0
+                       → (∃ n ꞉ ℕ , f n ≡ 0)
+                       →  Σ n ꞉ ℕ , f n ≡ 0
 
  find-∥∥-existing-root f = k
   where
@@ -12279,7 +12313,7 @@ which `Y` is a set:
                               f x' ≡⟨ r'     ⟩
                               y'   ∎
 
-   φ : (y y' : Y) → (∃ \x → f x ≡ y) → (∃ \x' → f x' ≡ y') → y ≡ y'
+   φ : (y y' : Y) → (∃ x ꞉ X , f x ≡ y) → (∃ x' ꞉ X , f x' ≡ y') → y ≡ y'
    φ y y' u u' = ∥∥-recursion (s y y') (λ - → ∥∥-recursion (s y y') (ψ y y' -) u') u
 
    P : 𝓤 ⊔ 𝓥 ̇
@@ -12365,7 +12399,7 @@ the underlying type is a set, as opposed to an arbitrary ∞-groupoid:
     I   = is-set R
     II  = (x y z : R) → (x + y) + z ≡ x + (y + z)
     III = (x y : R) → x + y ≡ y + x
-    IV  = Σ \(O : R) → ((x : R) → x + O ≡ x) × ((x : R) → Σ \(x' : R) → x + x' ≡ O)
+    IV  = Σ O ꞉ R , ((x : R) → x + O ≡ x) × ((x : R) → Σ x' ꞉ R , x + x' ≡ O)
     V   = (x y z : R) → (x · y) · z ≡ x · (y · z)
     VI  = (x y z : R) → x · (y + z) ≡ (x · y) + (x · z)
     VII = (x y z : R) → (y + z) · x ≡ (y · x) + (z · x)
@@ -12375,7 +12409,7 @@ The type of rings in the universe `𝓤`, which lives in the universe after `�
 
 \begin{code}
  Rng : 𝓤 ⁺ ̇
- Rng = Σ \(R : 𝓤 ̇ ) → Σ \(s : rng-structure R) → rng-axioms R s
+ Rng = Σ R ꞉ 𝓤 ̇  , Σ s ꞉ rng-structure R , rng-axioms R s
 \end{code}
 
 In order to be able to apply univalence to show that the identity type
@@ -12395,7 +12429,7 @@ routine.
  rng-axioms-is-subsingleton R (_+_ , _·_) (i , ii , iii , iv-vii) = δ
   where
     A   = λ (O : R) → ((x : R) → x + O ≡ x)
-                    × ((x : R) → Σ \(x' : R) → x + x' ≡ O)
+                    × ((x : R) → Σ x' ꞉ R , x + x' ≡ O)
 
     IV  = Σ A
 
@@ -12410,7 +12444,7 @@ routine.
 
     c : (O : R)
       → ((x : R) → x + O ≡ x)
-      → (x : R) → is-subsingleton (Σ \(x' : R) → x + x' ≡ O)
+      → (x : R) → is-subsingleton (Σ x' ꞉ R , x + x' ≡ O)
     c O f x (x' , p') (x'' , p'') = to-subtype-≡ (λ x' → i (x + x') O) r
      where
       r : x' ≡ x''
@@ -12478,10 +12512,10 @@ addition and multiplication, and collect all isomorphisms of two rngs
 
  (R , (_+_ , _·_) , _) ≅[Rng] (R' , (_+'_ , _·'_) , _) =
 
-                       Σ \(f : R → R')
-                     → is-equiv f
-                     × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
-                     × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
+                       Σ f ꞉ (R → R')
+                           , is-equiv f
+                           × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
+                           × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
 \end{code}
 
 Then we apply the chapter on equality of mathematical structures to
@@ -12535,10 +12569,7 @@ A rng is local if it has a unique maximal ideal:
 
 \begin{code}
  is-local : Rng → 𝓤 ⁺ ̇
- is-local 𝓡 = ∃! \(I : 𝓟 ⟨ 𝓡 ⟩)
-            → is-ideal 𝓡 I
-            → (J : 𝓟 ⟨ 𝓡 ⟩) → is-ideal 𝓡 J → J ⊆ I
-
+ is-local 𝓡 = ∃! I ꞉ 𝓟 ⟨ 𝓡 ⟩ , (is-ideal 𝓡 I → (J : 𝓟 ⟨ 𝓡 ⟩) → is-ideal 𝓡 J → J ⊆ I)
 
  being-local-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-local 𝓡)
  being-local-is-subsingleton 𝓡 = ∃!-is-subsingleton _ fe
@@ -12572,18 +12603,18 @@ The type of rings with unit:
 
 \begin{code}
  Ring : 𝓤 ⁺ ̇
- Ring = Σ \(R : 𝓤 ̇ ) → Σ \(s : ring-structure R) → ring-axioms R s
+ Ring = Σ R ꞉ 𝓤 ̇  , Σ s ꞉ ring-structure R , ring-axioms R s
 
 
  _≅[Ring]_ : Ring → Ring → 𝓤 ̇
 
  (R , (𝟏 , _+_ , _·_) , _) ≅[Ring] (R' , (𝟏' , _+'_ , _·'_) , _) =
 
-                           Σ \(f : R → R')
-                         → is-equiv f
-                         × (f 𝟏 ≡ 𝟏')
-                         × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
-                         × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
+                           Σ f ꞉ (R → R')
+                               , is-equiv f
+                               × (f 𝟏 ≡ 𝟏')
+                               × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
+                               × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
 
 
 
@@ -12613,11 +12644,11 @@ the existential quantifier `∃` available:
   is-noetherian 𝓡 = (I : ℕ → 𝓟 ⟨ 𝓡 ⟩)
                   → ((n : ℕ) → is-ideal 𝓡 (I n))
                   → ((n : ℕ) → I n ⊆ I (succ n))
-                  → ∃ \(m : ℕ) → (n : ℕ) → m ≤ n → I m ≡ I n
+                  → ∃ m ꞉ ℕ , ((n : ℕ) → m ≤ n → I m ≡ I n)
 
 
   NoetherianRng : 𝓤 ⁺ ̇
-  NoetherianRng = Σ \(𝓡 : Rng) → is-noetherian 𝓡
+  NoetherianRng = Σ 𝓡 ꞉ Rng , is-noetherian 𝓡
 \end{code}
 
 In order to be able to characterize equality of Noetherian rngs, we
@@ -12646,10 +12677,10 @@ Isomorphism of Noetherian rngs:
 
   ((R , (_+_ , _·_) , _) , _) ≅[NoetherianRng] ((R' , (_+'_ , _·'_) , _) , _) =
 
-                              Σ \(f : R → R')
-                            → is-equiv f
-                            × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
-                            × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
+                              Σ f ꞉ (R → R')
+                                  , is-equiv f
+                                  × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
+                                  × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
 
 
   NB : (𝓡 𝓡' : NoetherianRng)
@@ -12724,18 +12755,18 @@ We now consider commutative Noetherian local rings as a second example.
 
 
   CNL-Ring : 𝓤 ⁺ ̇
-  CNL-Ring = Σ \(𝓡 : Ring) → is-CNL 𝓡
+  CNL-Ring = Σ 𝓡 ꞉ Ring , is-CNL 𝓡
 
 
   _≅[CNL]_ : CNL-Ring → CNL-Ring → 𝓤 ̇
 
   ((R , (𝟏 , _+_ , _·_) , _) , _) ≅[CNL] ((R' , (𝟏' , _+'_ , _·'_) , _) , _) =
 
-                                  Σ \(f : R → R')
-                                → is-equiv f
-                                × (f 𝟏 ≡ 𝟏')
-                                × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
-                                × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
+                                  Σ f ꞉ (R → R')
+                                      , is-equiv f
+                                      × (f 𝟏 ≡ 𝟏')
+                                      × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
+                                      × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
 
 
   forget-CNL : CNL-Ring → Ring
@@ -12813,16 +12844,16 @@ This just holds and is trivial, given by projection:
 \begin{code}
 simple-unique-choice : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
 
-                     → ((x : X) → ∃! \(a : A x) → R x a)
-                     → Σ \(f : Π A) → (x : X) → R x (f x)
+                     → ((x : X) → ∃! a ꞉ A x , R x a)
+                     → Σ f ꞉ Π A , ((x : X) → R x (f x))
 
 simple-unique-choice X A R s = f , φ
  where
   f : (x : X) → A x
-  f x = pr₁ (center (Σ \(a : A x) → R x a) (s x))
+  f x = pr₁ (center (Σ a ꞉ A x , R x a) (s x))
 
   φ : (x : X) → R x (f x)
-  φ x = pr₂ (center (Σ \(a : A x) → R x a) (s x))
+  φ x = pr₂ (center (Σ a ꞉ A x , R x a) (s x))
 \end{code}
 
 Below we also consider a
@@ -12837,8 +12868,8 @@ is equivalent to our official formulation of unique choice:
 \begin{code}
 Unique-Choice : (𝓤 𝓥 𝓦 : Universe) → (𝓤 ⊔ 𝓥 ⊔ 𝓦)⁺ ̇
 Unique-Choice 𝓤 𝓥 𝓦 = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
-                     → ((x : X) → ∃! \(a : A x) → R x a)
-                     → ∃! \(f : Π A) → (x : X) → R x (f x)
+                     → ((x : X) → ∃! a ꞉ A x , R x a)
+                     → ∃! f ꞉ Π A , ((x : X) → R x (f x))
 \end{code}
 
 This can be read as saying that every single-valued relation is the
@@ -12848,15 +12879,15 @@ graph of a unique function.
 vvfunext-gives-unique-choice : vvfunext 𝓤 (𝓥 ⊔ 𝓦) → Unique-Choice 𝓤 𝓥 𝓦
 vvfunext-gives-unique-choice vv X A R s = c
  where
-  a : ((x : X) → Σ \(a : A x) → R x a)
-    ≃ (Σ \(f : (x : X) → A x) → (x : X) → R x (f x))
+  a : ((x : X) → Σ a ꞉ A x , R x a)
+    ≃ (Σ f ꞉ ((x : X) → A x), ((x : X) → R x (f x)))
 
   a = ΠΣ-distr-≃
 
-  b : is-singleton ((x : X) → Σ \(a : A x) → R x a)
+  b : is-singleton ((x : X) → Σ a ꞉ A x , R x a)
   b = vv s
 
-  c : is-singleton (Σ \(f : (x : X) → A x) → (x : X) → R x (f x))
+  c : is-singleton (Σ f ꞉ ((x : X) → A x), ((x : X) → R x (f x)))
   c = equiv-to-singleton' a b
 
 
@@ -12869,10 +12900,10 @@ unique-choice-gives-vvfunext {𝓤} {𝓥} uc {X} {A} φ = γ
   s' : (x : X) → is-singleton (A x × A x)
   s' x = ×-is-singleton (φ x) (φ x)
 
-  s : (x : X) → ∃! \(y : A x) → R x y
+  s : (x : X) → ∃! y ꞉ A x , R x y
   s = s'
 
-  e : ∃! \(f : Π A) → (x : X) → R x (f x)
+  e : ∃! f ꞉ Π A , ((x : X) → R x (f x))
   e = uc X A R s
 
   e' : is-singleton (Π A × Π A)
@@ -12891,12 +12922,12 @@ Here is an alternative proof that derives `hfunext` instead:
 unique-choice-gives-hfunext : Unique-Choice 𝓤 𝓥 𝓥 → hfunext 𝓤 𝓥
 unique-choice-gives-hfunext {𝓤} {𝓥} uc = →hfunext γ
  where
-  γ : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (f : Π A) → ∃! \(g : Π A) → f ∼ g
+  γ : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (f : Π A) → ∃! g ꞉ Π A , f ∼ g
   γ X A f = uc X A R e
    where
     R : (x : X) → A x → 𝓥 ̇
     R x a = f x ≡ a
-    e : (x : X) → ∃! \(a : A x) → f x ≡ a
+    e : (x : X) → ∃! a ꞉ A x , f x ≡ a
     e x = singleton-types'-are-singletons (A x) (f x)
 \end{code}
 
@@ -12953,22 +12984,22 @@ module _ (hfe : global-hfunext) where
 
  unique-choice : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
 
-               → ((x : X) → ∃! \(a : A x) → R x a)
-               → ∃! \(f : (x : X) → A x) → (x : X) → R x (f x)
+               → ((x : X) → ∃! a ꞉ A x , R x a)
+               → ∃! f ꞉ ((x : X) → A x), ((x : X) → R x (f x))
 
  unique-choice X A R s = C , Φ
   where
    f₀ : (x : X) → A x
-   f₀ x = pr₁ (center (Σ \(a : A x) → R x a) (s x))
+   f₀ x = pr₁ (center (Σ a ꞉ A x , R x a) (s x))
 
    φ₀ : (x : X) → R x (f₀ x)
-   φ₀ x = pr₂ (center (Σ \(a : A x) → R x a) (s x))
+   φ₀ x = pr₂ (center (Σ a ꞉ A x , R x a) (s x))
 
-   C : Σ \(f : (x : X) → A x) → (x : X) → R x (f x)
+   C : Σ f ꞉ ((x : X) → A x), ((x : X) → R x (f x))
    C = f₀ , φ₀
 
-   c : (x : X) → (τ : Σ \(a : A x) → R x a) → f₀ x , φ₀ x ≡ τ
-   c x = centrality (Σ \(a : A x) → R x a) (s x)
+   c : (x : X) → (τ : Σ a ꞉ A x , R x a) → f₀ x , φ₀ x ≡ τ
+   c x = centrality (Σ a ꞉ A x , R x a) (s x)
 
    c₁ : (x : X) (a : A x) (r : R x a) → f₀ x ≡ a
    c₁ x a r = ap pr₁ (c x (a , r))
@@ -12978,7 +13009,7 @@ module _ (hfe : global-hfunext) where
 
    c₂ x a r = apd pr₂ (c x (a , r))
 
-   Φ : (σ : Σ \(f : (x : X) → A x) → (x : X) → R x (f x)) → C ≡ σ
+   Φ : (σ : Σ f ꞉ ((x : X) → A x), ((x : X) → R x (f x))) → C ≡ σ
    Φ (f , φ) = to-Σ-≡ (p , hunapply q)
     where
      p : f₀ ≡ f
@@ -12998,7 +13029,7 @@ module _ (hfe : global-hfunext) where
 [Simple unique choice](HoTT-UF-Agda.html#simple-unique-choice) can be
 reformulated as follows using `∃` rather than `∃!`. The statement
 
-   > `is-subsingleton (Σ \(a : A x) → R x a)`
+   > `is-subsingleton (Σ a ꞉ A x , R x a)`
 
 can be read as
 
@@ -13022,15 +13053,15 @@ module choice
 
   simple-unique-choice' : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (R : (x : X) → A x → 𝓦 ̇ )
 
-                        → ((x : X) → is-subsingleton (Σ \(a : A x) → R x a))
+                        → ((x : X) → is-subsingleton (Σ a ꞉ A x , R x a))
 
-                        → ((x : X) → ∃ \(a : A x) → R x a)
-                        → Σ \(f : Π A) → (x : X) → R x (f x)
+                        → ((x : X) → ∃ a ꞉ A x , R x a)
+                        → Σ f ꞉ Π A , ((x : X) → R x (f x))
 
   simple-unique-choice' X A R u φ = simple-unique-choice X A R s
    where
-    s : (x : X) → ∃! \(a : A x) → R x a
-    s x = inhabited-subsingletons-are-singletons (Σ \(a : A x) → R x a) (φ x) (u x)
+    s : (x : X) → ∃! a ꞉ A x , R x a
+    s x = inhabited-subsingletons-are-singletons (Σ a ꞉ A x , R x a) (φ x) (u x)
 \end{code}
 
 In the next few subsections we continue working within the submodule
@@ -13069,8 +13100,8 @@ general possible to perform the choice functorially.
   AC 𝓣 X A i j = (R : (x : X) → A x → 𝓣 ̇ )
                → ((x : X) (a : A x) → is-subsingleton (R x a))
 
-               → ((x : X) → ∃ \(a : A x) → R x a)
-               → ∃ \(f : Π A) → (x : X) → R x (f x)
+               → ((x : X) → ∃ a ꞉ A x , R x a)
+               → ∃ f ꞉ Π A , ((x : X) → R x (f x))
 \end{code}
 
 We define the axiom of choice in the universe `𝓤` to be the above with
@@ -13115,13 +13146,13 @@ extensionality):
     k : (x : X) (y : Y x) → is-subsingleton (R x y)
     k x y = i x x
 
-    h : (x : X) → Y x → Σ \(y : Y x) → R x y
+    h : (x : X) → Y x → Σ y ꞉ Y x , R x y
     h x y = (y , refl x)
 
-    g : (x : X) → ∃ \(y : Y x) → R x y
+    g : (x : X) → ∃ y ꞉ Y x , R x y
     g x = ∥∥-functor (h x) (φ x)
 
-    c : ∃ \(f : Π Y) → (x : X) → R x (f x)
+    c : ∃ f ꞉ Π Y , ((x : X) → R x (f x))
     c = ac X Y i j R k g
 
     γ : ∥ Π Y ∥
@@ -13132,7 +13163,7 @@ extensionality):
   IChoice-gives-Choice {𝓤} iac X A i j R k ψ = γ
    where
     Y : X → 𝓤 ̇
-    Y x = Σ \(a : A x) → R x a
+    Y x = Σ a ꞉ A x , R x a
 
     l : (x : X) → is-set (Y x)
     l x = subsets-of-sets-are-sets (A x) (R x) (j x) (k x)
@@ -13140,10 +13171,10 @@ extensionality):
     a : ∥ Π Y ∥
     a = iac X Y i l ψ
 
-    h : Π Y → Σ \(f : Π A) → (x : X) → R x (f x)
+    h : Π Y → Σ f ꞉ Π A , ((x : X) → R x (f x))
     h g = (λ x → pr₁ (g x)) , (λ x → pr₂ (g x))
 
-    γ : ∃ \(f : Π A) → (x : X) → R x (f x)
+    γ : ∃ f ꞉ Π A , ((x : X) → R x (f x))
     γ = ∥∥-functor h a
 \end{code}
 
@@ -13207,8 +13238,8 @@ middle. We begin with the following lemma.
 
 \begin{code}
   decidable-equality-criterion : {X : 𝓤 ̇ } (α : 𝟚 → X)
-                               → ((x : X) → (∃ \(n : 𝟚) → α n ≡ x)
-                                          → (Σ \(n : 𝟚) → α n ≡ x))
+                               → ((x : X) → (∃ n ꞉ 𝟚 , α n ≡ x)
+                                          → (Σ n ꞉ 𝟚 , α n ≡ x))
                                → decidable(α ₀ ≡ α ₁)
 
   decidable-equality-criterion α c = γ d
@@ -13216,13 +13247,13 @@ middle. We begin with the following lemma.
     r : 𝟚 → image α
     r = corestriction α
 
-    σ : (y : image α) → Σ \(n : 𝟚) → r n ≡ y
+    σ : (y : image α) → Σ n ꞉ 𝟚 , r n ≡ y
     σ (x , t) = f u
      where
-      u : Σ \(n : 𝟚) → α n ≡ x
+      u : Σ n ꞉ 𝟚 , α n ≡ x
       u = c x t
 
-      f : (Σ \(n : 𝟚) → α n ≡ x) → Σ \(n : 𝟚) → r n ≡ (x , t)
+      f : (Σ n ꞉ 𝟚 , α n ≡ x) → Σ n ꞉ 𝟚 , r n ≡ (x , t)
       f (n , p) = n , to-subtype-≡ (λ _ → ∃-is-subsingleton) p
 
     s : image α → 𝟚
@@ -13268,7 +13299,7 @@ set has decidable equality.
     α ₁ = x₁
 
     A : X → 𝓤 ̇
-    A x = Σ \(n : 𝟚) → α n ≡ x
+    A x = Σ n ꞉ 𝟚 , α n ≡ x
 
     l : is-subsingleton (decidable (x₀ ≡ x₁))
     l = +-is-subsingleton' hunapply (i (α ₀) (α ₁))
@@ -13494,7 +13525,7 @@ universe `𝓥`:
 
 \begin{code}
 _has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
-X has-size 𝓥 = Σ \(Y : 𝓥 ̇ ) → X ≃ Y
+X has-size 𝓥 = Σ Y ꞉ 𝓥 ̇  , X ≃ Y
 \end{code}
 
 The propositional resizing principle from a universe `𝓤` to a universe
@@ -13816,7 +13847,7 @@ equal or below the universe of the type `X` we take the powerset of:
 
 \begin{code}
  family-union : {X : 𝓤 ⊔ 𝓥 ̇ } {I : 𝓥 ̇ } → (I → 𝓟 X) → 𝓟 X
- family-union {𝓤} {𝓥} {X} {I} A = λ x → (∃ \(i : I) → x ∈ A i) , ∃-is-subsingleton
+ family-union {𝓤} {𝓥} {X} {I} A = λ x → (∃ i ꞉ I , x ∈ A i) , ∃-is-subsingleton
 \end{code}
 
 Notice the increase of universe levels in the iteration of powersets:
@@ -13832,10 +13863,7 @@ available. It says what it means for them to be available:
 \begin{code}
  existence-of-unions : (𝓤 : Universe) → 𝓤 ⁺⁺ ̇
  existence-of-unions 𝓤 =
-  (X : 𝓤 ̇ )
-  (𝓐 : 𝓟𝓟 X)
-     → Σ \(B : 𝓟 X)
-             → (x : X) → (x ∈ B) ⇔ ∃ \(A : 𝓟 X) → (A ∈ 𝓐) × (x ∈ A)
+  (X : 𝓤 ̇ ) (𝓐 : 𝓟𝓟 X) → Σ B ꞉ 𝓟 X , ((x : X) → (x ∈ B) ⇔ (∃ A ꞉ 𝓟 X , (A ∈ 𝓐) × (x ∈ A)))
 \end{code}
 
 One may wonder whether there are different universe assignments for
@@ -13849,8 +13877,7 @@ the above definition in the following alternative form:
  existence-of-unions₁ 𝓤 =
   (X : 𝓤 ̇ )
   (𝓐 : (X → Ω _) → Ω _)
-     → Σ \(B : X → Ω _)
-             → (x : X) → (x ∈ B) ⇔ ∃ \(A : X → Ω _) → (A ∈ 𝓐) × (x ∈ A)
+     → Σ B ꞉ (X → Ω _) , ((x : X) → (x ∈ B) ⇔ (∃ A ꞉ (X → Ω _) , (A ∈ 𝓐) × (x ∈ A)))
 \end{code}
 
 The fact that Agda accepts the above definition without errors means
@@ -13862,8 +13889,7 @@ following.
  existence-of-unions₂ 𝓤 =
   (X : 𝓤 ̇ )
   (𝓐 : (X → Ω 𝓤) → Ω (𝓤 ⁺))
-     → Σ \(B : X → Ω 𝓤)
-             → (x : X) → (x ∈ B) ⇔ ∃ \(A : X → Ω 𝓤) → (A ∈ 𝓐) × (x ∈ A)
+     → Σ B ꞉ (X → Ω 𝓤) , ((x : X) → (x ∈ B) ⇔ (∃ A ꞉ (X → Ω 𝓤) , (A ∈ 𝓐) × (x ∈ A)))
 
  existence-of-unions-agreement : existence-of-unions 𝓤 ≡ existence-of-unions₂ 𝓤
  existence-of-unions-agreement = refl _
@@ -13903,7 +13929,7 @@ establish the existence.
     B : 𝓟 𝟙ᵤ
     B = pr₁ (α 𝟙ᵤ 𝓐)
 
-    φ : (x : 𝟙ᵤ) → (x ∈ B) ⇔ ∃ \(A : 𝓟 𝟙ᵤ) → (A ∈ 𝓐) × (x ∈ A)
+    φ : (x : 𝟙ᵤ) → (x ∈ B) ⇔ (∃ A ꞉ 𝓟 𝟙ᵤ , (A ∈ 𝓐) × (x ∈ A))
     φ = pr₂ (α 𝟙ᵤ 𝓐)
 
     Q : 𝓤 ̇
@@ -13915,7 +13941,7 @@ establish the existence.
     f : P → Q
     f p = b
      where
-      a : Σ \(A : 𝓟 𝟙ᵤ) → (A ∈ 𝓐) × (⋆ᵤ ∈ A)
+      a : Σ A ꞉ 𝓟 𝟙ᵤ , (A ∈ 𝓐) × (⋆ᵤ ∈ A)
       a = (λ (x : 𝟙ᵤ) → 𝟙ᵤ , 𝟙ᵤ-is-subsingleton) , p , ⋆ᵤ
 
       b : ⋆ᵤ ∈ B
@@ -13924,10 +13950,10 @@ establish the existence.
     g : Q → P
     g q = ∥∥-recursion i b a
      where
-      a : ∃ \(A : 𝓟 𝟙ᵤ) → (A ∈ 𝓐) × (⋆ᵤ ∈ A)
+      a : ∃ A ꞉ 𝓟 𝟙ᵤ , (A ∈ 𝓐) × (⋆ᵤ ∈ A)
       a = lr-implication (φ ⋆ᵤ) q
 
-      b : (Σ \(A : 𝓟 𝟙ᵤ) → (A ∈ 𝓐) × (⋆ᵤ ∈ A)) → P
+      b : (Σ A ꞉ 𝓟 𝟙ᵤ , (A ∈ 𝓐) × (⋆ᵤ ∈ A)) → P
       b (A , m , _) = m
 
     e : P ≃ Q
@@ -13943,7 +13969,7 @@ The converse also holds, with an easier construction:
  PR-gives-existence-of-unions {𝓤} ρ X 𝓐 = B , (λ x → lr x , rl x)
   where
    β : X → 𝓤 ⁺ ̇
-   β x = ∃ \(A : 𝓟 X) → (A ∈ 𝓐) × (x ∈ A)
+   β x = ∃ A ꞉ 𝓟 X , (A ∈ 𝓐) × (x ∈ A)
 
    i : (x : X) → is-subsingleton (β x)
    i x = ∃-is-subsingleton
@@ -13951,10 +13977,10 @@ The converse also holds, with an easier construction:
    B : 𝓟 X
    B x = (resize ρ (β x) (i x) , resize-is-subsingleton ρ (β x) (i x))
 
-   lr : (x : X) → x ∈ B → ∃ \(A : 𝓟 X) → (A ∈ 𝓐) × (x ∈ A)
+   lr : (x : X) → x ∈ B → ∃ A ꞉ 𝓟 X , (A ∈ 𝓐) × (x ∈ A)
    lr x = from-resize ρ (β x) (i x)
 
-   rl : (x : X) → (∃ \(A : 𝓟 X) → (A ∈ 𝓐) × (x ∈ A)) → x ∈ B
+   rl : (x : X) → (∃ A ꞉ 𝓟 X , (A ∈ 𝓐) × (x ∈ A)) → x ∈ B
    rl x = to-resize ρ (β x) (i x)
 \end{code}
 
@@ -13979,7 +14005,7 @@ module basic-powerset-development
 
 
   ⋃-property : {X : 𝓤 ̇ } (𝓐 : 𝓟𝓟 X)
-             → (x : X) → (x ∈ ⋃ 𝓐) ⇔ ∃ \(A : 𝓟 X) → (A ∈ 𝓐) × (x ∈ A)
+             → (x : X) → (x ∈ ⋃ 𝓐) ⇔ (∃ A ꞉ 𝓟 X , (A ∈ 𝓐) × (x ∈ A))
 
   ⋃-property 𝓐 = pr₂ (PR-gives-existence-of-unions ρ _ 𝓐)
 \end{code}
@@ -13991,8 +14017,7 @@ propositional resizing:
   intersections-exist :
     (X : 𝓤 ̇ )
     (𝓐 : 𝓟𝓟 X)
-       → Σ \(B : 𝓟 X)
-               → (x : X) → (x ∈ B) ⇔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A)
+       → Σ B ꞉ 𝓟 X , ((x : X) → (x ∈ B) ⇔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A))
 
   intersections-exist {𝓤} X 𝓐 = B , (λ x → lr x , rl x)
    where
@@ -14078,12 +14103,10 @@ sets.
 
 \begin{code}
   Top : (𝓤 : Universe) → 𝓤 ⁺⁺ ̇
-  Top 𝓤 = Σ \(X : 𝓤 ̇ )
-        → is-set X
-        × Σ \(𝓞 : 𝓟𝓟 X)
-        → full ∈ 𝓞
-        × ((U V : 𝓟 X) → U ∈ 𝓞 → V ∈ 𝓞 → (U ∩ V) ∈ 𝓞)
-        × ((𝓖 : 𝓟𝓟 X) → 𝓖 ⊆ 𝓞 → ⋃ 𝓖 ∈ 𝓞)
+  Top 𝓤 = Σ X ꞉ 𝓤 ̇ , is-set X
+                     × (Σ 𝓞 ꞉ 𝓟𝓟 X , full ∈ 𝓞
+                                   × ((U V : 𝓟 X) → U ∈ 𝓞 → V ∈ 𝓞 → (U ∩ V) ∈ 𝓞)
+                                   × ((𝓖 : 𝓟𝓟 X) → 𝓖 ⊆ 𝓞 → ⋃ 𝓖 ∈ 𝓞))
 \end{code}
 
 Notice that this jumps two universes.  It is also possible, with
@@ -14260,12 +14283,12 @@ into any set `A` of any universe `𝓦`.
                     → is-set A
                     → (f : X → A)
                     → ({x x' : X} → x ≈ x' → f x ≡ f x')
-                    → ∃! \(f' : X/≈ → A) → f' ∘ η ≡ f
+                    → ∃! f' ꞉ (X/≈ → A), f' ∘ η ≡ f
 
  universal-property {𝓦} A i f τ = e
   where
    G : X/≈ → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓦 ̇
-   G x' = Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a)
+   G x' = Σ \a → ∃ x ꞉ X , (η x ≡ x') × (f x ≡ a)
 
    φ : (x' : X/≈) → is-subsingleton (G x')
    φ = η-induction _ γ induction-step
@@ -14299,7 +14322,7 @@ into any set `A` of any universe `𝓦`.
    r : f' ∘ η ≡ f
    r = hunapply h
     where
-     g : (y : X) → ∃ \x → (η x ≡ η y) × (f x ≡ f' (η y))
+     g : (y : X) → ∃ x ꞉ X , (η x ≡ η y) × (f x ≡ f' (η y))
      g y = pr₂ (k (η y))
 
      j : (y : X) → (Σ \x → (η x ≡ η y) × (f x ≡ f' (η y))) → f'(η y) ≡ f y
@@ -14310,7 +14333,7 @@ into any set `A` of any universe `𝓦`.
      h : (y : X) → f'(η y) ≡ f y
      h y = ∥∥-recursion (i (f' (η y)) (f y)) (j y) (g y)
 
-   c : (σ : Σ \(f'' : X/≈ → A) → f'' ∘ η ≡ f) → (f' , r) ≡ σ
+   c : (σ : Σ f'' ꞉ (X/≈ → A), f'' ∘ η ≡ f) → (f' , r) ≡ σ
    c (f'' , s) = to-subtype-≡ (λ g → Π-is-set hfe (λ _ → i) (g ∘ η) f) t
     where
      w : ∀ x → f'(η x) ≡ f''(η x)
@@ -14319,7 +14342,7 @@ into any set `A` of any universe `𝓦`.
      t : f' ≡ f''
      t = hunapply (η-induction _ (λ x' → i (f' x') (f'' x')) w)
 
-   e : ∃! \(f' : X/≈ → A) → f' ∘ η ≡ f
+   e : ∃! f' ꞉ (X/≈ → A), f' ∘ η ≡ f
    e = (f' , r) , c
 \end{code}
 
@@ -14466,7 +14489,7 @@ the-subsingletons-are-the-subtypes-of-a-singleton' pe fe X = γ
 
 G↑-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
               → (X : 𝓤 ̇ )
-              → (A : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y) → 𝓦 ̇ )
+              → (A : (Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇  , X ≃ Y) → 𝓦 ̇ )
               → (a : A (Lift 𝓥 X , ≃-Lift X))
               → G↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡ a
 G↑-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
@@ -14475,14 +14498,14 @@ G↑-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
   transport A (refl t) a              ≡⟨ refl a                       ⟩
   a                                   ∎
  where
-  t : (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+  t : (Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇  , X ≃ Y)
   t = (Lift 𝓥 X , ≃-Lift X)
 
   p : t ≡ t
   p = univalence→'' {𝓤} {𝓤 ⊔ 𝓥} ua X t t
 
   q : p ≡ refl t
-  q = subsingletons-are-sets (Σ \(Y : 𝓤 ⊔ 𝓥 ̇ ) → X ≃ Y)
+  q = subsingletons-are-sets (Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇  , X ≃ Y)
        (univalence→'' {𝓤} {𝓤 ⊔ 𝓥} ua X) t t p (refl t)
 
 H↑-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
@@ -14493,22 +14516,22 @@ H↑-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
 H↑-≃-equation ua X A = G↑-≃-equation ua X (Σ-induction A)
 
 has-section-charac : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                   → ((y : Y) → Σ \(x : X) → f x ≡ y) ≃ has-section f
+                   → ((y : Y) → Σ x ꞉ X , f x ≡ y) ≃ has-section f
 has-section-charac f = ΠΣ-distr-≃
 
 retractions-into : 𝓤 ̇ → 𝓤 ⁺ ̇
-retractions-into {𝓤} Y = Σ \(X : 𝓤 ̇ ) → Y ◁ X
+retractions-into {𝓤} Y = Σ X ꞉ 𝓤 ̇  , Y ◁ X
 
 pointed-types : (𝓤 : Universe) → 𝓤 ⁺ ̇
-pointed-types 𝓤 = Σ \(X : 𝓤 ̇ ) → X
+pointed-types 𝓤 = Σ X ꞉ 𝓤 ̇  , X
 
 retraction-classifier : Univalence
                       → (Y : 𝓤 ̇ ) → retractions-into Y ≃ (Y → pointed-types 𝓤)
 retraction-classifier {𝓤} ua Y =
- retractions-into Y                                               ≃⟨ i      ⟩
- (Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → (y : Y) → Σ \(x : X) → f x ≡ y) ≃⟨ id-≃ _ ⟩
- ((𝓤 /[ id ] Y))                                                  ≃⟨ ii     ⟩
- (Y → pointed-types 𝓤)                                            ■
+ retractions-into Y                                              ≃⟨ i      ⟩
+ (Σ X ꞉ 𝓤 ̇  , Σ f ꞉ (X → Y) , ((y : Y) → Σ x ꞉ X , f x ≡ y))     ≃⟨ id-≃ _ ⟩
+ ((𝓤 /[ id ] Y))                                                 ≃⟨ ii     ⟩
+ (Y → pointed-types 𝓤)                                           ■
  where
   i  = ≃-sym (Σ-cong (λ X → Σ-cong (λ f → ΠΣ-distr-≃)))
   ii = special-map-classifier (ua 𝓤)
@@ -14526,13 +14549,13 @@ module surjection-classifier
   open basic-truncation-development pt hfe public
 
   _↠_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-  X ↠ Y = Σ \(f : X → Y) → is-surjection f
+  X ↠ Y = Σ f ꞉ (X → Y), is-surjection f
 
   surjections-into : 𝓤 ̇ → 𝓤 ⁺ ̇
-  surjections-into {𝓤} Y = Σ \(X : 𝓤 ̇ ) → X ↠ Y
+  surjections-into {𝓤} Y = Σ X ꞉ 𝓤 ̇  , X ↠ Y
 
   inhabited-types : (𝓤 : Universe) → 𝓤 ⁺ ̇
-  inhabited-types 𝓤 = Σ \(X : 𝓤 ̇ ) → ∥ X ∥
+  inhabited-types 𝓤 = Σ X ꞉ 𝓤 ̇  , ∥ X ∥
 
   surjection-classifier : Univalence
                         → (Y : 𝓤 ̇ )
@@ -14555,9 +14578,9 @@ Solutions are available [at the end](#additionalexercisessol).
  version from it:
 
 \begin{code}
-positive-cantors-diagonal : (e : ℕ → (ℕ → ℕ)) → Σ \(α : ℕ → ℕ) → (n : ℕ) → α ≢ e n
+positive-cantors-diagonal : (e : ℕ → (ℕ → ℕ)) → Σ α ꞉ (ℕ → ℕ), ((n : ℕ) → α ≢ e n)
 
-cantors-diagonal : ¬(Σ \(e : ℕ → (ℕ → ℕ)) → (α : ℕ → ℕ) → Σ \(n : ℕ) → α ≡ e n)
+cantors-diagonal : ¬(Σ e ꞉ (ℕ → (ℕ → ℕ)) , ((α : ℕ → ℕ) → Σ n ꞉ ℕ , α ≡ e n))
 \end{code}
 
 *Hint.* It may be helpful to prove that the function `succ` has no
@@ -14598,7 +14621,7 @@ subsingleton is the negation of some type.
 
 \begin{code}
 SN : ∀ 𝓤 → 𝓤 ⁺ ̇
-SN 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → Σ \(X : 𝓤 ̇ ) → P ⇔ ¬ X
+SN 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → Σ X ꞉ 𝓤 ̇  , P ⇔ ¬ X
 
 SN-gives-DNE : SN 𝓤 → DNE 𝓤
 
@@ -14621,7 +14644,7 @@ succ-no-fixed-point (succ n) = γ
 
 positive-cantors-diagonal = sol
  where
-  sol : (e : ℕ → (ℕ → ℕ)) → Σ \(α : ℕ → ℕ) → (n : ℕ) → α ≢ e n
+  sol : (e : ℕ → (ℕ → ℕ)) → Σ α ꞉ (ℕ → ℕ), ((n : ℕ) → α ≢ e n)
   sol e = (α , φ)
    where
     α : ℕ → ℕ
@@ -14636,7 +14659,7 @@ positive-cantors-diagonal = sol
 
 cantors-diagonal = sol
  where
-  sol : ¬(Σ \(e : ℕ → (ℕ → ℕ)) → (α : ℕ → ℕ) → Σ \(n : ℕ) → α ≡ e n)
+  sol : ¬(Σ e ꞉ (ℕ → (ℕ → ℕ)) , ((α : ℕ → ℕ) → Σ n ꞉ ℕ , α ≡ e n))
   sol (e , γ) = c
    where
     α : ℕ → ℕ
@@ -14645,7 +14668,7 @@ cantors-diagonal = sol
     φ : (n : ℕ) → α ≢ e n
     φ = pr₂ (positive-cantors-diagonal e)
 
-    b : Σ \(n : ℕ) → α ≡ e n
+    b : Σ n ꞉ ℕ , α ≡ e n
     b = γ α
 
     c : 𝟘
@@ -14808,6 +14831,9 @@ infixr  0 _≃⟨_⟩_
 infix   1 _■
 infix  40 _∈_
 infix  30 _[_,_]
+infixr -1 -Σ
+infixr -1 -Π
+infixr -1 -∃!
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
