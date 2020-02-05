@@ -9501,7 +9501,7 @@ to the identity equivalence.
 *Exercise*. Characterize identifications of monoids along the above lines. It
  is convenient to redefine the type of monoids to an equivalent type
  in the above format of structure with axioms. The following
-   developement solves this exercise.
+   development solves this exercise.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="pointed-types"></a> Pointed types
