@@ -1835,10 +1835,6 @@ write the *definiens* as
 
    > `(x : _) → f x ≡ g x`,
 
-or, with our `Π` notation,
-
-   > `Π \x → f x ≡ g x`,
-
 or, with our `domain` notation
 
    > `(x : domain f) → f x ≡ g x`.
@@ -12311,7 +12307,7 @@ which `Y` is a set:
 
  ∥∥-recursion-set {𝓤} {𝓥} X Y s f κ = f'
   where
-   ψ : (y y' : Y) → (Σ \x → f x ≡ y) → (Σ \x' → f x' ≡ y') → y ≡ y'
+   ψ : (y y' : Y) →  (Σ x ꞉ X , f x ≡ y) → (Σ x' ꞉ X , f x' ≡ y') → y ≡ y'
    ψ y y' (x , r) (x' , r') = y    ≡⟨ r ⁻¹   ⟩
                               f x  ≡⟨ κ x x' ⟩
                               f x' ≡⟨ r'     ⟩
@@ -14292,7 +14288,7 @@ into any set `A` of any universe `𝓦`.
  universal-property {𝓦} A i f τ = e
   where
    G : X/≈ → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓦 ̇
-   G x' = Σ \a → ∃ x ꞉ X , (η x ≡ x') × (f x ≡ a)
+   G x' = Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ x') × (f x ≡ a)
 
    φ : (x' : X/≈) → is-subsingleton (G x')
    φ = η-induction _ γ induction-step
@@ -14300,8 +14296,8 @@ into any set `A` of any universe `𝓦`.
      induction-step : (y : X) → is-subsingleton (G (η y))
      induction-step x (a , d) (b , e) = to-subtype-≡ (λ _ → ∃-is-subsingleton) p
       where
-       h : (Σ \x' → (η x' ≡ η x) × (f x' ≡ a))
-         → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))
+       h : (Σ x' ꞉ X , (η x' ≡ η x) × (f x' ≡ a))
+         → (Σ y' ꞉ X , (η y' ≡ η x) × (f y' ≡ b))
          → a ≡ b
        h (x' , r , s) (y' , t , u) = a    ≡⟨ s ⁻¹                         ⟩
                                      f x' ≡⟨ τ (η-equal-equiv (r ∙ t ⁻¹)) ⟩
@@ -14329,7 +14325,7 @@ into any set `A` of any universe `𝓦`.
      g : (y : X) → ∃ x ꞉ X , (η x ≡ η y) × (f x ≡ f' (η y))
      g y = pr₂ (k (η y))
 
-     j : (y : X) → (Σ \x → (η x ≡ η y) × (f x ≡ f' (η y))) → f'(η y) ≡ f y
+     j : (y : X) → (Σ x ꞉ X , (η x ≡ η y) × (f x ≡ f' (η y))) → f'(η y) ≡ f y
      j y (x , p , q) = f' (η y) ≡⟨ q ⁻¹                ⟩
                        f x      ≡⟨ τ (η-equal-equiv p) ⟩
                        f y      ∎
