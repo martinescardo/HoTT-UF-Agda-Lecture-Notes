@@ -1348,7 +1348,7 @@ We have the following uses of `Σ`.
 
   1. The more general type
 
-       > `Σ (x : X), A x`,
+       > `Σ x : X , A x`,
 
      if the type `X` stands for a mathematical object and `A` stands for a mathematical
      statement, represents *designated* existence
@@ -1361,20 +1361,20 @@ We have the following uses of `Σ`.
   1. Later we will discuss *unspecified* existence
 
 
-       > `∃ (x : X), A x`,
+       > `∃ x : X , A x`,
 
-     which will be obtained by a sort of quotient of `Σ (x : X), A x`,
+     which will be obtained by a sort of quotient of `Σ x : X , A x`,
      written
 
-       > `∥ Σ (x : X), A x ∥`,
+       > `∥ Σ x : X , A x ∥`,
 
-     that identifies all the elements of the type `Σ (x : X), A x` in
+     that identifies all the elements of the type `Σ x : X , A x` in
      a single equivalence class, called its subsingleton (or truth
      value or propositional) [truncation](HoTT-UF-Agda.html#truncation).
 
   1. Another reading of
 
-       > `Σ (x : X), A x`
+       > `Σ x : X , A x`
 
      is as
 
@@ -1388,25 +1388,25 @@ We have the following uses of `Σ`.
      have to be careful because if there is more than one element
      in the type `A x`, then `x` will occur more than once in this
      type. More precisely, for `a₀ a₁ : A x` we have inhabitants
-     `(x , a₀)` and `(x , a₁)` of the type `Σ (x : X), A x`.
+     `(x , a₀)` and `(x , a₁)` of the type `Σ x : X , A x`.
 
      In such situations, if we don't want that, we have to either
      ensure that the type `A x` has at most one element for every `x :
      X`, or instead consider the truncated type `∥ A x ∥` and write
 
-       > `Σ (x : X), ∥ A x ∥`.
+       > `Σ x : X , ∥ A x ∥`.
 
-     An example is the image of a function `f : X →
-     Y`, which will be defined to be
+     An example is the image of a function `f : X → Y`,
+     which will be defined to be
 
-       > `Σ (y : Y), ∥ Σ (x : X), f x ≡ y ∥`.
+       > `Σ y : Y , ∥ Σ x : X , f x ≡ y ∥`.
 
      This is the type of `y : Y` for which there is an unspecified
      `x : X` with `f x ≡ y`.
 
      (For constructively minded readers, we emphasize that this
      [doesn't erase](HoTT-UF-Agda.html#exiting-truncations) the
-     witness `x:X`.)
+     witness `x : X`.)
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="pitypes"></a> `Π` types
@@ -14394,6 +14394,9 @@ Univalent foundations have enough room for the constructive,
 non-constructive, pluralistic and neutral approaches to mathematics,
 and in this sense they are no different from e.g. set theoretic
 foundations.
+
+An example of a theorem of univalent mathematics that requires excluded middle is the
+[Cantor-Schröder-Bernstein for homotopy types, or ∞-groupoids](https://arxiv.org/abs/2002.07079), which is also discussed [this blog post](https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-%e2%88%9e-groupoids/) and [implemented in Agda](https://www.cs.bham.ac.uk/~mhe/agda-new/CantorSchroederBernstein.html).
 
 A major omission in these notes is a discussion of higher-inductive
 types.  On the other hand, these notes completely cover the
