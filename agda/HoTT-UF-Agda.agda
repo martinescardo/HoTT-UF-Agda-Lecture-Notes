@@ -3664,7 +3664,7 @@ ap-is-equiv-gives-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                             → is-embedding f
 
 ap-is-equiv-gives-embedding f i = embedding-criterion f
-                                   (λ x' x → ≃-sym (ap f {x'} {x} , (i x' x)))
+                                   (λ x' x → ≃-sym (ap f {x'} {x} , i x' x))
 
 embedding-gives-ap-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                             → is-embedding f

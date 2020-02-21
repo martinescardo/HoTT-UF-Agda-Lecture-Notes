@@ -5144,12 +5144,16 @@ univalence⇒ : is-univalent 𝓤
 
 univalence⇒ ua X = equiv-singleton-lemma X (Id→Eq X) (ua X)
 
-
 ⇒univalence : ((X : 𝓤 ̇ ) → is-singleton (Σ Y ꞉ 𝓤 ̇ , X ≃ Y))
             → is-univalent 𝓤
 
 ⇒univalence i X = singleton-equiv-lemma X (Id→Eq X) (i X)
 \end{code}
+
+(Of course, this doesn't say that there is only one type `Y` equivalent
+to `X`, or only one equivalence from `X` to `Y`, because equality of
+`Σ` types is given by transport in the second component along an
+identification in the first component.)
 
 We can replace *singleton* by *subsingleton* and still have a logical
 equivalence, and we sometimes need the characterization in this form:
@@ -5176,10 +5180,22 @@ Under univalence, we get induction principles for type equivalences,
 corresponding to the induction principles [`ℍ`](HoTT-UF-Agda.html#H)
 and [`𝕁`](HoTT-UF-Agda.html#J) for identifications.  To prove a
 property of equivalences, it is enough to prove it for the identity
-equivalence `id-≃ X` for all `X`. In order to also easily derive an
-equation for this, we perform the construction using the fact that
-univalence implies that `Σ Y ꞉ 𝓤 ̇ , X ≃ Y` is a subsingleton for
-any `X`.
+equivalence `id-≃ X` for all `X`.
+
+Our objective is to get the induction principles `ℍ-≃` and `𝕁-≃` below
+and their corresponding equations. As [above](HoTT-UF-Agda.html#ℍ), it
+is easy to define `𝕁-≃` from `ℍ-≃`, and it is harder to define `ℍ-≃`
+directly, and it is much harder to prove the desired equation for
+`ℍ-≃` directly. In order to make this easy, we define an auxiliary
+induction principle `𝔾-≃`, from which we trivially derive `ℍ-≃`, and
+whose equation is easy to prove.
+
+The reason the induction principle `𝔾-≃` and its equation are easy to
+construct and prove is that the type `Σ Y ꞉ 𝓤 ̇ , X ≃ Y` is a singleton
+by univalence, which considerably simplifies reasoning about
+transport. For `ℍ-≃` we consider `Y : 𝓤` and `e : X ≃ Y` separately,
+whereas for `G-≃` we treat them as a pair `(Y , e)`. The point is that the
+type of such pairs is a singleton by univalence.
 
 \begin{code}
 𝔾-≃ : is-univalent 𝓤
@@ -7353,7 +7369,7 @@ ap-is-equiv-gives-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                             → is-embedding f
 
 ap-is-equiv-gives-embedding f i = embedding-criterion f
-                                   (λ x' x → ≃-sym (ap f {x'} {x} , (i x' x)))
+                                   (λ x' x → ≃-sym (ap f {x'} {x} , i x' x))
 
 
 embedding-gives-ap-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
