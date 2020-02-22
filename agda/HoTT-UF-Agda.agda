@@ -957,10 +957,10 @@ Hedberg : {X : 𝓤 ̇ } (x : X)
 
 Hedberg {𝓤} {X} x c y p q =
 
- p                       ≡⟨ a y p                                     ⟩
- f x (refl x)⁻¹ ∙ f y p  ≡⟨ ap (λ - → (f x (refl x))⁻¹ ∙ -) (κ y p q) ⟩
- f x (refl x)⁻¹ ∙ f y q  ≡⟨ (a y q)⁻¹                                 ⟩
- q                       ∎
+ p                         ≡⟨ a y p                                     ⟩
+ (f x (refl x))⁻¹ ∙ f y p  ≡⟨ ap (λ - → (f x (refl x))⁻¹ ∙ -) (κ y p q) ⟩
+ (f x (refl x))⁻¹ ∙ f y q  ≡⟨ (a y q)⁻¹                                 ⟩
+ q                         ∎
 
  where
   f : (y : X) → x ≡ y → x ≡ y
@@ -2321,7 +2321,7 @@ transport-map-along-≃ {𝓤} ua {X} {Y} {Z} = 𝕁-≃ ua A a X Y
      p : Eq→Id ua X X (id-≃ X) ≡ refl X
      p = inverse-is-retraction (Id→Eq X X) (ua X X) (refl X)
 
-     q = ap (λ - → transport (λ - → - → Z) - g ) p
+     q = ap (λ - → transport (λ - → - → Z) - g) p
 
 is-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-hae f = Σ g ꞉ (codomain f → domain f)
@@ -2380,7 +2380,7 @@ ua-invertibles-are-haes ua f i = ua-equivs-are-haes ua f (invertibles-are-equivs
    ap h (η x)                      ∎
 
  where
-  i   = ap (λ - → η(h x) ∙ -) ((⁻¹-right∙ (η x))⁻¹)
+  i   = ap (η(h x) ∙_) ((⁻¹-right∙ (η x))⁻¹)
   ii  = (∙assoc (η (h x)) (η x) (η x ⁻¹))⁻¹
   iii = ap (λ - → η (h x) ∙ - ∙ η x ⁻¹) ((ap-id (η x))⁻¹)
   iv  = ~-naturality' h id η {h x} {x} {η x}
@@ -2401,27 +2401,27 @@ invertibles-are-haes f (g , η , ε) = g , η , ε' , τ
        ap (g ∘ f) (η x)  ≡⟨ ap-∘ f g (η x)             ⟩
        ap g (ap f (η x)) ∎
 
-   q = ap f (η (g (f x))) ∙ ε (f x)         ≡⟨ i   ⟩
-       ap f (ap g (ap f (η x))) ∙ ε (f x)   ≡⟨ ii  ⟩
-       ap (f ∘ g) (ap f (η x)) ∙ ε (f x)    ≡⟨ iii ⟩
-       ε (f (g (f x))) ∙ ap id (ap f (η x)) ≡⟨ iv  ⟩
-       ε (f (g (f x))) ∙ ap f (η x)         ∎
+   q = ap f (η (g (f x))) ∙ ε (f x)          ≡⟨ using-p         ⟩
+       ap f (ap g (ap f (η x))) ∙ ε (f x)    ≡⟨ using-ap-∘      ⟩
+       ap (f ∘ g) (ap f (η x))  ∙ ε (f x)    ≡⟨ by-~-naturality ⟩
+       ε (f (g (f x))) ∙ ap id (ap f (η x))  ≡⟨ using-ap-id     ⟩
+       ε (f (g (f x))) ∙ ap f (η x)          ∎
     where
-     i   = ap (λ - → - ∙ ε (f x)) (ap (ap f) p)
-     ii  = ap (λ - → - ∙ ε (f x)) ((ap-∘ g f (ap f (η x)))⁻¹)
-     iii = (~-naturality (f ∘ g) id ε {f (g (f x))} {f x} {ap f (η x)})⁻¹
-     iv  = ap (λ - → ε (f (g (f x))) ∙ -) ((ap-∘ f id (η x))⁻¹)
+     using-p          = ap (λ - → ap f - ∙ ε (f x)) p
+     using-ap-∘       = ap (_∙ ε (f x)) ((ap-∘ g f (ap f (η x)))⁻¹)
+     by-~-naturality  = (~-naturality (f ∘ g) id ε {f (g (f x))} {f x} {ap f (η x)})⁻¹
+     using-ap-id      = ap (ε (f (g (f x))) ∙_) (ap-id (ap f (η x)))
 
-   τ = ap f (η x)                                           ≡⟨ refl-left ⁻¹ ⟩
-       refl (f (g (f x))) ∙ ap f (η x)                      ≡⟨ i            ⟩
-       (ε (f (g (f x))))⁻¹ ∙ ε (f (g (f x))) ∙ ap f (η x)   ≡⟨ ii           ⟩
-       (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ iii          ⟩
-       (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ≡⟨ refl _       ⟩
+   τ = ap f (η x)                                           ≡⟨ refl-left ⁻¹   ⟩
+       refl (f (g (f x))) ∙ ap f (η x)                      ≡⟨ using-⁻¹-left∙ ⟩
+       (ε (f (g (f x))))⁻¹ ∙ ε (f (g (f x))) ∙ ap f (η x)   ≡⟨ using-∙assoc   ⟩
+       (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ using-q        ⟩
+       (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ≡⟨ refl _         ⟩
        ε' (f x)                                             ∎
     where
-     i   = ap (λ - → - ∙ ap f (η x)) ((⁻¹-left∙ (ε (f (g (f x)))))⁻¹)
-     ii  = ∙assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η x))
-     iii = ap (λ - → (ε (f (g (f x))))⁻¹ ∙ -) (q ⁻¹)
+     using-⁻¹-left∙ = ap (_∙ ap f (η x)) ((⁻¹-left∙ (ε (f (g (f x)))))⁻¹)
+     using-∙assoc   = ∙assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η x))
+     using-q        = ap ((ε (f (g (f x))))⁻¹ ∙_) (q ⁻¹)
 
 equivs-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → is-equiv f → is-hae f
@@ -2965,7 +2965,6 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
      where
       v = λ n →
        s (p , K) (succ n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))                  ≡⟨ refl _ ⟩
-       K n ∙  ap g (s (p , K) n) ∙  refl _ ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹)) ≡⟨ refl _ ⟩
        K n ∙  ap g (s (p , K) n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))           ≡⟨ i   n  ⟩
        K n ∙  ap g (s (p , K) n) ∙  ap g ((s (p , K) n) ⁻¹)                    ≡⟨ ii  n  ⟩
        K n ∙ (ap g (s (p , K) n) ∙  ap g ((s (p , K) n) ⁻¹))                   ≡⟨ iii n  ⟩
@@ -2973,7 +2972,7 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
        K n ∙ refl _                                                            ≡⟨ refl _ ⟩
        K n                                                                     ∎
         where
-         i   = λ n → ap (λ - → K n ∙ ap g (s (p , K) n) ∙ -)
+         i   = λ n → ap (K n ∙ ap g (s (p , K) n) ∙_)
                         (refl-left {_} {_} {_} {_} {ap g ((s (p , K) n)⁻¹)})
          ii  = λ n → ∙assoc (K n) (ap g (s (p , K) n)) (ap g ((s (p , K) n)⁻¹))
          iii = λ n → ap (λ - → K n ∙ (ap g (s (p , K) n) ∙ -)) (ap⁻¹ g (s (p , K) n) ⁻¹)
