@@ -14428,8 +14428,13 @@ non-constructive, pluralistic and neutral approaches to mathematics,
 and in this sense they are no different from e.g. set theoretic
 foundations.
 
-An example of a theorem of univalent mathematics that requires excluded middle is
-[Cantor-Schröder-Bernstein for homotopy types, or ∞-groupoids](https://arxiv.org/abs/2002.07079), which is also discussed [this blog post](https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-%e2%88%9e-groupoids/) and is [implemented in Agda](https://www.cs.bham.ac.uk/~mhe/agda-new/CantorSchroederBernstein.html).
+An example of a theorem of univalent mathematics that requires
+excluded middle is [Cantor-Schröder-Bernstein for homotopy types, or
+∞-groupoids](https://arxiv.org/abs/2002.07079), which is also
+discussed in [this blog
+post](https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-%e2%88%9e-groupoids/)
+and is [implemented in
+Agda](https://www.cs.bham.ac.uk/~mhe/agda-new/CantorSchroederBernstein.html).
 
 A major omission in these notes is a discussion of higher-inductive
 types.  On the other hand, these notes completely cover the
