@@ -2395,7 +2395,7 @@ equivs-are-haes {𝓤} {𝓥} {X} {Y} f e = (g , η , ε , τ)
         transport (λ - → f (pr₁ -) ≡ f x) p          (pr₂ φ)   ≡⟨ apd pr₂ p ⟩
         refl (f x)                                             ∎
      where
-      i = (transport-ap (λ - → f - ≡ f x) pr₁ p (ε (f x)))⁻¹
+      i = (transport-ap (λ - → f - ≡ f x) pr₁ p b)⁻¹
 
     γ : ap f (η x) ≡ ε (f x)
     γ = lemma a b q
@@ -2404,6 +2404,30 @@ half-adjointness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f) 
                  → ap f (inverse-is-retraction f e x) ≡ inverse-is-section f e (f x)
 
 half-adjointness {𝓤} {𝓥} {X} {Y} f e = pr₂ (pr₂ (pr₂ (equivs-are-haes f e)))
+
+equivs-are-haes' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                 → is-equiv f → is-hae f
+
+equivs-are-haes' f e = (inverse f e ,
+                        inverse-is-retraction f e ,
+                        inverse-is-section f e ,
+                        τ)
+ where
+  τ : ∀ x → ap f (inverse-is-retraction f e x) ≡ inverse-is-section f e (f x)
+  τ x = α (ap pr₁ p) (pr₂ φ) q
+   where
+    φ : fiber f (f x)
+    φ = pr₁ (e (f x))
+
+    p : φ ≡ (x , refl (f x))
+    p = pr₂ (e (f x)) (x , refl (f x))
+
+    α : ∀ {x'} (a : x' ≡ x) (b : f x' ≡ f x)
+      → transport (λ - → f - ≡ f x) a b ≡ refl (f x) → ap f a ≡ b
+    α (refl _) b q = q ⁻¹
+
+    q : transport (λ - → f - ≡ f x) (ap pr₁ p) (pr₂ φ) ≡ refl (f x)
+    q = (transport-ap (λ - → f - ≡ f x) pr₁ p ((pr₂ φ)))⁻¹ ∙ apd pr₂ p
 
 ~-naturality : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
                (f g : X → A) (H : f ∼ g) {x y : X} {p : x ≡ y}
