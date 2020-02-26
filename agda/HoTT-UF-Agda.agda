@@ -2348,12 +2348,6 @@ ua-equivs-are-haes : is-univalent 𝓤
 
 ua-equivs-are-haes ua {X} {Y} = 𝕁-equiv ua (λ X Y f → is-hae f) id-is-hae X Y
 
-ua-invertibles-are-haes : is-univalent 𝓤
-                        → {X Y : 𝓤 ̇ } (f : X → Y)
-                        → invertible f → is-hae f
-
-ua-invertibles-are-haes ua f i = ua-equivs-are-haes ua f (invertibles-are-equivs f i)
-
 equivs-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → is-equiv f → is-hae f
 
@@ -2377,20 +2371,20 @@ equivs-are-haes {𝓤} {𝓥} {X} {Y} f e = (g , η , ε , τ)
     p : φ ≡ (x , refl (f x))
     p = centrality (fiber f (f x)) (e (f x)) (x , refl (f x))
 
-    x' : X
-    x' = fiber-point φ
+    by-definition-of-g : g (f x) ≡ fiber-point φ
+    by-definition-of-g = refl _
 
-    a : x' ≡ x
+    a : g (f x) ≡ x
     a = ap fiber-point p
 
-    b : f x' ≡ f x
+    b : f (g (f x)) ≡ f x
     b = fiber-identification φ
 
-    η-unfolded : η x ≡ a
-    η-unfolded = refl _
+    by-definition-of-η : η x ≡ a
+    by-definition-of-η = refl _
 
-    ε-unfolded : ε (f x) ≡ b
-    ε-unfolded = refl _
+    by-definition-of-ε : ε (f x) ≡ b
+    by-definition-of-ε = refl _
 
     α : {x x' : X} (a : x' ≡ x) (b : f x' ≡ f x)
       → transport (λ - → f - ≡ f x) a b ≡ refl (f x) → ap f a ≡ b
