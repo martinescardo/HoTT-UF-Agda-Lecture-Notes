@@ -2400,6 +2400,11 @@ equivs-are-haes {𝓤} {𝓥} {X} {Y} f e = (g , η , ε , τ)
     γ : ap f (η x) ≡ ε (f x)
     γ = lemma a b q
 
+half-adjointness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f) (x : X)
+                 → ap f (inverse-is-retraction f e x) ≡ inverse-is-section f e (f x)
+
+half-adjointness {𝓤} {𝓥} {X} {Y} f e = pr₂ (pr₂ (pr₂ (equivs-are-haes f e)))
+
 ~-naturality : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
                (f g : X → A) (H : f ∼ g) {x y : X} {p : x ≡ y}
              → H x ∙ ap g p ≡ ap f p ∙ H y
