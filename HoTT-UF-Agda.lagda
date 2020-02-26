@@ -5489,8 +5489,9 @@ haes-are-equivs : {X Y : 𝓤 ̇ } (f : X → Y)
 haes-are-equivs f i = invertibles-are-equivs f (haes-are-invertible f i)
 \end{code}
 
-To recover the constraint for all invertible maps, under univalence, it is
-enough to give the constraint for identity maps:
+To recover the constraint for all equivalences (and hence for all
+invertible maps), under univalence, it is enough to give the
+constraint for identity maps:
 
 \begin{code}
 id-is-hae : (X : 𝓤 ̇ ) → is-hae (𝑖𝑑 X)
@@ -5549,7 +5550,7 @@ equivs-are-haes {𝓤} {𝓥} {X} {Y} f e = (g , η , ε , τ)
 
     lemma : {x' : X} (a : x' ≡ x) (b : f x' ≡ f x)
           → transport (λ - → f - ≡ f x) a b ≡ refl (f x) → ap f a ≡ b
-    lemma (refl _) b q = q ⁻¹
+    lemma (refl x) b q = q ⁻¹
 
     q = transport (λ - → f - ≡ f x)       a          b         ≡⟨ refl _    ⟩
         transport (λ - → f - ≡ f x)       (ap pr₁ p) (pr₂ φ)   ≡⟨ i         ⟩
@@ -5590,7 +5591,7 @@ equivs-are-haes' f e = (inverse f e ,
 
     lemma : ∀ {x'} (a : x' ≡ x) (b : f x' ≡ f x)
           → transport (λ - → f - ≡ f x) a b ≡ refl (f x) → ap f a ≡ b
-    lemma (refl _) b q = q ⁻¹
+    lemma (refl x) b q = q ⁻¹
 
     q : transport (λ - → f - ≡ f x) (ap pr₁ p) (pr₂ φ) ≡ refl (f x)
     q = (transport-ap (λ - → f - ≡ f x) pr₁ p ((pr₂ φ)))⁻¹ ∙ apd pr₂ p
