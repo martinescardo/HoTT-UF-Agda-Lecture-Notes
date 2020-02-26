@@ -5529,11 +5529,11 @@ equivs-are-haes {𝓤} {𝓥} {X} {Y} f e = (g , η , ε , τ)
     φ : fiber f (f x)
     φ = center (fiber f (f x)) (e (f x))
 
-    p : φ ≡ (x , refl (f x))
-    p = centrality (fiber f (f x)) (e (f x)) (x , refl (f x))
-
     by-definition-of-g : g (f x) ≡ fiber-point φ
     by-definition-of-g = refl _
+
+    p : φ ≡ (x , refl (f x))
+    p = centrality (fiber f (f x)) (e (f x)) (x , refl (f x))
 
     a : g (f x) ≡ x
     a = ap fiber-point p
@@ -5547,7 +5547,7 @@ equivs-are-haes {𝓤} {𝓥} {X} {Y} f e = (g , η , ε , τ)
     by-definition-of-ε : ε (f x) ≡ b
     by-definition-of-ε = refl _
 
-    α : {x x' : X} (a : x' ≡ x) (b : f x' ≡ f x)
+    α : {x' : X} (a : x' ≡ x) (b : f x' ≡ f x)
       → transport (λ - → f - ≡ f x) a b ≡ refl (f x) → ap f a ≡ b
     α (refl _) b q = q ⁻¹
 
