@@ -2386,9 +2386,9 @@ equivs-are-haes {𝓤} {𝓥} {X} {Y} f e = (g , η , ε , τ)
     by-definition-of-ε : ε (f x) ≡ b
     by-definition-of-ε = refl _
 
-    α : {x' : X} (a : x' ≡ x) (b : f x' ≡ f x)
-      → transport (λ - → f - ≡ f x) a b ≡ refl (f x) → ap f a ≡ b
-    α (refl _) b q = q ⁻¹
+    lemma : {x' : X} (a : x' ≡ x) (b : f x' ≡ f x)
+          → transport (λ - → f - ≡ f x) a b ≡ refl (f x) → ap f a ≡ b
+    lemma (refl _) b q = q ⁻¹
 
     q = transport (λ - → f - ≡ f x)       a          b         ≡⟨ refl _    ⟩
         transport (λ - → f - ≡ f x)       (ap pr₁ p) (pr₂ φ)   ≡⟨ i         ⟩
@@ -2398,7 +2398,7 @@ equivs-are-haes {𝓤} {𝓥} {X} {Y} f e = (g , η , ε , τ)
       i = (transport-ap (λ - → f - ≡ f x) pr₁ p (ε (f x)))⁻¹
 
     γ : ap f (η x) ≡ ε (f x)
-    γ = α a b q
+    γ = lemma a b q
 
 ~-naturality : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
                (f g : X → A) (H : f ∼ g) {x y : X} {p : x ≡ y}
