@@ -2329,12 +2329,12 @@ is-hae f = Σ g ꞉ (codomain f → domain f)
          , Σ ε ꞉ f ∘ g ∼ id
          , ((x : domain f) → ap f (η x) ≡ ε (f x))
 
-haes-are-invertible : {X Y : 𝓤 ̇ } (f : X → Y)
+haes-are-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y)
                     → is-hae f → invertible f
 
 haes-are-invertible f (g , η , ε , τ) = g , η , ε
 
-haes-are-equivs : {X Y : 𝓤 ̇ } (f : X → Y)
+haes-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y)
                 → is-hae f → is-equiv f
 
 haes-are-equivs f i = invertibles-are-equivs f (haes-are-invertible f i)
@@ -2347,6 +2347,12 @@ ua-equivs-are-haes : is-univalent 𝓤
                    → is-equiv f → is-hae f
 
 ua-equivs-are-haes ua {X} {Y} = 𝕁-equiv ua (λ X Y f → is-hae f) id-is-hae X Y
+
+transport-ap-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                 {x x' : X} (a : x' ≡ x) (b : f x' ≡ f x)
+               → (transport (λ - → f - ≡ f x) a b ≡ refl (f x)) ≃ (ap f a ≡ b)
+
+transport-ap-≃ f (refl x) b = ⁻¹-≃ b (refl (f x))
 
 equivs-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → is-equiv f → is-hae f
@@ -2386,10 +2392,6 @@ equivs-are-haes {𝓤} {𝓥} {X} {Y} f e = (g , η , ε , τ)
     by-definition-of-ε : ε (f x) ≡ b
     by-definition-of-ε = refl _
 
-    lemma : {x' : X} (a : x' ≡ x) (b : f x' ≡ f x)
-          → transport (λ - → f - ≡ f x) a b ≡ refl (f x) → ap f a ≡ b
-    lemma (refl x) b q = q ⁻¹
-
     q = transport (λ - → f - ≡ f x)       a          b         ≡⟨ refl _    ⟩
         transport (λ - → f - ≡ f x)       (ap pr₁ p) (pr₂ φ)   ≡⟨ i         ⟩
         transport (λ - → f (pr₁ -) ≡ f x) p          (pr₂ φ)   ≡⟨ apd pr₂ p ⟩
@@ -2398,12 +2400,18 @@ equivs-are-haes {𝓤} {𝓥} {X} {Y} f e = (g , η , ε , τ)
       i = (transport-ap (λ - → f - ≡ f x) pr₁ p b)⁻¹
 
     γ : ap f (η x) ≡ ε (f x)
-    γ = lemma a b q
+    γ = ⌜ transport-ap-≃ f a b ⌝ q
 
 half-adjointness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f) (x : X)
                  → ap f (inverse-is-retraction f e x) ≡ inverse-is-section f e (f x)
 
 half-adjointness {𝓤} {𝓥} {X} {Y} f e = pr₂ (pr₂ (pr₂ (equivs-are-haes f e)))
+
+equiv-invertible-hae-factorization : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                   → equivs-are-invertible f
+                                   ∼ haes-are-invertible f ∘ equivs-are-haes f
+
+equiv-invertible-hae-factorization f e = refl _
 
 equivs-are-haes' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                  → is-equiv f → is-hae f
@@ -2414,17 +2422,13 @@ equivs-are-haes' f e = (inverse f e ,
                         τ)
  where
   τ : ∀ x → ap f (inverse-is-retraction f e x) ≡ inverse-is-section f e (f x)
-  τ x = lemma (ap pr₁ p) (pr₂ φ) q
+  τ x = ⌜ transport-ap-≃ f (ap pr₁ p) (pr₂ φ) ⌝ q
    where
     φ : fiber f (f x)
     φ = pr₁ (e (f x))
 
     p : φ ≡ (x , refl (f x))
     p = pr₂ (e (f x)) (x , refl (f x))
-
-    lemma : ∀ {x'} (a : x' ≡ x) (b : f x' ≡ f x)
-          → transport (λ - → f - ≡ f x) a b ≡ refl (f x) → ap f a ≡ b
-    lemma (refl x) b q = q ⁻¹
 
     q : transport (λ - → f - ≡ f x) (ap pr₁ p) (pr₂ φ) ≡ refl (f x)
     q = (transport-ap (λ - → f - ≡ f x) pr₁ p ((pr₂ φ)))⁻¹ ∙ apd pr₂ p
