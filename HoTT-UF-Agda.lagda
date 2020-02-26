@@ -5510,12 +5510,68 @@ ua-invertibles-are-haes : is-univalent 𝓤
 ua-invertibles-are-haes ua f i = ua-equivs-are-haes ua f (invertibles-are-equivs f i)
 \end{code}
 
-The above can be proved without univalence as follows, with a more
-complicated argument coming from [category
-theory](https://ncatlab.org/nlab/show/adjoint+equivalence). This
-argument also allows us to have `X` and `Y` in different universes (an
-example of an equivalence of types in different universes is
-`Id→Eq`, as stated by univalence).
+The above can be proved without univalence as follows. This argument
+also allows us to have `X` and `Y` in different universes (an example
+of an equivalence of types in different universes is `Id→Eq`, as
+stated by univalence).
+
+\begin{code}
+equivs-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                → is-equiv f → is-hae f
+
+equivs-are-haes {𝓤} {𝓥} {X} {Y} f e = (g , η , ε , τ)
+ where
+  g : Y → X
+  g = inverse f e
+
+  η : g ∘ f ∼ id
+  η = inverse-is-retraction f e
+
+  ε : f ∘ g ∼ id
+  ε = inverse-is-section f e
+
+  τ : (x : X) → ap f (η x) ≡ ε (f x)
+  τ x = γ
+   where
+    φ : fiber f (f x)
+    φ = center (fiber f (f x)) (e (f x))
+
+    p : φ ≡ (x , refl (f x))
+    p = centrality (fiber f (f x)) (e (f x)) (x , refl (f x))
+
+    x' : X
+    x' = fiber-point φ
+
+    a : x' ≡ x
+    a = ap fiber-point p
+
+    b : f x' ≡ f x
+    b = fiber-identification φ
+
+    η-unfolded : η x ≡ a
+    η-unfolded = refl _
+
+    ε-unfolded : ε (f x) ≡ b
+    ε-unfolded = refl _
+
+    α : {x x' : X} (a : x' ≡ x) (b : f x' ≡ f x)
+      → transport (λ - → f - ≡ f x) a b ≡ refl (f x) → ap f a ≡ b
+    α (refl _) b q = q ⁻¹
+
+    q = transport (λ - → f - ≡ f x)       a          b         ≡⟨ refl _    ⟩
+        transport (λ - → f - ≡ f x)       (ap pr₁ p) (pr₂ φ)   ≡⟨ i         ⟩
+        transport (λ - → f (pr₁ -) ≡ f x) p          (pr₂ φ)   ≡⟨ apd pr₂ p ⟩
+        refl (f x)                                             ∎
+     where
+      i = (transport-ap (λ - → f - ≡ f x) pr₁ p (ε (f x)))⁻¹
+
+    γ : ap f (η x) ≡ ε (f x)
+    γ = α a b q
+\end{code}
+
+We also include the proof of the HoTT Book, which instead assumes that
+`f` is invertible, with an argument coming from [category
+theory](https://ncatlab.org/nlab/show/adjoint+equivalence).
 
 We first need some naturality lemmas:
 
@@ -5574,33 +5630,27 @@ invertibles-are-haes f (g , η , ε) = g , η , ε' , τ
        ap (g ∘ f) (η x)  ≡⟨ ap-∘ f g (η x)             ⟩
        ap g (ap f (η x)) ∎
 
-   q = ap f (η (g (f x))) ∙ ε (f x)          ≡⟨ using-p         ⟩
-       ap f (ap g (ap f (η x))) ∙ ε (f x)    ≡⟨ using-ap-∘      ⟩
+   q = ap f (η (g (f x))) ∙ ε (f x)          ≡⟨ by-p            ⟩
+       ap f (ap g (ap f (η x))) ∙ ε (f x)    ≡⟨ by-ap-∘         ⟩
        ap (f ∘ g) (ap f (η x))  ∙ ε (f x)    ≡⟨ by-~-naturality ⟩
-       ε (f (g (f x))) ∙ ap id (ap f (η x))  ≡⟨ using-ap-id     ⟩
+       ε (f (g (f x))) ∙ ap id (ap f (η x))  ≡⟨ by-ap-id        ⟩
        ε (f (g (f x))) ∙ ap f (η x)          ∎
     where
-     using-p          = ap (λ - → ap f - ∙ ε (f x)) p
-     using-ap-∘       = ap (_∙ ε (f x)) ((ap-∘ g f (ap f (η x)))⁻¹)
-     by-~-naturality  = (~-naturality (f ∘ g) id ε {f (g (f x))} {f x} {ap f (η x)})⁻¹
-     using-ap-id      = ap (ε (f (g (f x))) ∙_) (ap-id (ap f (η x)))
+     by-p            = ap (λ - → ap f - ∙ ε (f x)) p
+     by-ap-∘         = ap (_∙ ε (f x)) ((ap-∘ g f (ap f (η x)))⁻¹)
+     by-~-naturality = (~-naturality (f ∘ g) id ε {f (g (f x))} {f x} {ap f (η x)})⁻¹
+     by-ap-id        = ap (ε (f (g (f x))) ∙_) (ap-id (ap f (η x)))
 
-   τ = ap f (η x)                                           ≡⟨ refl-left ⁻¹   ⟩
-       refl (f (g (f x))) ∙ ap f (η x)                      ≡⟨ using-⁻¹-left∙ ⟩
-       (ε (f (g (f x))))⁻¹ ∙ ε (f (g (f x))) ∙ ap f (η x)   ≡⟨ using-∙assoc   ⟩
-       (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ using-q        ⟩
-       (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ≡⟨ refl _         ⟩
+   τ = ap f (η x)                                           ≡⟨ refl-left ⁻¹ ⟩
+       refl (f (g (f x)))                     ∙ ap f (η x)  ≡⟨ by-⁻¹-left∙  ⟩
+       (ε (f (g (f x))))⁻¹ ∙  ε (f (g (f x))) ∙ ap f (η x)  ≡⟨ by-∙assoc    ⟩
+       (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ by-q         ⟩
+       (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ≡⟨ refl _       ⟩
        ε' (f x)                                             ∎
     where
-     using-⁻¹-left∙ = ap (_∙ ap f (η x)) ((⁻¹-left∙ (ε (f (g (f x)))))⁻¹)
-     using-∙assoc   = ∙assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η x))
-     using-q        = ap ((ε (f (g (f x))))⁻¹ ∙_) (q ⁻¹)
-
-
-equivs-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                → is-equiv f → is-hae f
-
-equivs-are-haes f i = invertibles-are-haes f (equivs-are-invertible f i)
+     by-⁻¹-left∙ = ap (_∙ ap f (η x)) ((⁻¹-left∙ (ε (f (g (f x)))))⁻¹)
+     by-∙assoc   = ∙assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η x))
+     by-q        = ap ((ε (f (g (f x))))⁻¹ ∙_) (q ⁻¹)
 \end{code}
 
 Here is a use of the half adjoint condition, where, compared to
