@@ -7012,10 +7012,7 @@ being-hae-is-subsingleton fe₀ fe₁ fe₂ {X} {Y} f = subsingleton-criterion' 
     c x = singletons-are-sets (fiber f (f x)) (haes-are-equivs f (g₀ , ε₀ , η₀ , τ₀) (f x))
 
     d : ((g , ε) : has-section f) → is-subsingleton (∀ x → (g (f x) , ε (f x)) ≡ (x , refl (f x)))
-    d (g , ε) = Π-is-subsingleton fe₂ u
-     where
-      u : (x : X) → is-subsingleton ((g (f x) , ε (f x)) ≡ (x , refl (f x)))
-      u x = c x (g (f x) , ε (f x)) (x , refl (f x))
+    d (g , ε) = Π-is-subsingleton fe₂ (λ x → c x (g (f x) , ε (f x)) (x , refl (f x)))
 
     e : is-subsingleton (Σ (g , ε) ꞉ has-section f , ∀ x → (g (f x) , ε (f x)) ≡ (x , refl (f x)))
     e = Σ-is-subsingleton (at-most-one-section fe₀ fe₁ f (g₀ , ε₀)) d
