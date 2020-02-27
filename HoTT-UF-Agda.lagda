@@ -4453,6 +4453,10 @@ subsingleton-criterion : {X : 𝓤 ̇ }
                        → (X → is-singleton X)
                        → is-subsingleton X
 
+subsingleton-criterion' : {X : 𝓤 ̇ }
+                        → (X → is-subsingleton X)
+                        → is-subsingleton X
+
 retract-of-subsingleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                         → Y ◁ X → is-subsingleton X → is-subsingleton Y
 
@@ -4685,6 +4689,12 @@ subsingleton-criterion = sol
  where
   sol : {X : 𝓤 ̇ } → (X → is-singleton X) → is-subsingleton X
   sol f x = singletons-are-subsingletons (domain f) (f x) x
+
+
+subsingleton-criterion' = sol
+ where
+  sol : {X : 𝓤 ̇ } → (X → is-subsingleton X) → is-subsingleton X
+  sol f x y = f x x y
 
 
 retract-of-subsingleton = sol
@@ -6974,7 +6984,7 @@ being-hae-is-subsingleton : dfunext 𝓥 𝓤 → hfunext 𝓥 𝓥 → dfunext 
                           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                           → is-subsingleton (is-hae f)
 
-being-hae-is-subsingleton fe₀ fe₁ fe₂ {X} {Y} f (g₀ , ε₀ , η₀ , τ₀) = γ (g₀ , ε₀ , η₀ , τ₀)
+being-hae-is-subsingleton fe₀ fe₁ fe₂ {X} {Y} f = subsingleton-criterion' γ
  where
   a = λ g ε x
     → ((g (f x) , ε (f x)) ≡ (x , refl (f x)))                                   ≃⟨ i  g ε x ⟩
@@ -6995,23 +7005,24 @@ being-hae-is-subsingleton fe₀ fe₁ fe₂ {X} {Y} f (g₀ , ε₀ , η₀ , τ
     iii = Σ-cong (λ g → Σ-cong (λ ε → ΠΣ-distr-≃))
     iv  = Σ-cong (λ g → Σ-flip)
 
-  c : (x : X) → is-set (fiber f (f x))
-  c x = singletons-are-sets (fiber f (f x)) (haes-are-equivs f (g₀ , ε₀ , η₀ , τ₀) (f x))
-
-  d : ((g , ε) : has-section f) → is-subsingleton (∀ x → (g (f x) , ε (f x)) ≡ (x , refl (f x)))
-  d (g , ε) = Π-is-subsingleton fe₂ u
+  γ : is-hae f → is-subsingleton (is-hae f)
+  γ (g₀ , ε₀ , η₀ , τ₀) = i
    where
-    u : (x : X) → is-subsingleton ((g (f x) , ε (f x)) ≡ (x , refl (f x)))
-    u x = c x (g (f x) , ε (f x)) (x , refl (f x))
+    c : (x : X) → is-set (fiber f (f x))
+    c x = singletons-are-sets (fiber f (f x)) (haes-are-equivs f (g₀ , ε₀ , η₀ , τ₀) (f x))
 
-  e : is-subsingleton (Σ (g , ε) ꞉ has-section f , ∀ x → (g (f x) , ε (f x)) ≡ (x , refl (f x)))
-  e = Σ-is-subsingleton (at-most-one-section fe₀ fe₁ f (g₀ , ε₀)) d
+    d : ((g , ε) : has-section f) → is-subsingleton (∀ x → (g (f x) , ε (f x)) ≡ (x , refl (f x)))
+    d (g , ε) = Π-is-subsingleton fe₂ u
+     where
+      u : (x : X) → is-subsingleton ((g (f x) , ε (f x)) ≡ (x , refl (f x)))
+      u x = c x (g (f x) , ε (f x)) (x , refl (f x))
 
-  γ : is-subsingleton (is-hae f)
-  γ = equiv-to-subsingleton (≃-sym b) e
+    e : is-subsingleton (Σ (g , ε) ꞉ has-section f , ∀ x → (g (f x) , ε (f x)) ≡ (x , refl (f x)))
+    e = Σ-is-subsingleton (at-most-one-section fe₀ fe₁ f (g₀ , ε₀)) d
+
+    i : is-subsingleton (is-hae f)
+    i = equiv-to-subsingleton (≃-sym b) e
 \end{code}
-
-
 
 Another consequence of function extensionality is that emptiness is a
 subsingleton:
