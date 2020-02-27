@@ -3853,7 +3853,7 @@ Mathematically, what happens is that the type
 
   * `f` is an equivalence
 
-is a retract of the type
+[is a retract](HoTT-UF-Agda.html#equivalence-property-is-retract-of-invertibility-data) of the type
 
   * `f` is invertible.
 
@@ -4030,7 +4030,7 @@ inversion-involutive f e = refl f
 \end{code}
 
 To see that the above procedures do exhibit the type "`f` is an
-equivalence" as a retract of the type "`f` is invertible", it suffices
+equivalence" as a retract of the type "`f` is invertible", it [suffices](HoTT-UF-Agda.html#subsingletons-are-retracts-of-logically-equivalent-types)
 to show that [it is a
 subsingleton](HoTT-UF-Agda.html#being-equiv-is-subsingleton).
 
@@ -6256,8 +6256,34 @@ being-equiv-is-subsingleton : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔
 
 being-equiv-is-subsingleton fe fe' f = Π-is-subsingleton fe
                                         (λ x → being-singleton-is-subsingleton fe')
+\end{code}
+
+In passing, we fulfill a promise made above:
+
+\begin{code}
+subsingletons-are-retracts-of-logically-equivalent-types : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                                         → is-subsingleton X
+                                                         → (X ⇔ Y)
+                                                         → X ◁ Y
+
+subsingletons-are-retracts-of-logically-equivalent-types i (f , g) = g , f , η
+ where
+  η : g ∘ f ∼ id
+  η x = i (g (f x)) x
 
 
+equivalence-property-is-retract-of-invertibility-data : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+                                                      → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                                      → is-equiv f ◁ invertible f
+
+equivalence-property-is-retract-of-invertibility-data fe fe' f =
+  subsingletons-are-retracts-of-logically-equivalent-types
+   (being-equiv-is-subsingleton fe fe' f) (equivs-are-invertible f , invertibles-are-equivs f)
+\end{code}
+
+We now return to our main concern in this section.
+
+\begin{code}
 univalence-is-subsingleton : is-univalent (𝓤 ⁺)
                            → is-subsingleton (is-univalent 𝓤)
 

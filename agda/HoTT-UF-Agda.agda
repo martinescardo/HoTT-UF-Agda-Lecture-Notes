@@ -2898,6 +2898,24 @@ being-equiv-is-subsingleton : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔
 being-equiv-is-subsingleton fe fe' f = Π-is-subsingleton fe
                                         (λ x → being-singleton-is-subsingleton fe')
 
+subsingletons-are-retracts-of-logically-equivalent-types : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                                         → is-subsingleton X
+                                                         → (X ⇔ Y)
+                                                         → X ◁ Y
+
+subsingletons-are-retracts-of-logically-equivalent-types i (f , g) = g , f , η
+ where
+  η : g ∘ f ∼ id
+  η x = i (g (f x)) x
+
+equivalence-property-is-retract-of-invertibility-data : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+                                                      → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                                      → is-equiv f ◁ invertible f
+
+equivalence-property-is-retract-of-invertibility-data fe fe' f =
+  subsingletons-are-retracts-of-logically-equivalent-types
+   (being-equiv-is-subsingleton fe fe' f) (equivs-are-invertible f , invertibles-are-equivs f)
+
 univalence-is-subsingleton : is-univalent (𝓤 ⁺)
                            → is-subsingleton (is-univalent 𝓤)
 
