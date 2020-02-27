@@ -2438,16 +2438,16 @@ equivs-are-haes {𝓤} {𝓥} {X} {Y} f e = (g , η , ε , τ)
     γ : ap f (η x) ≡ ε (f x)
     γ = ⌜ transport-ap-≃ f a b ⌝ q
 
-half-adjoint-condition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f) (x : X)
-                       → ap f (inverses-are-retractions f e x) ≡ inverses-are-sections f e (f x)
-
-half-adjoint-condition f e = pr₂ (pr₂ (pr₂ (equivs-are-haes f e)))
-
 equiv-invertible-hae-factorization : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                    → equivs-are-invertible f
                                    ∼ haes-are-invertible f ∘ equivs-are-haes f
 
-equiv-invertible-hae-factorization f e = refl _
+equiv-invertible-hae-factorization f e = refl (equivs-are-invertible f e)
+
+half-adjoint-condition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f) (x : X)
+                       → ap f (inverses-are-retractions f e x) ≡ inverses-are-sections f e (f x)
+
+half-adjoint-condition f e = pr₂ (pr₂ (pr₂ (equivs-are-haes f e)))
 
 equivs-are-haes' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                  → is-equiv f → is-hae f
@@ -2468,6 +2468,39 @@ equivs-are-haes' f e = (inverse f e ,
 
     q : transport (λ - → f - ≡ f x) (ap pr₁ p) (pr₂ φ) ≡ refl (f x)
     q = (transport-ap (λ - → f - ≡ f x) pr₁ p ((pr₂ φ)))⁻¹ ∙ apd pr₂ p
+
+Σ-change-of-variable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+                     → is-equiv f → Σ A ≃ Σ (A ∘ f)
+
+Σ-change-of-variable A f i = γ
+ where
+  g = inverse f i
+  η = inverses-are-retractions f i
+  ε = inverses-are-sections f i
+  τ = half-adjoint-condition f i
+
+  φ : Σ A → Σ (A ∘ f)
+  φ (y , a) = (g y , transport A ((ε y)⁻¹) a)
+
+  ψ : Σ (A ∘ f) → Σ A
+  ψ (x , a) = (f x , a)
+
+  ψφ : (z : Σ A) → ψ (φ z) ≡ z
+  ψφ (y , a) = to-Σ-≡ (ε y , transport-is-retraction A (ε y) a)
+
+  φψ : (t : Σ (A ∘ f)) → φ (ψ t) ≡ t
+  φψ (x , a) = to-Σ-≡ (η x , q)
+   where
+    b : A (f (g (f x)))
+    b = transport A ((ε (f x))⁻¹) a
+
+    q = transport (A ∘ f) (η x)  b ≡⟨ transport-ap A f (η x) b              ⟩
+        transport A (ap f (η x)) b ≡⟨ ap (λ - → transport A - b) (τ x)      ⟩
+        transport A (ε (f x))    b ≡⟨ transport-is-retraction A (ε (f x)) a ⟩
+        a                          ∎
+
+  γ : Σ A ≃ Σ (A ∘ f)
+  γ = invertibility-gives-≃ φ (ψ , ψφ , φψ)
 
 ~-naturality : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
                (f g : X → A) (H : f ∼ g) {x y : X} {p : x ≡ y}
@@ -2537,39 +2570,6 @@ invertibles-are-haes f (g , η , ε) = g , η , ε' , τ
      by-⁻¹-left∙ = ap (_∙ ap f (η x)) ((⁻¹-left∙ (ε (f (g (f x)))))⁻¹)
      by-∙assoc   = ∙assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η x))
      by-q        = ap ((ε (f (g (f x))))⁻¹ ∙_) (q ⁻¹)
-
-Σ-change-of-variable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
-                     → is-equiv f → Σ A ≃ Σ (A ∘ f)
-
-Σ-change-of-variable A f i = γ
- where
-  g = inverse f i
-  η = inverses-are-retractions f i
-  ε = inverses-are-sections f i
-  τ = half-adjoint-condition f i
-
-  φ : Σ A → Σ (A ∘ f)
-  φ (y , a) = (g y , transport A ((ε y)⁻¹) a)
-
-  ψ : Σ (A ∘ f) → Σ A
-  ψ (x , a) = (f x , a)
-
-  ψφ : (z : Σ A) → ψ (φ z) ≡ z
-  ψφ (y , a) = to-Σ-≡ (ε y , transport-is-retraction A (ε y) a)
-
-  φψ : (t : Σ (A ∘ f)) → φ (ψ t) ≡ t
-  φψ (x , a) = to-Σ-≡ (η x , q)
-   where
-    b : A (f (g (f x)))
-    b = transport A ((ε (f x))⁻¹) a
-
-    q = transport (A ∘ f) (η x)  b ≡⟨ transport-ap A f (η x) b              ⟩
-        transport A (ap f (η x)) b ≡⟨ ap (λ - → transport A - b) (τ x)      ⟩
-        transport A (ε (f x))    b ≡⟨ transport-is-retraction A (ε (f x)) a ⟩
-        a                          ∎
-
-  γ : Σ A ≃ Σ (A ∘ f)
-  γ = invertibility-gives-≃ φ (ψ , ψφ , φψ)
 
 funext : ∀ 𝓤 𝓥 → (𝓤 ⊔ 𝓥)⁺ ̇
 funext 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y} → f ∼ g → f ≡ g
