@@ -669,8 +669,11 @@ module basic-arithmetic-and-order where
     γ : minimal-root f
     γ = right-fails-gives-left-holds (bounded-ℕ-search (succ n) f) g
 
+is-center : (X : 𝓤 ̇ ) → X → 𝓤 ̇
+is-center X c = (x : X) → c ≡ x
+
 is-singleton : 𝓤 ̇ → 𝓤 ̇
-is-singleton X = Σ c ꞉ X , ((x : X) → c ≡ x)
+is-singleton X = Σ c ꞉ X , is-center X c
 
 𝟙-is-singleton : is-singleton 𝟙
 𝟙-is-singleton = ⋆ , 𝟙-induction (λ x → ⋆ ≡ x) (refl ⋆)
@@ -1006,6 +1009,9 @@ subsingletons-have-wconstant-≡-endomaps X s x y = (f , κ)
 subsingletons-are-sets : (X : 𝓤 ̇ ) → is-subsingleton X → is-set X
 subsingletons-are-sets X s = types-with-wconstant-≡-endomaps-are-sets X
                                (subsingletons-have-wconstant-≡-endomaps X s)
+
+singletons-are-sets : (X : 𝓤 ̇ ) → is-singleton X → is-set X
+singletons-are-sets X = subsingletons-are-sets X ∘ singletons-are-subsingletons X
 
 𝟘-is-set : is-set 𝟘
 𝟘-is-set = subsingletons-are-sets 𝟘 𝟘-is-subsingleton
@@ -1364,6 +1370,12 @@ invertibility-gives-≃ f i = f , invertibles-are-equivs f i
               → ((x : X) (y : Y x) → A (x , y)) ≃ ((z : Σ Y) → A z)
 
 Σ-induction-≃ = invertibility-gives-≃ Σ-induction (curry , refl , refl)
+
+Σ-flip : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → Y → 𝓦 ̇ }
+       → (Σ x ꞉ X , Σ y ꞉ Y , A x y) ≃ (Σ y ꞉ Y , Σ x ꞉ X , A x y)
+
+Σ-flip = invertibility-gives-≃ (λ (x , y , p) → (y , x , p))
+          ((λ (y , x , p) → (x , y , p)) , refl , refl)
 
 id-≃ : (X : 𝓤 ̇ ) → X ≃ X
 id-≃ X = 𝑖𝑑 X , id-is-equiv X
@@ -2334,11 +2346,6 @@ haes-are-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y)
 
 haes-are-invertible f (g , η , ε , τ) = g , η , ε
 
-haes-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y)
-                → is-hae f → is-equiv f
-
-haes-are-equivs f i = invertibles-are-equivs f (haes-are-invertible f i)
-
 transport-ap-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                  {x x' : X} (a : x' ≡ x) (b : f x' ≡ f x)
                → (transport (λ - → f - ≡ f x) a b ≡ refl (f x)) ≃ (ap f a ≡ b)
@@ -2348,10 +2355,10 @@ transport-ap-≃ f (refl x) b = γ
   γ : (b ≡ refl (f x)) ≃ (refl (f x) ≡ b)
   γ = ⁻¹-≃ b (refl (f x))
 
-haes-are-equivs' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+haes-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → is-hae f → is-equiv f
 
-haes-are-equivs' f (g , η , ε , τ) y = γ
+haes-are-equivs f (g , η , ε , τ) y = γ
  where
   c : (φ : fiber f y) → (g y , ε y) ≡ φ
   c (x , refl .(f x)) = q
@@ -3142,6 +3149,21 @@ being-subsingleton-is-subsingleton fe {X} i j = c
   c : i ≡ j
   c = fe b
 
+being-center-is-subsingleton : dfunext 𝓤 𝓤
+                             → {X : 𝓤 ̇ } (c : X)
+                             → is-subsingleton (is-center X c)
+
+being-center-is-subsingleton fe {X} c φ γ = k
+ where
+  i : is-singleton X
+  i = c , φ
+
+  j : (x : X) → is-subsingleton (c ≡ x)
+  j x = singletons-are-sets X i c x
+
+  k : φ ≡ γ
+  k = fe (λ x → j x (φ x) (γ x))
+
 Π-is-set : hfunext 𝓤 𝓥
          → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
          → ((x : X) → is-set (A x)) → is-set (Π A)
@@ -3362,11 +3384,49 @@ being-joyal-equiv-is-subsingleton : hfunext 𝓤 𝓤 → hfunext 𝓥 𝓥 → 
                                   → (f : X → Y)
                                   → is-subsingleton (is-joyal-equiv f)
 
-being-joyal-equiv-is-subsingleton fe₀ fe₁ fe₂ f =
+being-joyal-equiv-is-subsingleton fe₀ fe₁ fe₂ f = ×-is-subsingleton'
+                                                   (at-most-one-section    fe₂ fe₁ f ,
+                                                    at-most-one-retraction fe₀ fe₂ f)
 
- ×-is-subsingleton'
-  (at-most-one-section fe₂ fe₁ f ,
-   at-most-one-retraction fe₀ fe₂ f)
+being-hae-is-subsingleton : dfunext 𝓥 𝓤 → hfunext 𝓥 𝓥 → dfunext 𝓤 (𝓥 ⊔ 𝓤)
+                          → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                          → is-subsingleton (is-hae f)
+
+being-hae-is-subsingleton fe₀ fe₁ fe₂ {X} {Y} f (g₀ , ε₀ , η₀ , τ₀) = γ (g₀ , ε₀ , η₀ , τ₀)
+ where
+  a : (x : X) → is-set (fiber f (f x))
+  a x = singletons-are-sets (fiber f (f x)) (haes-are-equivs f (g₀ , ε₀ , η₀ , τ₀) (f x))
+
+  b = λ g ε x
+    → ((g (f x) , ε (f x)) ≡ (x , refl (f x)))                                   ≃⟨ i  g ε x ⟩
+      (Σ p ꞉ g (f x) ≡ x , transport (λ - → f - ≡ f x) p (ε (f x)) ≡ refl (f x)) ≃⟨ ii g ε x ⟩
+      (Σ p ꞉ g (f x) ≡ x , ap f p ≡ ε (f x))                                     ■
+    where
+      i  = λ g ε x → Σ-≡-≃ (g (f x) , ε (f x)) (x , refl (f x))
+      ii = λ g ε x → Σ-cong (λ p → transport-ap-≃ f p (ε (f x)))
+
+  c = (Σ (g , ε) ꞉ has-section f , ∀ x → (g (f x) , ε (f x)) ≡ (x , refl (f x)))         ≃⟨ i   ⟩
+      (Σ (g , ε) ꞉ has-section f , ∀ x → Σ  p ꞉ g (f x) ≡ x , ap f p ≡ ε (f x))          ≃⟨ ii  ⟩
+      (Σ g ꞉ (Y → X) , Σ ε ꞉ f ∘ g ∼ id , ∀ x → Σ  p ꞉ g (f x) ≡ x , ap f p ≡ ε (f x))   ≃⟨ iii ⟩
+      (Σ g ꞉ (Y → X) , Σ ε ꞉ f ∘ g ∼ id , Σ η ꞉ g ∘ f ∼ id , ∀ x → ap f (η x) ≡ ε (f x)) ≃⟨ iv  ⟩
+      is-hae f                                                                           ■
+   where
+    i   = Σ-cong (λ (g , ε) → Π-cong fe₂ fe₂ (b g ε))
+    ii  = Σ-assoc
+    iii = Σ-cong (λ g → Σ-cong (λ ε → ΠΣ-distr-≃))
+    iv  = Σ-cong (λ g → Σ-flip)
+
+  d : ((g , ε) : has-section f) → is-subsingleton (∀ x → (g (f x) , ε (f x)) ≡ (x , refl (f x)))
+  d (g , ε) = Π-is-subsingleton fe₂ u
+   where
+    u : (x : X) → is-subsingleton ((g (f x) , ε (f x)) ≡ (x , refl (f x)))
+    u x = a x (g (f x) , ε (f x)) (x , refl (f x))
+
+  e : is-subsingleton (Σ (g , ε) ꞉ has-section f , ∀ x → (g (f x) , ε (f x)) ≡ (x , refl (f x)))
+  e = Σ-is-subsingleton (at-most-one-section fe₀ fe₁ f (g₀ , ε₀)) d
+
+  γ : is-subsingleton (is-hae f)
+  γ = equiv-to-subsingleton (≃-sym c) e
 
 emptiness-is-subsingleton : dfunext 𝓤 𝓤₀ → (X : 𝓤 ̇ )
                           → is-subsingleton (is-empty X)

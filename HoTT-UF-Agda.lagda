@@ -5477,8 +5477,8 @@ themselves identified. The addition of the constraint
 
    > `τ x : ap f (η x) ≡ ε (f x)`
 
-turns invertibility, which is data in general, into property of `f`,
-as discussed in the HoTT book.
+turns invertibility, which is data in general, into [property of
+`f`](HoTT-UF-Agda.html#being-hae-is-subsingleton).
 
 \begin{code}
 is-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
@@ -5495,16 +5495,11 @@ haes-are-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y)
                     → is-hae f → invertible f
 
 haes-are-invertible f (g , η , ε , τ) = g , η , ε
-
-
-haes-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y)
-                → is-hae f → is-equiv f
-
-haes-are-equivs f i = invertibles-are-equivs f (haes-are-invertible f i)
 \end{code}
 
-But it is also easy to prove this directly, avoiding the detour via
-invertible maps:
+Hence half-adjoint equivalences are equivalences, because invertible
+maps are equivalences. But it is also easy to prove this directly,
+avoiding the detour via invertible maps:
 
 \begin{code}
 transport-ap-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -5517,10 +5512,10 @@ transport-ap-≃ f (refl x) b = γ
   γ = ⁻¹-≃ b (refl (f x))
 
 
-haes-are-equivs' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+haes-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → is-hae f → is-equiv f
 
-haes-are-equivs' f (g , η , ε , τ) y = γ
+haes-are-equivs f (g , η , ε , τ) y = γ
  where
   c : (φ : fiber f y) → (g y , ε y) ≡ φ
   c (x , refl .(f x)) = q
@@ -6962,12 +6957,53 @@ being-joyal-equiv-is-subsingleton : hfunext 𝓤 𝓤 → hfunext 𝓥 𝓥 → 
                                   → (f : X → Y)
                                   → is-subsingleton (is-joyal-equiv f)
 
-being-joyal-equiv-is-subsingleton fe₀ fe₁ fe₂ f =
+being-joyal-equiv-is-subsingleton fe₀ fe₁ fe₂ f = ×-is-subsingleton'
+                                                   (at-most-one-section    fe₂ fe₁ f ,
+                                                    at-most-one-retraction fe₀ fe₂ f)
 
- ×-is-subsingleton'
-  (at-most-one-section fe₂ fe₁ f ,
-   at-most-one-retraction fe₀ fe₂ f)
+
+being-hae-is-subsingleton : dfunext 𝓥 𝓤 → hfunext 𝓥 𝓥 → dfunext 𝓤 (𝓥 ⊔ 𝓤)
+                          → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                          → is-subsingleton (is-hae f)
+
+being-hae-is-subsingleton fe₀ fe₁ fe₂ {X} {Y} f (g₀ , ε₀ , η₀ , τ₀) = γ (g₀ , ε₀ , η₀ , τ₀)
+ where
+  a : (x : X) → is-set (fiber f (f x))
+  a x = singletons-are-sets (fiber f (f x)) (haes-are-equivs f (g₀ , ε₀ , η₀ , τ₀) (f x))
+
+  b = λ g ε x
+    → ((g (f x) , ε (f x)) ≡ (x , refl (f x)))                                   ≃⟨ i  g ε x ⟩
+      (Σ p ꞉ g (f x) ≡ x , transport (λ - → f - ≡ f x) p (ε (f x)) ≡ refl (f x)) ≃⟨ ii g ε x ⟩
+      (Σ p ꞉ g (f x) ≡ x , ap f p ≡ ε (f x))                                     ■
+    where
+      i  = λ g ε x → Σ-≡-≃ (g (f x) , ε (f x)) (x , refl (f x))
+      ii = λ g ε x → Σ-cong (λ p → transport-ap-≃ f p (ε (f x)))
+
+  c = (Σ (g , ε) ꞉ has-section f , ∀ x → (g (f x) , ε (f x)) ≡ (x , refl (f x)))         ≃⟨ i   ⟩
+      (Σ (g , ε) ꞉ has-section f , ∀ x → Σ  p ꞉ g (f x) ≡ x , ap f p ≡ ε (f x))          ≃⟨ ii  ⟩
+      (Σ g ꞉ (Y → X) , Σ ε ꞉ f ∘ g ∼ id , ∀ x → Σ  p ꞉ g (f x) ≡ x , ap f p ≡ ε (f x))   ≃⟨ iii ⟩
+      (Σ g ꞉ (Y → X) , Σ ε ꞉ f ∘ g ∼ id , Σ η ꞉ g ∘ f ∼ id , ∀ x → ap f (η x) ≡ ε (f x)) ≃⟨ iv  ⟩
+      is-hae f                                                                           ■
+   where
+    i   = Σ-cong (λ (g , ε) → Π-cong fe₂ fe₂ (b g ε))
+    ii  = Σ-assoc
+    iii = Σ-cong (λ g → Σ-cong (λ ε → ΠΣ-distr-≃))
+    iv  = Σ-cong (λ g → Σ-flip)
+
+  d : ((g , ε) : has-section f) → is-subsingleton (∀ x → (g (f x) , ε (f x)) ≡ (x , refl (f x)))
+  d (g , ε) = Π-is-subsingleton fe₂ u
+   where
+    u : (x : X) → is-subsingleton ((g (f x) , ε (f x)) ≡ (x , refl (f x)))
+    u x = a x (g (f x) , ε (f x)) (x , refl (f x))
+
+  e : is-subsingleton (Σ (g , ε) ꞉ has-section f , ∀ x → (g (f x) , ε (f x)) ≡ (x , refl (f x)))
+  e = Σ-is-subsingleton (at-most-one-section fe₀ fe₁ f (g₀ , ε₀)) d
+
+  γ : is-subsingleton (is-hae f)
+  γ = equiv-to-subsingleton (≃-sym c) e
 \end{code}
+
+
 
 Another consequence of function extensionality is that emptiness is a
 subsingleton:
