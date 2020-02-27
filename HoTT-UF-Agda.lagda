@@ -2654,7 +2654,7 @@ EM' 𝓤 = (X : 𝓤 ̇ ) → is-subsingleton X → is-singleton X + is-empty X
 
 Notice that the above two definitions don't assert excluded middle,
 but instead say what excluded middle is (like when we said what the
-twin-prime conjecture is), in two logically equivalent versions:
+twin-prime conjecture is), in two logically equivalent ways:
 
 \begin{code}
 EM-gives-EM' : EM 𝓤 → EM' 𝓤
@@ -2719,8 +2719,8 @@ with.
 In these notes we don't advocate any particular philosophy for or
 against excluded middle and other non-constructive principles. We
 confine ourselves to discussing mathematical facts. Axioms that can be
-assumed consistently but reduce generality and break the implicit
-computational character of our base type theory are discussed in
+assumed consistently but reduce generality and/or break the implicit
+computational character of our base type theory are discussed at
 various parts of these lecture notes, and are [summarized at the
 end](HoTT-UF-Agda.html#summary).
 
