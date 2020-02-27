@@ -3394,39 +3394,39 @@ being-hae-is-subsingleton : dfunext 𝓥 𝓤 → hfunext 𝓥 𝓥 → dfunext 
 
 being-hae-is-subsingleton fe₀ fe₁ fe₂ {X} {Y} f (g₀ , ε₀ , η₀ , τ₀) = γ (g₀ , ε₀ , η₀ , τ₀)
  where
-  a : (x : X) → is-set (fiber f (f x))
-  a x = singletons-are-sets (fiber f (f x)) (haes-are-equivs f (g₀ , ε₀ , η₀ , τ₀) (f x))
-
-  b = λ g ε x
+  a = λ g ε x
     → ((g (f x) , ε (f x)) ≡ (x , refl (f x)))                                   ≃⟨ i  g ε x ⟩
       (Σ p ꞉ g (f x) ≡ x , transport (λ - → f - ≡ f x) p (ε (f x)) ≡ refl (f x)) ≃⟨ ii g ε x ⟩
       (Σ p ꞉ g (f x) ≡ x , ap f p ≡ ε (f x))                                     ■
-    where
-      i  = λ g ε x → Σ-≡-≃ (g (f x) , ε (f x)) (x , refl (f x))
-      ii = λ g ε x → Σ-cong (λ p → transport-ap-≃ f p (ε (f x)))
+   where
+    i  = λ g ε x → Σ-≡-≃ (g (f x) , ε (f x)) (x , refl (f x))
+    ii = λ g ε x → Σ-cong (λ p → transport-ap-≃ f p (ε (f x)))
 
-  c = (Σ (g , ε) ꞉ has-section f , ∀ x → (g (f x) , ε (f x)) ≡ (x , refl (f x)))         ≃⟨ i   ⟩
+  b = (Σ (g , ε) ꞉ has-section f , ∀ x → (g (f x) , ε (f x)) ≡ (x , refl (f x)))         ≃⟨ i   ⟩
       (Σ (g , ε) ꞉ has-section f , ∀ x → Σ  p ꞉ g (f x) ≡ x , ap f p ≡ ε (f x))          ≃⟨ ii  ⟩
       (Σ g ꞉ (Y → X) , Σ ε ꞉ f ∘ g ∼ id , ∀ x → Σ  p ꞉ g (f x) ≡ x , ap f p ≡ ε (f x))   ≃⟨ iii ⟩
       (Σ g ꞉ (Y → X) , Σ ε ꞉ f ∘ g ∼ id , Σ η ꞉ g ∘ f ∼ id , ∀ x → ap f (η x) ≡ ε (f x)) ≃⟨ iv  ⟩
       is-hae f                                                                           ■
    where
-    i   = Σ-cong (λ (g , ε) → Π-cong fe₂ fe₂ (b g ε))
+    i   = Σ-cong (λ (g , ε) → Π-cong fe₂ fe₂ (a g ε))
     ii  = Σ-assoc
     iii = Σ-cong (λ g → Σ-cong (λ ε → ΠΣ-distr-≃))
     iv  = Σ-cong (λ g → Σ-flip)
+
+  c : (x : X) → is-set (fiber f (f x))
+  c x = singletons-are-sets (fiber f (f x)) (haes-are-equivs f (g₀ , ε₀ , η₀ , τ₀) (f x))
 
   d : ((g , ε) : has-section f) → is-subsingleton (∀ x → (g (f x) , ε (f x)) ≡ (x , refl (f x)))
   d (g , ε) = Π-is-subsingleton fe₂ u
    where
     u : (x : X) → is-subsingleton ((g (f x) , ε (f x)) ≡ (x , refl (f x)))
-    u x = a x (g (f x) , ε (f x)) (x , refl (f x))
+    u x = c x (g (f x) , ε (f x)) (x , refl (f x))
 
   e : is-subsingleton (Σ (g , ε) ꞉ has-section f , ∀ x → (g (f x) , ε (f x)) ≡ (x , refl (f x)))
   e = Σ-is-subsingleton (at-most-one-section fe₀ fe₁ f (g₀ , ε₀)) d
 
   γ : is-subsingleton (is-hae f)
-  γ = equiv-to-subsingleton (≃-sym c) e
+  γ = equiv-to-subsingleton (≃-sym b) e
 
 emptiness-is-subsingleton : dfunext 𝓤 𝓤₀ → (X : 𝓤 ̇ )
                           → is-subsingleton (is-empty X)
@@ -3452,6 +3452,13 @@ emptiness-is-subsingleton fe X f g = fe (λ x → !𝟘 (f x ≡ g x) (f x))
 +-is-subsingleton' fe {P} i = +-is-subsingleton i
                                (emptiness-is-subsingleton fe P)
                                (λ p n → n p)
+
+EM-is-subsingleton : dfunext (𝓤 ⁺) 𝓤 → dfunext 𝓤 𝓤 → dfunext 𝓤 𝓤₀
+                   → is-subsingleton (EM 𝓤)
+
+EM-is-subsingleton fe⁺ fe fe₀ = Π-is-subsingleton fe⁺
+                                 (λ P → Π-is-subsingleton fe
+                                         (λ i → +-is-subsingleton' fe₀ i))
 
 propext : ∀ 𝓤  → 𝓤 ⁺ ̇
 propext 𝓤 = {P Q : 𝓤 ̇ } → is-prop P → is-prop Q → (P → Q) → (Q → P) → P ≡ Q
