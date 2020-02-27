@@ -2710,7 +2710,7 @@ case, despite efforts by the sharpest mathematical minds. A
 hypothetical element of the type `EM` would, in particular, be able to
 solve the Goldbach conjecture. There is nothing wrong or contradictory
 with assuming the existence of such a magic blackbox (EM stands for
-there `E`xists such a `M`agic box). There is only loss of
+"there `E`xists such a `M`agic box"). There is only loss of
 [generality](https://ncatlab.org/nlab/show/constructive+mathematics#topos_theory)
 and of the implicit algorithmic character of our spartan base type
 theory, both of which most mathematicians will be perfectly happy to live
