@@ -2393,28 +2393,28 @@ ua-equivs-are-haes ua {X} {Y} = 𝕁-equiv ua (λ X Y f → is-hae f) id-is-hae 
 equivs-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → is-equiv f → is-hae f
 
-equivs-are-haes {𝓤} {𝓥} {X} {Y} f e = (g , η , ε , τ)
+equivs-are-haes {𝓤} {𝓥} {X} {Y} f i = (g , η , ε , τ)
  where
   g : Y → X
-  g = inverse f e
+  g = inverse f i
 
   η : g ∘ f ∼ id
-  η = inverses-are-retractions f e
+  η = inverses-are-retractions f i
 
   ε : f ∘ g ∼ id
-  ε = inverses-are-sections f e
+  ε = inverses-are-sections f i
 
   τ : (x : X) → ap f (η x) ≡ ε (f x)
   τ x = γ
    where
     φ : fiber f (f x)
-    φ = center (fiber f (f x)) (e (f x))
+    φ = center (fiber f (f x)) (i (f x))
 
     by-definition-of-g : g (f x) ≡ fiber-point φ
     by-definition-of-g = refl _
 
     p : φ ≡ (x , refl (f x))
-    p = centrality (fiber f (f x)) (e (f x)) (x , refl (f x))
+    p = centrality (fiber f (f x)) (i (f x)) (x , refl (f x))
 
     a : g (f x) ≡ x
     a = ap fiber-point p
@@ -2429,25 +2429,14 @@ equivs-are-haes {𝓤} {𝓥} {X} {Y} f e = (g , η , ε , τ)
     by-definition-of-ε = refl _
 
     q = transport (λ - → f - ≡ f x)       a          b         ≡⟨ refl _    ⟩
-        transport (λ - → f - ≡ f x)       (ap pr₁ p) (pr₂ φ)   ≡⟨ i         ⟩
+        transport (λ - → f - ≡ f x)       (ap pr₁ p) (pr₂ φ)   ≡⟨ t         ⟩
         transport (λ - → f (pr₁ -) ≡ f x) p          (pr₂ φ)   ≡⟨ apd pr₂ p ⟩
         refl (f x)                                             ∎
      where
-      i = (transport-ap (λ - → f - ≡ f x) pr₁ p b)⁻¹
+      t = (transport-ap (λ - → f - ≡ f x) pr₁ p b)⁻¹
 
     γ : ap f (η x) ≡ ε (f x)
     γ = ⌜ transport-ap-≃ f a b ⌝ q
-
-equiv-invertible-hae-factorization : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                   → equivs-are-invertible f
-                                   ∼ haes-are-invertible f ∘ equivs-are-haes f
-
-equiv-invertible-hae-factorization f e = refl (equivs-are-invertible f e)
-
-half-adjoint-condition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f) (x : X)
-                       → ap f (inverses-are-retractions f e x) ≡ inverses-are-sections f e (f x)
-
-half-adjoint-condition f e = pr₂ (pr₂ (pr₂ (equivs-are-haes f e)))
 
 equivs-are-haes' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                  → is-equiv f → is-hae f
@@ -2468,6 +2457,17 @@ equivs-are-haes' f e = (inverse f e ,
 
     q : transport (λ - → f - ≡ f x) (ap pr₁ p) (pr₂ φ) ≡ refl (f x)
     q = (transport-ap (λ - → f - ≡ f x) pr₁ p ((pr₂ φ)))⁻¹ ∙ apd pr₂ p
+
+equiv-invertible-hae-factorization : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                   → equivs-are-invertible f
+                                   ∼ haes-are-invertible f ∘ equivs-are-haes f
+
+equiv-invertible-hae-factorization f e = refl (equivs-are-invertible f e)
+
+half-adjoint-condition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f) (x : X)
+                       → ap f (inverses-are-retractions f e x) ≡ inverses-are-sections f e (f x)
+
+half-adjoint-condition f e = pr₂ (pr₂ (pr₂ (equivs-are-haes f e)))
 
 Σ-change-of-variable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
                      → is-equiv f → Σ A ≃ Σ (A ∘ f)
