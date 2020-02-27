@@ -2339,6 +2339,32 @@ haes-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y)
 
 haes-are-equivs f i = invertibles-are-equivs f (haes-are-invertible f i)
 
+transport-ap-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                 {x x' : X} (a : x' ≡ x) (b : f x' ≡ f x)
+               → (transport (λ - → f - ≡ f x) a b ≡ refl (f x)) ≃ (ap f a ≡ b)
+
+transport-ap-≃ f (refl x) b = γ
+ where
+  γ : (b ≡ refl (f x)) ≃ (refl (f x) ≡ b)
+  γ = ⁻¹-≃ b (refl (f x))
+
+haes-are-equivs' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                → is-hae f → is-equiv f
+
+haes-are-equivs' f (g , η , ε , τ) y = γ
+ where
+  c : (φ : fiber f y) → (g y , ε y) ≡ φ
+  c (x , refl .(f x)) = q
+   where
+    p : transport (λ - → f - ≡ f x) (η x) (ε (f x)) ≡ refl (f x)
+    p = ⌜ ≃-sym (transport-ap-≃ f (η x) (ε (f x))) ⌝ (τ x)
+
+    q : (g (f x) , ε (f x)) ≡ (x , refl (f x))
+    q = to-Σ-≡ (η x , p)
+
+  γ : is-singleton (fiber f y)
+  γ = (g y , ε y) , c
+
 id-is-hae : (X : 𝓤 ̇ ) → is-hae (𝑖𝑑 X)
 id-is-hae X = 𝑖𝑑 X , refl , refl , (λ x → refl (refl x))
 
@@ -2347,12 +2373,6 @@ ua-equivs-are-haes : is-univalent 𝓤
                    → is-equiv f → is-hae f
 
 ua-equivs-are-haes ua {X} {Y} = 𝕁-equiv ua (λ X Y f → is-hae f) id-is-hae X Y
-
-transport-ap-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                 {x x' : X} (a : x' ≡ x) (b : f x' ≡ f x)
-               → (transport (λ - → f - ≡ f x) a b ≡ refl (f x)) ≃ (ap f a ≡ b)
-
-transport-ap-≃ f (refl x) b = ⁻¹-≃ b (refl (f x))
 
 equivs-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → is-equiv f → is-hae f
@@ -2405,7 +2425,7 @@ equivs-are-haes {𝓤} {𝓥} {X} {Y} f e = (g , η , ε , τ)
 half-adjointness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f) (x : X)
                  → ap f (inverse-is-retraction f e x) ≡ inverse-is-section f e (f x)
 
-half-adjointness {𝓤} {𝓥} {X} {Y} f e = pr₂ (pr₂ (pr₂ (equivs-are-haes f e)))
+half-adjointness f e = pr₂ (pr₂ (pr₂ (equivs-are-haes f e)))
 
 equiv-invertible-hae-factorization : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                    → equivs-are-invertible f
@@ -8573,6 +8593,7 @@ infixr 50 _,_
 infixr 30 _×_
 infixr 20 _+_
 infixl 70 _∘_
+infix   0 Id
 infix   0 _≡_
 infix  10 _⇔_
 infixl 30 _∙_

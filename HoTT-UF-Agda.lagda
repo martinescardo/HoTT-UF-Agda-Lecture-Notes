@@ -2504,11 +2504,16 @@ Voevodsky defined a notion of *contractible type*, which we
 refer to here as *singleton type*.
 
 \begin{code}
+is-center : (X : 𝓤 ̇ ) → X → 𝓤 ̇
+is-center X c = (x : X) → c ≡ x
+
 is-singleton : 𝓤 ̇ → 𝓤 ̇
-is-singleton X = Σ c ꞉ X , ((x : X) → c ≡ x)
+is-singleton X = Σ c ꞉ X , is-center X c
 \end{code}
 
-Such an element `c` is called a center of contraction of `X`.
+Such an element `c` is called a center of contraction of `X`, in
+connection with homotopy theory, where singletons correspond to
+contractible types.
 
 \begin{code}
 𝟙-is-singleton : is-singleton 𝟙
@@ -3421,11 +3426,14 @@ subsingletons-have-wconstant-≡-endomaps X s x y = (f , κ)
   κ p q = refl (s x y)
 \end{code}
 
-And the corollary is that subsingleton types are sets.
+And the corollary is that (sub)singleton types are sets.
 \begin{code}
 subsingletons-are-sets : (X : 𝓤 ̇ ) → is-subsingleton X → is-set X
 subsingletons-are-sets X s = types-with-wconstant-≡-endomaps-are-sets X
                                (subsingletons-have-wconstant-≡-endomaps X s)
+
+singletons-are-sets : (X : 𝓤 ̇ ) → is-singleton X → is-set X
+singletons-are-sets X = subsingletons-are-sets X ∘ singletons-are-subsingletons X
 \end{code}
 
 In particular, the types `𝟘` and `𝟙` are sets.
@@ -4123,13 +4131,19 @@ invertibility-gives-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 invertibility-gives-≃ f i = f , invertibles-are-equivs f i
 \end{code}
 
-Example:
+Examples:
 
 \begin{code}
 Σ-induction-≃ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : Σ Y → 𝓦 ̇ }
               → ((x : X) (y : Y x) → A (x , y)) ≃ ((z : Σ Y) → A z)
 
 Σ-induction-≃ = invertibility-gives-≃ Σ-induction (curry , refl , refl)
+
+Σ-flip : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → Y → 𝓦 ̇ }
+       → (Σ x ꞉ X , Σ y ꞉ Y , A x y) ≃ (Σ y ꞉ Y , Σ x ꞉ X , A x y)
+
+Σ-flip = invertibility-gives-≃ (λ (x , y , p) → (y , x , p))
+          ((λ (y , x , p) → (x , y , p)) , refl , refl)
 \end{code}
 
 The identity equivalence and the composition of two equivalences:
@@ -5594,7 +5608,7 @@ equivs-are-haes {𝓤} {𝓥} {X} {Y} f e = (g , η , ε , τ)
 half-adjointness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f) (x : X)
                  → ap f (inverse-is-retraction f e x) ≡ inverse-is-section f e (f x)
 
-half-adjointness {𝓤} {𝓥} {X} {Y} f e = pr₂ (pr₂ (pr₂ (equivs-are-haes f e)))
+half-adjointness f e = pr₂ (pr₂ (pr₂ (equivs-are-haes f e)))
 
 
 equiv-invertible-hae-factorization : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -6672,6 +6686,21 @@ being-subsingleton-is-subsingleton fe {X} i j = c
 
   c : i ≡ j
   c = fe b
+
+being-center-is-subsingleton : dfunext 𝓤 𝓤
+                             → {X : 𝓤 ̇ } (c : X)
+                             → is-subsingleton (is-center X c)
+
+being-center-is-subsingleton fe {X} c φ γ = k
+ where
+  i : is-singleton X
+  i = c , φ
+
+  j : (x : X) → is-subsingleton (c ≡ x)
+  j x = singletons-are-sets X i c x
+
+  k : φ ≡ γ
+  k = fe (λ x → j x (φ x) (γ x))
 \end{code}
 
 Here the version `hfunext` of function extensionality is what is
@@ -14965,6 +14994,7 @@ infixr 50 _,_
 infixr 30 _×_
 infixr 20 _+_
 infixl 70 _∘_
+infix   0 Id
 infix   0 _≡_
 infix  10 _⇔_
 infixl 30 _∙_
