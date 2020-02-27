@@ -2511,7 +2511,7 @@ is-singleton : 𝓤 ̇ → 𝓤 ̇
 is-singleton X = Σ c ꞉ X , is-center X c
 \end{code}
 
-Such an element `c` is called a center of contraction of `X`, in
+Such an element `c` is called a center of contraction of `X` in
 connection with homotopy theory.
 
 \begin{code}
@@ -2652,9 +2652,9 @@ EM  𝓤 = (X : 𝓤 ̇ ) → is-subsingleton X → X + ¬ X
 EM' 𝓤 = (X : 𝓤 ̇ ) → is-subsingleton X → is-singleton X + is-empty X
 \end{code}
 
-Notice that the above don't assert excluded middle, but instead say
-what excluded middle is (like when we said what the twin-prime
-conjecture is), in two logically equivalent versions:
+Notice that the above two definitions don't assert excluded middle,
+but instead say what excluded middle is (like when we said what the
+twin-prime conjecture is), in two logically equivalent versions:
 
 \begin{code}
 EM-gives-EM' : EM 𝓤 → EM' 𝓤
@@ -2674,12 +2674,14 @@ EM'-gives-EM em' X s = γ (em' X s)
 \end{code}
 
 We will not assume or deny excluded middle, which is an independent
-statement (it can't be proved or disproved). We will deliberately keep
-it undecided, adopting a neutral approach to the constructive
-vs. non-constructive dichotomy. We will however prove a couple of
-consequences of excluded middle in discussions of foundational issues
-such as size and existence of subsingleton truncations. We will also
-prove that excluded middle is a consequence of the axiom of choice.
+statement in our spartan univalent type theory - it can't be proved
+or disproved, just as the parallel postulate in Euclidean geometry
+can't be proved or disproved. We will deliberately keep it undecided,
+adopting a neutral approach to the constructive vs. non-constructive
+dichotomy. We will however prove a couple of consequences of excluded
+middle in discussions of foundational issues such as size and
+existence of subsingleton truncations. We will also prove that
+excluded middle is a consequence of the axiom of choice.
 
 It should be emphasized that the potential failure of excluded middle
 doesn't say that there may be mysterious subsingletons that fail to be
@@ -2698,20 +2700,27 @@ no-unicorns (X , i , f , g) = c
 \end{code}
 
 Given this, what does the potential failure of excluded middle *mean*?
-That there is no general way to *determine which of the two cases*
-`is-singleton X` and `is-empty X` applies for a given subsingleton
-`X`. This kind of phenomenon should be familiar even in classical,
-non-constructive mathematics: although we are entitled to believe that
-the Goldbach conjecture either holds or fails, we still don't know
-which one is the case, despite efforts by the sharpest mathematical
-minds. A hypothetical element of the type `EM` would, in particular,
-be able to solve the Goldbach conjecture. There is nothing wrong or
-contradictory with assuming the existence of such a magic blackbox. There
-is only loss of the implicit algorithmic character of our type theory,
-which most mathematicians will be perfectly happy to live with. In
-these notes we don't advocate any particular philosophy for or against
-excluded middle and other non-constructive principles. We confine
-ourselves to discussing mathematical facts.
+That there is no general way, provided by our spartan univalent type
+theory, to *determine which of the two cases* `is-singleton X` and
+`is-empty X` applies for a given subsingleton `X`. This kind of
+phenomenon should be familiar even in classical, non-constructive
+mathematics: although we are entitled to believe that the Goldbach
+conjecture either holds or fails, we still don't know which one is the
+case, despite efforts by the sharpest mathematical minds. A
+hypothetical element of the type `EM` would, in particular, be able to
+solve the Goldbach conjecture. There is nothing wrong or contradictory
+with assuming the existence of such a magic blackbox (EM stands for
+there `E`xists such a `M`agic box). There is only loss of
+[generality](https://ncatlab.org/nlab/show/constructive+mathematics#topos_theory)
+and of the implicit algorithmic character of our spartan base type
+theory, which most mathematicians will be perfectly happy to live
+with. In these notes we don't advocate any particular philosophy for
+or against excluded middle and other non-constructive principles. We
+confine ourselves to discussing mathematical facts. Axioms axioms that
+can be assumed consistently but reduce the generality and break the
+implicit computational character of our base type theory are
+discussing in various parts of these lecture notes, and are
+[summarized at the end](HoTT-UF-Agda.html#summary).
 
 *Exercise*. We also have that it is impossible for `is-singleton X +
 is-empty X` to fail for a given subsingleton `X`, which amounts to
@@ -5804,7 +5813,7 @@ requirement that the canonical map `f ≡ g → f ∼ g` is an
 equivalence.
 
 *Exercise*. Assuming `funext`, prove that if a function `f : X → Y` is
-an equivalence then so is the precomposition map `(-) ∘ f : (Y → Z) →
+an equivalence then so is the precomposition map `_∘ f : (Y → Z) →
 (X → Z)`.
 
 The crucial step in [Voevodsky's
@@ -5905,8 +5914,8 @@ dfunext 𝓤 𝓥 = {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ∼ g
 \end{code}
 
 The above says that there is some map `f ~ g → f ≡ g`. The following
-instead says that the canonical map in the other direction is an
-equivalence:
+instead says that the canonical map `happly` in the other direction is
+an equivalence:
 
 \begin{code}
 happly : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f g : Π A) → f ≡ g → f ∼ g
@@ -6091,7 +6100,7 @@ And then we give their definitions (Agda makes sure there are no circularities):
 ### <a id="typeclassifier"></a> Universes are map classifiers
 
 Under univalence, a universe `𝓤` becomes a map classifier, in the
-sense that maps from a type in `𝓤` into a type `Y : 𝓤` are in
+sense that maps from a type `X` in `𝓤` into a type `Y` in `𝓤` are in
 canonical bijection with functions `Y → 𝓤`. Using the following
 [slice](https://ncatlab.org/nlab/show/over+category) notation, this amounts to a bijection between `𝓤 / Y` and `Y → 𝓤`:
 
