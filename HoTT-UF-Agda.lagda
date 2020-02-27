@@ -5461,7 +5461,7 @@ is that of half adjoint equivalence. If we have a function
 
    > `f : X → Y`
 
-with inversion data
+with invertibility data
 
    > `g : Y → X` ,
 
