@@ -3222,7 +3222,7 @@ from-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
 from-Σ-≡ (refl (x , a)) = (refl x , refl a)
 \end{code}
 
-The above gives
+The above gives the logical equivalence
 
    > `(σ ≡ τ) ⇔ (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ)`.
 
@@ -3699,12 +3699,13 @@ These last two definitions are for notational convenience. See
 [below](HoTT-UF-Agda.html#fibersandequivalences) for examples of their
 use.
 
-We conclude this section with some facts about retracts of `Σ` types.
-The following are technical tools for dealing with equivalences in the
-sense of Voevosky in [comparison with invertible
+We conclude this section with some facts about retracts of `Σ` types,
+which are of general use, in particular for dealing with equivalences
+in the sense of Voevosky in [comparison with invertible
 maps](HoTT-UF-Agda.html#fibersandequivalences).
 
-A pointwise retraction gives  a retraction of the total spaces:
+A pointwise retraction gives a retraction of the total spaces:
+
 \begin{code}
 Σ-retract : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
           → ((x : X) → A x ◁  B x) → Σ A ◁ Σ B
