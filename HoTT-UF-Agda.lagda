@@ -2713,14 +2713,16 @@ with assuming the existence of such a magic blackbox (EM stands for
 there `E`xists such a `M`agic box). There is only loss of
 [generality](https://ncatlab.org/nlab/show/constructive+mathematics#topos_theory)
 and of the implicit algorithmic character of our spartan base type
-theory, which most mathematicians will be perfectly happy to live
-with. In these notes we don't advocate any particular philosophy for
-or against excluded middle and other non-constructive principles. We
-confine ourselves to discussing mathematical facts. Axioms axioms that
-can be assumed consistently but reduce the generality and break the
-implicit computational character of our base type theory are
-discussing in various parts of these lecture notes, and are
-[summarized at the end](HoTT-UF-Agda.html#summary).
+theory, both of which most mathematicians will be perfectly happy to live
+with.
+
+In these notes we don't advocate any particular philosophy for or
+against excluded middle and other non-constructive principles. We
+confine ourselves to discussing mathematical facts. Axioms that can be
+assumed consistently but reduce generality and break the implicit
+computational character of our base type theory are discussed in
+various parts of these lecture notes, and are [summarized at the
+end](HoTT-UF-Agda.html#summary).
 
 *Exercise*. We also have that it is impossible for `is-singleton X +
 is-empty X` to fail for a given subsingleton `X`, which amounts to
