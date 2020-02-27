@@ -5508,7 +5508,7 @@ haes-are-invertible f (g , η , ε , τ) = g , η , ε
 
 Hence half adjoint equivalences are equivalences, because invertible
 maps are equivalences. But it is also easy to prove this directly,
-avoiding the detour via invertible maps, We begin with a construction
+avoiding the detour via invertible maps. We begin with a construction
 which will be used a number of times in connection with half adjoint
 equivalences.
 
@@ -5557,9 +5557,9 @@ ua-equivs-are-haes ua {X} {Y} = 𝕁-equiv ua (λ X Y f → is-hae f) id-is-hae 
 \end{code}
 
 The above can be proved without univalence as follows. This argument
-also allows us to have `X` and `Y` in different universes (an example
+also allows us to have `X` and `Y` in different universes. An example
 of an equivalence of types in different universes is `Id→Eq`, as
-stated by univalence).
+stated by univalence.
 
 \begin{code}
 equivs-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -5702,7 +5702,7 @@ that the proof starts as that of
 \end{code}
 
 For the sake of completeness, we also include the proof from the HoTT
-Book that invertible maps are half adjoint equivalences, which uses a
+book that invertible maps are half adjoint equivalences, which uses a
 standard argument coming from [category
 theory](https://ncatlab.org/nlab/show/adjoint+equivalence).
 
