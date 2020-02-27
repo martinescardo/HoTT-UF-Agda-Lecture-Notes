@@ -3901,25 +3901,25 @@ inverse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f → (Y → 
 inverse f e y = fiber-point (center (fiber f y) (e y))
 
 
-inverse-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
-                   → f ∘ inverse f e ∼ id
+inverses-are-sections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
+                      → f ∘ inverse f e ∼ id
 
-inverse-is-section f e y = fiber-identification (center (fiber f y) (e y))
+inverses-are-sections f e y = fiber-identification (center (fiber f y) (e y))
 
 
 inverse-centrality : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                      (f : X → Y) (e : is-equiv f) (y : Y) (t : fiber f y)
-                   → (inverse f e y , inverse-is-section f e y) ≡ t
+                   → (inverse f e y , inverses-are-sections f e y) ≡ t
 
 inverse-centrality f e y = centrality (fiber f y) (e y)
 
 
-inverse-is-retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
-                      → inverse f e ∘ f ∼ id
+inverses-are-retractions : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
+                         → inverse f e ∘ f ∼ id
 
-inverse-is-retraction f e x = ap fiber-point p
+inverses-are-retractions f e x = ap fiber-point p
  where
-  p : inverse f e (f x) , inverse-is-section f e (f x) ≡ x , refl (f x)
+  p : inverse f e (f x) , inverses-are-sections f e (f x) ≡ x , refl (f x)
   p = inverse-centrality f e (f x) (x , (refl (f x)))
 
 
@@ -3927,8 +3927,8 @@ equivs-are-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                       → is-equiv f → invertible f
 
 equivs-are-invertible f e = inverse f e ,
-                            inverse-is-retraction f e ,
-                            inverse-is-section f e
+                            inverses-are-retractions f e ,
+                            inverses-are-sections f e
 \end{code}
 
 The non-trivial direction derives the equivalence property from
@@ -4000,19 +4000,19 @@ invertibles-are-equivs {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = iii
   iii = retract-of-singleton ii (singleton-types-are-singletons Y y₀)
 
 
-inverse-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
-                 → is-equiv (inverse f e)
+inverses-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
+                    → is-equiv (inverse f e)
 
-inverse-is-equiv f e = invertibles-are-equivs
-                         (inverse f e)
-                         (f , inverse-is-section f e , inverse-is-retraction f e)
+inverses-are-equivs f e = invertibles-are-equivs
+                           (inverse f e)
+                           (f , inverses-are-sections f e , inverses-are-retractions f e)
 \end{code}
 
 Notice that inversion is involutive on the nose:
 
 \begin{code}
 inversion-involutive : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
-                     → inverse (inverse f e) (inverse-is-equiv f e) ≡ f
+                     → inverse (inverse f e) (inverses-are-equivs f e) ≡ f
 
 inversion-involutive f e = refl f
 \end{code}
@@ -4084,9 +4084,9 @@ inverse-of-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
 
 inverse-of-∘ f g i j z =
 
-  f' (g' z)             ≡⟨ (ap (f' ∘ g') (s z))⁻¹                      ⟩
-  f' (g' (g (f (h z)))) ≡⟨ ap f' (inverse-is-retraction g j (f (h z))) ⟩
-  f' (f (h z))          ≡⟨ inverse-is-retraction f i (h z)             ⟩
+  f' (g' z)             ≡⟨ (ap (f' ∘ g') (s z))⁻¹                         ⟩
+  f' (g' (g (f (h z)))) ≡⟨ ap f' (inverses-are-retractions g j (f (h z))) ⟩
+  f' (f (h z))          ≡⟨ inverses-are-retractions f i (h z)             ⟩
   h z                   ∎
 
  where
@@ -4095,7 +4095,7 @@ inverse-of-∘ f g i j z =
   h  = inverse (g ∘ f) (∘-is-equiv j i)
 
   s : g ∘ f ∘ h ∼ id
-  s = inverse-is-section (g ∘ f) (∘-is-equiv j i)
+  s = inverses-are-sections (g ∘ f) (∘-is-equiv j i)
 \end{code}
 
 The type of equivalences is defined as follows:
@@ -4155,7 +4155,7 @@ _●_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ≃ Y → Y ≃ Z →
 (f , d) ● (f' , e) = f' ∘ f , ∘-is-equiv e d
 
 ≃-sym : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → Y ≃ X
-≃-sym (f , e) = inverse f e , inverse-is-equiv f e
+≃-sym (f , e) = inverse f e , inverses-are-equivs f e
 \end{code}
 
 We can use the following notation for equational reasoning with equivalences:
@@ -4259,10 +4259,10 @@ ap-pr₂-to-×-≡ (refl x) (refl y) = refl (refl y)
   g x = inverse (f x) (⌜⌝-is-equiv (φ x))
 
   η : (x : X) (a : A x) → g x (f x a) ≡ a
-  η x = inverse-is-retraction (f x) (⌜⌝-is-equiv (φ x))
+  η x = inverses-are-retractions (f x) (⌜⌝-is-equiv (φ x))
 
   ε : (x : X) (b : B x) → f x (g x b) ≡ b
-  ε x = inverse-is-section (f x) (⌜⌝-is-equiv (φ x))
+  ε x = inverses-are-sections (f x) (⌜⌝-is-equiv (φ x))
 
   NatΣ-η : (w : Σ A) → NatΣ g (NatΣ f w) ≡ w
   NatΣ-η (x , a) = x , g x (f x a) ≡⟨ to-Σ-≡' (η x a) ⟩
@@ -4274,10 +4274,10 @@ ap-pr₂-to-×-≡ (refl x) (refl y) = refl (refl y)
 
 
 ≃-gives-◁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X ◁ Y
-≃-gives-◁ (f , e) = (inverse f e , f , inverse-is-retraction f e)
+≃-gives-◁ (f , e) = (inverse f e , f , inverses-are-retractions f e)
 
 ≃-gives-▷ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → Y ◁ X
-≃-gives-▷ (f , e) = (f , inverse f e , inverse-is-section f e)
+≃-gives-▷ (f , e) = (f , inverse f e , inverses-are-sections f e)
 
 
 equiv-to-singleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -4410,9 +4410,9 @@ Using univalence, we get two different identifications of the type
  p₀-is-not-p₁ : p₀ ≢ p₁
  p₀-is-not-p₁ q = e₀-is-not-e₁ r
   where
-   r = e₀            ≡⟨ (inverse-is-section (Id→Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₀)⁻¹ ⟩
-       Id→Eq 𝟚 𝟚 p₀  ≡⟨ ap (Id→Eq 𝟚 𝟚) q                               ⟩
-       Id→Eq 𝟚 𝟚 p₁  ≡⟨ inverse-is-section (Id→Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₁     ⟩
+   r = e₀            ≡⟨ (inverses-are-sections (Id→Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₀)⁻¹ ⟩
+       Id→Eq 𝟚 𝟚 p₀  ≡⟨ ap (Id→Eq 𝟚 𝟚) q                                  ⟩
+       Id→Eq 𝟚 𝟚 p₁  ≡⟨ inverses-are-sections (Id→Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₁     ⟩
        e₁            ∎
 \end{code}
 
@@ -4727,13 +4727,13 @@ sections-are-lc = sol
 equivs-have-retractions = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f → has-retraction f
-  sol f e = (inverse f e , inverse-is-retraction f e)
+  sol f e = (inverse f e , inverses-are-retractions f e)
 
 
 equivs-have-sections = sol
  where
   sol : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f → has-section f
-  sol f e = (inverse f e , inverse-is-section f e)
+  sol f e = (inverse f e , inverses-are-sections f e)
 
 
 equivs-are-lc = sol
@@ -5412,7 +5412,7 @@ induction, but the following version is perhaps more natural.
 
 Σ-change-of-variable'' ua A f i = Σ-change-of-variable' ua A
                                   (inverse f i)
-                                  (inverse-is-equiv f i)
+                                  (inverses-are-equivs f i)
 \end{code}
 
 This particular proof works only because inversion [is involutive on
@@ -5444,7 +5444,7 @@ transport-map-along-≃ {𝓤} ua {X} {Y} {Z} = 𝕁-≃ ua A a X Y
           g                                                 ∎
     where
      p : Eq→Id ua X X (id-≃ X) ≡ refl X
-     p = inverse-is-retraction (Id→Eq X X) (ua X X) (refl X)
+     p = inverses-are-retractions (Id→Eq X X) (ua X X) (refl X)
 
      q = ap (λ - → transport (λ - → - → Z) - g) p
 \end{code}
@@ -5571,10 +5571,10 @@ equivs-are-haes {𝓤} {𝓥} {X} {Y} f e = (g , η , ε , τ)
   g = inverse f e
 
   η : g ∘ f ∼ id
-  η = inverse-is-retraction f e
+  η = inverses-are-retractions f e
 
   ε : f ∘ g ∼ id
-  ε = inverse-is-section f e
+  ε = inverses-are-sections f e
 
   τ : (x : X) → ap f (η x) ≡ ε (f x)
   τ x = γ
@@ -5611,10 +5611,10 @@ equivs-are-haes {𝓤} {𝓥} {X} {Y} f e = (g , η , ε , τ)
     γ = ⌜ transport-ap-≃ f a b ⌝ q
 
 
-half-adjointness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f) (x : X)
-                 → ap f (inverse-is-retraction f e x) ≡ inverse-is-section f e (f x)
+half-adjoint-condition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f) (x : X)
+                       → ap f (inverses-are-retractions f e x) ≡ inverses-are-sections f e (f x)
 
-half-adjointness f e = pr₂ (pr₂ (pr₂ (equivs-are-haes f e)))
+half-adjoint-condition f e = pr₂ (pr₂ (pr₂ (equivs-are-haes f e)))
 
 
 equiv-invertible-hae-factorization : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -5631,11 +5631,11 @@ equivs-are-haes' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                  → is-equiv f → is-hae f
 
 equivs-are-haes' f e = (inverse f e ,
-                        inverse-is-retraction f e ,
-                        inverse-is-section f e ,
+                        inverses-are-retractions f e ,
+                        inverses-are-sections f e ,
                         τ)
  where
-  τ : ∀ x → ap f (inverse-is-retraction f e x) ≡ inverse-is-section f e (f x)
+  τ : ∀ x → ap f (inverses-are-retractions f e x) ≡ inverses-are-sections f e (f x)
   τ x = ⌜ transport-ap-≃ f (ap pr₁ p) (pr₂ φ) ⌝ q
    where
     φ : fiber f (f x)
@@ -5740,11 +5740,16 @@ that the proof starts as that of
 [`Σ-reindexing-retract`](HoTT-UF-Agda.html#Σ-reindexing-retract).
 
 \begin{code}
-Σ-change-of-variable-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
-                         → is-hae f → Σ A ≃ Σ (A ∘ f)
+Σ-change-of-variable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
+                     → is-equiv f → Σ A ≃ Σ (A ∘ f)
 
-Σ-change-of-variable-hae A f (g , η , ε , τ) = γ
+Σ-change-of-variable A f i = γ
  where
+  g = inverse f i
+  η = inverses-are-retractions f i
+  ε = inverses-are-sections f i
+  τ = half-adjoint-condition f i
+
   φ : Σ A → Σ (A ∘ f)
   φ (y , a) = (g y , transport A ((ε y)⁻¹) a)
 
@@ -5767,12 +5772,6 @@ that the proof starts as that of
 
   γ : Σ A ≃ Σ (A ∘ f)
   γ = invertibility-gives-≃ φ (ψ , ψφ , φψ)
-
-
-Σ-change-of-variable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
-                     → is-equiv f → Σ A ≃ Σ (A ∘ f)
-
-Σ-change-of-variable A f i = Σ-change-of-variable-hae A f (equivs-are-haes f i)
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -6818,10 +6817,10 @@ closed under equivalence first.)
   g x = inverse (f x) (e x)
 
   fg : (x : X) (y' : Y' x) → f x (g x y') ≡ y'
-  fg x = inverse-is-section (f x) (e x)
+  fg x = inverses-are-sections (f x) (e x)
 
   gf : (x : X) (y : Y x) → g x (f x y) ≡ y
-  gf x = inverse-is-retraction (f x) (e x)
+  gf x = inverses-are-retractions (f x) (e x)
 
   F : ((x : X) → Y x) → ((x : X) → Y' x)
   F φ x = f x (φ x)
@@ -6919,7 +6918,7 @@ at-most-one-section {𝓥} {𝓤} fe hfe {X} {Y} f (g , gf) (h , fh) = d
   rs (h , η) = to-Σ-≡' q
    where
     q : happly (f ∘ h) id (inverse (happly (f ∘ h) id) (hfe (f ∘ h) id) η) ≡ η
-    q = inverse-is-section (happly (f ∘ h) id) (hfe (f ∘ h) id) η
+    q = inverses-are-sections (happly (f ∘ h) id) (hfe (f ∘ h) id) η
 
   c : is-singleton (has-section f)
   c = retract-of-singleton (r , s , rs) b
@@ -6954,7 +6953,7 @@ at-most-one-retraction {𝓤} {𝓥} hfe fe' {X} {Y} f (g , fg) (h , hf) = d
   rs (h , η) = to-Σ-≡' q
    where
     q : happly (h ∘ f) id (inverse (happly (h ∘ f) id) (hfe (h ∘ f) id) η) ≡ η
-    q = inverse-is-section (happly (h ∘ f) id) (hfe (h ∘ f) id) η
+    q = inverses-are-sections (happly (h ∘ f) id) (hfe (h ∘ f) id) η
 
   c : is-singleton (has-retraction f)
   c = retract-of-singleton (r , s , rs) b
@@ -7349,7 +7348,7 @@ id-≃-left fe fe' α = to-subtype-≡ (being-equiv-is-subsingleton fe fe') (ref
 ≃-sym-left-inverse fe (f , e) = to-subtype-≡ (being-equiv-is-subsingleton fe fe) p
  where
   p : f ∘ inverse f e ≡ id
-  p = fe (inverse-is-section f e)
+  p = fe (inverses-are-sections f e)
 
 
 ≃-sym-right-inverse : dfunext 𝓤 𝓤
@@ -7359,7 +7358,7 @@ id-≃-left fe fe' α = to-subtype-≡ (being-equiv-is-subsingleton fe fe') (ref
 ≃-sym-right-inverse fe (f , e) = to-subtype-≡ (being-equiv-is-subsingleton fe fe) p
  where
   p : inverse f e ∘ f ≡ id
-  p = fe (inverse-is-retraction f e)
+  p = fe (inverses-are-retractions f e)
 \end{code}
 
 We then transfer the above to equivalence types:
@@ -9164,10 +9163,10 @@ A function is a magma isomorphism if and only if it is a magma equivalence.
    g = inverse f i
 
    η : g ∘ f ∼ id
-   η = inverse-is-retraction f i
+   η = inverses-are-retractions f i
 
    ε : f ∘ g ∼ id
-   ε = inverse-is-section f i
+   ε = inverses-are-sections f i
 
    k : (a b : ⟨ N ⟩) → g (a ·⟨ N ⟩ b) ≡ g a ·⟨ M ⟩ g b
    k a b = g (a ·⟨ N ⟩ b)             ≡⟨ ap₂ (λ a b → g (a ·⟨ N ⟩ b)) ((ε a)⁻¹)
@@ -9841,8 +9840,8 @@ We begin with the following technical lemma:
        ii  = ap₂ (λ p q → f x₀ x₁ p , g y₀ y₁ q)
                  (ap-pr₁-to-×-≡ (f' a) (g' b))
                  (ap-pr₂-to-×-≡ (f' a) (g' b))
-       iii = to-×-≡ (inverse-is-section (f x₀ x₁) (i x₀ x₁) a ,
-                     inverse-is-section (g y₀ y₁) (j y₀ y₁) b)
+       iii = to-×-≡ (inverses-are-sections (f x₀ x₁) (i x₀ x₁) a ,
+                     inverses-are-sections (g y₀ y₁) (j y₀ y₁) b)
 
    γ : ∀ z₁ → is-equiv (r z₁)
    γ = fiberwise-retractions-are-equivs (λ z₁ → A x₀ (pr₁ z₁) × B y₀ (pr₂ z₁))
@@ -13208,7 +13207,7 @@ module _ (hfe : global-hfunext) where
    a (refl _) x = refl _
 
    b : happly f g (hunapply h) ≡ h
-   b = inverse-is-section (happly f g) (hfe f g) h
+   b = inverses-are-sections (happly f g) (hfe f g) h
 
    i  = a (hunapply h) x
    ii = ap (λ - → transport (R x) (- x) (φ x)) b
