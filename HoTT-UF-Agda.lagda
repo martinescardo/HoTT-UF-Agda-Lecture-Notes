@@ -5506,9 +5506,11 @@ haes-are-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y)
 haes-are-invertible f (g , η , ε , τ) = g , η , ε
 \end{code}
 
-Hence half-adjoint equivalences are equivalences, because invertible
+Hence half adjoint equivalences are equivalences, because invertible
 maps are equivalences. But it is also easy to prove this directly,
-avoiding the detour via invertible maps:
+avoiding the detour via invertible maps, We begin with a construction
+which will be used a number of times in connection with half adjoint
+equivalences.
 
 \begin{code}
 transport-ap-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -5539,8 +5541,8 @@ haes-are-equivs f (g , η , ε , τ) y = γ
   γ = (g y , ε y) , c
 \end{code}
 
-To recover the constraint for all equivalences (and hence for all
-invertible maps), under univalence, it is enough to give the
+To recover the constraint for all equivalences, and hence for all
+invertible maps, under univalence, it is enough to give the
 constraint for identity maps:
 
 \begin{code}
@@ -6972,7 +6974,7 @@ being-joyal-equiv-is-subsingleton fe₀ fe₁ fe₂ f = ×-is-subsingleton'
 \end{code}
 
 The fact that a function with a retraction has at most one section can
-also be used to prove that the notion of half-adjoint equivalence is
+also be used to prove that the notion of half adjoint equivalence is
 property. This is because the type `is-hae f` is equivalent to
 
    > `Σ (g , ε) ꞉ has-section f , ∀ x → (g (f x) , ε (f x)) ≡ (x , refl (f x))`,
