@@ -5696,18 +5696,24 @@ that the proof starts as that of
   ψ (x , a) = (f x , a)
 
   ψφ : (z : Σ A) → ψ (φ z) ≡ z
-  ψφ (y , a) = to-Σ-≡ (ε y , transport-is-retraction A (ε y) a)
+  ψφ (y , a) = r
+   where
+    r : (f (g y) , transport A ((ε y)⁻¹) a) ≡ (y , a)
+    r = to-Σ-≡ (ε y , transport-is-retraction A (ε y) a)
 
   φψ : (t : Σ (A ∘ f)) → φ (ψ t) ≡ t
-  φψ (x , a) = to-Σ-≡ (η x , q)
+  φψ (x , a) = r
    where
-    b : A (f (g (f x)))
-    b = transport A ((ε (f x))⁻¹) a
+    a' : A (f (g (f x)))
+    a' = transport A ((ε (f x))⁻¹) a
 
-    q = transport (A ∘ f) (η x)  b ≡⟨ transport-ap A f (η x) b              ⟩
-        transport A (ap f (η x)) b ≡⟨ ap (λ - → transport A - b) (τ x)      ⟩
-        transport A (ε (f x))    b ≡⟨ transport-is-retraction A (ε (f x)) a ⟩
+    q = transport (A ∘ f) (η x)  a' ≡⟨ transport-ap A f (η x) a'             ⟩
+        transport A (ap f (η x)) a' ≡⟨ ap (λ - → transport A - a') (τ x)     ⟩
+        transport A (ε (f x))    a' ≡⟨ transport-is-retraction A (ε (f x)) a ⟩
         a                          ∎
+
+    r : (g (f x) , transport A ((ε (f x))⁻¹) a) ≡ (x , a)
+    r = to-Σ-≡ (η x , q)
 
   γ : Σ A ≃ Σ (A ∘ f)
   γ = invertibility-gives-≃ φ (ψ , ψφ , φψ)
