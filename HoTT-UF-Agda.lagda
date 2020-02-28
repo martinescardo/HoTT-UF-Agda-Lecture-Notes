@@ -376,7 +376,7 @@ to practice univalent mathematics should consult the above references.
      1. [A spartan Martin-Löf type theory (MLTT)](HoTT-UF-Agda.html#spartanmltt)
      1. [What is Agda?](HoTT-UF-Agda.html#whatisagda)
      1. [Getting started with Agda](HoTT-UF-Agda.html#gettingstartedagda)
-     1. [Universes `𝓤,𝓥,𝓦`](HoTT-UF-Agda.html#universes)
+     1. [Type universes `𝓤,𝓥,𝓦`](HoTT-UF-Agda.html#universes)
      1. [The one-element type `𝟙`](HoTT-UF-Agda.html#onepointtype)
      1. [The empty type `𝟘`](HoTT-UF-Agda.html#emptytype)
      1. [The type `ℕ` of natural numbers](HoTT-UF-Agda.html#naturalnumbers)
@@ -593,7 +593,7 @@ versions), so that we can navigate to the definition of a name or
 symbol by clicking at it.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="universes"></a> Universes
+### <a id="universes"></a> Type universes
 
 A universe `𝓤` is a type of types.
 
@@ -1286,10 +1286,10 @@ For some reason, Agda has this kind of definition backwards: the
 normal convention of writing what is defined on the left-hand side of
 the equality sign.
 
-(Notice also that "꞉" in the above syntax definition is not the same
+Notice also that "꞉" in the above syntax definition is not the same
 as ":", even though they may look the same. For the above notation `Σ
 x ꞉ A , b`, the symbol "꞉" has to be typed "\:4" in the emacs Agda
-mode.)
+mode.
 
 To prove that `A z` holds for all `z : Σ Y`, for a given
 property `A`, we just prove that we have `A (x , y)` for all `x :
@@ -1300,7 +1300,7 @@ Curry](https://en.wikipedia.org/wiki/Haskell_Curry).
 \begin{code}
 Σ-induction : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : Σ Y → 𝓦 ̇ }
             → ((x : X) (y : Y x) → A (x , y))
-            → (z : Σ Y) → A z
+            → ((x , y) : Σ Y) → A (x , y)
 
 Σ-induction g (x , y) = g x y
 \end{code}
@@ -1309,7 +1309,7 @@ This function has an inverse:
 
 \begin{code}
 curry : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : Σ Y → 𝓦 ̇ }
-      → ((z : Σ Y) → A z)
+      → (((x , y) : Σ Y) → A (x , y))
       → ((x : X) (y : Y x) → A (x , y))
 
 curry f x y = f (x , y)
@@ -3277,17 +3277,17 @@ transport-× A B (refl _) = refl _
 
 
 transportd : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
-             {x : X} (a : A x) (σ : Σ a ꞉ A x , B x a) {y : X} (p : x ≡ y)
-           → B x (pr₁ σ) → B y (transport A p (pr₁ σ))
+             {x : X} (a : A x) ((a' , b) : Σ a ꞉ A x , B x a) {y : X} (p : x ≡ y)
+           → B x a' → B y (transport A p a')
 
 transportd A B a σ (refl y) = id
 
 
 transport-Σ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
-              {x : X} (y : X) (p : x ≡ y) (a : A x) {σ : Σ a ꞉ A x , B x a}
+              {x : X} (y : X) (p : x ≡ y) (a : A x) {(a' , b) : Σ a ꞉ A x , B x a}
 
-            → transport (λ x → Σ y ꞉ A x , B x y) p σ
-            ≡ transport A p (pr₁ σ) , transportd A B a σ p (pr₂ σ)
+            → transport (λ x → Σ y ꞉ A x , B x y) p (a' , b)
+            ≡ transport A p a' , transportd A B a (a' , b) p b
 
 transport-Σ A B {x} x (refl x) a {σ} = refl σ
 \end{code}
@@ -7550,7 +7550,7 @@ id-is-embedding {𝓤} {X} = equivs-are-embeddings id (id-is-equiv X)
 ∘-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} d e = h
  where
   A : (z : Z) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-  A z = Σ w ꞉ fiber g z , fiber f (pr₁ w)
+  A z = Σ (y , p) ꞉ fiber g z , fiber f y
 
   i : (z : Z) → is-subsingleton (A z)
   i z = Σ-is-subsingleton (d z) (λ w → e (pr₁ w))
@@ -8289,6 +8289,7 @@ partial functions and `⇀` for the type of partial functions.
 Πₚ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ (𝓥 ⁺) ̇
 Πₚ {𝓤} {𝓥} {X} A = Σ R ꞉ ((x : X) → A x → 𝓥 ̇ )
                        , ((x : X) → is-subsingleton (Σ a ꞉ A x , R x a))
+
 
 _⇀_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
 X ⇀ Y = Πₚ (λ (_ : X) → Y)
