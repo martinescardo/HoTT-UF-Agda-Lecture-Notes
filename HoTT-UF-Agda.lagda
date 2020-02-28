@@ -12122,6 +12122,18 @@ choice](https://en.wikipedia.org/wiki/Axiom_of_global_choice), which
 [contradicts univalence](https://homotopytypetheory.org/book/), and
 also [gives classical logic](https://lmcs.episciences.org/3217).
 
+The subsingleton truncation of a type is also known as its
+[support](https://ncatlab.org/nlab/show/support), and a type `X` is
+said to have [split
+support](https://ncatlab.org/nlab/show/split+support) if there is a
+*choice function* `∥ X ∥ → X`, which is automatically a section of
+the surjection `X → ∥ X ∥`.
+
+*Exercise.* Show that a type has split support if and only it is
+logically equivalent to a subsingleton. In particular, the type of
+invertibility data has split support, as it is logically equivalent to
+the equivalence property.
+
 *Exercise* (hard). If `X` and `Y` are types obtained by summing `x-` and
   `y`-many copies of the type `𝟙`, respectively, as in `𝟙 + 𝟙 + ... + 𝟙` , where `x`
   and `y` are natural numbers, then `∥ X ≡ Y ∥ ≃ (x ≡ y)` and the type
