@@ -12686,7 +12686,7 @@ the underlying type is a set, as opposed to an arbitrary ∞-groupoid:
     VII = (x y z : R) → (y + z) · x ≡ (y · x) + (z · x)
 \end{code}
 
-The type of rings in the universe `𝓤`, which lives in the universe after `𝓤`:
+The type of rngs in the universe `𝓤`, which lives in the universe after `𝓤`:
 
 \begin{code}
  Rng : 𝓤 ⁺ ̇
@@ -12694,7 +12694,7 @@ The type of rings in the universe `𝓤`, which lives in the universe after `�
 \end{code}
 
 In order to be able to apply univalence to show that the identity type
-`𝓡 ≡ 𝓡'` of two rings is in canonical bijection with the type `𝓡 ≅ 𝓡'`
+`𝓡 ≡ 𝓡'` of two rngs is in canonical bijection with the type `𝓡 ≅ 𝓡'`
 of ring isomorphisms, we need to show that the axioms constitute
 property rather than data, that is, they form a subsingleton, or a
 type with at most one element. The proof is a mix of algebra (to show
