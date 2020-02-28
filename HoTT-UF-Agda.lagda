@@ -2979,8 +2979,8 @@ But all arrows, the identifications, are invertible:
 \end{code}
 
 A category in which all arrows are invertible is called a
-groupoid. The above is the basis for the Hofmann--Streicher groupoid
-model of type theory.
+[groupoid](https://ncatlab.org/nlab/show/groupoid). The above is the
+basis for the Hofmann--Streicher groupoid model of type theory.
 
 But we actually get higher groupoids, because given
 identifications
@@ -3912,10 +3912,10 @@ is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-equiv f = (y : codomain f) → is-singleton (fiber f y)
 \end{code}
 
-We can read this as saying that for every `y : Y` there is a unique
-`x : X` with `f x ≡ y`, where the uniqueness refers not only to `x :
-X` but also to the identification datum `p : f x ≡ y`.  It is easy to
-see that equivalences are invertible:
+We can read this as saying that for every `y : Y` there is a unique `x : X` with `f x ≡ y`, where the uniqueness refers not only to `x : X`
+but also to the identification datum `p : f x ≡ y`.  More precisely,
+the *pair* `(x , p)` is required to be unique. It is easy to see that
+equivalences are invertible:
 
 \begin{code}
 inverse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f → (Y → X)
@@ -7033,7 +7033,7 @@ being-joyal-equiv-is-subsingleton fe₀ fe₁ fe₂ f = ×-is-subsingleton'
 
 The fact that a function with a retraction has at most one section can
 also be used to prove that the notion of half adjoint equivalence is
-property. This is because the type `is-hae f` is equivalent to
+property. This is because the type `is-hae f` is equivalent to the type
 
    > `Σ (g , ε) ꞉ has-section f , ∀ x → (g (f x) , ε (f x)) ≡ (x , refl (f x))`,
 
