@@ -6296,27 +6296,21 @@ We now return to our main concern in this section.
 univalence-is-subsingleton : is-univalent (𝓤 ⁺)
                            → is-subsingleton (is-univalent 𝓤)
 
-univalence-is-subsingleton {𝓤} ua⁺ ua ua' = p
+univalence-is-subsingleton {𝓤} ua⁺ = subsingleton-criterion' γ
  where
-  fe₀  :  funext  𝓤     𝓤
-  fe₁  :  funext  𝓤    (𝓤 ⁺)
-  fe₂  :  funext (𝓤 ⁺) (𝓤 ⁺)
-  dfe₁ : dfunext  𝓤    (𝓤 ⁺)
-  dfe₂ : dfunext (𝓤 ⁺) (𝓤 ⁺)
+  γ : is-univalent 𝓤 → is-subsingleton (is-univalent 𝓤)
+  γ ua = i
+   where
+    dfe₁ : dfunext  𝓤    (𝓤 ⁺)
+    dfe₂ : dfunext (𝓤 ⁺) (𝓤 ⁺)
 
-  fe₀  = univalence-gives-funext ua
-  fe₁  = univalence-gives-funext {𝓤 ⁺} {𝓤}   ua⁺
-  fe₂  = univalence-gives-funext {𝓤 ⁺} {𝓤 ⁺} ua⁺
-  dfe₁ = funext-gives-dfunext fe₁ fe₀
-  dfe₂ = funext-gives-dfunext fe₂ fe₂
+    dfe₁ = univalence-gives-dfunext' ua ua⁺
+    dfe₂ = univalence-gives-dfunext ua⁺
 
-  i : is-subsingleton (is-univalent 𝓤)
-  i = Π-is-subsingleton dfe₂
-       (λ X → Π-is-subsingleton dfe₂
-       (λ Y → being-equiv-is-subsingleton dfe₁ dfe₂ (Id→Eq X Y)))
-
-  p : ua ≡ ua'
-  p = i ua ua'
+    i : is-subsingleton (is-univalent 𝓤)
+    i = Π-is-subsingleton dfe₂
+         (λ X → Π-is-subsingleton dfe₂
+         (λ Y → being-equiv-is-subsingleton dfe₁ dfe₂ (Id→Eq X Y)))
 \end{code}
 
 So if all universes are univalent then "being univalent" is a
