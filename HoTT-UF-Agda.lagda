@@ -3759,7 +3759,10 @@ Using this, we have the following reindexing retraction of `Σ` types:
   φ (x , a) = (s x , transport A ((η x)⁻¹) a)
 
   γφ : (σ : Σ A) → γ (φ σ) ≡ σ
-  γφ (x , a) = to-Σ-≡ (η x , transport-is-retraction A (η x) a)
+  γφ (x , a) = p
+   where
+    p : (r (s x) , transport A ((η x)⁻¹) a) ≡ (x , a)
+    p = to-Σ-≡ (η x , transport-is-retraction A (η x) a)
 \end{code}
 
 We have defined [the property of a type being a
@@ -5689,20 +5692,20 @@ that the proof starts as that of
   ε = inverses-are-sections f i
   τ = half-adjoint-condition f i
 
-  φ : (Σ y ꞉ Y , A y) → (Σ x ꞉ X , A (f x))
+  φ : Σ A → Σ (A ∘ f)
   φ (y , a) = (g y , transport A ((ε y)⁻¹) a)
 
-  ψ : (Σ x ꞉ X , A (f x)) → (Σ y ꞉ Y , A y)
+  ψ : Σ (A ∘ f) → Σ A
   ψ (x , a) = (f x , a)
 
-  ψφ : (z : Σ y ꞉ Y , A y) → ψ (φ z) ≡ z
-  ψφ (y , a) = r
+  ψφ : (z : Σ A) → ψ (φ z) ≡ z
+  ψφ (y , a) = p
    where
-    r : (f (g y) , transport A ((ε y)⁻¹) a) ≡ (y , a)
-    r = to-Σ-≡ (ε y , transport-is-retraction A (ε y) a)
+    p : (f (g y) , transport A ((ε y)⁻¹) a) ≡ (y , a)
+    p = to-Σ-≡ (ε y , transport-is-retraction A (ε y) a)
 
-  φψ : (t : Σ x ꞉ X , A (f x)) → φ (ψ t) ≡ t
-  φψ (x , a) = r
+  φψ : (t : Σ (A ∘ f)) → φ (ψ t) ≡ t
+  φψ (x , a) = p
    where
     a' : A (f (g (f x)))
     a' = transport A ((ε (f x))⁻¹) a
@@ -5712,10 +5715,10 @@ that the proof starts as that of
         transport A (ε (f x))    a' ≡⟨ transport-is-retraction A (ε (f x)) a ⟩
         a                          ∎
 
-    r : (g (f x) , transport A ((ε (f x))⁻¹) a) ≡ (x , a)
-    r = to-Σ-≡ (η x , q)
+    p : (g (f x) , transport A ((ε (f x))⁻¹) a) ≡ (x , a)
+    p = to-Σ-≡ (η x , q)
 
-  γ : (Σ y ꞉ Y , A y) ≃ (Σ x ꞉ X , A (f x))
+  γ : Σ A ≃ Σ (A ∘ f)
   γ = invertibility-gives-≃ φ (ψ , ψφ , φψ)
 \end{code}
 

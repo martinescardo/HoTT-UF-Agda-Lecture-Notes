@@ -1172,7 +1172,10 @@ transport-is-section A (refl x) = refl
   φ (x , a) = (s x , transport A ((η x)⁻¹) a)
 
   γφ : (σ : Σ A) → γ (φ σ) ≡ σ
-  γφ (x , a) = to-Σ-≡ (η x , transport-is-retraction A (η x) a)
+  γφ (x , a) = p
+   where
+    p : (r (s x) , transport A ((η x)⁻¹) a) ≡ (x , a)
+    p = to-Σ-≡ (η x , transport-is-retraction A (η x) a)
 
 singleton-type : {X : 𝓤 ̇ } → X → 𝓤 ̇
 singleton-type {𝓤} {X} x = Σ y ꞉ X , y ≡ x
@@ -2470,9 +2473,9 @@ half-adjoint-condition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equ
 half-adjoint-condition f e = pr₂ (pr₂ (pr₂ (equivs-are-haes f e)))
 
 Σ-change-of-variable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
-                     → is-equiv f → Σ A ≃ Σ (A ∘ f)
+                     → is-equiv f → (Σ y ꞉ Y , A y) ≃ (Σ x ꞉ X , A (f x))
 
-Σ-change-of-variable A f i = γ
+Σ-change-of-variable {𝓤} {𝓥} {𝓦} {X} {Y} A f i = γ
  where
   g = inverse f i
   η = inverses-are-retractions f i
@@ -2486,13 +2489,13 @@ half-adjoint-condition f e = pr₂ (pr₂ (pr₂ (equivs-are-haes f e)))
   ψ (x , a) = (f x , a)
 
   ψφ : (z : Σ A) → ψ (φ z) ≡ z
-  ψφ (y , a) = r
+  ψφ (y , a) = p
    where
-    r : (f (g y) , transport A ((ε y)⁻¹) a) ≡ (y , a)
-    r = to-Σ-≡ (ε y , transport-is-retraction A (ε y) a)
+    p : (f (g y) , transport A ((ε y)⁻¹) a) ≡ (y , a)
+    p = to-Σ-≡ (ε y , transport-is-retraction A (ε y) a)
 
   φψ : (t : Σ (A ∘ f)) → φ (ψ t) ≡ t
-  φψ (x , a) = r
+  φψ (x , a) = p
    where
     a' : A (f (g (f x)))
     a' = transport A ((ε (f x))⁻¹) a
@@ -2502,8 +2505,8 @@ half-adjoint-condition f e = pr₂ (pr₂ (pr₂ (equivs-are-haes f e)))
         transport A (ε (f x))    a' ≡⟨ transport-is-retraction A (ε (f x)) a ⟩
         a                          ∎
 
-    r : (g (f x) , transport A ((ε (f x))⁻¹) a) ≡ (x , a)
-    r = to-Σ-≡ (η x , q)
+    p : (g (f x) , transport A ((ε (f x))⁻¹) a) ≡ (x , a)
+    p = to-Σ-≡ (η x , q)
 
   γ : Σ A ≃ Σ (A ∘ f)
   γ = invertibility-gives-≃ φ (ψ , ψφ , φψ)
