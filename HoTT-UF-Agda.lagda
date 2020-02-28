@@ -5680,28 +5680,28 @@ that the proof starts as that of
 
 \begin{code}
 Σ-change-of-variable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
-                     → is-equiv f → Σ A ≃ Σ (A ∘ f)
+                     → is-equiv f → (Σ y ꞉ Y , A y) ≃ (Σ x ꞉ X , A (f x))
 
-Σ-change-of-variable A f i = γ
+Σ-change-of-variable {𝓤} {𝓥} {𝓦} {X} {Y} A f i = γ
  where
   g = inverse f i
   η = inverses-are-retractions f i
   ε = inverses-are-sections f i
   τ = half-adjoint-condition f i
 
-  φ : Σ A → Σ (A ∘ f)
+  φ : (Σ y ꞉ Y , A y) → (Σ x ꞉ X , A (f x))
   φ (y , a) = (g y , transport A ((ε y)⁻¹) a)
 
-  ψ : Σ (A ∘ f) → Σ A
+  ψ : (Σ x ꞉ X , A (f x)) → (Σ y ꞉ Y , A y)
   ψ (x , a) = (f x , a)
 
-  ψφ : (z : Σ A) → ψ (φ z) ≡ z
+  ψφ : (z : Σ y ꞉ Y , A y) → ψ (φ z) ≡ z
   ψφ (y , a) = r
    where
     r : (f (g y) , transport A ((ε y)⁻¹) a) ≡ (y , a)
     r = to-Σ-≡ (ε y , transport-is-retraction A (ε y) a)
 
-  φψ : (t : Σ (A ∘ f)) → φ (ψ t) ≡ t
+  φψ : (t : Σ x ꞉ X , A (f x)) → φ (ψ t) ≡ t
   φψ (x , a) = r
    where
     a' : A (f (g (f x)))
@@ -5715,7 +5715,7 @@ that the proof starts as that of
     r : (g (f x) , transport A ((ε (f x))⁻¹) a) ≡ (x , a)
     r = to-Σ-≡ (η x , q)
 
-  γ : Σ A ≃ Σ (A ∘ f)
+  γ : (Σ y ꞉ Y , A y) ≃ (Σ x ꞉ X , A (f x))
   γ = invertibility-gives-≃ φ (ψ , ψφ , φψ)
 \end{code}
 
