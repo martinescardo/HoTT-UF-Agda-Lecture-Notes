@@ -610,11 +610,17 @@ A universe `𝓤` is a type of types.
 
 Sometimes we need more than one universe. For example, the type of
 groups in a universe lives in a bigger universe, and given a category
-in one universe, its presheaf category also lives in a larger universe.
+in one universe, its presheaf category also lives in a larger
+universe.
 
 We will work with a tower of type universes
 
    > `𝓤₀, 𝓤₁, 𝓤₂, 𝓤₃, ...`
+
+In practice, the first one, two or three universes suffice, but it
+will be easier to formulate definitions, constructions and theorems in
+full generality, to avoid making universe choices before knowing how
+they are going to be applied.
 
 These are actually universe names (also called levels, not to be confused with [hlevels](HoTT-UF-Agda.html#hlevel)). We reference
 the universes themselves by a deliberately almost-invisible
