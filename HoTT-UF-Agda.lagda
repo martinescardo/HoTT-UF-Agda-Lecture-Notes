@@ -12620,7 +12620,7 @@ stumble into an insurmountable problem of size.
 #### <a id="ring-sip"></a> Equality of Noetherian local rings
 
 A mathematician asked us what a formalization of Noetherian local rings
-would look like in univalent mathematics, in particular with respect
+would look like in univalent type theory, in particular with respect
 to automatic preservation of theorems about rings by ring
 isomorphisms.
 
