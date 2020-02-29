@@ -393,7 +393,7 @@ to practice univalent mathematics should consult the above references.
      1. [Singletons, subsingletons and sets](HoTT-UF-Agda.html#subsingletonsandsets)
         1. [Singleton (or contractible) types](HoTT-UF-Agda.html#singleton-types)
         1. [Subsingletons (or propositions or truth values)](HoTT-UF-Agda.html#subsingleton-types)
-        1. [Sets](HoTT-UF-Agda.html#set-types)
+        1. [Sets (or 0-groupoids)](HoTT-UF-Agda.html#set-types)
      1. [Univalent excluded middle](HoTT-UF-Agda.html#em)
      1. [The types of magmas and monoids](HoTT-UF-Agda.html#magmasandmonoids)
      1. [The identity type in univalent mathematics](HoTT-UF-Agda.html#identitytypeuf)
@@ -2631,7 +2631,10 @@ function extensionality, is the proof that the statement that a type
 proposition](HoTT-UF-Agda.html#being-subsingleton-is-subsingleton),
 which can be written as `is-prop (is-prop X)`.
 
-#### <a id="set-types"></a> Sets
+Singletons and subsingletons are also called -1-groupoids and
+-2-groupoids respectively.
+
+#### <a id="set-types"></a> Sets (or 0-groupoids)
 
 A type is defined to be a set if there is at most one way for any two of its
 elements to be equal:
@@ -4019,8 +4022,12 @@ invertibles-are-equivs {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = iii
 
   iii : is-singleton (fiber f y₀)
   iii = retract-of-singleton ii (singleton-types-are-singletons Y y₀)
+\end{code}
 
+An immediate consequence is that inverses of equivalences are
+themselves equivalences:
 
+\begin{code}
 inverses-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                     → is-equiv (inverse f e)
 
