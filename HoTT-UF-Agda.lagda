@@ -2631,8 +2631,8 @@ function extensionality, is the proof that the statement that a type
 proposition](HoTT-UF-Agda.html#being-subsingleton-is-subsingleton),
 which can be written as `is-prop (is-prop X)`.
 
-Singletons and subsingletons are also called -1-groupoids and
--2-groupoids respectively.
+Singletons and subsingletons are also called -2-groupoids and
+-1-groupoids respectively.
 
 #### <a id="set-types"></a> Sets (or 0-groupoids)
 
