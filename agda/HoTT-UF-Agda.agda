@@ -4024,6 +4024,22 @@ hfunext→ hfe X A f = fiberwise-equiv-universal (f ∼_) f (happly f) (hfe f)
 
 →hfunext φ {X} {A} f = universal-fiberwise-equiv (f ∼_) (φ X A f) f (happly f)
 
+fiberwise-equiv-criterion : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                            (x : X)
+                          → ((y : X) → A y ◁ (x ≡ y))
+                          → (τ : Nat (𝓨 x) A) → is-fiberwise-equiv τ
+
+fiberwise-equiv-criterion A x ρ τ = universal-fiberwise-equiv A
+                                     (retract-universal-lemma A x ρ) x τ
+
+fiberwise-equiv-criterion' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                            (x : X)
+                          → ((y : X) → (x ≡ y) ≃ A y)
+                          → (τ : Nat (𝓨 x) A) → is-fiberwise-equiv τ
+
+fiberwise-equiv-criterion' A x e = fiberwise-equiv-criterion A x
+                                    (λ y → ≃-gives-▷ (e y))
+
 _≃̇_ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 A ≃̇ B = ∀ x → A x ≃ B x
 
@@ -4947,32 +4963,43 @@ module sip where
        (⌜⌝-is-equiv (characterization-of-≡ ua σ A B))
        (h A B)
 
- canonical-map-charac : {S : 𝓤 ̇ → 𝓥 ̇ }
-                        (ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
-                        (ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
-                        {X : 𝓤 ̇ }
-                        (s t : S X)
-                        (p : s ≡ t)
+ module _ {S : 𝓤 ̇ → 𝓥 ̇ }
+          (ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
+          (ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
+          {X : 𝓤 ̇ }
 
-                      → canonical-map ι ρ s t p
-                      ≡ transport (λ - → ι (X , s) (X , -) (id-≃ X)) p (ρ (X , s))
+        where
 
- canonical-map-charac ι ρ {X} s = transport-lemma (λ t → ι (X , s) (X , t) (id-≃ X)) s
-                                                  (canonical-map ι ρ s)
+  canonical-map-charac : (s t : S X) (p : s ≡ t)
 
- when-canonical-map-is-equiv : {S : 𝓤 ̇ → 𝓥 ̇ }
-                               (ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
-                               (ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
-                               {X : 𝓤 ̇ }
+                       → canonical-map ι ρ s t p
+                       ≡ transport (λ - → ι (X , s) (X , -) (id-≃ X)) p (ρ (X , s))
 
-                             → ((s t : S X) → is-equiv (canonical-map ι ρ s t))
-                             ⇔ ((s : S X) → ∃! t ꞉ S X , ι (X , s) (X , t) (id-≃ X))
+  canonical-map-charac s = transport-lemma (λ t → ι (X , s) (X , t) (id-≃ X)) s
+                            (canonical-map ι ρ s)
 
- when-canonical-map-is-equiv ι ρ {X} = (λ e s → fiberwise-equiv-universal (A s) s (τ s) (e s)) ,
-                                       (λ φ s → universal-fiberwise-equiv (A s) (φ s) s (τ s))
-  where
-   A = λ s t → ι (X , s) (X , t) (id-≃ X)
-   τ = canonical-map ι ρ
+  when-canonical-map-is-equiv : ((s t : S X) → is-equiv (canonical-map ι ρ s t))
+                              ⇔ ((s : S X) → ∃! t ꞉ S X , ι (X , s) (X , t) (id-≃ X))
+
+  when-canonical-map-is-equiv = (λ e s → fiberwise-equiv-universal (A s) s (τ s) (e s)) ,
+                                (λ φ s → universal-fiberwise-equiv (A s) (φ s) s (τ s))
+   where
+    A = λ s t → ι (X , s) (X , t) (id-≃ X)
+    τ = canonical-map ι ρ
+
+  canonical-map-equiv-criterion : ((s t : S X) → (s ≡ t) ≃ ι (X , s) (X , t) (id-≃ X))
+                                → (s t : S X) → is-equiv (canonical-map ι ρ s t)
+
+  canonical-map-equiv-criterion φ s = fiberwise-equiv-criterion'
+                                       (λ t → ι (X , s) (X , t) (id-≃ X))
+                                       s (φ s) (canonical-map ι ρ s)
+
+  canonical-map-equiv-criterion' : ((s t : S X) → ι (X , s) (X , t) (id-≃ X) ◁ (s ≡ t))
+                                 → (s t : S X) → is-equiv (canonical-map ι ρ s t)
+
+  canonical-map-equiv-criterion' φ s = fiberwise-equiv-criterion
+                                        (λ t → ι (X , s) (X , t) (id-≃ X))
+                                        s (φ s) (canonical-map ι ρ s)
 
 module ∞-magma-identity {𝓤 : Universe} where
 
@@ -5086,6 +5113,7 @@ module sip-with-axioms where
      (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
    → ((X : 𝓤 ̇ ) (s : S X) → is-subsingleton (axioms X s))
    → (A B : Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , axioms X s)
+
    → (A ≡ B) ≃ ([ A ] ≃[ σ ] [ B ])
 
  characterization-of-≡-with-axioms ua σ axioms i =
@@ -5269,6 +5297,7 @@ module sip-join where
                             → {S₀ : 𝓤 ̇ → 𝓥 ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
                               (σ₀ : SNS S₀ 𝓦₀)  (σ₁ : SNS S₁ 𝓦₁)
                               (A B : Σ X ꞉ 𝓤 ̇ , S₀ X × S₁ X)
+
                             → (A ≡ B) ≃ (A ≃⟦ σ₀ , σ₁ ⟧ B)
 
  characterization-of-join-≡ ua σ₀ σ₁ = characterization-of-≡ ua (join σ₀ σ₁)
@@ -6011,6 +6040,7 @@ module generalized-topological-space-identity
 
  characterization-of-Space-≡ : is-univalent 𝓤
                              → (A B : Space)
+
                              → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-Space-≡ ua = characterization-of-≡-with-axioms ua
@@ -6025,6 +6055,7 @@ module generalized-topological-space-identity
 
  characterization-of-Space-≡' : is-univalent 𝓤
                               → (A B : Space)
+
                               → (A ≡ B) ≃ (A ≅' B)
 
  characterization-of-Space-≡' = characterization-of-Space-≡
@@ -6072,6 +6103,7 @@ module selection-space-identity
 
  characterization-of-selection-space-≡ : is-univalent 𝓤
                                        → (A B : SelectionSpace)
+
                                        → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-selection-space-≡ ua = characterization-of-≡-with-axioms ua
@@ -6092,9 +6124,9 @@ module contrived-example-identity (𝓤 : Universe) where
 
  contrived-≡ ua X Y φ γ =
    characterization-of-≡ ua
-    ((λ {(X , φ) (Y , γ) (f , i) → (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ≡ γ}) ,
-     (λ {(X , φ) → refl φ}) ,
-     (λ {φ γ → equivs-closed-under-∼ (id-is-equiv (φ ≡ γ)) (λ {(refl φ) → refl (refl φ)})}))
+    ((λ (X , φ) (Y , γ) (f , i) → (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ≡ γ) ,
+     (λ (X , φ) → refl φ) ,
+     (λ φ γ → equivs-closed-under-∼ (id-is-equiv (φ ≡ γ)) (λ {(refl φ) → refl (refl φ)})))
     (X , φ) (Y , γ)
 
 module generalized-functor-algebra-equality
@@ -6137,6 +6169,7 @@ module generalized-functor-algebra-equality
 
  characterization-of-functor-algebra-≡ : is-univalent 𝓤
    → (X Y : 𝓤 ̇ ) (α : F X → X) (β : F Y → Y)
+
    → ((X , α) ≡ (Y , β))  ≃  (Σ f ꞉ (X → Y), is-equiv f × (f ∘ α ≡ β ∘ 𝓕 f))
 
  characterization-of-functor-algebra-≡ ua X Y α β =
@@ -6205,7 +6238,7 @@ module type-valued-preorder-identity
   where
    ι : (𝓧 𝓐 : Σ S) → ⟨ 𝓧 ⟩ ≃ ⟨ 𝓐 ⟩ → 𝓤 ⊔ (𝓥 ⁺) ̇
    ι 𝓧 𝓐 (F , _) = Σ p ꞉ hom 𝓧 ≡ (λ x y → hom 𝓐 (F x) (F y))
-                        , functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)
+                       , functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)
 
    ρ : (𝓧 : Σ S) → ι 𝓧 𝓧 (id-≃ ⟨ 𝓧 ⟩)
    ρ 𝓧 = refl (hom 𝓧) , refl (𝒾𝒹 𝓧) , refl (comp 𝓧)
@@ -6669,7 +6702,7 @@ module basic-truncation-development
 
   surjection-induction f i P j α y = ∥∥-recursion (j y) φ (i y)
    where
-    φ : (σ : fiber f y) → P y
+    φ : fiber f y → P y
     φ (x , r) = transport P r (α x)
 
   ∣∣-is-surjection : (X : 𝓤 ̇ ) → is-surjection (λ (x : X) → ∣ x ∣)

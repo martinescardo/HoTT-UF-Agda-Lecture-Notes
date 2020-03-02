@@ -7942,6 +7942,33 @@ hfunext→ hfe X A f = fiberwise-equiv-universal (f ∼_) f (happly f) (hfe f)
 →hfunext φ {X} {A} f = universal-fiberwise-equiv (f ∼_) (φ X A f) f (happly f)
 \end{code}
 
+We also have the following general corollaries:
+
+\begin{code}
+fiberwise-equiv-criterion : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                            (x : X)
+                          → ((y : X) → A y ◁ (x ≡ y))
+                          → (τ : Nat (𝓨 x) A) → is-fiberwise-equiv τ
+
+fiberwise-equiv-criterion A x ρ τ = universal-fiberwise-equiv A
+                                     (retract-universal-lemma A x ρ) x τ
+\end{code}
+
+This says that if we have a fiberwise retraction, then any natural
+transformation is an equivalence. And the following says that if we
+have a fiberwise equivalence, then any natural transformation is a
+fiberwise equivalence:
+
+\begin{code}
+fiberwise-equiv-criterion' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                            (x : X)
+                          → ((y : X) → (x ≡ y) ≃ A y)
+                          → (τ : Nat (𝓨 x) A) → is-fiberwise-equiv τ
+
+fiberwise-equiv-criterion' A x e = fiberwise-equiv-criterion A x
+                                    (λ y → ≃-gives-▷ (e y))
+\end{code}
+
 A presheaf is called *representable* if it is pointwise equivalent to a
 presheaf of the form `𝓨 x`:
 
@@ -9551,36 +9578,58 @@ is itself an equivalence:
        (h A B)
 \end{code}
 
-We conclude this submodule with the following characterization of the canonical map and of when it is an equivalence, applying Yoneda:
+We conclude this submodule with the following characterization of the
+canonical map and of when it is an equivalence, applying Yoneda.
 
 \begin{code}
- canonical-map-charac : {S : 𝓤 ̇ → 𝓥 ̇ }
-                        (ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
-                        (ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
-                        {X : 𝓤 ̇ }
-                        (s t : S X)
-                        (p : s ≡ t)
+ module _ {S : 𝓤 ̇ → 𝓥 ̇ }
+          (ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
+          (ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
+          {X : 𝓤 ̇ }
 
-                      → canonical-map ι ρ s t p
-                      ≡ transport (λ - → ι (X , s) (X , -) (id-≃ X)) p (ρ (X , s))
+        where
 
- canonical-map-charac ι ρ {X} s = transport-lemma (λ t → ι (X , s) (X , t) (id-≃ X)) s
-                                                  (canonical-map ι ρ s)
+  canonical-map-charac : (s t : S X) (p : s ≡ t)
+
+                       → canonical-map ι ρ s t p
+                       ≡ transport (λ - → ι (X , s) (X , -) (id-≃ X)) p (ρ (X , s))
+
+  canonical-map-charac s = transport-lemma (λ t → ι (X , s) (X , t) (id-≃ X)) s
+                            (canonical-map ι ρ s)
 
 
- when-canonical-map-is-equiv : {S : 𝓤 ̇ → 𝓥 ̇ }
-                               (ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
-                               (ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩))
-                               {X : 𝓤 ̇ }
+  when-canonical-map-is-equiv : ((s t : S X) → is-equiv (canonical-map ι ρ s t))
+                              ⇔ ((s : S X) → ∃! t ꞉ S X , ι (X , s) (X , t) (id-≃ X))
 
-                             → ((s t : S X) → is-equiv (canonical-map ι ρ s t))
-                             ⇔ ((s : S X) → ∃! t ꞉ S X , ι (X , s) (X , t) (id-≃ X))
+  when-canonical-map-is-equiv = (λ e s → fiberwise-equiv-universal (A s) s (τ s) (e s)) ,
+                                (λ φ s → universal-fiberwise-equiv (A s) (φ s) s (τ s))
+   where
+    A = λ s t → ι (X , s) (X , t) (id-≃ X)
+    τ = canonical-map ι ρ
+\end{code}
 
- when-canonical-map-is-equiv ι ρ {X} = (λ e s → fiberwise-equiv-universal (A s) s (τ s) (e s)) ,
-                                       (λ φ s → universal-fiberwise-equiv (A s) (φ s) s (τ s))
-  where
-   A = λ s t → ι (X , s) (X , t) (id-≃ X)
-   τ = canonical-map ι ρ
+Another criterion is the following: It is enough to have any
+equivalence for the canonical map to be an equivalence:
+
+\begin{code}
+  canonical-map-equiv-criterion : ((s t : S X) → (s ≡ t) ≃ ι (X , s) (X , t) (id-≃ X))
+                                → (s t : S X) → is-equiv (canonical-map ι ρ s t)
+
+  canonical-map-equiv-criterion φ s = fiberwise-equiv-criterion'
+                                       (λ t → ι (X , s) (X , t) (id-≃ X))
+                                       s (φ s) (canonical-map ι ρ s)
+\end{code}
+
+And in fact it is enough to have any retraction for the canonical map
+to be an equivalence:
+
+\begin{code}
+  canonical-map-equiv-criterion' : ((s t : S X) → ι (X , s) (X , t) (id-≃ X) ◁ (s ≡ t))
+                                 → (s t : S X) → is-equiv (canonical-map ι ρ s t)
+
+  canonical-map-equiv-criterion' φ s = fiberwise-equiv-criterion
+                                        (λ t → ι (X , s) (X , t) (id-≃ X))
+                                        s (φ s) (canonical-map ι ρ s)
 \end{code}
 
 This concludes the module `sip`, and we now consider some examples of uses of this.
@@ -11193,9 +11242,9 @@ module contrived-example-identity (𝓤 : Universe) where
 
  contrived-≡ ua X Y φ γ =
    characterization-of-≡ ua
-    ((λ {(X , φ) (Y , γ) (f , i) → (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ≡ γ}) ,
-     (λ {(X , φ) → refl φ}) ,
-     (λ {φ γ → equivs-closed-under-∼ (id-is-equiv (φ ≡ γ)) (λ {(refl φ) → refl (refl φ)})}))
+    ((λ (X , φ) (Y , γ) (f , i) → (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ≡ γ) ,
+     (λ (X , φ) → refl φ) ,
+     (λ φ γ → equivs-closed-under-∼ (id-is-equiv (φ ≡ γ)) (λ {(refl φ) → refl (refl φ)})))
     (X , φ) (Y , γ)
 \end{code}
 
