@@ -9756,6 +9756,7 @@ same, ignoring the axioms:
      (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
    → ((X : 𝓤 ̇ ) (s : S X) → is-subsingleton (axioms X s))
    → (A B : Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , axioms X s)
+
    → (A ≡ B) ≃ ([ A ] ≃[ σ ] [ B ])
 
  characterization-of-≡-with-axioms ua σ axioms i =
@@ -9782,7 +9783,6 @@ module magma-identity {𝓤 : Universe} where
 
                Σ f ꞉ (X → Y), is-equiv f
                             × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
-
 
  characterization-of-Magma-≡ : is-univalent 𝓤 → (A B : Magma ) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-Magma-≡ ua =
@@ -10012,6 +10012,7 @@ general structure identity principle:
                             → {S₀ : 𝓤 ̇ → 𝓥 ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
                               (σ₀ : SNS S₀ 𝓦₀)  (σ₁ : SNS S₁ 𝓦₁)
                               (A B : Σ X ꞉ 𝓤 ̇ , S₀ X × S₁ X)
+
                             → (A ≡ B) ≃ (A ≃⟦ σ₀ , σ₁ ⟧ B)
 
  characterization-of-join-≡ ua σ₀ σ₁ = characterization-of-≡ ua (join σ₀ σ₁)
@@ -10536,6 +10537,8 @@ This equivalence is that which forgets the preservation of the unit:
 \end{code}
 
 This completes the solution of the exercise.
+
+For future use, we define:
 
 \begin{code}
  is-abelian : Group → 𝓤 ̇
@@ -11067,6 +11070,7 @@ We introduce notation for the type of homeomorphisms:
 
  characterization-of-Space-≡ : is-univalent 𝓤
                              → (A B : Space)
+
                              → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-Space-≡ ua = characterization-of-≡-with-axioms ua
@@ -11095,10 +11099,13 @@ prefer to rephrase the above as
 
  characterization-of-Space-≡' : is-univalent 𝓤
                               → (A B : Space)
+
                               → (A ≡ B) ≃ (A ≅' B)
 
  characterization-of-Space-≡' = characterization-of-Space-≡
 \end{code}
+
+Linear functions on certain spaces correspond to special kinds of measures by the [Riesz representation theorem](https://en.wikipedia.org/wiki/Riesz%E2%80%93Markov%E2%80%93Kakutani_representation_theorem), and hence in this case the `Space` becomes a type of such kind of measure spaces by an appropriate choice of axioms.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="selection-sip"></a> Selection spaces
@@ -11149,6 +11156,7 @@ module selection-space-identity
 
  characterization-of-selection-space-≡ : is-univalent 𝓤
                                        → (A B : SelectionSpace)
+
                                        → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-selection-space-≡ ua = characterization-of-≡-with-axioms ua
@@ -11241,6 +11249,7 @@ module generalized-functor-algebra-equality
 
  characterization-of-functor-algebra-≡ : is-univalent 𝓤
    → (X Y : 𝓤 ̇ ) (α : F X → X) (β : F Y → Y)
+
    → ((X , α) ≡ (Y , β))  ≃  (Σ f ꞉ (X → Y), is-equiv f × (f ∘ α ≡ β ∘ 𝓕 f))
 
  characterization-of-functor-algebra-≡ ua X Y α β =
@@ -11389,7 +11398,7 @@ standard notion of structure:
   where
    ι : (𝓧 𝓐 : Σ S) → ⟨ 𝓧 ⟩ ≃ ⟨ 𝓐 ⟩ → 𝓤 ⊔ (𝓥 ⁺) ̇
    ι 𝓧 𝓐 (F , _) = Σ p ꞉ hom 𝓧 ≡ (λ x y → hom 𝓐 (F x) (F y))
-                        , functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)
+                       , functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)
 
    ρ : (𝓧 : Σ S) → ι 𝓧 𝓧 (id-≃ ⟨ 𝓧 ⟩)
    ρ 𝓧 = refl (hom 𝓧) , refl (𝒾𝒹 𝓧) , refl (comp 𝓧)
@@ -11946,7 +11955,7 @@ A third possibility is to work with subsingleton truncations
 with the above two proposals. We write this axiom as a record type
 rather than as an iterated `Σ` type for simplicity, where we use the
 HoTT-book notation `∥ X ∥` for the inhabitation of `X`,
-called the propositional, or subsingleton, truncation of `X`:
+called the propositional, or subsingleton, or truth-value, truncation of `X`:
 
 \begin{code}
 record subsingleton-truncations-exist : 𝓤ω where
@@ -12112,7 +12121,7 @@ further details about these notions of disjunction and existence.
 
   surjection-induction f i P j α y = ∥∥-recursion (j y) φ (i y)
    where
-    φ : (σ : fiber f y) → P y
+    φ : fiber f y → P y
     φ (x , r) = transport P r (α x)
 \end{code}
 
