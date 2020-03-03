@@ -353,7 +353,7 @@ types](https://www.cs.bham.ac.uk/~mhe/agda-new/InjectiveTypes-article.html),
 types](https://www.cs.bham.ac.uk/~mhe/agda-new/Compactness.html),
 [compact
 ordinals](https://www.cs.bham.ac.uk/~mhe/agda-new/Ordinals.html) and
-[more](https://www.cs.bham.ac.uk/~mhe/agda-new/SafeModulesIndex.html).
+[more](https://www.cs.bham.ac.uk/~mhe/agda-new/).
 
 [<sub>Table of contents ⇓</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="plan"></a> Choice of material
