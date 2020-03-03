@@ -14002,7 +14002,7 @@ PR-is-subsingleton {𝓤} {𝓥} ua =
 \end{code}
 
 *Exercise*. [It is
-possible](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Resizing.html) to
+possible](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Size.html) to
 show that the propositional resizing principle is a subsingleton
 using propositional and functional extensionality instead of
 univalence.
@@ -14096,7 +14096,7 @@ PR-gives-impredicativity₁ pe fe = PR-gives-Impredicativity⁺
 \end{code}
 
 *Exercise*. Excluded middle
-[gives](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Resizing.html) the
+[gives](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Size.html) the
 impredicativity of the first universe, and of all other universes.
 
 We also have that moving `Ω` around universes moves subsingletons around
@@ -14143,7 +14143,7 @@ Impredicativity-gives-PR {𝓤} {𝓥} pe fe (O , e) P i = Q , ε
 \end{code}
 
 *Exercise*. `propext` and `funext` and excluded middle together imply
-[that](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Resizing.html) `Ω 𝓤`
+[that](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Size.html) `Ω 𝓤`
 has size `𝓤₀`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
