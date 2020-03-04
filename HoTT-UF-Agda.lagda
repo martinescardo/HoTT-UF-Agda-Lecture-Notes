@@ -1294,7 +1294,7 @@ the equality sign.
 
 Notice also that "꞉" in the above syntax definition is not the same
 as ":", even though they may look the same. For the above notation `Σ
-x ꞉ A , b`, the symbol "꞉" has to be typed "\:4" in the emacs Agda
+x ꞉ A , b`, the symbol "꞉" has to be typed "\\:4" in the emacs Agda
 mode.
 
 To prove that `A z` holds for all `z : Σ Y`, for a given
