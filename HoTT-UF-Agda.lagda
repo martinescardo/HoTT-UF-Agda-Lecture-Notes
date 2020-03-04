@@ -715,7 +715,7 @@ type `𝟙` satisfy a given property `A`.
 
   1. In MLTT, mathematical statements are types, such as
 
-     > `Π (A : 𝟙 → 𝓤), A ⋆ → Π (x : 𝟙), A x`.
+     > `Π A : 𝟙 → 𝓤, A ⋆ → Π x : 𝟙, A x`.
 
   1. We read this in natural language as "for any given property `A`
      of elements of the type `𝟙`, if `A ⋆` holds, then it follows that
