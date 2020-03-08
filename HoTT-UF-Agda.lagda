@@ -10831,10 +10831,9 @@ lemmas:
     γ = one-left-inv H (f x) (f (inv G x)) p
 \end{code}
 
-We use these basic lemmas to show that the type of subgroups is
-equivalent to the type
+We now show that the type of subgroups is equivalent to the type
 
- Σ H ꞉ Group , Σ f ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding f × is-homomorphism H G f
+   > `Σ H ꞉ Group , Σ f ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding f × is-homomorphism H G f`
 
 as an application of the subtype classifier.
 
@@ -11019,14 +11018,14 @@ classifier](HoTT-UF-Agda.html#subtypeclassifier).
                                                            × is-homomorphism H G f)
   characterization-of-the-type-of-subgroups =
 
-   Subgroups                                                                                       ≃⟨ id-≃ Subgroups ⟩
-   (Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A))                                                           ≃⟨ i ⟩
-   (Σ (X , h , e) ꞉ Subtypes ⟨ G ⟩ , group-closed (fiber h))                                       ≃⟨ ii ⟩
-   (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , group-closed (fiber h))                                     ≃⟨ iii ⟩
-   (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , Σ τ ꞉ T X , is-homomorphism (X , τ) G h)                    ≃⟨ iv ⟩
-   (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ e ꞉ is-embedding h , Σ τ ꞉ T X , is-homomorphism (X , τ) G h) ≃⟨ v ⟩
-   (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ τ ꞉ T X , Σ e ꞉ is-embedding h , is-homomorphism (X , τ) G h) ≃⟨ vi ⟩
-   (Σ X ꞉ 𝓤 ̇ , Σ τ ꞉ T X , Σ h ꞉ (X → ⟨ G ⟩) , is-embedding h × is-homomorphism (X , τ) G h)       ≃⟨ vii ⟩
+   Subgroups                                                                                       ≃⟨ i    ⟩
+   (Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A))                                                           ≃⟨ ii   ⟩
+   (Σ (X , h , e) ꞉ Subtypes ⟨ G ⟩ , group-closed (fiber h))                                       ≃⟨ iii  ⟩
+   (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , group-closed (fiber h))                                     ≃⟨ iv   ⟩
+   (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , Σ τ ꞉ T X , is-homomorphism (X , τ) G h)                    ≃⟨ v    ⟩
+   (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ e ꞉ is-embedding h , Σ τ ꞉ T X , is-homomorphism (X , τ) G h) ≃⟨ vi   ⟩
+   (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ τ ꞉ T X , Σ e ꞉ is-embedding h , is-homomorphism (X , τ) G h) ≃⟨ vii  ⟩
+   (Σ X ꞉ 𝓤 ̇ , Σ τ ꞉ T X , Σ h ꞉ (X → ⟨ G ⟩) , is-embedding h × is-homomorphism (X , τ) G h)       ≃⟨ viii ⟩
    (Σ H ꞉ Group , Σ f ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding f × is-homomorphism H G f)                  ■
 
       where
@@ -11036,13 +11035,14 @@ classifier](HoTT-UF-Agda.html#subtypeclassifier).
        j : is-equiv φ
        j = χ-special-is-equiv (ua 𝓤) gfe is-subsingleton ⟨ G ⟩
 
-       i   = Σ-change-of-variable (λ (A : 𝓟 ⟨ G ⟩) → group-closed (_∈ A)) φ j
-       ii  = Σ-assoc
-       iii = Σ-cong (λ X → Σ-cong (λ (h , e) → fiber-structure-lemma h e))
-       iv  = Σ-cong (λ X → Σ-assoc)
-       v   = Σ-cong (λ X → Σ-cong (λ h → Σ-flip))
-       vi  = Σ-cong (λ X → Σ-flip)
-       vii = ≃-sym Σ-assoc
+       i    = id-≃ Subgroups
+       ii   = Σ-change-of-variable (λ (A : 𝓟 ⟨ G ⟩) → group-closed (_∈ A)) φ j
+       iii  = Σ-assoc
+       iv   = Σ-cong (λ X → Σ-cong (λ (h , e) → fiber-structure-lemma h e))
+       v    = Σ-cong (λ X → Σ-assoc)
+       vi   = Σ-cong (λ X → Σ-cong (λ h → Σ-flip))
+       vii  = Σ-cong (λ X → Σ-flip)
+       viii = ≃-sym Σ-assoc
 \end{code}
 
 In particular, a subgroup induces a genuine group, which is
