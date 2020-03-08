@@ -11013,9 +11013,9 @@ classifier](HoTT-UF-Agda.html#subtypeclassifier).
 
 \begin{code}
   characterization-of-the-type-of-subgroups :  Subgroups ≃  (Σ H ꞉ Group
-                                                           , Σ f ꞉ (⟨ H ⟩ → ⟨ G ⟩)
-                                                           , is-embedding f
-                                                           × is-homomorphism H G f)
+                                                           , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩)
+                                                           , is-embedding h
+                                                           × is-homomorphism H G h)
   characterization-of-the-type-of-subgroups =
 
    Subgroups                                                                                       ≃⟨ i    ⟩
@@ -11026,7 +11026,7 @@ classifier](HoTT-UF-Agda.html#subtypeclassifier).
    (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ e ꞉ is-embedding h , Σ τ ꞉ T X , is-homomorphism (X , τ) G h) ≃⟨ vi   ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ τ ꞉ T X , Σ e ꞉ is-embedding h , is-homomorphism (X , τ) G h) ≃⟨ vii  ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ τ ꞉ T X , Σ h ꞉ (X → ⟨ G ⟩) , is-embedding h × is-homomorphism (X , τ) G h)       ≃⟨ viii ⟩
-   (Σ H ꞉ Group , Σ f ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding f × is-homomorphism H G f)                  ■
+   (Σ H ꞉ Group , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding h × is-homomorphism H G h)                  ■
 
       where
        φ : Subtypes ⟨ G ⟩ → 𝓟 ⟨ G ⟩
