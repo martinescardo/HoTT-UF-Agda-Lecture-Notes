@@ -10541,8 +10541,50 @@ We now solve the exercise.
        e                        ∎
 \end{code}
 
-*Exercise.* If a map preverves multiplication then it also preserves
- inverses.
+If a map preverves multiplication then it also preserves
+inverses:
+
+\begin{code}
+ inv-Lemma : (G : Group) (x y z : ⟨ G ⟩)
+           → (y ·⟨ G ⟩ x) ≡ unit G
+           → (x ·⟨ G ⟩ z) ≡ unit G
+           → y ≡ z
+
+ inv-Lemma G = inv-lemma ⟨ G ⟩ (multiplication G) (unit G) (monoid-axioms-of G)
+
+
+ one-left-inv : (G : Group) (x x' : ⟨ G ⟩)
+              → (x' ·⟨ G ⟩ x) ≡ unit G
+              → x' ≡ inv G x
+
+ one-left-inv G x x' p = inv-Lemma G x x' (inv G x) p (inv-right G x)
+
+
+ one-right-inv : (G : Group) (x x' : ⟨ G ⟩)
+               → (x ·⟨ G ⟩ x') ≡ unit G
+               → x' ≡ inv G x
+
+ one-right-inv G x x' p = (inv-Lemma G x (inv G x) x' (inv-left G x) p)⁻¹
+
+
+ preserves-inv : (G H : Group) → (⟨ G ⟩ → ⟨ H ⟩) → 𝓤 ̇
+ preserves-inv G H f = (x : ⟨ G ⟩) → f (inv G x) ≡ inv H (f x)
+
+
+ inv-preservation-lemma : (G H : Group) (f : ⟨ G ⟩ → ⟨ H ⟩)
+                        → preserves-multiplication G H f
+                        → preserves-inv G H f
+
+ inv-preservation-lemma G H f m x = γ
+  where
+   p = f (inv G x) ·⟨ H ⟩ f x ≡⟨ (ap (λ - → - (inv G x) x) m)⁻¹  ⟩
+       f (inv G x ·⟨ G ⟩ x)   ≡⟨ ap f (inv-left G x)             ⟩
+       f (unit G)             ≡⟨ unit-preservation-lemma G H f m ⟩
+       unit H                 ∎
+
+   γ : f (inv G x) ≡ inv H (f x)
+   γ = one-left-inv H (f x) (f (inv G x)) p
+\end{code}
 
 The usual notion of group homomorphism is that of
 multiplication-preserving function. But this is known to be equivalent
@@ -10615,13 +10657,6 @@ This equivalence is that which forgets the preservation of the unit:
 
 This completes the solution of the exercise.
 
-For future use, we define:
-
-\begin{code}
- is-abelian : Group → 𝓤 ̇
- is-abelian G = (x y : ⟨ G ⟩) → x ·⟨ G ⟩ y ≡ y ·⟨ G ⟩ x
-\end{code}
-
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="subgroups-sip"></a> Subgroups
 
@@ -10680,19 +10715,16 @@ We assume an arbitrary ambient group `G` in the following discussion.
   _·_ : ⟨ G ⟩ → ⟨ G ⟩ → ⟨ G ⟩
   x · y = x ·⟨ G ⟩ y
 
-  inve : ⟨ G ⟩ → ⟨ G ⟩
-  inve = inv G
-
   infixl 42 _·_
 \end{code}
 
-We abbreviate "closed under the group operations by "group-closed":
+We abbreviate "closed under the group operations" by "group-closed":
 
 \begin{code}
   group-closed : (⟨ G ⟩ → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
   group-closed 𝓐 = 𝓐 (unit G)
                  × ((x y : ⟨ G ⟩) → 𝓐 x → 𝓐 y → 𝓐 (x · y))
-                 × ((x : ⟨ G ⟩) → 𝓐 x → 𝓐 (inve x))
+                 × ((x : ⟨ G ⟩) → 𝓐 x → 𝓐 (inv G x))
 
   Subgroups : 𝓤 ⁺ ̇
   Subgroups = Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A)
@@ -10711,7 +10743,7 @@ We abbreviate "closed under the group operations by "group-closed":
                                                      (λ _ → ∈-is-subsingleton A (x · y))))))
                                                   (Π-is-subsingleton dfe
                                                      (λ x → Π-is-subsingleton dfe
-                                                     (λ _ → ∈-is-subsingleton A (inve x)))))
+                                                     (λ _ → ∈-is-subsingleton A (inv G x)))))
 
   ⟪⟫-is-embedding : is-embedding ⟪_⟫
   ⟪⟫-is-embedding = pr₁-embedding being-group-closed-subset-is-subsingleton
@@ -10752,6 +10784,7 @@ same elements:
      where
       α : ⟪ S ⟫ ⊆ ⟪ T ⟫
       α x = lr-implication (φ x)
+
       β : ⟪ T ⟫ ⊆ ⟪ S ⟫
       β x = rl-implication (φ x)
 
@@ -10766,69 +10799,6 @@ same elements:
                       (Π-is-subsingleton dfe (λ _ → ∈-is-subsingleton ⟪ T ⟫ x))
                       (Π-is-subsingleton dfe (λ _ → ∈-is-subsingleton ⟪ S ⟫ x))))
           (f , g)
-\end{code}
-
-We now introduce notations for the projections and prove some basic
-lemmas:
-
-\begin{code}
-  subgroup-unit : (S : Subgroups) → unit G ∈ ⟪ S ⟫
-  subgroup-unit (A , u , m , i) = u
-
-  subgroup-multiplication : (S : Subgroups)
-                          → ((x y : ⟨ G ⟩) → x ∈ ⟪ S ⟫
-                                           → y ∈ ⟪ S ⟫
-                                           → x · y ∈ ⟪ S ⟫)
-
-  subgroup-multiplication (A , u , m , i) = m
-
-
-  subgroup-inv : (S : Subgroups)
-               → (x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ → inve x ∈ ⟪ S ⟫
-
-  subgroup-inv (A , u , m , i) = i
-
-
-  inv-Lemma : (G : Group) (x y z : ⟨ G ⟩)
-            → (y ·⟨ G ⟩ x) ≡ unit G
-            → (x ·⟨ G ⟩ z) ≡ unit G
-            → y ≡ z
-
-  inv-Lemma G = inv-lemma ⟨ G ⟩ (multiplication G) (unit G) (monoid-axioms-of G)
-
-
-  one-left-inv : (G : Group) (x x' : ⟨ G ⟩)
-               → (x' ·⟨ G ⟩ x) ≡ unit G
-               → x' ≡ inv G x
-
-
-  one-left-inv G x x' p = inv-Lemma G x x' (inv G x) p (inv-right G x)
-
-
-  one-right-inv : (G : Group) (x x' : ⟨ G ⟩)
-                → (x ·⟨ G ⟩ x') ≡ unit G
-                → x' ≡ inv G x
-
-  one-right-inv G x x' p = (inv-Lemma G x (inv G x) x' (inv-left G x) p)⁻¹
-
-
-  preserves-inv : (G H : Group) → (⟨ G ⟩ → ⟨ H ⟩) → 𝓤 ̇
-  preserves-inv G H f = (x : ⟨ G ⟩) → f (inv G x) ≡ inv H (f x)
-
-
-  inv-preservation-lemma : (G H : Group) (f : ⟨ G ⟩ → ⟨ H ⟩)
-                         → preserves-multiplication G H f
-                         → preserves-inv G H f
-
-  inv-preservation-lemma G H f m x = γ
-   where
-    p = f (inv G x) ·⟨ H ⟩ f x ≡⟨ (ap (λ - → - (inv G x) x) m)⁻¹  ⟩
-        f (inv G x ·⟨ G ⟩ x)   ≡⟨ ap f (inv-left G x)             ⟩
-        f (unit G)             ≡⟨ unit-preservation-lemma G H f m ⟩
-        unit H                 ∎
-
-    γ : f (inv G x) ≡ inv H (f x)
-    γ = one-left-inv H (f x) (f (inv G x)) p
 \end{code}
 
 We now show that the type of subgroups is equivalent to the type
@@ -10854,8 +10824,8 @@ following few lemmas:
   module _ {X : 𝓤 ̇ } (h : X → ⟨ G ⟩) (e : is-embedding h) where
 
    private
-    hlc : left-cancellable h
-    hlc = embeddings-are-lc h e
+    h-lc : left-cancellable h
+    h-lc = embeddings-are-lc h e
 
    having-group-closed-fiber-is-subsingleton : is-subsingleton (group-closed (fiber h))
    having-group-closed-fiber-is-subsingleton = being-group-closed-subset-is-subsingleton
@@ -10878,13 +10848,13 @@ following few lemmas:
      i' = (pmult' , punit')
 
      p : _*_ ≡ _*'_
-     p = gfe (λ x → gfe (λ y → hlc (h (x * y)  ≡⟨  ap (λ - → - x y) pmult     ⟩
-                                    h x · h y  ≡⟨ (ap (λ - → - x y) pmult')⁻¹ ⟩
-                                    h (x *' y) ∎)))
+     p = gfe (λ x → gfe (λ y → h-lc (h (x * y)  ≡⟨  ap (λ - → - x y) pmult     ⟩
+                                     h x · h y  ≡⟨ (ap (λ - → - x y) pmult')⁻¹ ⟩
+                                     h (x *' y) ∎)))
      q : unitH ≡ unitH'
-     q = hlc (h unitH  ≡⟨  punit     ⟩
-              unit G   ≡⟨  punit' ⁻¹ ⟩
-              h unitH' ∎)
+     q = h-lc (h unitH  ≡⟨  punit     ⟩
+               unit G   ≡⟨  punit' ⁻¹ ⟩
+               h unitH' ∎)
 
      r : (_*_ , unitH) ≡ (_*'_ , unitH')
      r = to-×-≡ (p , q)
@@ -10926,46 +10896,46 @@ following few lemmas:
      pinv : (x : X) → h (invH x) ≡ inv G (h x)
      pinv x = fiber-identification (invc (h x) (φ x))
 
-     unit-leftH : (x : X) → unitH * x ≡ x
-     unit-leftH x = hlc (h (unitH * x) ≡⟨ pmul unitH x      ⟩
-                         h unitH · h x ≡⟨ ap (_· h x) punit ⟩
-                         unit G · h x  ≡⟨ unit-left G (h x) ⟩
-                         h x           ∎)
-
-     unit-rightH : (x : X) → x * unitH ≡ x
-     unit-rightH x = hlc (h (x * unitH) ≡⟨ pmul x unitH       ⟩
-                          h x · h unitH ≡⟨ ap (h x ·_) punit  ⟩
-                          h x · unit G  ≡⟨ unit-right G (h x) ⟩
+     unitH-left : (x : X) → unitH * x ≡ x
+     unitH-left x = h-lc (h (unitH * x) ≡⟨ pmul unitH x      ⟩
+                          h unitH · h x ≡⟨ ap (_· h x) punit ⟩
+                          unit G · h x  ≡⟨ unit-left G (h x) ⟩
                           h x           ∎)
 
+     unitH-right : (x : X) → x * unitH ≡ x
+     unitH-right x = h-lc (h (x * unitH) ≡⟨ pmul x unitH       ⟩
+                           h x · h unitH ≡⟨ ap (h x ·_) punit  ⟩
+                           h x · unit G  ≡⟨ unit-right G (h x) ⟩
+                           h x           ∎)
+
      assocH : (x y z : X) → ((x * y) * z) ≡ (x * (y * z))
-     assocH x y z = hlc (h ((x * y) * z)   ≡⟨ pmul (x * y) z             ⟩
-                         h (x * y) · h z   ≡⟨ ap (_· h z) (pmul x y)     ⟩
-                         (h x · h y) · h z ≡⟨ assoc G (h x) (h y) (h z)  ⟩
-                         h x · (h y · h z) ≡⟨ (ap (h x ·_) (pmul y z))⁻¹ ⟩
-                         h x · h (y * z)   ≡⟨ (pmul x (y * z))⁻¹         ⟩
-                         h (x * (y * z))   ∎)
+     assocH x y z = h-lc (h ((x * y) * z)   ≡⟨ pmul (x * y) z             ⟩
+                          h (x * y) · h z   ≡⟨ ap (_· h z) (pmul x y)     ⟩
+                          (h x · h y) · h z ≡⟨ assoc G (h x) (h y) (h z)  ⟩
+                          h x · (h y · h z) ≡⟨ (ap (h x ·_) (pmul y z))⁻¹ ⟩
+                          h x · h (y * z)   ≡⟨ (pmul x (y * z))⁻¹         ⟩
+                          h (x * (y * z))   ∎)
 
      group-axiomH : (x : X) → Σ x' ꞉ X , (x * x' ≡ unitH) × (x' * x ≡ unitH)
      group-axiomH x = invH x ,
 
-                      hlc (h (x * invH x)     ≡⟨ pmul x (invH x)      ⟩
-                           h x · h (invH x)   ≡⟨ ap (h x ·_) (pinv x) ⟩
-                           h x · inv G (h x)  ≡⟨ inv-right G (h x)    ⟩
-                           unit G             ≡⟨ punit ⁻¹             ⟩
-                           h unitH            ∎),
+                      h-lc (h (x * invH x)     ≡⟨ pmul x (invH x)      ⟩
+                            h x · h (invH x)   ≡⟨ ap (h x ·_) (pinv x) ⟩
+                            h x · inv G (h x)  ≡⟨ inv-right G (h x)    ⟩
+                            unit G             ≡⟨ punit ⁻¹             ⟩
+                            h unitH            ∎),
 
-                      hlc ((h (invH x * x)    ≡⟨ pmul (invH x) x      ⟩
-                            h (invH x) · h x  ≡⟨ ap (_· h x) (pinv x) ⟩
-                            inv G (h x) · h x ≡⟨ inv-left G (h x)     ⟩
-                            unit G            ≡⟨ punit ⁻¹             ⟩
-                            h unitH           ∎))
+                      h-lc ((h (invH x * x)    ≡⟨ pmul (invH x) x      ⟩
+                             h (invH x) · h x  ≡⟨ ap (_· h x) (pinv x) ⟩
+                             inv G (h x) · h x ≡⟨ inv-left G (h x)     ⟩
+                             unit G            ≡⟨ punit ⁻¹             ⟩
+                             h unitH           ∎))
 
      j : is-set X
-     j = subtypes-of-sets-are-sets h hlc (group-is-set G)
+     j = subtypes-of-sets-are-sets h h-lc (group-is-set G)
 
      τ : T X
-     τ = ((_*_ , unitH) , (j , unit-leftH , unit-rightH , assocH)) , group-axiomH
+     τ = ((_*_ , unitH) , (j , unitH-left , unitH-right , assocH)) , group-axiomH
 
      i : is-homomorphism (X , τ) G h
      i = gfe (λ x → gfe (pmul x)) , punit
@@ -10979,7 +10949,7 @@ following few lemmas:
     = (unitc , mulc , invc)
     where
      H : Group
-     H = (X , ((_*_ , unitH) , maxioms) , gaxiom)
+     H = X , ((_*_ , unitH) , maxioms) , gaxiom
 
      unitc : fiber h (unit G)
      unitc = unitH , punit
@@ -10990,7 +10960,7 @@ following few lemmas:
                                  h a · h b ≡⟨ ap₂ (λ - -' → - · -') p q ⟩
                                  x · y     ∎)
 
-     invc : ((x : ⟨ G ⟩) → fiber h x → fiber h (inve x))
+     invc : ((x : ⟨ G ⟩) → fiber h x → fiber h (inv G x))
      invc x (a , p) = inv H a ,
                       (h (inv H a) ≡⟨ inv-preservation-lemma H G h pmult a ⟩
                        inv G (h a) ≡⟨ ap (inv G) p                         ⟩
@@ -11007,7 +10977,7 @@ following few lemmas:
                               homomorphic-structure-gives-group-closed-fiber)
 \end{code}
 
-This is the end of the anonymous submodule and now we can prove the
+This is the end of the anonymous submodule and we can now prove the
 desired result. We apply the material on the [subtype
 classifier](HoTT-UF-Agda.html#subtypeclassifier).
 
