@@ -4171,6 +4171,12 @@ Examples:
 
 Σ-flip = invertibility-gives-≃ (λ (x , y , p) → (y , x , p))
           ((λ (y , x , p) → (x , y , p)) , refl , refl)
+
+×-comm : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+       → (X × Y) ≃ (Y × X)
+
+×-comm = invertibility-gives-≃ (λ (x , y) → (y , x))
+          ((λ (y , x) → (x , y)) , refl , refl)
 \end{code}
 
 The identity equivalence and the composition of two equivalences:
@@ -7666,6 +7672,14 @@ embedding-criterion-converse f e x' x = ≃-sym
 Hence embeddings of arbitrary types are left cancellable, but the
 converse fails in general.
 
+\begin{code}
+embeddings-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                  → is-embedding f
+                  → left-cancellable f
+
+embeddings-are-lc f e {x} {y} = ⌜ embedding-criterion-converse f e x y ⌝
+\end{code}
+
 *Exercise*. Left cancellable maps into *sets* are always embeddings.
 
 If an embedding has a section, then it is an equivalence.
@@ -8998,15 +9012,15 @@ global-≃-ap ua = global-≃-ap' ua id
 A subtype of a type `Y` is a type `X` *together* with an embedding of `X` into `Y`:
 
 \begin{code}
-subtypes : 𝓤 ̇ → 𝓤 ⁺ ̇
-subtypes {𝓤} Y = Σ X ꞉ 𝓤 ̇ , X ↪ Y
+Subtypes : 𝓤 ̇ → 𝓤 ⁺ ̇
+Subtypes {𝓤} Y = Σ X ꞉ 𝓤 ̇ , X ↪ Y
 \end{code}
 
 The type `Ω 𝓤` of subsingletons in the universe `𝓤` is the subtype
 classifier of types in `𝓤`, in the sense that we have a canonical
 equivalence
 
-   > `subtypes Y ≃ (Y → Ω 𝓤)`
+   > `Subtypes Y ≃ (Y → Ω 𝓤)`
 
 for any type `Y : 𝓤`. We will derive this from something
 more general.  We defined embeddings to be maps whose fibers are
@@ -9075,7 +9089,7 @@ fact that `Ω` is the subtype classifier:
 
 \begin{code}
 Ω-is-subtype-classifier : Univalence
-                        → (Y : 𝓤 ̇ ) → subtypes Y ≃ (Y → Ω 𝓤)
+                        → (Y : 𝓤 ̇ ) → Subtypes Y ≃ (Y → Ω 𝓤)
 
 Ω-is-subtype-classifier {𝓤} ua = special-map-classifier (ua 𝓤)
                                   (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
@@ -9086,7 +9100,7 @@ It follows that the type of subtypes of `Y` is always a set, even if
 `Y` is not a set:
 
 \begin{code}
-subtypes-form-set : Univalence → (Y : 𝓤 ̇ ) → is-set (subtypes Y)
+subtypes-form-set : Univalence → (Y : 𝓤 ̇ ) → is-set (Subtypes Y)
 subtypes-form-set {𝓤} ua Y = equiv-to-set
                               (Ω-is-subtype-classifier ua Y)
                               (powersets-are-sets' ua)
@@ -10329,6 +10343,9 @@ We add an axiom to monoids to get groups.
 \begin{code}
 module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
+ hfe : hfunext 𝓤 𝓤
+ hfe = univalence-gives-hfunext ua
+
  open sip
  open sip-with-axioms
  open monoid-identity {𝓤} ua hiding (sns-data ; _≅_)
@@ -10537,25 +10554,33 @@ from monoids and by our general structure identity principle.
  is-homomorphism G H f = preserves-multiplication G H f
                        × preserves-unit G H f
 
+ preservation-of-mult-is-subsingleton : (G H : Group) (f : ⟨ G ⟩ → ⟨ H ⟩)
+                                      → is-subsingleton (preserves-multiplication G H f)
+ preservation-of-mult-is-subsingleton G H f = j
+  where
+   j : is-subsingleton (preserves-multiplication G H f)
+   j = Π-is-set hfe
+        (λ _ → Π-is-set hfe
+        (λ _ → group-is-set H))
+        (λ (x y : ⟨ G ⟩) → f (x ·⟨ G ⟩ y))
+        (λ (x y : ⟨ G ⟩) → f x ·⟨ H ⟩ f y)
+
+ being-homomorphism-is-subsingleton : (G H : Group) (f : ⟨ G ⟩ → ⟨ H ⟩)
+                                    → is-subsingleton (is-homomorphism G H f)
+ being-homomorphism-is-subsingleton G H f = i
+  where
+
+   i : is-subsingleton (is-homomorphism G H f)
+   i = ×-is-subsingleton
+        (preservation-of-mult-is-subsingleton G H f)
+        (group-is-set H (f (unit G)) (unit H))
+
  notions-of-homomorphism-agree : (G H : Group) (f : ⟨ G ⟩ → ⟨ H ⟩)
                                → is-homomorphism G H f
                                ≃ preserves-multiplication G H f
 
  notions-of-homomorphism-agree G H f = γ
   where
-   hfe : hfunext 𝓤 𝓤
-   hfe = univalence-gives-hfunext ua
-
-   j : is-subsingleton (preserves-multiplication G H f)
-   j = Π-is-set hfe
-         (λ _ → Π-is-set hfe
-         (λ _ → group-is-set H))
-         (λ (x y : ⟨ G ⟩) → f (x ·⟨ G ⟩ y))
-         (λ (x y : ⟨ G ⟩) → f x ·⟨ H ⟩ f y)
-
-   i : is-subsingleton (is-homomorphism G H f)
-   i = ×-is-subsingleton j (group-is-set H (f (unit G)) (unit H))
-
    α : is-homomorphism G H f → preserves-multiplication G H f
    α = pr₁
 
@@ -10563,7 +10588,10 @@ from monoids and by our general structure identity principle.
    β m = m , unit-preservation-lemma G H f m
 
    γ : is-homomorphism G H f ≃ preserves-multiplication G H f
-   γ = logically-equivalent-subsingletons-are-equivalent _ _ i j (α , β)
+   γ = logically-equivalent-subsingletons-are-equivalent _ _
+        (being-homomorphism-is-subsingleton G H f)
+        (preservation-of-mult-is-subsingleton G H f)
+        (α , β)
 
 
  ≅-agreement : (G H : Group) → (G ≅ H) ≃ (G ≅' H)
@@ -10623,9 +10651,7 @@ formulated and proved in two equivalent ways.
   equality from the powerset.
 
   1. A subgroup of a group `G` is a group `H` *together* with a
-  homomorphic embedding `H → G`. We leave as an exercise to show
-  that this second definition of the type of subgroups produces a type
-  that is equivalent to the previous. With this second definition, two
+  homomorphic embedding `H → G`. With this second definition, two
   subgroups `H` and `H'` are equal iff the embeddings `H → G` and `H'
   → G` can be completed to a commutative triangle by a group
   isomorphism `H → H'`, which is necessarily unique when it exists
@@ -10637,6 +10663,9 @@ module subgroup-identity
         (𝓤  : Universe)
         (ua : Univalence)
        where
+
+ gfe : global-dfunext
+ gfe = univalence-gives-global-dfunext ua
 
  open sip
  open monoid-identity {𝓤} (ua 𝓤) hiding (sns-data ; _≅_)
@@ -10655,29 +10684,38 @@ We assume an arbitrary ambient group `G` in the following discussion.
   inve = inv G
 
   infixl 42 _·_
+\end{code}
+
+We abbreviate "closed under the group operations by "group-closed":
+
+\begin{code}
+  group-closed : (⟨ G ⟩ → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
+  group-closed 𝓐 = 𝓐 (unit G)
+                 × ((x y : ⟨ G ⟩) → 𝓐 x → 𝓐 y → 𝓐 (x · y))
+                 × ((x : ⟨ G ⟩) → 𝓐 x → 𝓐 (inve x))
 
   Subgroups : 𝓤 ⁺ ̇
-  Subgroups = Σ A ꞉ 𝓟 ⟨ G ⟩ , (unit G ∈ A)
-                            × ((x y : ⟨ G ⟩) → x ∈ A → y ∈ A → x · y ∈ A)
-                            × ((x : ⟨ G ⟩) → x ∈ A → inve x ∈ A)
+  Subgroups = Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A)
 
   ⟪_⟫ : Subgroups → 𝓟 ⟨ G ⟩
   ⟪ A , u , c , ι ⟫ = A
 
+  being-group-closed-subset-is-subsingleton : (A : 𝓟 ⟨ G ⟩) → is-subsingleton (group-closed (_∈ A))
+  being-group-closed-subset-is-subsingleton A = ×-is-subsingleton
+                                                  (∈-is-subsingleton A (unit G))
+                                               (×-is-subsingleton
+                                                  (Π-is-subsingleton dfe
+                                                     (λ x → Π-is-subsingleton dfe
+                                                     (λ y → Π-is-subsingleton dfe
+                                                     (λ _ → Π-is-subsingleton dfe
+                                                     (λ _ → ∈-is-subsingleton A (x · y))))))
+                                                  (Π-is-subsingleton dfe
+                                                     (λ x → Π-is-subsingleton dfe
+                                                     (λ _ → ∈-is-subsingleton A (inve x)))))
+
   ⟪⟫-is-embedding : is-embedding ⟪_⟫
-  ⟪⟫-is-embedding = pr₁-embedding i
+  ⟪⟫-is-embedding = pr₁-embedding being-group-closed-subset-is-subsingleton
    where
-    i = λ A → ×-is-subsingleton
-                (∈-is-subsingleton A (unit G))
-             (×-is-subsingleton
-                (Π-is-subsingleton dfe
-                   (λ x → Π-is-subsingleton dfe
-                   (λ y → Π-is-subsingleton dfe
-                   (λ _ → Π-is-subsingleton dfe
-                   (λ _ → ∈-is-subsingleton A (x · y))))))
-                (Π-is-subsingleton dfe
-                   (λ x → Π-is-subsingleton dfe
-                   (λ _ → ∈-is-subsingleton A (inve x)))))
 \end{code}
 
 Therefore equality of subgroups is equality of their underlying
@@ -10730,7 +10768,8 @@ same elements:
           (f , g)
 \end{code}
 
-We now introduce notations for the projections:
+We now introduce notations for the projections and prove some basic
+lemmas:
 
 \begin{code}
   subgroup-unit : (S : Subgroups) → unit G ∈ ⟪ S ⟫
@@ -10748,99 +10787,8 @@ We now introduce notations for the projections:
                → (x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ → inve x ∈ ⟪ S ⟫
 
   subgroup-inv (A , u , m , i) = i
-\end{code}
-
-With this we can transform a subgroup into a genuine group. We call this the induced group:
-
-\begin{code}
-  group : Subgroups → Group
-  group S = Y , ((_*_ , e) , i , l , r , a) , γ
-   where
-    Y = Σ x ꞉ ⟨ G ⟩ , x ∈ ⟪ S ⟫
-
-    _*_ : Y → Y → Y
-    (x , h) * (x' , h') = (x · x') , subgroup-multiplication S x x' h h'
-
-    e : Y
-    e = unit G , subgroup-unit S
-
-    i : is-set Y
-    i = subsets-of-sets-are-sets
-          ⟨ G ⟩
-          (λ x → x ∈ ⟪ S ⟫)
-          (group-is-set G)
-          (∈-is-subsingleton ⟪ S ⟫)
-
-    l : (y : Y) → e * y ≡ y
-    l (x , _) = to-subtype-≡ (∈-is-subsingleton ⟪ S ⟫) (unit-left G x)
-
-    r : (y : Y) → y * e ≡ y
-    r (x , _) = to-subtype-≡ (∈-is-subsingleton ⟪ S ⟫) (unit-right G x)
-
-    a : (y₀ y₁ y₂ : Y) → ((y₀ * y₁) * y₂) ≡ (y₀ * (y₁ * y₂))
-    a (x₀ , _) (x₁ , _) (x₂ , _) = to-subtype-≡
-                                      (∈-is-subsingleton ⟪ S ⟫)
-                                      (assoc G x₀ x₁ x₂)
-
-    γ : (y : Y) → Σ y' ꞉ Y , (y * y' ≡ e) × (y' * y ≡ e)
-    γ (x , h) = (inve x , h') , ir , il
-     where
-      h' : (inv G x) ∈ ⟪ S ⟫
-      h' = subgroup-inv S x h
-
-      ir : (x , h) * (inve x , h') ≡ e
-      ir = to-subtype-≡ (∈-is-subsingleton ⟪ S ⟫) (inv-right G x)
-
-      il : (inve x , h') * (x , h) ≡ e
-      il = to-subtype-≡ (∈-is-subsingleton ⟪ S ⟫) (inv-left G x)
-\end{code}
-
-The group induced by a subgroup is embedded into the ambient group:
-
-\begin{code}
-  subgroup-embedding : (S : Subgroups) → ⟨ group S ⟩ → ⟨ G ⟩
-  subgroup-embedding _ = pr₁
 
 
-  subgroup-embedding-is-embedding : (S : Subgroups)
-                                  → is-embedding (subgroup-embedding S)
-
-  subgroup-embedding-is-embedding S = pr₁-embedding (∈-is-subsingleton ⟪ S ⟫)
-\end{code}
-
-*Exercise.* It may happen that two subgroups induce isomorphic, and hence equal, groups without they themselves being equal. This is the case, for example, for the subgroup of even elements of the group of integers under addition, and for the full subgroup. They don't have the same elements, and hence are not equal, but they induce isomorphic, and hence equal, groups.
-
-The above embedding is a homomorphism:
-
-\begin{code}
-  subgroup-embedding-is-homomorphism : (S : Subgroups)
-                                     → is-homomorphism (group S) G (subgroup-embedding S)
-
-  subgroup-embedding-is-homomorphism S = refl _ , refl _
-\end{code}
-
-An alternative, more categorical, formulation of the type of subgroups
-is the following:
-
-\begin{code}
-  Subgroups' : 𝓤 ⁺ ̇
-  Subgroups' = Σ H ꞉ Group
-             , Σ f ꞉ (⟨ H ⟩ → ⟨ G ⟩)
-             , is-embedding f
-             × is-homomorphism H G f
-
-  α : Subgroups → Subgroups'
-  α S = group S ,
-        subgroup-embedding S ,
-        subgroup-embedding-is-embedding S ,
-        subgroup-embedding-is-homomorphism S
-\end{code}
-
-The following is an incomplete derivation that `α` is an
-equivalence. We begin with general facts about groups and
-homomorphisms.
-
-\begin{code}
   inv-Lemma : (G : Group) (x y z : ⟨ G ⟩)
             → (y ·⟨ G ⟩ x) ≡ unit G
             → (x ·⟨ G ⟩ z) ≡ unit G
@@ -10883,31 +10831,226 @@ homomorphisms.
     γ = one-left-inv H (f x) (f (inv G x)) p
 \end{code}
 
-*Exercise.* Show that `α` is an equivalence with inverse `β` defined as follows.
+We use these basic lemmas to show that the type of subgroups is
+equivalent to the type
+
+ Σ H ꞉ Group , Σ f ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding f × is-homomorphism H G f
+
+as an application of the subtype classifier.
+
+It will be convenient to introduce notation for the type of group
+structures satisfying the group axioms:
 
 \begin{code}
-  β : Subgroups' → Subgroups
-  β (H , f , e , m' , u') = (A , u , m , i)
-   where
-    A : 𝓟 ⟨ G ⟩
-    A x = fiber f x , e x
 
-    u : fiber f (unit G)
-    u = unit H , u'
+  T : 𝓤 ̇ → 𝓤 ̇
+  T X = Σ s ꞉ group-structure X , group-axiom X (pr₁ s)
 
-    m : (x x' : ⟨ G ⟩) → fiber f x → fiber f x' → fiber f (x · x')
-    m x x' (y , p) (y' , p') = (y ·⟨ H ⟩ y') ,
+\end{code}
 
-                               (f (y ·⟨ H ⟩ y') ≡⟨ ap (λ - → - y y') m' ⟩
-                                f y · f y'      ≡⟨ ap₂ _·_ p p' ⟩
-                                x · x'          ∎)
+We use an anonymous module to give common assumptions for the
+following few lemmas:
 
-    i : (x : ⟨ G ⟩) → fiber f x → fiber f (inve x)
-    i x (y , p) = inv H y ,
+\begin{code}
+  module _ {X : 𝓤 ̇ } (h : X → ⟨ G ⟩) (e : is-embedding h) where
 
-                  (f (inv H y) ≡⟨ inv-preservation-lemma H G f m' y ⟩
-                   inve (f y)  ≡⟨ ap inve p ⟩
-                   inve x      ∎)
+   private
+    hlc : left-cancellable h
+    hlc = embeddings-are-lc h e
+
+   having-group-closed-fiber-is-subsingleton : is-subsingleton (group-closed (fiber h))
+   having-group-closed-fiber-is-subsingleton = being-group-closed-subset-is-subsingleton
+                                                (λ x → (fiber h x , e x))
+
+   at-most-one-homomorphic-structure : is-subsingleton (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
+   at-most-one-homomorphic-structure
+      ((((_*_ ,  unitH) ,  maxioms) ,  gaxiom) ,  (pmult ,  punit))
+      ((((_*'_ , unitH') , maxioms') , gaxiom') , (pmult' , punit'))
+    = γ
+    where
+     τ τ' : T X
+     τ  = ((_*_ ,  unitH) ,  maxioms) ,  gaxiom
+     τ' = ((_*'_ , unitH') , maxioms') , gaxiom'
+
+     i :  is-homomorphism (X , τ)  G h
+     i  = (pmult ,  punit)
+
+     i' : is-homomorphism (X , τ') G h
+     i' = (pmult' , punit')
+
+     p : _*_ ≡ _*'_
+     p = gfe (λ x → gfe (λ y → hlc (h (x * y)  ≡⟨  ap (λ - → - x y) pmult     ⟩
+                                    h x · h y  ≡⟨ (ap (λ - → - x y) pmult')⁻¹ ⟩
+                                    h (x *' y) ∎)))
+     q : unitH ≡ unitH'
+     q = hlc (h unitH  ≡⟨  punit     ⟩
+              unit G   ≡⟨  punit' ⁻¹ ⟩
+              h unitH' ∎)
+
+     r : (_*_ , unitH) ≡ (_*'_ , unitH')
+     r = to-×-≡ (p , q)
+
+     δ : τ ≡ τ'
+     δ = to-subtype-≡
+           (group-axiom-is-subsingleton X)
+           (to-subtype-≡
+              (monoid-axioms-subsingleton X)
+              r)
+
+     γ : (τ  , i) ≡ (τ' , i')
+     γ = to-subtype-≡ (λ τ → being-homomorphism-is-subsingleton (X , τ) G h) δ
+
+
+   group-closed-fiber-gives-homomorphic-structure : group-closed (fiber h)
+                                                  → (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
+
+   group-closed-fiber-gives-homomorphic-structure (unitc , mulc , invc) = τ , i
+    where
+     φ : (x : X) → fiber h (h x)
+     φ x = (x , refl (h x))
+
+     unitH : X
+     unitH = fiber-point unitc
+
+     _*_ : X → X → X
+     x * y = fiber-point (mulc (h x) (h y) (φ x) (φ y))
+
+     invH : X → X
+     invH x = fiber-point (invc (h x) (φ x))
+
+     pmul : (x y : X) → h (x * y) ≡ h x · h y
+     pmul x y = fiber-identification (mulc (h x) (h y) (φ x) (φ y))
+
+     punit : h unitH ≡ unit G
+     punit = fiber-identification unitc
+
+     pinv : (x : X) → h (invH x) ≡ inv G (h x)
+     pinv x = fiber-identification (invc (h x) (φ x))
+
+     unit-leftH : (x : X) → unitH * x ≡ x
+     unit-leftH x = hlc (h (unitH * x) ≡⟨ pmul unitH x      ⟩
+                         h unitH · h x ≡⟨ ap (_· h x) punit ⟩
+                         unit G · h x  ≡⟨ unit-left G (h x) ⟩
+                         h x           ∎)
+
+     unit-rightH : (x : X) → x * unitH ≡ x
+     unit-rightH x = hlc (h (x * unitH) ≡⟨ pmul x unitH       ⟩
+                          h x · h unitH ≡⟨ ap (h x ·_) punit  ⟩
+                          h x · unit G  ≡⟨ unit-right G (h x) ⟩
+                          h x           ∎)
+
+     assocH : (x y z : X) → ((x * y) * z) ≡ (x * (y * z))
+     assocH x y z = hlc (h ((x * y) * z)   ≡⟨ pmul (x * y) z             ⟩
+                         h (x * y) · h z   ≡⟨ ap (_· h z) (pmul x y)     ⟩
+                         (h x · h y) · h z ≡⟨ assoc G (h x) (h y) (h z)  ⟩
+                         h x · (h y · h z) ≡⟨ (ap (h x ·_) (pmul y z))⁻¹ ⟩
+                         h x · h (y * z)   ≡⟨ (pmul x (y * z))⁻¹         ⟩
+                         h (x * (y * z))   ∎)
+
+     group-axiomH : (x : X) → Σ x' ꞉ X , (x * x' ≡ unitH) × (x' * x ≡ unitH)
+     group-axiomH x = invH x ,
+
+                      hlc (h (x * invH x)     ≡⟨ pmul x (invH x)      ⟩
+                           h x · h (invH x)   ≡⟨ ap (h x ·_) (pinv x) ⟩
+                           h x · inv G (h x)  ≡⟨ inv-right G (h x)    ⟩
+                           unit G             ≡⟨ punit ⁻¹             ⟩
+                           h unitH            ∎),
+
+                      hlc ((h (invH x * x)    ≡⟨ pmul (invH x) x      ⟩
+                            h (invH x) · h x  ≡⟨ ap (_· h x) (pinv x) ⟩
+                            inv G (h x) · h x ≡⟨ inv-left G (h x)     ⟩
+                            unit G            ≡⟨ punit ⁻¹             ⟩
+                            h unitH           ∎))
+
+     j : is-set X
+     j = subtypes-of-sets-are-sets h hlc (group-is-set G)
+
+     τ : T X
+     τ = ((_*_ , unitH) , (j , unit-leftH , unit-rightH , assocH)) , group-axiomH
+
+     i : is-homomorphism (X , τ) G h
+     i = gfe (λ x → gfe (pmul x)) , punit
+
+
+   homomorphic-structure-gives-group-closed-fiber : (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
+                                                  → group-closed (fiber h)
+
+   homomorphic-structure-gives-group-closed-fiber
+      ((((_*_ , unitH) , maxioms) , gaxiom) , (pmult , punit))
+    = (unitc , mulc , invc)
+    where
+     H : Group
+     H = (X , ((_*_ , unitH) , maxioms) , gaxiom)
+
+     unitc : fiber h (unit G)
+     unitc = unitH , punit
+
+     mulc : ((x y : ⟨ G ⟩) → fiber h x → fiber h y → fiber h (x · y))
+     mulc x y (a , p) (b , q) = (a * b) ,
+                                (h (a * b) ≡⟨ ap (λ - → - a b) pmult    ⟩
+                                 h a · h b ≡⟨ ap₂ (λ - -' → - · -') p q ⟩
+                                 x · y     ∎)
+
+     invc : ((x : ⟨ G ⟩) → fiber h x → fiber h (inve x))
+     invc x (a , p) = inv H a ,
+                      (h (inv H a) ≡⟨ inv-preservation-lemma H G h pmult a ⟩
+                       inv G (h a) ≡⟨ ap (inv G) p                         ⟩
+                       inv G x     ∎)
+
+
+   fiber-structure-lemma : group-closed (fiber h)
+                         ≃ (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
+
+   fiber-structure-lemma = logically-equivalent-subsingletons-are-equivalent _ _
+                             having-group-closed-fiber-is-subsingleton
+                             at-most-one-homomorphic-structure
+                             (group-closed-fiber-gives-homomorphic-structure ,
+                              homomorphic-structure-gives-group-closed-fiber)
+\end{code}
+
+This is the end of the anonymous submodule and now we can prove the
+desired result. We apply the material on the [subtype
+classifier](HoTT-UF-Agda.html#subtypeclassifier).
+
+\begin{code}
+  characterization-of-the-type-of-subgroups :  Subgroups ≃  (Σ H ꞉ Group
+                                                           , Σ f ꞉ (⟨ H ⟩ → ⟨ G ⟩)
+                                                           , is-embedding f
+                                                           × is-homomorphism H G f)
+  characterization-of-the-type-of-subgroups =
+
+   Subgroups                                                                                       ≃⟨ id-≃ Subgroups ⟩
+   (Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A))                                                           ≃⟨ i ⟩
+   (Σ (X , h , e) ꞉ Subtypes ⟨ G ⟩ , group-closed (fiber h))                                       ≃⟨ ii ⟩
+   (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , group-closed (fiber h))                                     ≃⟨ iii ⟩
+   (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , Σ τ ꞉ T X , is-homomorphism (X , τ) G h)                    ≃⟨ iv ⟩
+   (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ e ꞉ is-embedding h , Σ τ ꞉ T X , is-homomorphism (X , τ) G h) ≃⟨ v ⟩
+   (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ τ ꞉ T X , Σ e ꞉ is-embedding h , is-homomorphism (X , τ) G h) ≃⟨ vi ⟩
+   (Σ X ꞉ 𝓤 ̇ , Σ τ ꞉ T X , Σ h ꞉ (X → ⟨ G ⟩) , is-embedding h × is-homomorphism (X , τ) G h)       ≃⟨ vii ⟩
+   (Σ H ꞉ Group , Σ f ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding f × is-homomorphism H G f)                  ■
+
+      where
+       φ : Subtypes ⟨ G ⟩ → 𝓟 ⟨ G ⟩
+       φ = χ-special is-subsingleton ⟨ G ⟩
+
+       j : is-equiv φ
+       j = χ-special-is-equiv (ua 𝓤) gfe is-subsingleton ⟨ G ⟩
+
+       i   = Σ-change-of-variable (λ (A : 𝓟 ⟨ G ⟩) → group-closed (_∈ A)) φ j
+       ii  = Σ-assoc
+       iii = Σ-cong (λ X → Σ-cong (λ (h , e) → fiber-structure-lemma h e))
+       iv  = Σ-cong (λ X → Σ-assoc)
+       v   = Σ-cong (λ X → Σ-cong (λ h → Σ-flip))
+       vi  = Σ-cong (λ X → Σ-flip)
+       vii = ≃-sym Σ-assoc
+\end{code}
+
+In particular, a subgroup induces a genuine group, which is
+homomorphically embedded into the ambient group.
+
+\begin{code}
+  induced-group : Subgroups → Group
+  induced-group S = pr₁ (⌜ characterization-of-the-type-of-subgroups ⌝ S)
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
