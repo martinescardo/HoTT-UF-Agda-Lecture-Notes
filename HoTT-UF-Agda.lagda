@@ -10357,7 +10357,7 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
  group-axiom X (_·_ , e) = (x : X) → Σ x' ꞉ X , (x · x' ≡ e) × (x' · x ≡ e)
 
  Group : 𝓤 ⁺ ̇
- Group = Σ X ꞉ 𝓤 ̇ , Σ s ꞉ group-structure X , group-axiom X (pr₁ s)
+ Group = Σ X ꞉ 𝓤 ̇ , Σ ((_·_ , e) , a) ꞉ group-structure X , group-axiom X (_·_ , e)
 
 
  inv-lemma : (X : 𝓤 ̇ ) (_·_ : X → X → X) (e : X)
@@ -10813,7 +10813,7 @@ structures satisfying the group axioms:
 \begin{code}
 
   T : 𝓤 ̇ → 𝓤 ̇
-  T X = Σ s ꞉ group-structure X , group-axiom X (pr₁ s)
+  T X = Σ ((_·_ , e) , a) ꞉ group-structure X , group-axiom X (_·_ , e)
 
 \end{code}
 
@@ -10945,8 +10945,8 @@ following few lemmas:
                                                   → group-closed (fiber h)
 
    homomorphic-structure-gives-group-closed-fiber
-      ((((_*_ , unitH) , maxioms) , gaxiom) , (pmult , punit))
-    = (unitc , mulc , invc)
+       ((((_*_ , unitH) , maxioms) , gaxiom) , (pmult , punit))
+     = (unitc , mulc , invc)
     where
      H : Group
      H = X , ((_*_ , unitH) , maxioms) , gaxiom
@@ -11071,6 +11071,12 @@ module slice-identity
 *Exercise*. The above equivalence is characterized by induction on
 identifications as the function that maps the reflexive identification
 to the identity equivalence.
+
+*Exercise.* Apply the ideas of this section to characterize equality of the type
+
+   > `Σ H ꞉ Group , Σ f ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding f × is-homomorphism H G f`
+
+as discussed in the section on [subgroup equality](HoTT-UF-Agda.html#subgroups-sip).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="metric-sip"></a> Metric spaces, graphs and ordered structures

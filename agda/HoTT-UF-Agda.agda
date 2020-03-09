@@ -5518,7 +5518,7 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
  group-axiom X (_·_ , e) = (x : X) → Σ x' ꞉ X , (x · x' ≡ e) × (x' · x ≡ e)
 
  Group : 𝓤 ⁺ ̇
- Group = Σ X ꞉ 𝓤 ̇ , Σ s ꞉ group-structure X , group-axiom X (pr₁ s)
+ Group = Σ X ꞉ 𝓤 ̇ , Σ ((_·_ , e) , a) ꞉ group-structure X , group-axiom X (_·_ , e)
 
  inv-lemma : (X : 𝓤 ̇ ) (_·_ : X → X → X) (e : X)
            → monoid-axioms X (_·_ , e)
@@ -5842,7 +5842,7 @@ module subgroup-identity
           (f , g)
 
   T : 𝓤 ̇ → 𝓤 ̇
-  T X = Σ s ꞉ group-structure X , group-axiom X (pr₁ s)
+  T X = Σ ((_·_ , e) , a) ꞉ group-structure X , group-axiom X (_·_ , e)
 
   module _ {X : 𝓤 ̇ } (h : X → ⟨ G ⟩) (e : is-embedding h) where
 
@@ -5966,8 +5966,8 @@ module subgroup-identity
                                                   → group-closed (fiber h)
 
    homomorphic-structure-gives-group-closed-fiber
-      ((((_*_ , unitH) , maxioms) , gaxiom) , (pmult , punit))
-    = (unitc , mulc , invc)
+       ((((_*_ , unitH) , maxioms) , gaxiom) , (pmult , punit))
+     = (unitc , mulc , invc)
     where
      H : Group
      H = X , ((_*_ , unitH) , maxioms) , gaxiom
