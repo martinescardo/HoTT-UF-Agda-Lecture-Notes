@@ -85,10 +85,6 @@ $ cd ~/mgs-2019
 $ ./mgs-emacs
 ```
 
-#### Generating html and agda
-
-See the file INSTALL_Jekyll.md.
-
 ## MacOS
 We will use the [Nix Package Manager](https://nixos.org/nix/).
 
