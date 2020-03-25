@@ -56,11 +56,13 @@ Inside that directory, we download and install Agda 2.6.0:
 $ cd ~/mgs-2019
 $ git clone https://github.com/agda/agda
 $ cd agda
-$ git checkout release-2.6.0
+$ git checkout release-2.6.0  # (cf. Hint below)
 $ cabal sandbox init
 $ cabal update
 $ cabal install
 ```
+
+*Hint*. These notes depend on release 2.6.0, but just in case you want to see what other Agda releases are available, type the *parital* command `git checkout release-` and hit the `Tab` key a few times.
 
 #### Setting up Emacs to work with Agda
 Finally, we set up Emacs to work with Agda:
@@ -74,7 +76,7 @@ $ cp ~/.emacs ~/mgs-2019/
 $ cp ~/.emacs.backup ~/.emacs
 $ cd ~/mgs-2019
 $ echo '#!/bin/bash' > mgs-emacs
-$ echo 'PATH=~/mgs-2019/agda/.cabal-sandbox/bin/:$PATH emacs --no-init-file --load ~/mgs-2019/.emacs' >> mgs-emacs
+$ echo 'PATH=~/mgs-2019/agda/.cabal-sandbox/bin/:$PATH emacs --no-init-file --load ~/mgs-2019/.emacs \$@' >> mgs-emacs
 $ chmod +x mgs-emacs
 ```
 Now to get Emacs with Agda mode, start Emacs using:
