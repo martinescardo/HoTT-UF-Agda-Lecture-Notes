@@ -1,7 +1,7 @@
 Installation of Agda and Emacs
 ==============================
 
-This file describes how to install Agda 2.6.0 and Emacs.
+This file describes how to install Agda 2.6.1 and Emacs.
 Please follow the installation instructions for your operating system.
 
 If you experience any issues, please take a look at the [Troubleshooting
@@ -11,7 +11,7 @@ section](#Troubleshooting).
 
 ### Arch Linux and derivatives such as Manjaro Linux
 
-Simply install Agda 2.6.0 and Emacs by
+Simply install Agda 2.6.1 and Emacs by
 ```bash
 $ sudo pacman -Sy agda emacs
 ```
@@ -36,7 +36,7 @@ $ mkdir ~/mgs-2019
 ```
 
 #### Standard Agda installation
-This section describes the standard way to install Agda 2.6.0.
+This section describes the standard way to install Agda 2.6.1.
 If this does not work, then please try the instructions using Git.
 ```bash
 $ cd ~/mgs-2019
@@ -51,18 +51,18 @@ Now continue with [Setting up Emacs to work with
 Agda](#Setting-up-Emacs-to-work-with-Agda).
 
 #### Agda installation using Git
-Inside that directory, we download and install Agda 2.6.0:
+Inside that directory, we download and install Agda 2.6.1:
 ```bash
 $ cd ~/mgs-2019
 $ git clone https://github.com/agda/agda
 $ cd agda
-$ git checkout release-2.6.0  # (cf. Hint below)
+$ git checkout release-2.6.1  # (cf. Hint below)
 $ cabal sandbox init
 $ cabal update
 $ cabal install
 ```
 
-*Hint*. These notes depend on release 2.6.0, but just in case you want to see what other Agda releases are available, type the *parital* command `git checkout release-` and hit the `Tab` key a few times.
+*Hint*. These notes depend on release 2.6.1, but just in case you want to see what other Agda releases are available, type the *parital* command `git checkout release-` and hit the `Tab` key a few times.
 
 #### Setting up Emacs to work with Agda
 Finally, we set up Emacs to work with Agda:
@@ -107,10 +107,10 @@ $ mkdir ~/mgs-2019
 ```
 
 ### Standard Agda installation
-This section describes the standard way to install Agda 2.6.0.
+This section describes the standard way to install Agda 2.6.1.
 If this does not work, then please try the instructions using Git.
 
-Inside that directory, we download and install Agda 2.6.0 using `nix-shell`.
+Inside that directory, we download and install Agda 2.6.1 using `nix-shell`.
 ```bash
 $ nix-shell -p zlib ghc cabal-install
 $ cd ~/mgs-2019
@@ -127,13 +127,13 @@ instructions from [Setting up Emacs to work with
 Agda](#Setting-up-Emacs-to-work-with-Agda) on.
 
 ### Agda installation using Git
-We download and install Agda 2.6.0 using `nix-shell` and `git`:
+We download and install Agda 2.6.1 using `nix-shell` and `git`:
 ```bash
 $ nix-shell -p zlib ghc cabal-install git
 $ cd ~/mgs-2019
 $ git clone https://github.com/agda/agda
 $ cd agda
-$ git checkout release-2.6.0
+$ git checkout release-2.6.1
 $ cabal sandbox init
 $ cabal update
 $ ZLIB="$(nix-build --no-out-link "<nixpkgs>" -A zlib)"
@@ -152,7 +152,7 @@ The easiest way is probably to install linux in a virtual machine (for example u
 
 In this section we describe some problems that have been encountered during compilation, and how to fix them.
 
-#### During `cabal install` Agda 2.5.4... appears, rather than Agda 2.6.0
+#### During `cabal install` Agda 2.5.4... appears, rather than Agda 2.6.1
 
 This is not a problem and perfectly fine, albeit confusing.
 
