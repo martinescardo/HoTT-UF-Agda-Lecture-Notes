@@ -10965,8 +10965,11 @@ following few lemmas:
                       (h (inv H a) ≡⟨ inv-preservation-lemma H G h pmult a ⟩
                        inv G (h a) ≡⟨ ap (inv G) p                         ⟩
                        inv G x     ∎)
+\end{code}
 
+What is important for our purposes is this:
 
+\begin{code}
    fiber-structure-lemma : group-closed (fiber h)
                          ≃ (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
 
@@ -11273,7 +11276,7 @@ prefer to rephrase the above as
  characterization-of-Space-≡' = characterization-of-Space-≡
 \end{code}
 
-Linear functions on certain spaces correspond to special kinds of measures by the [Riesz representation theorem](https://en.wikipedia.org/wiki/Riesz%E2%80%93Markov%E2%80%93Kakutani_representation_theorem), and hence in this case the `Space` becomes a type of such kind of measure spaces by an appropriate choice of axioms.
+Linear functions on certain spaces correspond to special kinds of measures by the [Riesz representation theorem](https://en.wikipedia.org/wiki/Riesz%E2%80%93Markov%E2%80%93Kakutani_representation_theorem), and hence in this case `Space` becomes a type of such kind of measure spaces by an appropriate choice of axioms.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="selection-sip"></a> Selection spaces
