@@ -5201,6 +5201,7 @@ univalence⇒ : is-univalent 𝓤
 
 univalence⇒ ua X = equiv-singleton-lemma X (Id→Eq X) (ua X)
 
+
 ⇒univalence : ((X : 𝓤 ̇ ) → is-singleton (Σ Y ꞉ 𝓤 ̇ , X ≃ Y))
             → is-univalent 𝓤
 
@@ -6862,9 +6863,15 @@ Composition of equivalences is associative:
                → is-equiv (≃-sym {𝓤} {𝓥} {X} {Y})
 
 ≃-sym-is-equiv fe₀ fe₁ fe₂ = invertibles-are-equivs ≃-sym
-                                (≃-sym ,
-                                 ≃-sym-involutive fe₀ fe₂ ,
-                                 ≃-sym-involutive fe₁ fe₂)
+                              (≃-sym ,
+                               ≃-sym-involutive fe₀ fe₂ ,
+                               ≃-sym-involutive fe₁ fe₂)
+
+≃-sym-≃ : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+        → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+        → (X ≃ Y) ≃ (Y ≃ X)
+
+≃-sym-≃ fe₀ fe₁ fe₂ X Y = ≃-sym , ≃-sym-is-equiv fe₀ fe₁ fe₂
 \end{code}
 
 *Exercise*. The hlevels are closed under `Σ` and, using `hfunext`, also
@@ -7200,7 +7207,7 @@ subsingleton-univalence : propext 𝓤 → dfunext 𝓤 𝓤
                         → is-subsingleton P
                         → (X : 𝓤 ̇ ) → is-equiv (Id→Eq P X)
 
-subsingleton-univalence {𝓤} pe fe P i X = γ
+subsingleton-univalence pe fe P i X = γ
  where
   l : P ≃ X → is-subsingleton X
   l e = equiv-to-subsingleton (≃-sym e) i
@@ -9148,10 +9155,10 @@ the-singletons-form-a-singleton {𝓤} pe fe = c , φ
 What we [already knew](HoTT-UF-Agda.html#unicharac) is this:
 
 \begin{code}
-univalence-→-again : Univalence
-                   → (Y : 𝓤 ̇ ) → is-singleton (Σ X ꞉ 𝓤 ̇ , X ≃ Y)
+univalence→-again : Univalence
+                  → (Y : 𝓤 ̇ ) → is-singleton (Σ X ꞉ 𝓤 ̇ , X ≃ Y)
 
-univalence-→-again {𝓤} ua Y = equiv-to-singleton (equiv-classification ua Y) i
+univalence→-again {𝓤} ua Y = equiv-to-singleton (equiv-classification ua Y) i
  where
   i : is-singleton (Y → 𝓢 𝓤)
   i = univalence-gives-vvfunext' (ua 𝓤) (ua (𝓤 ⁺))
