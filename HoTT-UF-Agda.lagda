@@ -236,7 +236,7 @@ consistent and hence can be safely used as assumptions. However,
 virtually all theorems of univalent mathematics, e.g. in
 [UniMath](https://github.com/UniMath/UniMath/blob/master/README.md),
 have been proved without assuming them, with natural mathematical
-arguments. The formulations of theses principles in univalent
+arguments. The formulations of these principles in univalent
 mathematics differ from their traditional formulations in MLTT, and
 hence we sometimes refer to them as the *univalent* principle of
 excluded middle and the *univalent* axiom of choice.
@@ -9409,7 +9409,7 @@ structure. We consider several versions:
     when they have the same elements, if we define a subgroup to be a
     subset closed under the group operations.
 
-We also apply theses ideas to characterize identifications of metric
+We also apply these ideas to characterize identifications of metric
 spaces, topological spaces, graphs, partially ordered sets, categories
 and more.
 
