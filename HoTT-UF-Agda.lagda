@@ -59,7 +59,7 @@ computer system [Agda](https://wiki.portal.chalmers.se/agda/pmwiki.php), which i
 Agda allows us to write mathematical definitions, constructions,
 theorems and proofs, for example in number theory, analysis, group
 theory, topology, category theory or programming language theory, checking
-them for logical and mathematical correctness.
+them for logical and mathematical correctness. A pdf version of this file is also available at the [arxiv](https://arxiv.org/abs/1911.00580).
 
 Agda is a constructive mathematical system by default, which amounts
 to saying that it can also be considered as a programming language for
