@@ -6038,6 +6038,9 @@ module subgroup-identity
   induced-group S = pr₁ (⌜ characterization-of-the-type-of-subgroups ⌝ S)
 
 module ring-identity {𝓤 : Universe} (ua : Univalence) where
+ open sip hiding (⟨_⟩)
+ open sip-with-axioms
+ open sip-join
 
  fe : global-dfunext
  fe = univalence-gives-global-dfunext ua
@@ -6151,11 +6154,11 @@ module ring-identity {𝓤 : Universe} (ua : Univalence) where
                            × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
 
  characterization-of-rng-≡ : (𝓡 𝓡' : Rng) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[Rng] 𝓡')
- characterization-of-rng-≡ = sip.characterization-of-≡ (ua 𝓤)
-                              (sip-with-axioms.add-axioms
+ characterization-of-rng-≡ = characterization-of-≡ (ua 𝓤)
+                              (add-axioms
                                 rng-axioms
                                 rng-axioms-is-subsingleton
-                                (sip-join.join
+                                (join
                                   ∞-magma-identity.sns-data
                                   ∞-magma-identity.sns-data))
 
@@ -6194,13 +6197,13 @@ module ring-identity {𝓤 : Universe} (ua : Univalence) where
                                × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
 
  characterization-of-ring-≡ : (𝓡 𝓡' : Ring) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[Ring] 𝓡')
- characterization-of-ring-≡ = sip.characterization-of-≡ (ua 𝓤)
-                                (sip-with-axioms.add-axioms
+ characterization-of-ring-≡ = characterization-of-≡ (ua 𝓤)
+                                (add-axioms
                                   ring-axioms
                                   ring-axioms-is-subsingleton
-                                  (sip-join.join
+                                  (join
                                     pointed-type-identity.sns-data
-                                      (sip-join.join
+                                      (join
                                         ∞-magma-identity.sns-data
                                         ∞-magma-identity.sns-data)))
 

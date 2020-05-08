@@ -11057,10 +11057,13 @@ part of the structure but instead its existence is part of the axioms.
  equally easy and short (and perhaps even shorter).
 
 We consider r(i)ngs in a universe 𝓤, and we assume univalence in their
-development:
+development. We hide the notation `⟨_⟩` from the module `sip` because we are going to use it for the underlying `Rng` of a `Ring`:
 
 \begin{code}
 module ring-identity {𝓤 : Universe} (ua : Univalence) where
+ open sip hiding (⟨_⟩)
+ open sip-with-axioms
+ open sip-join
 \end{code}
 
 We derive function extensionality from univalence:
@@ -11215,11 +11218,11 @@ ring isomorphisms:
 
 \begin{code}
  characterization-of-rng-≡ : (𝓡 𝓡' : Rng) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[Rng] 𝓡')
- characterization-of-rng-≡ = sip.characterization-of-≡ (ua 𝓤)
-                              (sip-with-axioms.add-axioms
+ characterization-of-rng-≡ = characterization-of-≡ (ua 𝓤)
+                              (add-axioms
                                 rng-axioms
                                 rng-axioms-is-subsingleton
-                                (sip-join.join
+                                (join
                                   ∞-magma-identity.sns-data
                                   ∞-magma-identity.sns-data))
 \end{code}
@@ -11275,13 +11278,13 @@ The type of rings with unit:
 
 
  characterization-of-ring-≡ : (𝓡 𝓡' : Ring) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[Ring] 𝓡')
- characterization-of-ring-≡ = sip.characterization-of-≡ (ua 𝓤)
-                                (sip-with-axioms.add-axioms
+ characterization-of-ring-≡ = characterization-of-≡ (ua 𝓤)
+                                (add-axioms
                                   ring-axioms
                                   ring-axioms-is-subsingleton
-                                  (sip-join.join
+                                  (join
                                     pointed-type-identity.sns-data
-                                      (sip-join.join
+                                      (join
                                         ∞-magma-identity.sns-data
                                         ∞-magma-identity.sns-data)))
 \end{code}
