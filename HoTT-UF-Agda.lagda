@@ -12362,7 +12362,7 @@ is-inhabited X` is a surjection, or that `X → Y` gives `is-inhabited X
 There are two proposed ways to solve this kind of problem:
 
   1. Voevodsky works with certain [resizing
-     rules](http://www.math.ias.edu/vladimir/files/2011_Bergen.pdf)
+     rules](https://www.math.ias.edu/vladimir/sites/math.ias.edu.vladimir/files/2011_Bergen.pdf)
      for subsingletons. At the time of writing, the (relative)
      consistency of the system with such rules is an open question.
 
