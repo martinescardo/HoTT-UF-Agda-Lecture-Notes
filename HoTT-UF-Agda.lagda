@@ -461,7 +461,7 @@ to practice univalent mathematics should consult the above references.
         1. [Images and surjections](HoTT-UF-Agda.html#images-and-surjections)
         1. [A characterization of equivalences](HoTT-UF-Agda.html#equivalence-characterization)
         1. [Exiting truncations](HoTT-UF-Agda.html#exiting-truncations)
-     1. [Equality of Noetherian local rings](HoTT-UF-Agda.html#noetherian-ring-sip)
+        1. [Equality of Noetherian local rings](HoTT-UF-Agda.html#noetherian-ring-sip)
      1. [Choice in univalent mathematics](HoTT-UF-Agda.html#choice)
         1. [Unique choice](HoTT-UF-Agda.html#unique-choice)
         1. [Univalent choice](HoTT-UF-Agda.html#univalent-choice)
@@ -9932,7 +9932,7 @@ characterization of group identifications.
 module sip-join where
 \end{code}
 
-We begin with the following technical lemma:
+We begin with the following technical lemma, whose proof uses the Yoneda machinery:
 
 \begin{code}
  technical-lemma :
@@ -9944,45 +9944,40 @@ We begin with the following technical lemma:
    → ((x₀ x₁ : X) → is-equiv (f x₀ x₁))
    → ((y₀ y₁ : Y) → is-equiv (g y₀ y₁))
 
-   → (z₀ z₁ : X × Y) → is-equiv (λ (p : z₀ ≡ z₁) → f (pr₁ z₀) (pr₁ z₁) (ap pr₁ p) ,
-                                                   g (pr₂ z₀) (pr₂ z₁) (ap pr₂ p))
+   → ((x₀ , y₀) (x₁ , y₁) : X × Y) → is-equiv (λ (p : (x₀ , y₀) ≡ (x₁ , y₁)) → f x₀ x₁ (ap pr₁ p) ,
+                                                                               g y₀ y₁ (ap pr₂ p))
 
  technical-lemma {𝓤} {𝓥} {𝓦} {𝓣} {X} {A} {Y} {B} f g i j (x₀ , y₀) = γ
   where
-   module _ (z₁ : X × Y) where
-     x₁ = pr₁ z₁
-     y₁ = pr₂ z₁
+   u : ∃! x₁ ꞉ X , A x₀ x₁
+   u = fiberwise-equiv-universal (A x₀) x₀ (f x₀) (i x₀)
 
-     r : (x₀ , y₀) ≡ (x₁ , y₁) → A x₀ x₁ × B y₀ y₁
-     r p = f x₀ x₁ (ap pr₁ p) , g y₀ y₁ (ap pr₂ p)
+   v : ∃! y₁ ꞉ Y , B y₀ y₁
+   v = fiberwise-equiv-universal (B y₀) y₀ (g y₀) (j y₀)
 
-     f' : (a : A x₀ x₁) → x₀ ≡ x₁
-     f' = inverse (f x₀ x₁) (i x₀ x₁)
+   C : X × Y → 𝓥 ⊔ 𝓣 ̇
+   C (x₁ , y₁) = A x₀ x₁ × B y₀ y₁
 
-     g' : (b : B y₀ y₁) → y₀ ≡ y₁
-     g' = inverse (g y₀ y₁) (j y₀ y₁)
+   w : (∃! x₁ ꞉ X , A x₀ x₁)
+     → (∃! y₁ ꞉ Y , B y₀ y₁)
+     →  ∃! (x₁ , y₁) ꞉ X × Y , C (x₁ , y₁)
 
-     s : A x₀ x₁ × B y₀ y₁ → (x₀ , y₀) ≡ (x₁ , y₁)
-     s (a , b) = to-×-≡ (f' a , g' b)
+   w ((x₁ , a₁) , φ) ((y₁ , b₁) , ψ) = ((x₁ , y₁) , (a₁ , b₁)) , δ
+    where
+     p : ∀ x y a b
+       → (x₁ , a₁) ≡ (x , a)
+       → (y₁ , b₁) ≡ (y , b)
+       → (x₁ , y₁) , (a₁ , b₁) ≡ (x , y) , (a , b)
+     p .x₁ .y₁ .a₁ .b₁ (refl .(x₁ , a₁)) (refl .(y₁ , b₁)) = refl ((x₁ , y₁) , (a₁ , b₁))
 
-     η : (c : A x₀ x₁ × B y₀ y₁) → r (s c) ≡ c
-     η (a , b) =
-       r (s (a , b))                              ≡⟨ refl _ ⟩
-       r (to-×-≡  (f' a , g' b))                  ≡⟨ refl _ ⟩
-       (f x₀ x₁ (ap pr₁ (to-×-≡ (f' a , g' b))) ,
-        g y₀ y₁ (ap pr₂ (to-×-≡ (f' a , g' b))))  ≡⟨ ii     ⟩
-       (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ≡⟨ iii    ⟩
-       a , b                                      ∎
-      where
-       ii  = ap₂ (λ p q → f x₀ x₁ p , g y₀ y₁ q)
-                 (ap-pr₁-to-×-≡ (f' a) (g' b))
-                 (ap-pr₂-to-×-≡ (f' a) (g' b))
-       iii = to-×-≡ (inverses-are-sections (f x₀ x₁) (i x₀ x₁) a ,
-                     inverses-are-sections (g y₀ y₁) (j y₀ y₁) b)
+     δ : (σ : Σ C) → (x₁ , y₁) , (a₁ , b₁) ≡ σ
+     δ ((x , y) , (a , b)) = p x y a b (φ (x , a)) (ψ (y , b))
 
-   γ : ∀ z₁ → is-equiv (r z₁)
-   γ = fiberwise-retractions-are-equivs (λ z₁ → A x₀ (pr₁ z₁) × B y₀ (pr₂ z₁))
-         (x₀ , y₀) r (λ z₁ → (s z₁ , η z₁))
+   τ : Nat (𝓨 (x₀ , y₀)) C
+   τ (x₁ , y₁) p = f x₀ x₁ (ap pr₁ p) , g y₀ y₁ (ap pr₂ p)
+
+   γ : is-fiberwise-equiv τ
+   γ = universal-fiberwise-equiv C (w u v) (x₀ , y₀) τ
 \end{code}
 
 We consider two given mathematical structures specified by `S₀` and
@@ -13082,13 +13077,14 @@ If we try to do this with Voevodsky's truncation `is-inhabited`, we
 stumble into an insurmountable problem of size.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="noetherian-ring-sip"></a> Equality of Noetherian local rings
+#### <a id="noetherian-ring-sip"></a> Equality of Noetherian local rings
 
-We now consider Noetherian rngs and commutative Noetherian local rings
-as examples. This section has that on
-[rings](HoTT-UF-Agda.html#ring-sip) as a pre-requisite. We assume that
-subsingleton truncations exist, to have the existential quantifier `∃`
-available:
+This section has that on [rings](HoTT-UF-Agda.html#ring-sip) as a
+pre-requisite. We now apply the notion of subsingleton truncation to
+give the promised examples of Noetherian rngs and commutative
+Noetherian local rings. Subsingleton truncation is needed to have the
+existential quantifier `∃` available, in order to be able to define
+the notion of Noetherian ring.
 
 \begin{code}
 module noetherian-ring-identity
