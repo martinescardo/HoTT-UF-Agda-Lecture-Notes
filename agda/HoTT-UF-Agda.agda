@@ -5193,7 +5193,6 @@ module pointed-type-identity {𝓤 : Universe} where
 module sip-join where
 
  technical-lemma :
-
      {X : 𝓤 ̇ } {A : X → X → 𝓥 ̇ }
      {Y : 𝓦 ̇ } {B : Y → Y → 𝓣 ̇ }
      (f : (x₀ x₁ : X) → x₀ ≡ x₁ → A x₀ x₁)
@@ -5203,7 +5202,6 @@ module sip-join where
 
    → ((x₀ , y₀) (x₁ , y₁) : X × Y) → is-equiv (λ (p : (x₀ , y₀) ≡ (x₁ , y₁)) → f x₀ x₁ (ap pr₁ p) ,
                                                                                g y₀ y₁ (ap pr₂ p))
-
  technical-lemma {𝓤} {𝓥} {𝓦} {𝓣} {X} {A} {Y} {B} f g i j (x₀ , y₀) = γ
   where
    u : ∃! x₁ ꞉ X , A x₀ x₁
@@ -5218,7 +5216,6 @@ module sip-join where
    w : (∃! x₁ ꞉ X , A x₀ x₁)
      → (∃! y₁ ꞉ Y , B y₀ y₁)
      →  ∃! (x₁ , y₁) ꞉ X × Y , C (x₁ , y₁)
-
    w ((x₁ , a₁) , φ) ((y₁ , b₁) , ψ) = ((x₁ , y₁) , (a₁ , b₁)) , δ
     where
      p : ∀ x y a b
@@ -5227,7 +5224,7 @@ module sip-join where
        → (x₁ , y₁) , (a₁ , b₁) ≡ (x , y) , (a , b)
      p .x₁ .y₁ .a₁ .b₁ (refl .(x₁ , a₁)) (refl .(y₁ , b₁)) = refl ((x₁ , y₁) , (a₁ , b₁))
 
-     δ : (σ : Σ C) → (x₁ , y₁) , (a₁ , b₁) ≡ σ
+     δ : (((x , y) , (a , b)) : Σ C) → (x₁ , y₁) , (a₁ , b₁) ≡ ((x , y) , (a , b))
      δ ((x , y) , (a , b)) = p x y a b (φ (x , a)) (ψ (y , b))
 
    τ : Nat (𝓨 (x₀ , y₀)) C
