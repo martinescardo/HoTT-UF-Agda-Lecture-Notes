@@ -11204,9 +11204,8 @@ addition and multiplication, and collect all isomorphisms of two rngs
                            × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
 \end{code}
 
-Then we apply the chapter on equality of mathematical structures to
-show that the type of ring identities is in bijection with the type of
-ring isomorphisms:
+Then the type of ring identities is in bijection with the type of
+ring isomorphisms by the above general machinery:
 
 \begin{code}
  characterization-of-rng-≡ : (𝓡 𝓡' : Rng) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[Rng] 𝓡')
