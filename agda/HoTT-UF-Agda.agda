@@ -1,6 +1,8 @@
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --cubical --without-K --exact-split --safe #-}
 
 module HoTT-UF-Agda where
+
+import Agda.Builtin.Cubical.Path
 
 open import Universes public
 
@@ -5470,7 +5472,7 @@ module associative-∞-magma-identity
      c = (_·_ , α) , ρ (X , _·_ , α)
 
      φ : (σ : Σ t ꞉ ∞-amagma-structure X , ι (X , _·_ , α) (X , t) (id-≃ X)) → c ≡ σ
-     φ ((_·_ , β) , refl _·_ , k) = γ
+     φ = ? {- ((_·_ , β) , refl _·_ , k) = γ
       where
        a : associative _·_
        a x y z = refl ((x · y) · z) ∙ ap id (α x y z)
@@ -5485,7 +5487,7 @@ module associative-∞-magma-identity
        q = i _ _
 
        γ : c ≡ (_·_ , β) , refl _·_ , k
-       γ = ap g q
+       γ = ap g q -}
 
    θ : {X : 𝓤 ̇ } (s t : ∞-amagma-structure X) → is-equiv (canonical-map ι ρ s t)
    θ {X} s = universal-fiberwise-equiv (λ t → ι (X , s) (X , t) (id-≃ X))
@@ -8863,4 +8865,3 @@ infix  30 _[_,_]
 infixr -1 -Σ
 infixr -1 -Π
 infixr -1 -∃!
-

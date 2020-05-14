@@ -10746,7 +10746,6 @@ We abbreviate "closed under the group operations" by "group-closed":
 
   ⟪⟫-is-embedding : is-embedding ⟪_⟫
   ⟪⟫-is-embedding = pr₁-embedding being-group-closed-subset-is-subsingleton
-   where
 \end{code}
 
 Therefore equality of subgroups is equality of their underlying
