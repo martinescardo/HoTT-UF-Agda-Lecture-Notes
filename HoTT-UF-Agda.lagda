@@ -9659,7 +9659,7 @@ This concludes the module `sip`, and we now consider some examples of uses of th
 #### <a id="infty-magmas"></a> ∞-Magmas
 
 \begin{code}
-module ∞-magma-identity {𝓤 : Universe} where
+module ∞-magma {𝓤 : Universe} where
 
  open sip
 
@@ -9840,7 +9840,7 @@ examples.
 #### <a id="magmas-sip"></a> Magmas
 
 \begin{code}
-module magma-identity {𝓤 : Universe} where
+module magma {𝓤 : Universe} where
 
  open sip-with-axioms
 
@@ -9857,7 +9857,7 @@ module magma-identity {𝓤 : Universe} where
  characterization-of-Magma-≡ : is-univalent 𝓤 → (A B : Magma ) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-Magma-≡ ua =
    characterization-of-≡-with-axioms ua
-     ∞-magma-identity.sns-data
+     ∞-magma.sns-data
      (λ X s → is-set X)
      (λ X s → being-set-is-subsingleton (univalence-gives-dfunext ua))
 \end{code}
@@ -9875,7 +9875,7 @@ to the identity equivalence.
 #### <a id="pointed-types"></a> Pointed types
 
 \begin{code}
-module pointed-type-identity {𝓤 : Universe} where
+module pointed-type {𝓤 : Universe} where
 
  open sip
 
@@ -10086,7 +10086,7 @@ This concludes the submodule. Some examples of uses of this follow.
 #### <a id="pointed-infty-magmas"></a> Pointed ∞-magmas
 
 \begin{code}
-module pointed-∞-magma-identity {𝓤 : Universe} where
+module pointed-∞-magma {𝓤 : Universe} where
 
  open sip-join
 
@@ -10109,8 +10109,8 @@ module pointed-∞-magma-identity {𝓤 : Universe} where
                                      → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-pointed-magma-≡ ua = characterization-of-join-≡ ua
-                                            ∞-magma-identity.sns-data
-                                            pointed-type-identity.sns-data
+                                            ∞-magma.sns-data
+                                            pointed-type.sns-data
 \end{code}
 
 *Exercise*. The above equivalence is characterized by induction on
@@ -10123,7 +10123,7 @@ to the identity equivalence.
 In the following example, we combine joins and addition of axioms.
 
 \begin{code}
-module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
+module monoid {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  dfe : dfunext 𝓤 𝓤
  dfe = univalence-gives-dfunext ua
@@ -10172,8 +10172,8 @@ module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
  sns-data = add-axioms
               monoid-axioms monoid-axioms-subsingleton
               (join
-                 ∞-magma-identity.sns-data
-                 pointed-type-identity.sns-data)
+                 ∞-magma.sns-data
+                 pointed-type.sns-data)
 
  _≅_ : Monoid → Monoid → 𝓤 ̇
 
@@ -10205,7 +10205,7 @@ the equivalences in the characterization of equality of associative
 operations but also need to respect the associativity data.
 
 \begin{code}
-module associative-∞-magma-identity
+module associative-∞-magma
         {𝓤 : Universe}
         (ua : is-univalent 𝓤)
        where
@@ -10340,14 +10340,14 @@ follows directly from the general structure of identity principle:
 We add an axiom to monoids to get groups.
 
 \begin{code}
-module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
+module group {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  hfe : hfunext 𝓤 𝓤
  hfe = univalence-gives-hfunext ua
 
  open sip
  open sip-with-axioms
- open monoid-identity {𝓤} ua hiding (sns-data ; _≅_)
+ open monoid {𝓤} ua hiding (sns-data ; _≅_)
 
  group-structure : 𝓤 ̇ → 𝓤 ̇
  group-structure X = Σ s ꞉ monoid-structure X , monoid-axioms X s
@@ -10398,7 +10398,7 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
  sns-data : SNS (λ X → Σ s ꞉ group-structure X , group-axiom X (pr₁ s)) 𝓤
  sns-data = add-axioms
              (λ X s → group-axiom X (pr₁ s)) group-axiom-is-subsingleton
-             (monoid-identity.sns-data ua)
+             (monoid.sns-data ua)
 
 
  _≅_ : Group → Group → 𝓤 ̇
@@ -10693,7 +10693,7 @@ formulated and proved in two equivalent ways.
   types](HoTT-UF-Agda.html#slice-sip) below).
 
 \begin{code}
-module subgroup-identity
+module subgroup
         (𝓤  : Universe)
         (ua : Univalence)
        where
@@ -10702,8 +10702,8 @@ module subgroup-identity
  gfe = univalence-gives-global-dfunext ua
 
  open sip
- open monoid-identity {𝓤} (ua 𝓤) hiding (sns-data ; _≅_)
- open group-identity {𝓤} (ua 𝓤)
+ open monoid {𝓤} (ua 𝓤) hiding (sns-data ; _≅_)
+ open group {𝓤} (ua 𝓤)
 \end{code}
 
 We assume an arbitrary ambient group `G` in the following discussion.
@@ -11051,7 +11051,7 @@ We consider r(i)ngs in a universe 𝓤, and we assume univalence in their
 development. We hide the notation `⟨_⟩` from the module `sip` because we are going to use it for the underlying `Rng` of a `Ring`:
 
 \begin{code}
-module ring-identity {𝓤 : Universe} (ua : Univalence) where
+module ring {𝓤 : Universe} (ua : Univalence) where
  open sip hiding (⟨_⟩)
  open sip-with-axioms
  open sip-join
@@ -11213,8 +11213,8 @@ ring isomorphisms by the above general machinery:
                                 rng-axioms
                                 rng-axioms-is-subsingleton
                                 (join
-                                  ∞-magma-identity.sns-data
-                                  ∞-magma-identity.sns-data))
+                                  ∞-magma.sns-data
+                                  ∞-magma.sns-data))
 \end{code}
 
 The underlying type of a rng:
@@ -11273,17 +11273,17 @@ The type of rings with unit:
                                   ring-axioms
                                   ring-axioms-is-subsingleton
                                   (join
-                                    pointed-type-identity.sns-data
+                                    pointed-type.sns-data
                                       (join
-                                        ∞-magma-identity.sns-data
-                                        ∞-magma-identity.sns-data)))
+                                        ∞-magma.sns-data
+                                        ∞-magma.sns-data)))
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="slice-sip"></a> The slice type
 
 \begin{code}
-module slice-identity
+module slice
         {𝓤 𝓥 : Universe}
         (R : 𝓥 ̇ )
        where
@@ -11331,7 +11331,7 @@ as discussed in the section on [subgroup equality](HoTT-UF-Agda.html#subgroups-s
 #### <a id="metric-sip"></a> Metric spaces, graphs and ordered structures
 
 \begin{code}
-module generalized-metric-space-identity
+module generalized-metric-space
         {𝓤 𝓥 : Universe}
         (R : 𝓥 ̇ )
         (axioms  : (X : 𝓤 ̇ ) → (X → X → R) → 𝓤 ⊔ 𝓥 ̇ )
@@ -11406,7 +11406,7 @@ We get a [type of topological spaces](HoTT-UF-Agda.html#Top) when `R`
 is the type of truth values and the axioms are appropriately chosen.
 
 \begin{code}
-module generalized-topological-space-identity
+module generalized-topological-space
         (𝓤 𝓥 : Universe)
         (R : 𝓥 ̇ )
         (axioms  : (X : 𝓤 ̇ ) → ((X → R) → R) → 𝓤 ⊔ 𝓥 ̇ )
@@ -11528,7 +11528,7 @@ Linear functions on certain spaces correspond to special kinds of measures by th
 #### <a id="selection-sip"></a> Selection spaces
 
 \begin{code}
-module selection-space-identity
+module selection-space
         (𝓤 𝓥 : Universe)
         (R : 𝓥 ̇ )
         (axioms  : (X : 𝓤 ̇ ) → ((X → R) → X) → 𝓤 ⊔ 𝓥 ̇ )
@@ -11596,7 +11596,7 @@ can be avoided by defining `sns-data` on the fly, at the expense of
 readability:
 
 \begin{code}
-module contrived-example-identity (𝓤 : Universe) where
+module contrived-example (𝓤 : Universe) where
 
  open sip
 
@@ -11625,7 +11625,7 @@ In the following, we don't need to know that the functor preserves
 composition or to give coherence data for the identification `𝓕-id`.
 
 \begin{code}
-module generalized-functor-algebra-identity
+module generalized-functor-algebra
          {𝓤 𝓥 : Universe}
          (F : 𝓤 ̇ → 𝓥 ̇ )
          (𝓕 : {X Y : 𝓤 ̇ } → (X → Y) → F X → F Y)
@@ -11704,7 +11704,7 @@ We choose to use categorical notation and terminology for type-valued
 preorders.
 
 \begin{code}
-module type-valued-preorder-identity
+module type-valued-preorder
         (𝓤 𝓥 : Universe)
         (ua : Univalence)
        where
@@ -11949,7 +11949,7 @@ to combine two steps. The second step is the same, but the first step
 is modified to add axioms.
 
 \begin{code}
-module type-valued-preorder-with-axioms-identity
+module type-valued-preorder-with-axioms
         (𝓤 𝓥 𝓦 : Universe)
         (ua : Univalence)
         (axioms  : (X : 𝓤 ̇ ) → type-valued-preorder-S {𝓤} {𝓥} X → 𝓦 ̇ )
@@ -11958,7 +11958,7 @@ module type-valued-preorder-with-axioms-identity
 
  open sip
  open sip-with-axioms
- open type-valued-preorder-identity 𝓤 𝓥 ua
+ open type-valued-preorder 𝓤 𝓥 ua
 
  S' : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦 ̇
  S' X = Σ s ꞉ S X , axioms X s
@@ -11999,12 +11999,12 @@ Recall that `[_]` is the map that forgets the axioms.
 By choosing suitable axioms for type-valued preorders, we get categories:
 
 \begin{code}
-module category-identity
+module category
         (𝓤 𝓥 : Universe)
         (ua : Univalence)
        where
 
- open type-valued-preorder-with-axioms-identity 𝓤 𝓥 (𝓤 ⊔ 𝓥) ua
+ open type-valued-preorder-with-axioms 𝓤 𝓥 (𝓤 ⊔ 𝓥) ua
 
  fe : global-dfunext
  fe = univalence-gives-global-dfunext ua
@@ -12130,7 +12130,7 @@ account that now we have axioms, which we simply ignore:
  general a subsingleton, but for categories, `is-functorial 𝓧 𝓐 F 𝓕`
  is always a subsingleton.
 
-We now apply the module `type-valued-preorder-with-axioms-identity` to
+We now apply the module `type-valued-preorder-with-axioms` to
 get the following characterization of identity of categories:
 
 \begin{code}
@@ -13082,13 +13082,13 @@ existential quantifier `∃` available, in order to be able to define
 the notion of Noetherian ring.
 
 \begin{code}
-module noetherian-ring-identity
+module noetherian-ring
         (pt : subsingleton-truncations-exist)
         {𝓤 : Universe}
         (ua : Univalence)
        where
 
- open ring-identity {𝓤} ua
+ open ring {𝓤} ua
  open basic-truncation-development pt hfe
  open ℕ-order
 
