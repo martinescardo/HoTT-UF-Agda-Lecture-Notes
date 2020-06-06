@@ -12468,7 +12468,7 @@ Disjunction and existence are defined as the truncation of `+` and `Σ`:
   infixl 20 _∨_
 
   ∃ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-  ∃ A = (∥ Σ A ∥)
+  ∃ A = ∥ Σ A ∥
 
   -∃ : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
   -∃ X Y = ∃ Y
@@ -13104,7 +13104,7 @@ the powerset `𝓟 ⟨ 𝓡 ⟩` of the underlying set `⟨ 𝓡 ⟩` of `𝓡`:
                                               × (y ∈ I → (x · y) ∈ I)
 \end{code}
 
-That of Noetherian Rng:
+That of Noetherian rng:
 
 \begin{code}
  is-noetherian : (𝓡 : Rng) → 𝓤 ⁺ ̇
@@ -13209,7 +13209,7 @@ A rng is local if it has a unique maximal ideal:
  being-local-is-subsingleton 𝓡 = ∃!-is-subsingleton _ fe
 \end{code}
 
-A rng is commutative is its multiplication is:
+A rng is commutative if its multiplication is:
 
 \begin{code}
  is-commutative : Rng → 𝓤 ̇
