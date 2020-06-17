@@ -7739,6 +7739,45 @@ NatΠ-is-embedding v w {X} {A} τ i = embedding-criterion (NatΠ τ) γ
     b = Π-cong (hfunext-gives-dfunext w) (hfunext-gives-dfunext v) a
 \end{code}
 
+Postcomposition with an embedding is itself an embedding (of a
+function type into another). This amounts to saying that any function
+`f : X → A` and any embedding `g : Y → A` can be completed to a
+commutative triangle in at most one way:
+
+\begin{code}
+triangle-lemma : dfunext 𝓦 (𝓤 ⊔ 𝓥)
+               → {Y : 𝓤 ̇ } {A : 𝓥 ̇ } (g : Y → A)
+               → is-embedding g
+               → {X : 𝓦 ̇ } (f : X → A) → is-subsingleton (Σ h ꞉ (X → Y) , g ∘ h ∼ f)
+
+triangle-lemma fe {Y} {A} g i {X} f = iv
+ where
+  ii : (x : X) → is-subsingleton (Σ y ꞉ Y , g y ≡ f x)
+  ii x = i (f x)
+
+  iii : is-subsingleton (Π x ꞉ X , Σ y ꞉ Y , g y ≡ f x)
+  iii = Π-is-subsingleton fe ii
+
+  iv : is-subsingleton (Σ h ꞉ (X → Y) , g ∘ h ∼ f)
+  iv = equiv-to-subsingleton (≃-sym ΠΣ-distr-≃) iii
+
+
+postcomp-is-embedding : dfunext 𝓦 (𝓤 ⊔ 𝓥) → hfunext 𝓦 𝓥
+                      → {Y : 𝓤 ̇ } {A : 𝓥 ̇ } (g : Y → A)
+                      → is-embedding g
+                      → (X : 𝓦 ̇ ) → is-embedding (λ (h : X → Y) → g ∘ h)
+
+postcomp-is-embedding fe hfe {Y} {A} g i X = γ
+ where
+  γ : (f : X → A) → is-subsingleton (Σ h ꞉ (X → Y) , g ∘ h ≡ f)
+  γ f = equiv-to-subsingleton u (triangle-lemma fe g i f)
+   where
+    u : (Σ h ꞉ (X → Y) , g ∘ h ≡ f) ≃ (Σ h ꞉ (X → Y) , g ∘ h ∼ f)
+    u = Σ-cong (λ h → hfunext-≃ hfe (g ∘ h) f)
+\end{code}
+
+
+
 We conclude this section by introducing notation for the type of embeddings.
 
 \begin{code}
@@ -10222,7 +10261,7 @@ property rather than structure:
 \end{code}
 
 The equivalence of the alternative type `Monoid'` with the original
-type `Monoid'` is just tuple reshuffling:
+type `Monoid` is just tuple reshuffling:
 
 \begin{code}
  to-Monoid : Monoid' → Monoid
@@ -10232,10 +10271,10 @@ type `Monoid'` is just tuple reshuffling:
  from-Monoid (X , (_·_ , e) , (i , l , r , a)) = (X , _·_ , i , (e , l , r) , a)
 
  to-Monoid-is-equiv : is-equiv to-Monoid
- to-Monoid-is-equiv = invertibles-are-equivs to-Monoid (from-Monoid , (refl , refl))
+ to-Monoid-is-equiv = invertibles-are-equivs to-Monoid (from-Monoid , refl , refl)
 
  from-Monoid-is-equiv : is-equiv from-Monoid
- from-Monoid-is-equiv = invertibles-are-equivs from-Monoid (to-Monoid , (refl , refl))
+ from-Monoid-is-equiv = invertibles-are-equivs from-Monoid (to-Monoid , refl , refl)
 
  the-two-types-of-monoids-coincide : Monoid' ≃ Monoid
  the-two-types-of-monoids-coincide = to-Monoid , to-Monoid-is-equiv
@@ -10864,10 +10903,10 @@ We abbreviate "closed under the group operations" by "group-closed":
                  × ((x y : ⟨ G ⟩) → 𝓐 x → 𝓐 y → 𝓐 (x · y))
                  × ((x : ⟨ G ⟩) → 𝓐 x → 𝓐 (inv G x))
 
-  Subgroups : 𝓤 ⁺ ̇
-  Subgroups = Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A)
+  Subgroup : 𝓤 ⁺ ̇
+  Subgroup = Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A)
 
-  ⟪_⟫ : Subgroups → 𝓟 ⟨ G ⟩
+  ⟪_⟫ : Subgroup → 𝓟 ⟨ G ⟩
   ⟪ A , u , c , ι ⟫ = A
 
   being-group-closed-subset-is-subsingleton : (A : 𝓟 ⟨ G ⟩) → is-subsingleton (group-closed (_∈ A))
@@ -10891,13 +10930,13 @@ Therefore equality of subgroups is equality of their underlying
 subsets in the powerset:
 
 \begin{code}
-  ap-⟪⟫ : (S T : Subgroups) → S ≡ T → ⟪ S ⟫ ≡ ⟪ T ⟫
+  ap-⟪⟫ : (S T : Subgroup) → S ≡ T → ⟪ S ⟫ ≡ ⟪ T ⟫
   ap-⟪⟫ S T = ap ⟪_⟫
 
-  ap-⟪⟫-is-equiv : (S T : Subgroups) → is-equiv (ap-⟪⟫ S T)
+  ap-⟪⟫-is-equiv : (S T : Subgroup) → is-equiv (ap-⟪⟫ S T)
   ap-⟪⟫-is-equiv = embedding-gives-ap-is-equiv ⟪_⟫ ⟪⟫-is-embedding
 
-  subgroups-form-a-set : is-set Subgroups
+  subgroups-form-a-set : is-set Subgroup
   subgroups-form-a-set S T = equiv-to-subsingleton
                               (ap-⟪⟫ S T , ap-⟪⟫-is-equiv S T)
                               (powersets-are-sets' ua ⟪ S ⟫ ⟪ T ⟫)
@@ -10907,7 +10946,7 @@ It follows that two subgroups are equal if and only if they have the
 same elements:
 
 \begin{code}
-  subgroup-equality : (S T : Subgroups)
+  subgroup-equality : (S T : Subgroup)
                     → (S ≡ T)
                     ≃ ((x : ⟨ G ⟩) → (x ∈ ⟪ S ⟫) ⇔ (x ∈ ⟪ T ⟫))
 
@@ -11122,13 +11161,13 @@ desired result. We apply the material on the [subtype
 classifier](HoTT-UF-Agda.html#subtypeclassifier).
 
 \begin{code}
-  characterization-of-the-type-of-subgroups :  Subgroups ≃  (Σ H ꞉ Group
-                                                           , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩)
-                                                           , is-embedding h
-                                                           × is-homomorphism H G h)
+  characterization-of-the-type-of-subgroups :  Subgroup ≃ (Σ H ꞉ Group
+                                                         , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩)
+                                                         , is-embedding h
+                                                         × is-homomorphism H G h)
   characterization-of-the-type-of-subgroups =
 
-   Subgroups                                                                                       ≃⟨ i    ⟩
+   Subgroup                                                                                        ≃⟨ i    ⟩
    (Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A))                                                           ≃⟨ ii   ⟩
    (Σ (X , h , e) ꞉ Subtypes ⟨ G ⟩ , group-closed (fiber h))                                       ≃⟨ iii  ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , group-closed (fiber h))                                     ≃⟨ iv   ⟩
@@ -11145,7 +11184,7 @@ classifier](HoTT-UF-Agda.html#subtypeclassifier).
        j : is-equiv φ
        j = χ-special-is-equiv (ua 𝓤) gfe is-subsingleton ⟨ G ⟩
 
-       i    = id-≃ Subgroups
+       i    = id-≃ Subgroup
        ii   = Σ-change-of-variable (λ (A : 𝓟 ⟨ G ⟩) → group-closed (_∈ A)) φ j
        iii  = Σ-assoc
        iv   = Σ-cong (λ X → Σ-cong (λ (h , e) → fiber-structure-lemma h e))
@@ -11159,7 +11198,7 @@ In particular, a subgroup induces a genuine group, which is
 homomorphically embedded into the ambient group.
 
 \begin{code}
-  induced-group : Subgroups → Group
+  induced-group : Subgroup → Group
   induced-group S = pr₁ (⌜ characterization-of-the-type-of-subgroups ⌝ S)
 \end{code}
 

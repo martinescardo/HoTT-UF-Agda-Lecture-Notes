@@ -3931,6 +3931,35 @@ NatΠ-is-embedding v w {X} {A} τ i = embedding-criterion (NatΠ τ) γ
     b : (NatΠ τ f ∼ NatΠ τ g) ≃ (f ∼ g)
     b = Π-cong (hfunext-gives-dfunext w) (hfunext-gives-dfunext v) a
 
+triangle-lemma : dfunext 𝓦 (𝓤 ⊔ 𝓥)
+               → {Y : 𝓤 ̇ } {A : 𝓥 ̇ } (g : Y → A)
+               → is-embedding g
+               → {X : 𝓦 ̇ } (f : X → A) → is-subsingleton (Σ h ꞉ (X → Y) , g ∘ h ∼ f)
+
+triangle-lemma fe {Y} {A} g i {X} f = iv
+ where
+  ii : (x : X) → is-subsingleton (Σ y ꞉ Y , g y ≡ f x)
+  ii x = i (f x)
+
+  iii : is-subsingleton (Π x ꞉ X , Σ y ꞉ Y , g y ≡ f x)
+  iii = Π-is-subsingleton fe ii
+
+  iv : is-subsingleton (Σ h ꞉ (X → Y) , g ∘ h ∼ f)
+  iv = equiv-to-subsingleton (≃-sym ΠΣ-distr-≃) iii
+
+postcomp-is-embedding : dfunext 𝓦 (𝓤 ⊔ 𝓥) → hfunext 𝓦 𝓥
+                      → {Y : 𝓤 ̇ } {A : 𝓥 ̇ } (g : Y → A)
+                      → is-embedding g
+                      → (X : 𝓦 ̇ ) → is-embedding (λ (h : X → Y) → g ∘ h)
+
+postcomp-is-embedding fe hfe {Y} {A} g i X = γ
+ where
+  γ : (f : X → A) → is-subsingleton (Σ h ꞉ (X → Y) , g ∘ h ≡ f)
+  γ f = equiv-to-subsingleton u (triangle-lemma fe g i f)
+   where
+    u : (Σ h ꞉ (X → Y) , g ∘ h ≡ f) ≃ (Σ h ꞉ (X → Y) , g ∘ h ∼ f)
+    u = Σ-cong (λ h → hfunext-≃ hfe (g ∘ h) f)
+
 _↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ↪ Y = Σ f ꞉ (X → Y), is-embedding f
 
@@ -5410,10 +5439,10 @@ module monoid {𝓤 : Universe} (ua : is-univalent 𝓤) where
  from-Monoid (X , (_·_ , e) , (i , l , r , a)) = (X , _·_ , i , (e , l , r) , a)
 
  to-Monoid-is-equiv : is-equiv to-Monoid
- to-Monoid-is-equiv = invertibles-are-equivs to-Monoid (from-Monoid , (refl , refl))
+ to-Monoid-is-equiv = invertibles-are-equivs to-Monoid (from-Monoid , refl , refl)
 
  from-Monoid-is-equiv : is-equiv from-Monoid
- from-Monoid-is-equiv = invertibles-are-equivs from-Monoid (to-Monoid , (refl , refl))
+ from-Monoid-is-equiv = invertibles-are-equivs from-Monoid (to-Monoid , refl , refl)
 
  the-two-types-of-monoids-coincide : Monoid' ≃ Monoid
  the-two-types-of-monoids-coincide = to-Monoid , to-Monoid-is-equiv
