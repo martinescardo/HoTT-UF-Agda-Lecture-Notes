@@ -11221,7 +11221,8 @@ this. One way would be to add structure to Abelian groups. However, in
 order to avoid having to discuss the preservation of the neutral
 element of addition by homomorphisms separately as above in the case
 of groups, we proceed from scratch, where the neutral element is not
-part of the structure but instead its existence is part of the axioms.
+part of the structure but instead its existence is part of the
+axioms. Cf. the discussions of equality of monoids and groups.
 
 *Exercise.* Proceed using the alternative approach, which should be
  equally easy and short (and perhaps even shorter).
