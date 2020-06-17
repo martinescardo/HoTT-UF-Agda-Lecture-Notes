@@ -5401,6 +5401,81 @@ module monoid {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  characterization-of-monoid-≡ ua = characterization-of-≡ ua sns-data
 
+module monoid-alternative {𝓤 : Universe} (ua : is-univalent 𝓤) where
+
+ open sip
+ open sip-join
+ open sip-with-axioms
+ open monoids hiding (Monoid)
+ open monoid ua
+
+ monoid-structure' : 𝓤 ̇ → 𝓤 ̇
+ monoid-structure' X = X → X → X
+
+ has-unit : {X : 𝓤 ̇ } → monoid-structure' X → 𝓤 ̇
+ has-unit {X} _·_ = Σ e ꞉ X , left-neutral  e _·_ × right-neutral e _·_
+
+ monoid-axioms' : (X : 𝓤 ̇ ) → monoid-structure' X → 𝓤 ̇
+ monoid-axioms' X (_·_) = is-set X × has-unit _·_ × associative _·_
+
+ Monoid' : 𝓤 ⁺ ̇
+ Monoid' = Σ X ꞉ 𝓤 ̇ , Σ s ꞉ monoid-structure' X , monoid-axioms' X s
+
+ Monoids'-are-just-Monoids : Monoid' ≃ Monoid
+ Monoids'-are-just-Monoids = invertibility-gives-≃ f (g , refl , refl)
+  where
+   f : Monoid' → Monoid
+   f (X , _·_ , i , (e , l , r) , a) = (X , (_·_ , e) , (i , l , r , a))
+
+   g : Monoid → Monoid'
+   g (X , (_·_ , e) , (i , l , r , a)) = (X , _·_ , i , (e , l , r) , a)
+
+ monoid-axioms'-subsingleton : (X : 𝓤 ̇ ) (s : monoid-structure' X)
+                             → is-subsingleton (monoid-axioms' X s)
+
+ monoid-axioms'-subsingleton X _·_ = subsingleton-criterion' γ
+  where
+   γ : monoid-axioms' X _·_ → is-subsingleton (monoid-axioms' X _·_)
+   γ (i , _ , _) =
+     ×-is-subsingleton
+      (being-set-is-subsingleton dfe)
+    (×-is-subsingleton
+      k
+     (Π-is-subsingleton dfe (λ x →
+      Π-is-subsingleton dfe (λ y →
+      Π-is-subsingleton dfe (λ z → i ((x · y) · z) (x · (y · z)))))))
+    where
+     j : (e : X) → is-subsingleton (left-neutral e _·_ × right-neutral e _·_)
+     j e = ×-is-subsingleton
+            (Π-is-subsingleton dfe (λ x → i (e · x) x))
+            (Π-is-subsingleton dfe (λ x → i (x · e) x))
+
+     k : is-subsingleton (has-unit _·_)
+     k (e , l , r) (e' , l' , r') = to-subtype-≡ j p
+      where
+       p = e        ≡⟨ (r' e)⁻¹ ⟩
+           (e · e') ≡⟨ l e'     ⟩
+           e'       ∎
+
+ sns-data' : SNS (λ X → Σ s ꞉ monoid-structure' X , monoid-axioms' X s) 𝓤
+ sns-data' = add-axioms
+              monoid-axioms' monoid-axioms'-subsingleton
+              ∞-magma.sns-data
+
+ _≅'_ : Monoid' → Monoid' → 𝓤 ̇
+
+ (X , _·_ , _) ≅' (Y , _*_ , _) =
+
+               Σ f ꞉ (X → Y), is-equiv f
+                            × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+
+ characterization-of-monoid'-≡ : is-univalent 𝓤
+                               → (A B : Monoid')
+
+                              → (A ≡ B) ≃ (A ≅' B)
+
+ characterization-of-monoid'-≡ ua = characterization-of-≡ ua sns-data'
+
 module associative-∞-magma
         {𝓤 : Universe}
         (ua : is-univalent 𝓤)
@@ -8342,9 +8417,9 @@ module basic-powerset-development
 
   Top : (𝓤 : Universe) → 𝓤 ⁺⁺ ̇
   Top 𝓤 = Σ X ꞉ 𝓤 ̇ , is-set X
-                     × (Σ 𝓞 ꞉ 𝓟𝓟 X , full ∈ 𝓞
-                                   × ((U V : 𝓟 X) → U ∈ 𝓞 → V ∈ 𝓞 → (U ∩ V) ∈ 𝓞)
-                                   × ((𝓖 : 𝓟𝓟 X) → 𝓖 ⊆ 𝓞 → ⋃ 𝓖 ∈ 𝓞))
+                    × (Σ 𝓞 ꞉ 𝓟𝓟 X , full ∈ 𝓞
+                                  × ((U V : 𝓟 X) → U ∈ 𝓞 → V ∈ 𝓞 → (U ∩ V) ∈ 𝓞)
+                                  × ((𝓖 : 𝓟𝓟 X) → 𝓖 ⊆ 𝓞 → ⋃ 𝓖 ∈ 𝓞))
 
 is-subsingleton-valued
  reflexive
