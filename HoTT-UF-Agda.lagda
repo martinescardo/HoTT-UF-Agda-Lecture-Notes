@@ -10346,7 +10346,8 @@ follows:
 \end{code}
 
 We then get the following alternative characterization of monoid
-equality as semigroup-isomorphism, solving the above exercise.
+equality as semigroup-isomorphism, solving the above exercise, and a
+bit more.
 
 \begin{code}
  2nd-characterization-of-monoid-≡ : (A B : Monoid) → (A ≡ B) ≃ A ≅ₛ B
@@ -10596,10 +10597,9 @@ module group {𝓤 : Universe} (ua : is-univalent 𝓤) where
 identifications as the function that maps the reflexive identification
 to the identity equivalence.
 
-*Exercise*. In the case of groups, as opposed to monoids, the
- preservation of the unit follows from the preservation of the
- multiplication, and hence one can remove `f d ≡ e` from the above
- definition. Prove that
+*Exercise*. As in monoids, the preservation of the unit follows from
+ the preservation of the multiplication, and hence one can remove `f d
+ ≡ e` from the above definition. Prove that
 
    > `(A ≅ B) ≃ (A ≅' B)`
 
@@ -10618,8 +10618,9 @@ to the identity equivalence.
                          × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 \end{code}
 
-We now solve this exercise and do a bit more on the way. We first
-name various projections and introduce notation.
+We now solve this exercise and do a bit more on the way, but in a
+different way as we did for monoids. We first name various projections
+and introduce notation.
 
 \begin{code}
  group-structure-of : (G : Group) → group-structure ⟨ G ⟩
