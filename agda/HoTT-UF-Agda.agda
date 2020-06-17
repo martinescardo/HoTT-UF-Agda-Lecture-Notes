@@ -2359,7 +2359,7 @@ is-hae f = Σ g ꞉ (codomain f → domain f)
          , Σ ε ꞉ f ∘ g ∼ id
          , ((x : domain f) → ap f (η x) ≡ ε (f x))
 
-haes-are-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y)
+haes-are-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → is-hae f → invertible f
 
 haes-are-invertible f (g , η , ε , τ) = g , η , ε
@@ -5184,9 +5184,7 @@ module pointed-type {𝓤 : Universe} where
  (X , x₀) ≅ (Y , y₀) = Σ f ꞉ (X → Y), is-equiv f × (f x₀ ≡ y₀)
 
  characterization-of-pointed-type-≡ : is-univalent 𝓤
-                                    → (A B : Σ Pointed)
-
-                                    → (A ≡ B) ≃ (A ≅ B)
+                                    → (A B : Σ Pointed) → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-pointed-type-≡ ua = characterization-of-≡ ua sns-data
 
@@ -5328,9 +5326,7 @@ module pointed-∞-magma {𝓤 : Universe} where
                               × (f x₀ ≡ y₀)
 
  characterization-of-pointed-magma-≡ : is-univalent 𝓤
-                                     → (A B : ∞-Magma·)
-
-                                     → (A ≡ B) ≃ (A ≅ B)
+                                     → (A B : ∞-Magma·) → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-pointed-magma-≡ ua = characterization-of-join-≡ ua
                                             ∞-magma.sns-data
@@ -5344,15 +5340,16 @@ module monoid {𝓤 : Universe} (ua : is-univalent 𝓤) where
  open sip
  open sip-join
  open sip-with-axioms
+ open monoids hiding (Monoid)
 
  monoid-structure : 𝓤 ̇ → 𝓤 ̇
  monoid-structure X = (X → X → X) × X
 
  monoid-axioms : (X : 𝓤 ̇ ) → monoid-structure X → 𝓤 ̇
  monoid-axioms X (_·_ , e) = is-set X
-                           × monoids.left-neutral  e _·_
-                           × monoids.right-neutral e _·_
-                           × monoids.associative     _·_
+                           × left-neutral  e _·_
+                           × right-neutral e _·_
+                           × associative     _·_
 
  Monoid : 𝓤 ⁺ ̇
  Monoid = Σ X ꞉ 𝓤 ̇ , Σ s ꞉ monoid-structure X , monoid-axioms X s
@@ -5360,24 +5357,21 @@ module monoid {𝓤 : Universe} (ua : is-univalent 𝓤) where
  monoid-axioms-subsingleton : (X : 𝓤 ̇ ) (s : monoid-structure X)
                             → is-subsingleton (monoid-axioms X s)
 
- monoid-axioms-subsingleton X (_·_ , e) s = γ s
+ monoid-axioms-subsingleton X (_·_ , e) = subsingleton-criterion' γ
   where
-   i : is-set X
-   i = pr₁ s
-
-   γ : is-subsingleton (monoid-axioms X (_·_ , e))
-   γ = ×-is-subsingleton
-         (being-set-is-subsingleton dfe)
-      (×-is-subsingleton
-         (Π-is-subsingleton dfe
-           (λ x → i (e · x) x))
-      (×-is-subsingleton
-         (Π-is-subsingleton dfe
-           (λ x → i (x · e) x))
-         (Π-is-subsingleton dfe
-           (λ x → Π-is-subsingleton dfe
-           (λ y → Π-is-subsingleton dfe
-           (λ z → i ((x · y) · z) (x · (y · z))))))))
+   γ : monoid-axioms X (_·_ , e) → is-subsingleton (monoid-axioms X (_·_ , e))
+   γ (i , _) = ×-is-subsingleton
+                 (being-set-is-subsingleton dfe)
+              (×-is-subsingleton
+                 (Π-is-subsingleton dfe
+                   (λ x → i (e · x) x))
+              (×-is-subsingleton
+                 (Π-is-subsingleton dfe
+                   (λ x → i (x · e) x))
+                 (Π-is-subsingleton dfe
+                   (λ x → Π-is-subsingleton dfe
+                   (λ y → Π-is-subsingleton dfe
+                   (λ z → i ((x · y) · z) (x · (y · z))))))))
 
  sns-data : SNS (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s) 𝓤
  sns-data = add-axioms
@@ -5394,20 +5388,8 @@ module monoid {𝓤 : Universe} (ua : is-univalent 𝓤) where
                                   × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
                                   × (f d ≡ e)
 
- characterization-of-monoid-≡ : is-univalent 𝓤
-                              → (A B : Monoid)
-
-                              → (A ≡ B) ≃ (A ≅ B)
-
- characterization-of-monoid-≡ ua = characterization-of-≡ ua sns-data
-
-module monoid-alternative {𝓤 : Universe} (ua : is-univalent 𝓤) where
-
- open sip
- open sip-join
- open sip-with-axioms
- open monoids hiding (Monoid)
- open monoid ua
+ characterization-of-monoid-≡ : (A B : Monoid) → (A ≡ B) ≃ (A ≅ B)
+ characterization-of-monoid-≡ = characterization-of-≡ ua sns-data
 
  monoid-structure' : 𝓤 ̇ → 𝓤 ̇
  monoid-structure' X = X → X → X
@@ -5421,14 +5403,20 @@ module monoid-alternative {𝓤 : Universe} (ua : is-univalent 𝓤) where
  Monoid' : 𝓤 ⁺ ̇
  Monoid' = Σ X ꞉ 𝓤 ̇ , Σ s ꞉ monoid-structure' X , monoid-axioms' X s
 
- Monoids'-are-just-Monoids : Monoid' ≃ Monoid
- Monoids'-are-just-Monoids = invertibility-gives-≃ f (g , refl , refl)
-  where
-   f : Monoid' → Monoid
-   f (X , _·_ , i , (e , l , r) , a) = (X , (_·_ , e) , (i , l , r , a))
+ to-Monoid : Monoid' → Monoid
+ to-Monoid (X , _·_ , i , (e , l , r) , a) = (X , (_·_ , e) , (i , l , r , a))
 
-   g : Monoid → Monoid'
-   g (X , (_·_ , e) , (i , l , r , a)) = (X , _·_ , i , (e , l , r) , a)
+ from-Monoid : Monoid → Monoid'
+ from-Monoid (X , (_·_ , e) , (i , l , r , a)) = (X , _·_ , i , (e , l , r) , a)
+
+ to-Monoid-is-equiv : is-equiv to-Monoid
+ to-Monoid-is-equiv = invertibles-are-equivs to-Monoid (from-Monoid , (refl , refl))
+
+ from-Monoid-is-equiv : is-equiv from-Monoid
+ from-Monoid-is-equiv = invertibles-are-equivs from-Monoid (to-Monoid , (refl , refl))
+
+ the-two-types-of-monoids-coincide : Monoid' ≃ Monoid
+ the-two-types-of-monoids-coincide = to-Monoid , to-Monoid-is-equiv
 
  monoid-axioms'-subsingleton : (X : 𝓤 ̇ ) (s : monoid-structure' X)
                              → is-subsingleton (monoid-axioms' X s)
@@ -5469,12 +5457,38 @@ module monoid-alternative {𝓤 : Universe} (ua : is-univalent 𝓤) where
                Σ f ꞉ (X → Y), is-equiv f
                             × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 
- characterization-of-monoid'-≡ : is-univalent 𝓤
-                               → (A B : Monoid')
+ characterization-of-monoid'-≡ : (A B : Monoid') → (A ≡ B) ≃ (A ≅' B)
+ characterization-of-monoid'-≡ = characterization-of-≡ ua sns-data'
 
-                              → (A ≡ B) ≃ (A ≅' B)
+ _≅ₛ_ : Monoid → Monoid → 𝓤 ̇
 
- characterization-of-monoid'-≡ ua = characterization-of-≡ ua sns-data'
+ (X , (_·_ , _) , _) ≅ₛ (Y , (_*_ , _) , _) =
+
+                     Σ f ꞉ (X → Y), is-equiv f
+                                  × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+
+ 2nd-characterization-of-monoid-≡ : (A B : Monoid) → (A ≡ B) ≃ A ≅ₛ B
+ 2nd-characterization-of-monoid-≡ A B = (A ≡ B)                          ≃⟨ i   ⟩
+                                        (from-Monoid A ≡ from-Monoid B)  ≃⟨ ii  ⟩
+                                        (from-Monoid A ≅' from-Monoid B) ≃⟨ iii ⟩
+                                        (A ≅ₛ B)                         ■
+
+  where
+   φ : A ≡ B → from-Monoid A ≡ from-Monoid B
+   φ = ap from-Monoid
+
+   from-Monoid-is-embedding : is-embedding from-Monoid
+   from-Monoid-is-embedding = equivs-are-embeddings from-Monoid from-Monoid-is-equiv
+
+   φ-is-equiv : is-equiv φ
+   φ-is-equiv = embedding-gives-ap-is-equiv from-Monoid from-Monoid-is-embedding A B
+
+   clearly : (from-Monoid A ≅' from-Monoid B) ≡ (A ≅ₛ B)
+   clearly = refl _
+
+   i   = (φ , φ-is-equiv)
+   ii  = characterization-of-monoid'-≡ _ _
+   iii = Id→Eq _ _ clearly
 
 module associative-∞-magma
         {𝓤 : Universe}
@@ -5582,7 +5596,7 @@ module group {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  open sip
  open sip-with-axioms
- open monoid {𝓤} ua hiding (sns-data ; _≅_)
+ open monoid {𝓤} ua hiding (sns-data ; _≅_ ; _≅'_)
 
  group-structure : 𝓤 ̇ → 𝓤 ̇
  group-structure X = Σ s ꞉ monoid-structure X , monoid-axioms X s
@@ -5845,7 +5859,7 @@ module subgroup
 
   infixl 42 _·_
 
-  group-closed : (⟨ G ⟩ → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
+  group-closed : (⟨ G ⟩ → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
   group-closed 𝓐 = 𝓐 (unit G)
                  × ((x y : ⟨ G ⟩) → 𝓐 x → 𝓐 y → 𝓐 (x · y))
                  × ((x : ⟨ G ⟩) → 𝓐 x → 𝓐 (inv G x))
@@ -6340,9 +6354,7 @@ module generalized-metric-space
                                           × (d ≡ λ x x' → e (f x) (f x'))
 
  characterization-of-M-≡ : is-univalent 𝓤
-                         → (A B : M)
-
-                         → (A ≡ B) ≃ (A ≅ B)
+                         → (A B : M) → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-M-≡ ua = characterization-of-≡-with-axioms ua
                                 sns-data
@@ -6396,9 +6408,7 @@ module generalized-topological-space
                            × ((λ V → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y)
 
  characterization-of-Space-≡ : is-univalent 𝓤
-                             → (A B : Space)
-
-                             → (A ≡ B) ≃ (A ≅ B)
+                             → (A B : Space) → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-Space-≡ ua = characterization-of-≡-with-axioms ua
                                    sns-data axioms axiomss
@@ -6411,9 +6421,7 @@ module generalized-topological-space
                           × ((λ (v : Y → R) → F (v ∘ f)) ≡ G)
 
  characterization-of-Space-≡' : is-univalent 𝓤
-                              → (A B : Space)
-
-                              → (A ≡ B) ≃ (A ≅' B)
+                              → (A B : Space) → (A ≡ B) ≃ (A ≅' B)
 
  characterization-of-Space-≡' = characterization-of-Space-≡
 
@@ -6459,9 +6467,7 @@ module selection-space
                           × ((λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ)
 
  characterization-of-selection-space-≡ : is-univalent 𝓤
-                                       → (A B : SelectionSpace)
-
-                                       → (A ≡ B) ≃ (A ≅ B)
+                                       → (A B : SelectionSpace) → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-selection-space-≡ ua = characterization-of-≡-with-axioms ua
                                              sns-data
@@ -7434,9 +7440,7 @@ module noetherian-ring
 
  NB 𝓡 𝓡' = refl _
 
- characterization-of-nrng-≡ : (𝓡 𝓡' : NoetherianRng)
-                            → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[NoetherianRng] 𝓡')
-
+ characterization-of-nrng-≡ : (𝓡 𝓡' : NoetherianRng) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[NoetherianRng] 𝓡')
  characterization-of-nrng-≡ 𝓡 𝓡' =
 
    (𝓡 ≡ 𝓡')                               ≃⟨ i  ⟩
@@ -7519,9 +7523,7 @@ module noetherian-ring
 
  NB' 𝓡 𝓡' = refl _
 
- characterization-of-CNL-ring-≡ : (𝓡 𝓡' : CNL-Ring)
-                                → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[CNL] 𝓡')
-
+ characterization-of-CNL-ring-≡ : (𝓡 𝓡' : CNL-Ring) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[CNL] 𝓡')
  characterization-of-CNL-ring-≡ 𝓡 𝓡' =
 
     (𝓡 ≡ 𝓡')                               ≃⟨ i  ⟩
