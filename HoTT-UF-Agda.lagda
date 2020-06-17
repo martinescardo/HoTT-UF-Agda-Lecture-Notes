@@ -10253,7 +10253,7 @@ property rather than structure:
 
 \begin{code}
  monoid-axioms' : (X : 𝓤 ̇ ) → monoid-structure' X → 𝓤 ̇
- monoid-axioms' X (_·_) = is-set X × has-unit _·_ × associative _·_
+ monoid-axioms' X _·_ = is-set X × has-unit _·_ × associative _·_
 
 
  Monoid' : 𝓤 ⁺ ̇
@@ -10316,13 +10316,13 @@ monoid axioms are also property:
               monoid-axioms' monoid-axioms'-subsingleton
               ∞-magma.sns-data
 
- _≅'_ : Monoid' → Monoid' → 𝓤 ̇
 \end{code}
 
 As promised above, the characterization of equality doesn't refer to
 preservation of the unit:
 
 \begin{code}
+ _≅'_ : Monoid' → Monoid' → 𝓤 ̇
  (X , _·_ , _) ≅' (Y , _*_ , _) =
 
                Σ f ꞉ (X → Y), is-equiv f
@@ -11468,7 +11468,7 @@ module slice
 
  open sip
 
- S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ private S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
  S X = X → R
 
  sns-data : SNS S (𝓤 ⊔ 𝓥)

@@ -5427,7 +5427,7 @@ module monoid {𝓤 : Universe} (ua : is-univalent 𝓤) where
  has-unit {X} _·_ = Σ e ꞉ X , left-neutral  e _·_ × right-neutral e _·_
 
  monoid-axioms' : (X : 𝓤 ̇ ) → monoid-structure' X → 𝓤 ̇
- monoid-axioms' X (_·_) = is-set X × has-unit _·_ × associative _·_
+ monoid-axioms' X _·_ = is-set X × has-unit _·_ × associative _·_
 
  Monoid' : 𝓤 ⁺ ̇
  Monoid' = Σ X ꞉ 𝓤 ̇ , Σ s ꞉ monoid-structure' X , monoid-axioms' X s
@@ -5480,7 +5480,6 @@ module monoid {𝓤 : Universe} (ua : is-univalent 𝓤) where
               ∞-magma.sns-data
 
  _≅'_ : Monoid' → Monoid' → 𝓤 ̇
-
  (X , _·_ , _) ≅' (Y , _*_ , _) =
 
                Σ f ꞉ (X → Y), is-equiv f
@@ -5893,10 +5892,10 @@ module subgroup
                  × ((x y : ⟨ G ⟩) → 𝓐 x → 𝓐 y → 𝓐 (x · y))
                  × ((x : ⟨ G ⟩) → 𝓐 x → 𝓐 (inv G x))
 
-  Subgroups : 𝓤 ⁺ ̇
-  Subgroups = Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A)
+  Subgroup : 𝓤 ⁺ ̇
+  Subgroup = Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A)
 
-  ⟪_⟫ : Subgroups → 𝓟 ⟨ G ⟩
+  ⟪_⟫ : Subgroup → 𝓟 ⟨ G ⟩
   ⟪ A , u , c , ι ⟫ = A
 
   being-group-closed-subset-is-subsingleton : (A : 𝓟 ⟨ G ⟩) → is-subsingleton (group-closed (_∈ A))
@@ -5915,18 +5914,18 @@ module subgroup
   ⟪⟫-is-embedding : is-embedding ⟪_⟫
   ⟪⟫-is-embedding = pr₁-embedding being-group-closed-subset-is-subsingleton
 
-  ap-⟪⟫ : (S T : Subgroups) → S ≡ T → ⟪ S ⟫ ≡ ⟪ T ⟫
+  ap-⟪⟫ : (S T : Subgroup) → S ≡ T → ⟪ S ⟫ ≡ ⟪ T ⟫
   ap-⟪⟫ S T = ap ⟪_⟫
 
-  ap-⟪⟫-is-equiv : (S T : Subgroups) → is-equiv (ap-⟪⟫ S T)
+  ap-⟪⟫-is-equiv : (S T : Subgroup) → is-equiv (ap-⟪⟫ S T)
   ap-⟪⟫-is-equiv = embedding-gives-ap-is-equiv ⟪_⟫ ⟪⟫-is-embedding
 
-  subgroups-form-a-set : is-set Subgroups
+  subgroups-form-a-set : is-set Subgroup
   subgroups-form-a-set S T = equiv-to-subsingleton
                               (ap-⟪⟫ S T , ap-⟪⟫-is-equiv S T)
                               (powersets-are-sets' ua ⟪ S ⟫ ⟪ T ⟫)
 
-  subgroup-equality : (S T : Subgroups)
+  subgroup-equality : (S T : Subgroup)
                     → (S ≡ T)
                     ≃ ((x : ⟨ G ⟩) → (x ∈ ⟪ S ⟫) ⇔ (x ∈ ⟪ T ⟫))
 
@@ -6111,13 +6110,13 @@ module subgroup
                              (group-closed-fiber-gives-homomorphic-structure ,
                               homomorphic-structure-gives-group-closed-fiber)
 
-  characterization-of-the-type-of-subgroups :  Subgroups ≃  (Σ H ꞉ Group
-                                                           , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩)
-                                                           , is-embedding h
-                                                           × is-homomorphism H G h)
+  characterization-of-the-type-of-subgroups :  Subgroup ≃ (Σ H ꞉ Group
+                                                         , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩)
+                                                         , is-embedding h
+                                                         × is-homomorphism H G h)
   characterization-of-the-type-of-subgroups =
 
-   Subgroups                                                                                       ≃⟨ i    ⟩
+   Subgroup                                                                                        ≃⟨ i    ⟩
    (Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A))                                                           ≃⟨ ii   ⟩
    (Σ (X , h , e) ꞉ Subtypes ⟨ G ⟩ , group-closed (fiber h))                                       ≃⟨ iii  ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , group-closed (fiber h))                                     ≃⟨ iv   ⟩
@@ -6134,7 +6133,7 @@ module subgroup
        j : is-equiv φ
        j = χ-special-is-equiv (ua 𝓤) gfe is-subsingleton ⟨ G ⟩
 
-       i    = id-≃ Subgroups
+       i    = id-≃ Subgroup
        ii   = Σ-change-of-variable (λ (A : 𝓟 ⟨ G ⟩) → group-closed (_∈ A)) φ j
        iii  = Σ-assoc
        iv   = Σ-cong (λ X → Σ-cong (λ (h , e) → fiber-structure-lemma h e))
@@ -6143,7 +6142,7 @@ module subgroup
        vii  = Σ-cong (λ X → Σ-flip)
        viii = ≃-sym Σ-assoc
 
-  induced-group : Subgroups → Group
+  induced-group : Subgroup → Group
   induced-group S = pr₁ (⌜ characterization-of-the-type-of-subgroups ⌝ S)
 
 module ring {𝓤 : Universe} (ua : Univalence) where
@@ -6323,7 +6322,7 @@ module slice
 
  open sip
 
- S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ private S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
  S X = X → R
 
  sns-data : SNS S (𝓤 ⊔ 𝓥)
