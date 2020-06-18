@@ -6206,10 +6206,10 @@ module subgroup
   forgetful-map-is-embedding = γ
    where
     Subtype' : 𝓤 ̇ → 𝓤 ⁺ ̇
-    Subtype' X = (Σ (X , h) ꞉ 𝓤 / ⟨ G ⟩ , is-embedding h)
+    Subtype' X = Σ (X , h) ꞉ 𝓤 / ⟨ G ⟩ , is-embedding h
 
     f : Subgroup' → Subtype ⟨ G ⟩
-    f ((X , _)  , h  , e , _) = X , h , e
+    f ((X , _)  , h  , e , _) = (X , h , e)
 
     g : Subtype ⟨ G ⟩ → Subtype' ⟨ G ⟩
     g (X , h , e) = ((X , h) , e)

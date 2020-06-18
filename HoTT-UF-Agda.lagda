@@ -10896,12 +10896,6 @@ module slice
 identifications as the function that maps the reflexive identification
 to the identity equivalence.
 
-We apply the ideas of this section to characterize equality of the type
-
-   > `Σ H ꞉ Group , Σ f ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding f × is-homomorphism H G f`
-
- discussed below.
-
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="subgroups-sip"></a> Subgroups
 
@@ -10933,10 +10927,9 @@ formulated and proved in two equivalent ways.
   1. A subgroup of a group `G` is a group `H` *together* with a
   homomorphic embedding `H → G`. With this second definition, two
   subgroups `H` and `H'` are equal iff the embeddings `H → G` and `H'
-  → G` can be completed to a commutative triangle by a group
-  isomorphism `H → H'` (cf. the discussion of equality in [slice
-  types](HoTT-UF-Agda.html#slice-sip)), which is necessarily unique
-  when it exists as the maps `H → G` and `H' → G` are embeddings.
+  → G` can be completed to a commutative triangle by a (necessarily
+  unique) equivalence `H → H'` (cf. the discussion of equality in
+  [slice types](HoTT-UF-Agda.html#slice-sip)).
 
 \begin{code}
 module subgroup
@@ -11273,7 +11266,7 @@ By applying the other projections, the induced group is
 homomorphically embedded into the ambient group.
 
 We now name the alternative type of subgroups and characterize its
-equality in essentially the same way as for the slice type.
+equality in essentially the same way as we did for the slice type.
 
 \begin{code}
   Subgroup' : 𝓤 ⁺ ̇
@@ -11299,10 +11292,10 @@ of maps that are more easily seen to be embeddings.
   forgetful-map-is-embedding = γ
    where
     Subtype' : 𝓤 ̇ → 𝓤 ⁺ ̇
-    Subtype' X = (Σ (X , h) ꞉ 𝓤 / ⟨ G ⟩ , is-embedding h)
+    Subtype' X = Σ (X , h) ꞉ 𝓤 / ⟨ G ⟩ , is-embedding h
 
     f : Subgroup' → Subtype ⟨ G ⟩
-    f ((X , _)  , h  , e , _) = X , h , e
+    f ((X , _)  , h  , e , _) = (X , h , e)
 
     g : Subtype ⟨ G ⟩ → Subtype' ⟨ G ⟩
     g (X , h , e) = ((X , h) , e)
