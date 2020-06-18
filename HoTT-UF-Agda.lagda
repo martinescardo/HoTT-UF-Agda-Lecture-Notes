@@ -10926,10 +10926,12 @@ formulated and proved in two equivalent ways.
 
   1. A subgroup of a group `G` is a group `H` *together* with a
   homomorphic embedding `H → G`. With this second definition, two
-  subgroups `H` and `H'` are equal iff the embeddings `H → G` and `H'
-  → G` can be completed to a commutative triangle by a (necessarily
-  unique) equivalence `H → H'` (cf. the discussion of equality in
-  [slice types](HoTT-UF-Agda.html#slice-sip)).
+  subgroups `H` and `H'` are equal iff the embeddings `H → G` and `H' → G`
+  can be completed to a commutative triangle by a (necessarily
+  unique) equivalence `H → H'`. So the type of subgroups of a
+  group `G` with underlying set `⟨ G ⟩ : 𝓤` is embedded in the slice type `𝓤 / ⟨ G ⟩` and hence
+  inherits the characterization of equality from the slice type.
+
 
 \begin{code}
 module subgroup
@@ -11040,7 +11042,7 @@ same elements:
 
 We now show that the type of subgroups is equivalent to the type
 
-   > `Σ H ꞉ Group , Σ f ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding f × is-homomorphism H G f`
+   > `Σ H ꞉ Group , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding h × is-homomorphism H G h`
 
 as an application of the subtype classifier.
 
@@ -11058,15 +11060,18 @@ We use an anonymous module to give common assumptions for the
 following few lemmas:
 
 \begin{code}
-  module _ {X : 𝓤 ̇ } (h : X → ⟨ G ⟩) (e : is-embedding h) where
+  module _ {X : 𝓤 ̇ } (h : X → ⟨ G ⟩) (h-is-embedding : is-embedding h) where
 
    private
     h-lc : left-cancellable h
-    h-lc = embeddings-are-lc h e
+    h-lc = embeddings-are-lc h h-is-embedding
 
    having-group-closed-fiber-is-subsingleton : is-subsingleton (group-closed (fiber h))
-   having-group-closed-fiber-is-subsingleton = being-group-closed-subset-is-subsingleton
-                                                (λ x → (fiber h x , e x))
+   having-group-closed-fiber-is-subsingleton = being-group-closed-subset-is-subsingleton γ
+    where
+     γ : 𝓟 ⟨ G ⟩
+     γ y = (fiber h y , h-is-embedding y)
+
 
    at-most-one-homomorphic-structure : is-subsingleton (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
    at-most-one-homomorphic-structure
@@ -11105,6 +11110,32 @@ following few lemmas:
 
      γ : (τ  , i) ≡ (τ' , i')
      γ = to-subtype-≡ (λ τ → being-homomorphism-is-subsingleton (X , τ) G h) δ
+
+
+   homomorphic-structure-gives-group-closed-fiber : (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
+                                                  → group-closed (fiber h)
+
+   homomorphic-structure-gives-group-closed-fiber
+       ((((_*_ , unitH) , maxioms) , gaxiom) , (pmult , punit))
+     = (unitc , mulc , invc)
+    where
+     H : Group
+     H = X , ((_*_ , unitH) , maxioms) , gaxiom
+
+     unitc : fiber h (unit G)
+     unitc = unitH , punit
+
+     mulc : ((x y : ⟨ G ⟩) → fiber h x → fiber h y → fiber h (x · y))
+     mulc x y (a , p) (b , q) = (a * b) ,
+                                (h (a * b) ≡⟨ ap (λ - → - a b) pmult    ⟩
+                                 h a · h b ≡⟨ ap₂ (λ - -' → - · -') p q ⟩
+                                 x · y     ∎)
+
+     invc : ((x : ⟨ G ⟩) → fiber h x → fiber h (inv G x))
+     invc x (a , p) = inv H a ,
+                      (h (inv H a) ≡⟨ inv-preservation-lemma H G h pmult a ⟩
+                       inv G (h a) ≡⟨ ap (inv G) p                         ⟩
+                       inv G x     ∎)
 
 
    group-closed-fiber-gives-homomorphic-structure : group-closed (fiber h)
@@ -11176,32 +11207,6 @@ following few lemmas:
 
      i : is-homomorphism (X , τ) G h
      i = gfe (λ x → gfe (pmul x)) , punit
-
-
-   homomorphic-structure-gives-group-closed-fiber : (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
-                                                  → group-closed (fiber h)
-
-   homomorphic-structure-gives-group-closed-fiber
-       ((((_*_ , unitH) , maxioms) , gaxiom) , (pmult , punit))
-     = (unitc , mulc , invc)
-    where
-     H : Group
-     H = X , ((_*_ , unitH) , maxioms) , gaxiom
-
-     unitc : fiber h (unit G)
-     unitc = unitH , punit
-
-     mulc : ((x y : ⟨ G ⟩) → fiber h x → fiber h y → fiber h (x · y))
-     mulc x y (a , p) (b , q) = (a * b) ,
-                                (h (a * b) ≡⟨ ap (λ - → - a b) pmult    ⟩
-                                 h a · h b ≡⟨ ap₂ (λ - -' → - · -') p q ⟩
-                                 x · y     ∎)
-
-     invc : ((x : ⟨ G ⟩) → fiber h x → fiber h (inv G x))
-     invc x (a , p) = inv H a ,
-                      (h (inv H a) ≡⟨ inv-preservation-lemma H G h pmult a ⟩
-                       inv G (h a) ≡⟨ ap (inv G) p                         ⟩
-                       inv G x     ∎)
 \end{code}
 
 What is important for our purposes is this:
@@ -11245,7 +11250,7 @@ classifier](HoTT-UF-Agda.html#subtypeclassifier).
        j : is-equiv φ
        j = χ-special-is-equiv (ua 𝓤) gfe is-subsingleton ⟨ G ⟩
 
-       i    = id-≃ Subgroup
+       i    = Id→Eq _ _ (refl Subgroup)
        ii   = Σ-change-of-variable (λ (A : 𝓟 ⟨ G ⟩) → group-closed (_∈ A)) φ j
        iii  = Σ-assoc
        iv   = Σ-cong (λ X → Σ-cong (λ (h , e) → fiber-structure-lemma h e))
@@ -11281,7 +11286,7 @@ into the slice type:
 
 \begin{code}
   forgetful-map : Subgroup' → 𝓤 / ⟨ G ⟩
-  forgetful-map ((X , _)  , h  , _) = X , h
+  forgetful-map ((X , _)  , h  , _) = (X , h)
 \end{code}
 
 To show that this map is an embedding, we express it as a composition
@@ -12208,7 +12213,7 @@ definition of item `v`:
      → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)
      ≃ functorial 𝓧 𝓐 F (pr₁ (⌜ e ⌝ p))
 
-   v (refl _) = id-≃ _
+   v (refl _) = Id→Eq _ _ (refl _)
 
    γ =
 
@@ -15351,15 +15356,16 @@ pointed-types 𝓤 = Σ X ꞉ 𝓤 ̇ , X
 retraction-classifier : Univalence
                       → (Y : 𝓤 ̇ ) → retractions-into Y ≃ (Y → pointed-types 𝓤)
 retraction-classifier {𝓤} ua Y =
- retractions-into Y                                              ≃⟨ i      ⟩
- (Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , ((y : Y) → Σ x ꞉ X , f x ≡ y))     ≃⟨ id-≃ _ ⟩
- ((𝓤 /[ id ] Y))                                                 ≃⟨ ii     ⟩
+ retractions-into Y                                              ≃⟨ i   ⟩
+ (Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , ((y : Y) → Σ x ꞉ X , f x ≡ y))     ≃⟨ ii   ⟩
+ ((𝓤 /[ id ] Y))                                                 ≃⟨ iii ⟩
  (Y → pointed-types 𝓤)                                           ■
  where
-  i  = ≃-sym (Σ-cong (λ X → Σ-cong (λ f → ΠΣ-distr-≃)))
-  ii = special-map-classifier (ua 𝓤)
-        (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
-        id Y
+  i   = ≃-sym (Σ-cong (λ X → Σ-cong (λ f → ΠΣ-distr-≃)))
+  ii  = Id→Eq _ _ (refl _)
+  iii = special-map-classifier (ua 𝓤)
+         (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
+         id Y
 
 module surjection-classifier
          (pt : subsingleton-truncations-exist)
