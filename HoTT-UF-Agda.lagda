@@ -444,9 +444,9 @@ to practice univalent mathematics should consult the above references.
         1. [Monoids](HoTT-UF-Agda.html#monoids-sip)
         1. [Associative ∞-magmas](HoTT-UF-Agda.html#infty-amagmas)
         1. [Groups](HoTT-UF-Agda.html#groups-sip)
+        1. [The slice type](HoTT-UF-Agda.html#slice-sip)
         1. [Subgroups](HoTT-UF-Agda.html#subgroups-sip)
         1. [Rings](HoTT-UF-Agda.html#ring-sip)
-        1. [The slice type](HoTT-UF-Agda.html#slice-sip)
         1. [Metric spaces, graphs and ordered structures](HoTT-UF-Agda.html#metric-sip)
         1. [Topological spaces](HoTT-UF-Agda.html#topological-sip)
         1. [Selection spaces](HoTT-UF-Agda.html#selection-sip)
@@ -7687,7 +7687,26 @@ embeddings-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 embeddings-are-lc f e {x} {y} = ⌜ embedding-criterion-converse f e x y ⌝
 \end{code}
 
-*Exercise*. Left cancellable maps into *sets* are always embeddings.
+Conversely, left cancellable maps into *sets* are always embeddings.
+
+\begin{code}
+lc-maps-into-sets-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                 → left-cancellable f
+                                 → is-set Y
+                                 → is-embedding f
+lc-maps-into-sets-are-embeddings {𝓤} {𝓥} {X} {Y} f lc i y = γ
+ where
+  γ : is-subsingleton (Σ x ꞉ X , f x ≡ y)
+  γ (x , p) (x' , p') = to-subtype-≡ j q
+   where
+    j : (x : X) → is-subsingleton (f x ≡ y)
+    j x = i (f x) y
+
+    q : x ≡ x'
+    q = lc (f x  ≡⟨ p     ⟩
+            y    ≡⟨ p' ⁻¹ ⟩
+            f x' ∎)
+\end{code}
 
 If an embedding has a section, then it is an equivalence.
 
@@ -9058,15 +9077,15 @@ global-≃-ap ua = global-≃-ap' ua id
 A subtype of a type `Y` is a type `X` *together* with an embedding of `X` into `Y`:
 
 \begin{code}
-Subtypes : 𝓤 ̇ → 𝓤 ⁺ ̇
-Subtypes {𝓤} Y = Σ X ꞉ 𝓤 ̇ , X ↪ Y
+Subtype : 𝓤 ̇ → 𝓤 ⁺ ̇
+Subtype {𝓤} Y = Σ X ꞉ 𝓤 ̇ , X ↪ Y
 \end{code}
 
 The type `Ω 𝓤` of subsingletons in the universe `𝓤` is the subtype
 classifier of types in `𝓤`, in the sense that we have a canonical
 equivalence
 
-   > `Subtypes Y ≃ (Y → Ω 𝓤)`
+   > `Subtype Y ≃ (Y → Ω 𝓤)`
 
 for any type `Y : 𝓤`. We will derive this from something
 more general.  We defined embeddings to be maps whose fibers are
@@ -9135,7 +9154,7 @@ fact that `Ω` is the subtype classifier:
 
 \begin{code}
 Ω-is-subtype-classifier : Univalence
-                        → (Y : 𝓤 ̇ ) → Subtypes Y ≃ (Y → Ω 𝓤)
+                        → (Y : 𝓤 ̇ ) → Subtype Y ≃ (Y → Ω 𝓤)
 
 Ω-is-subtype-classifier {𝓤} ua = special-map-classifier (ua 𝓤)
                                   (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
@@ -9146,7 +9165,7 @@ It follows that the type of subtypes of `Y` is always a set, even if
 `Y` is not a set:
 
 \begin{code}
-subtypes-form-set : Univalence → (Y : 𝓤 ̇ ) → is-set (Subtypes Y)
+subtypes-form-set : Univalence → (Y : 𝓤 ̇ ) → is-set (Subtype Y)
 subtypes-form-set {𝓤} ua Y = equiv-to-set
                               (Ω-is-subtype-classifier ua Y)
                               (powersets-are-sets' ua)
@@ -10836,6 +10855,54 @@ This equivalence is that which forgets the preservation of the unit:
 This completes the solution of the exercise.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+#### <a id="slice-sip"></a> The slice type
+
+\begin{code}
+module slice
+        {𝓤 𝓥 : Universe}
+        (R : 𝓥 ̇ )
+       where
+
+ open sip
+
+ private S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ S X = X → R
+
+ sns-data : SNS S (𝓤 ⊔ 𝓥)
+ sns-data = (ι , ρ , θ)
+  where
+   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
+   ι (X , g) (Y , h) (f , _) = (g ≡ h ∘ f)
+
+   ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
+   ρ (X , g) = refl g
+
+   k : {X : 𝓤 ̇ } {g h : S X} → canonical-map ι ρ g h ∼ 𝑖𝑑 (g ≡ h)
+   k (refl g) = refl (refl g)
+
+   θ : {X : 𝓤 ̇ } (g h : S X) → is-equiv (canonical-map ι ρ g h)
+   θ g h = equivs-closed-under-∼ (id-is-equiv (g ≡ h)) k
+
+
+ _≅_  : 𝓤 / R → 𝓤 / R → 𝓤 ⊔ 𝓥 ̇
+ (X , g) ≅ (Y , h) = Σ f ꞉ (X → Y), is-equiv f × (g ≡ h ∘ f )
+
+
+ characterization-of-/-≡ : is-univalent 𝓤 → (A B : 𝓤 / R) → (A ≡ B) ≃ (A ≅ B)
+ characterization-of-/-≡ ua = characterization-of-≡ ua sns-data
+\end{code}
+
+*Exercise*. The above equivalence is characterized by induction on
+identifications as the function that maps the reflexive identification
+to the identity equivalence.
+
+We apply the ideas of this section to characterize equality of the type
+
+   > `Σ H ꞉ Group , Σ f ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding f × is-homomorphism H G f`
+
+ discussed below.
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="subgroups-sip"></a> Subgroups
 
 It is common mathematical practice to regard isomorphic groups to be
@@ -10867,9 +10934,9 @@ formulated and proved in two equivalent ways.
   homomorphic embedding `H → G`. With this second definition, two
   subgroups `H` and `H'` are equal iff the embeddings `H → G` and `H'
   → G` can be completed to a commutative triangle by a group
-  isomorphism `H → H'`, which is necessarily unique when it exists
-  (cf. the discussion of equality in [slice
-  types](HoTT-UF-Agda.html#slice-sip) below).
+  isomorphism `H → H'` (cf. the discussion of equality in [slice
+  types](HoTT-UF-Agda.html#slice-sip)), which is necessarily unique
+  when it exists as the maps `H → G` and `H' → G` are embeddings.
 
 \begin{code}
 module subgroup
@@ -11170,7 +11237,7 @@ classifier](HoTT-UF-Agda.html#subtypeclassifier).
 
    Subgroup                                                                                        ≃⟨ i    ⟩
    (Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A))                                                           ≃⟨ ii   ⟩
-   (Σ (X , h , e) ꞉ Subtypes ⟨ G ⟩ , group-closed (fiber h))                                       ≃⟨ iii  ⟩
+   (Σ (X , h , e) ꞉ Subtype ⟨ G ⟩ , group-closed (fiber h))                                        ≃⟨ iii  ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , group-closed (fiber h))                                     ≃⟨ iv   ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , Σ τ ꞉ T X , is-homomorphism (X , τ) G h)                    ≃⟨ v    ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ e ꞉ is-embedding h , Σ τ ꞉ T X , is-homomorphism (X , τ) G h) ≃⟨ vi   ⟩
@@ -11179,7 +11246,7 @@ classifier](HoTT-UF-Agda.html#subtypeclassifier).
    (Σ H ꞉ Group , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding h × is-homomorphism H G h)                  ■
 
       where
-       φ : Subtypes ⟨ G ⟩ → 𝓟 ⟨ G ⟩
+       φ : Subtype ⟨ G ⟩ → 𝓟 ⟨ G ⟩
        φ = χ-special is-subsingleton ⟨ G ⟩
 
        j : is-equiv φ
@@ -11195,12 +11262,154 @@ classifier](HoTT-UF-Agda.html#subtypeclassifier).
        viii = ≃-sym Σ-assoc
 \end{code}
 
-In particular, a subgroup induces a genuine group, which is
-homomorphically embedded into the ambient group.
+In particular, a subgroup induces a genuine group:
 
 \begin{code}
   induced-group : Subgroup → Group
   induced-group S = pr₁ (⌜ characterization-of-the-type-of-subgroups ⌝ S)
+\end{code}
+
+By applying the other projections, the induced group is
+homomorphically embedded into the ambient group.
+
+We now name the alternative type of subgroups and characterize its
+equality in essentially the same way as for the slice type.
+
+\begin{code}
+  Subgroup' : 𝓤 ⁺ ̇
+  Subgroup' = Σ H ꞉ Group
+            , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩)
+            , is-embedding h
+            × is-homomorphism H G h
+\end{code}
+
+The crucial tool is the following embedding of the type of subgroups'
+into the slice type:
+
+\begin{code}
+  forgetful-map : Subgroup' → 𝓤 / ⟨ G ⟩
+  forgetful-map ((X , _)  , h  , _) = X , h
+\end{code}
+
+To show that this map is an embedding, we express it as a composition
+of maps that are more easily seen to be embeddings.
+
+\begin{code}
+  forgetful-map-is-embedding : is-embedding forgetful-map
+  forgetful-map-is-embedding = γ
+   where
+    Subtype' : 𝓤 ̇ → 𝓤 ⁺ ̇
+    Subtype' X = (Σ (X , h) ꞉ 𝓤 / ⟨ G ⟩ , is-embedding h)
+
+    f : Subgroup' → Subtype ⟨ G ⟩
+    f ((X , _)  , h  , e , _) = X , h , e
+
+    g : Subtype ⟨ G ⟩ → Subtype' ⟨ G ⟩
+    g (X , h , e) = ((X , h) , e)
+
+    h : Subtype' ⟨ G ⟩ → 𝓤 / ⟨ G ⟩
+    h ((X , h) , e) = (X , h)
+
+    by-construction : forgetful-map ≡ h ∘ g ∘ f
+    by-construction = refl _
+
+    f-lc : left-cancellable f
+    f-lc {(X , τ) , h , e , i} {(X , τ') , h , e , i'} (refl (X , h , e)) = δ
+     where
+      p : (τ , i) ≡ (τ' , i')
+      p = at-most-one-homomorphic-structure h e (τ , i) (τ' , i')
+
+      φ : (Σ τ ꞉ T X , is-homomorphism (X , τ) G h) → Subgroup'
+      φ (τ , i) = ((X , τ) , h , e , i)
+
+      δ : ((X , τ) , h , e , i) ≡ ((X , τ') , h , e , i')
+      δ = ap φ p
+
+    f-is-embedding : is-embedding f
+    f-is-embedding = lc-maps-into-sets-are-embeddings f f-lc (subtypes-form-set ua ⟨ G ⟩)
+
+    g-is-equiv : is-equiv g
+    g-is-equiv = invertibles-are-equivs g ((λ ((X , h) , e) → (X , h , e)) , refl , refl)
+
+    g-is-embedding : is-embedding g
+    g-is-embedding = equivs-are-embeddings g g-is-equiv
+
+    h-is-embedding : is-embedding h
+    h-is-embedding = pr₁-embedding (λ (X , h) → being-embedding-is-subsingleton gfe h)
+
+    γ : is-embedding forgetful-map
+    γ = ∘-embedding h-is-embedding (∘-embedding g-is-embedding f-is-embedding)
+\end{code}
+
+With this and the characterization of equality in the slice type, we
+get the promised characterization of equality of subgroups'.
+
+\begin{code}
+  _≡ₛ_ : Subgroup' →  Subgroup' → 𝓤 ̇
+  (H , h , _ ) ≡ₛ (H' , h' , _ ) = Σ f ꞉ (⟨ H ⟩ → ⟨ H' ⟩) , is-equiv f × (h ≡ h' ∘ f)
+
+  subgroup'-equality : (S T : Subgroup') → (S ≡ T) ≃ (S ≡ₛ T)
+  subgroup'-equality S T = (S ≡ T)                             ≃⟨ i  ⟩
+                           (forgetful-map S ≡ forgetful-map T) ≃⟨ ii ⟩
+                           (S ≡ₛ T)                            ■
+   where
+    open slice ⟨ G ⟩
+    i  = ≃-sym (embedding-criterion-converse forgetful-map forgetful-map-is-embedding S T)
+    ii = characterization-of-/-≡ (ua 𝓤) (forgetful-map S) (forgetful-map T)
+\end{code}
+
+The equivalence `f` in the definition of the relation `≡ₛ` is unique
+when it exists. Moreover, the type `S ≡ₛ T` has at most one element:
+
+\begin{code}
+  subgroups'-form-a-set : is-set Subgroup'
+  subgroups'-form-a-set = equiv-to-set
+                           (≃-sym characterization-of-the-type-of-subgroups)
+                           subgroups-form-a-set
+
+  ≡ₛ-is-subsingleton-valued : (S T : Subgroup') → is-subsingleton (S ≡ₛ T)
+  ≡ₛ-is-subsingleton-valued S T = γ
+   where
+    i : is-subsingleton (S ≡ T)
+    i = subgroups'-form-a-set S T
+
+    γ : is-subsingleton (S ≡ₛ T)
+    γ = equiv-to-subsingleton (≃-sym (subgroup'-equality S T)) i
+
+\end{code}
+
+Here is an alternative proof that avoids the equivalence
+`Subgroup ≃ Subgroup'` used above to show that subgroups' form a set:
+
+\begin{code}
+  ≡ₛ-is-subsingleton-valued' : (S S' : Subgroup') → is-subsingleton (S ≡ₛ S')
+  ≡ₛ-is-subsingleton-valued' (H , h , e , i) (H' , h' , e' , i') = γ
+   where
+    S  = (H  , h  , e  , i )
+    S' = (H' , h' , e' , i')
+
+    A = Σ f ꞉ (⟨ H ⟩ → ⟨ H' ⟩) , h' ∘ f ≡ h
+    B = Σ (f , p) ꞉ A , is-equiv f
+
+    A-is-subsingleton : is-subsingleton A
+    A-is-subsingleton = postcomp-is-embedding gfe hfe h' e' ⟨ H ⟩ h
+
+    B-is-subsingleton : is-subsingleton B
+    B-is-subsingleton = Σ-is-subsingleton
+                         A-is-subsingleton
+                         (λ (f , p) → being-equiv-is-subsingleton gfe gfe f)
+
+    δ : (S ≡ₛ S') ≃ B
+    δ = invertibility-gives-≃ α (β , η , ε)
+     where
+      α = λ (f , i , p) → ((f , (p ⁻¹)) , i)
+      β = λ ((f , p) , i) → (f , i , (p ⁻¹))
+      η = λ (f , i , p) → ap (λ - → (f , i , -)) (⁻¹-involutive p)
+      ε = λ ((f , p) , i) → ap (λ - → ((f , -) , i)) (⁻¹-involutive p)
+
+    γ : is-subsingleton (S ≡ₛ S')
+    γ = equiv-to-subsingleton δ B-is-subsingleton
+
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -11458,54 +11667,6 @@ The type of rings with unit:
                                         ∞-magma.sns-data
                                         ∞-magma.sns-data)))
 \end{code}
-
-[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-#### <a id="slice-sip"></a> The slice type
-
-\begin{code}
-module slice
-        {𝓤 𝓥 : Universe}
-        (R : 𝓥 ̇ )
-       where
-
- open sip
-
- private S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
- S X = X → R
-
- sns-data : SNS S (𝓤 ⊔ 𝓥)
- sns-data = (ι , ρ , θ)
-  where
-   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
-   ι (X , g) (Y , h) (f , _) = (g ≡ h ∘ f)
-
-   ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
-   ρ (X , g) = refl g
-
-   k : {X : 𝓤 ̇ } {g h : S X} → canonical-map ι ρ g h ∼ 𝑖𝑑 (g ≡ h)
-   k (refl g) = refl (refl g)
-
-   θ : {X : 𝓤 ̇ } (g h : S X) → is-equiv (canonical-map ι ρ g h)
-   θ g h = equivs-closed-under-∼ (id-is-equiv (g ≡ h)) k
-
-
- _≅_  : 𝓤 / R → 𝓤 / R → 𝓤 ⊔ 𝓥 ̇
- (X , g) ≅ (Y , h) = Σ f ꞉ (X → Y), is-equiv f × (g ≡ h ∘ f )
-
-
- characterization-of-/-≡ : is-univalent 𝓤 → (A B : 𝓤 / R) → (A ≡ B) ≃ (A ≅ B)
- characterization-of-/-≡ ua = characterization-of-≡ ua sns-data
-\end{code}
-
-*Exercise*. The above equivalence is characterized by induction on
-identifications as the function that maps the reflexive identification
-to the identity equivalence.
-
-*Exercise.* Apply the ideas of this section to characterize equality of the type
-
-   > `Σ H ꞉ Group , Σ f ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding f × is-homomorphism H G f`
-
-as discussed in the section on [subgroup equality](HoTT-UF-Agda.html#subgroups-sip).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="metric-sip"></a> Metric spaces, graphs and ordered structures

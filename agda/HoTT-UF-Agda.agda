@@ -3899,6 +3899,23 @@ embeddings-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 
 embeddings-are-lc f e {x} {y} = ⌜ embedding-criterion-converse f e x y ⌝
 
+lc-maps-into-sets-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                 → left-cancellable f
+                                 → is-set Y
+                                 → is-embedding f
+lc-maps-into-sets-are-embeddings {𝓤} {𝓥} {X} {Y} f lc i y = γ
+ where
+  γ : is-subsingleton (Σ x ꞉ X , f x ≡ y)
+  γ (x , p) (x' , p') = to-subtype-≡ j q
+   where
+    j : (x : X) → is-subsingleton (f x ≡ y)
+    j x = i (f x) y
+
+    q : x ≡ x'
+    q = lc (f x  ≡⟨ p     ⟩
+            y    ≡⟨ p' ⁻¹ ⟩
+            f x' ∎)
+
 embedding-with-section-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                 → is-embedding f
                                 → has-section f
@@ -4709,8 +4726,8 @@ global-≃-ap' {𝓤} {𝓥} ua F A φ X Y e =
 
 global-≃-ap ua = global-≃-ap' ua id
 
-Subtypes : 𝓤 ̇ → 𝓤 ⁺ ̇
-Subtypes {𝓤} Y = Σ X ꞉ 𝓤 ̇ , X ↪ Y
+Subtype : 𝓤 ̇ → 𝓤 ⁺ ̇
+Subtype {𝓤} Y = Σ X ꞉ 𝓤 ̇ , X ↪ Y
 
 _/[_]_ : (𝓤 : Universe) → (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
 𝓤 /[ P ] Y = Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , ((y : Y) → P (fiber f y))
@@ -4754,13 +4771,13 @@ special-map-classifier : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
 special-map-classifier {𝓤} ua fe P Y = χ-special P Y , χ-special-is-equiv ua fe P Y
 
 Ω-is-subtype-classifier : Univalence
-                        → (Y : 𝓤 ̇ ) → Subtypes Y ≃ (Y → Ω 𝓤)
+                        → (Y : 𝓤 ̇ ) → Subtype Y ≃ (Y → Ω 𝓤)
 
 Ω-is-subtype-classifier {𝓤} ua = special-map-classifier (ua 𝓤)
                                   (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
                                   is-subsingleton
 
-subtypes-form-set : Univalence → (Y : 𝓤 ̇ ) → is-set (Subtypes Y)
+subtypes-form-set : Univalence → (Y : 𝓤 ̇ ) → is-set (Subtype Y)
 subtypes-form-set {𝓤} ua Y = equiv-to-set
                               (Ω-is-subtype-classifier ua Y)
                               (powersets-are-sets' ua)
@@ -5868,6 +5885,37 @@ module group {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  forget-unit-preservation-is-equiv G H = ⌜⌝-is-equiv (≅-agreement G H)
 
+module slice
+        {𝓤 𝓥 : Universe}
+        (R : 𝓥 ̇ )
+       where
+
+ open sip
+
+ private S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ S X = X → R
+
+ sns-data : SNS S (𝓤 ⊔ 𝓥)
+ sns-data = (ι , ρ , θ)
+  where
+   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
+   ι (X , g) (Y , h) (f , _) = (g ≡ h ∘ f)
+
+   ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
+   ρ (X , g) = refl g
+
+   k : {X : 𝓤 ̇ } {g h : S X} → canonical-map ι ρ g h ∼ 𝑖𝑑 (g ≡ h)
+   k (refl g) = refl (refl g)
+
+   θ : {X : 𝓤 ̇ } (g h : S X) → is-equiv (canonical-map ι ρ g h)
+   θ g h = equivs-closed-under-∼ (id-is-equiv (g ≡ h)) k
+
+ _≅_  : 𝓤 / R → 𝓤 / R → 𝓤 ⊔ 𝓥 ̇
+ (X , g) ≅ (Y , h) = Σ f ꞉ (X → Y), is-equiv f × (g ≡ h ∘ f )
+
+ characterization-of-/-≡ : is-univalent 𝓤 → (A B : 𝓤 / R) → (A ≡ B) ≃ (A ≅ B)
+ characterization-of-/-≡ ua = characterization-of-≡ ua sns-data
+
 module subgroup
         (𝓤  : Universe)
         (ua : Univalence)
@@ -6118,7 +6166,7 @@ module subgroup
 
    Subgroup                                                                                        ≃⟨ i    ⟩
    (Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A))                                                           ≃⟨ ii   ⟩
-   (Σ (X , h , e) ꞉ Subtypes ⟨ G ⟩ , group-closed (fiber h))                                       ≃⟨ iii  ⟩
+   (Σ (X , h , e) ꞉ Subtype ⟨ G ⟩ , group-closed (fiber h))                                        ≃⟨ iii  ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , group-closed (fiber h))                                     ≃⟨ iv   ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , Σ τ ꞉ T X , is-homomorphism (X , τ) G h)                    ≃⟨ v    ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ e ꞉ is-embedding h , Σ τ ꞉ T X , is-homomorphism (X , τ) G h) ≃⟨ vi   ⟩
@@ -6127,7 +6175,7 @@ module subgroup
    (Σ H ꞉ Group , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding h × is-homomorphism H G h)                  ■
 
       where
-       φ : Subtypes ⟨ G ⟩ → 𝓟 ⟨ G ⟩
+       φ : Subtype ⟨ G ⟩ → 𝓟 ⟨ G ⟩
        φ = χ-special is-subsingleton ⟨ G ⟩
 
        j : is-equiv φ
@@ -6144,6 +6192,114 @@ module subgroup
 
   induced-group : Subgroup → Group
   induced-group S = pr₁ (⌜ characterization-of-the-type-of-subgroups ⌝ S)
+
+  Subgroup' : 𝓤 ⁺ ̇
+  Subgroup' = Σ H ꞉ Group
+            , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩)
+            , is-embedding h
+            × is-homomorphism H G h
+
+  forgetful-map : Subgroup' → 𝓤 / ⟨ G ⟩
+  forgetful-map ((X , _)  , h  , _) = X , h
+
+  forgetful-map-is-embedding : is-embedding forgetful-map
+  forgetful-map-is-embedding = γ
+   where
+    Subtype' : 𝓤 ̇ → 𝓤 ⁺ ̇
+    Subtype' X = (Σ (X , h) ꞉ 𝓤 / ⟨ G ⟩ , is-embedding h)
+
+    f : Subgroup' → Subtype ⟨ G ⟩
+    f ((X , _)  , h  , e , _) = X , h , e
+
+    g : Subtype ⟨ G ⟩ → Subtype' ⟨ G ⟩
+    g (X , h , e) = ((X , h) , e)
+
+    h : Subtype' ⟨ G ⟩ → 𝓤 / ⟨ G ⟩
+    h ((X , h) , e) = (X , h)
+
+    by-construction : forgetful-map ≡ h ∘ g ∘ f
+    by-construction = refl _
+
+    f-lc : left-cancellable f
+    f-lc {(X , τ) , h , e , i} {(X , τ') , h , e , i'} (refl (X , h , e)) = δ
+     where
+      p : (τ , i) ≡ (τ' , i')
+      p = at-most-one-homomorphic-structure h e (τ , i) (τ' , i')
+
+      φ : (Σ τ ꞉ T X , is-homomorphism (X , τ) G h) → Subgroup'
+      φ (τ , i) = ((X , τ) , h , e , i)
+
+      δ : ((X , τ) , h , e , i) ≡ ((X , τ') , h , e , i')
+      δ = ap φ p
+
+    f-is-embedding : is-embedding f
+    f-is-embedding = lc-maps-into-sets-are-embeddings f f-lc (subtypes-form-set ua ⟨ G ⟩)
+
+    g-is-equiv : is-equiv g
+    g-is-equiv = invertibles-are-equivs g ((λ ((X , h) , e) → (X , h , e)) , refl , refl)
+
+    g-is-embedding : is-embedding g
+    g-is-embedding = equivs-are-embeddings g g-is-equiv
+
+    h-is-embedding : is-embedding h
+    h-is-embedding = pr₁-embedding (λ (X , h) → being-embedding-is-subsingleton gfe h)
+
+    γ : is-embedding forgetful-map
+    γ = ∘-embedding h-is-embedding (∘-embedding g-is-embedding f-is-embedding)
+
+  _≡ₛ_ : Subgroup' →  Subgroup' → 𝓤 ̇
+  (H , h , _ ) ≡ₛ (H' , h' , _ ) = Σ f ꞉ (⟨ H ⟩ → ⟨ H' ⟩) , is-equiv f × (h ≡ h' ∘ f)
+
+  subgroup'-equality : (S T : Subgroup') → (S ≡ T) ≃ (S ≡ₛ T)
+  subgroup'-equality S T = (S ≡ T)                             ≃⟨ i  ⟩
+                           (forgetful-map S ≡ forgetful-map T) ≃⟨ ii ⟩
+                           (S ≡ₛ T)                            ■
+   where
+    open slice ⟨ G ⟩
+    i  = ≃-sym (embedding-criterion-converse forgetful-map forgetful-map-is-embedding S T)
+    ii = characterization-of-/-≡ (ua 𝓤) (forgetful-map S) (forgetful-map T)
+
+  subgroups'-form-a-set : is-set Subgroup'
+  subgroups'-form-a-set = equiv-to-set
+                           (≃-sym characterization-of-the-type-of-subgroups)
+                           subgroups-form-a-set
+
+  ≡ₛ-is-subsingleton-valued : (S T : Subgroup') → is-subsingleton (S ≡ₛ T)
+  ≡ₛ-is-subsingleton-valued S T = γ
+   where
+    i : is-subsingleton (S ≡ T)
+    i = subgroups'-form-a-set S T
+
+    γ : is-subsingleton (S ≡ₛ T)
+    γ = equiv-to-subsingleton (≃-sym (subgroup'-equality S T)) i
+
+  ≡ₛ-is-subsingleton-valued' : (S S' : Subgroup') → is-subsingleton (S ≡ₛ S')
+  ≡ₛ-is-subsingleton-valued' (H , h , e , i) (H' , h' , e' , i') = γ
+   where
+    S  = (H  , h  , e  , i )
+    S' = (H' , h' , e' , i')
+
+    A = Σ f ꞉ (⟨ H ⟩ → ⟨ H' ⟩) , h' ∘ f ≡ h
+    B = Σ (f , p) ꞉ A , is-equiv f
+
+    A-is-subsingleton : is-subsingleton A
+    A-is-subsingleton = postcomp-is-embedding gfe hfe h' e' ⟨ H ⟩ h
+
+    B-is-subsingleton : is-subsingleton B
+    B-is-subsingleton = Σ-is-subsingleton
+                         A-is-subsingleton
+                         (λ (f , p) → being-equiv-is-subsingleton gfe gfe f)
+
+    δ : (S ≡ₛ S') ≃ B
+    δ = invertibility-gives-≃ α (β , η , ε)
+     where
+      α = λ (f , i , p) → ((f , (p ⁻¹)) , i)
+      β = λ ((f , p) , i) → (f , i , (p ⁻¹))
+      η = λ (f , i , p) → ap (λ - → (f , i , -)) (⁻¹-involutive p)
+      ε = λ ((f , p) , i) → ap (λ - → ((f , -) , i)) (⁻¹-involutive p)
+
+    γ : is-subsingleton (S ≡ₛ S')
+    γ = equiv-to-subsingleton δ B-is-subsingleton
 
 module ring {𝓤 : Universe} (ua : Univalence) where
  open sip hiding (⟨_⟩)
@@ -6314,37 +6470,6 @@ module ring {𝓤 : Universe} (ua : Univalence) where
                                       (join
                                         ∞-magma.sns-data
                                         ∞-magma.sns-data)))
-
-module slice
-        {𝓤 𝓥 : Universe}
-        (R : 𝓥 ̇ )
-       where
-
- open sip
-
- private S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
- S X = X → R
-
- sns-data : SNS S (𝓤 ⊔ 𝓥)
- sns-data = (ι , ρ , θ)
-  where
-   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
-   ι (X , g) (Y , h) (f , _) = (g ≡ h ∘ f)
-
-   ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)
-   ρ (X , g) = refl g
-
-   k : {X : 𝓤 ̇ } {g h : S X} → canonical-map ι ρ g h ∼ 𝑖𝑑 (g ≡ h)
-   k (refl g) = refl (refl g)
-
-   θ : {X : 𝓤 ̇ } (g h : S X) → is-equiv (canonical-map ι ρ g h)
-   θ g h = equivs-closed-under-∼ (id-is-equiv (g ≡ h)) k
-
- _≅_  : 𝓤 / R → 𝓤 / R → 𝓤 ⊔ 𝓥 ̇
- (X , g) ≅ (Y , h) = Σ f ꞉ (X → Y), is-equiv f × (g ≡ h ∘ f )
-
- characterization-of-/-≡ : is-univalent 𝓤 → (A B : 𝓤 / R) → (A ≡ B) ≃ (A ≅ B)
- characterization-of-/-≡ ua = characterization-of-≡ ua sns-data
 
 module generalized-metric-space
         {𝓤 𝓥 : Universe}
