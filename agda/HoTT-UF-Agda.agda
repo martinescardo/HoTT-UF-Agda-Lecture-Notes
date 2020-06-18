@@ -6210,20 +6210,20 @@ module subgroup
     Subtype' : 𝓤 ̇ → 𝓤 ⁺ ̇
     Subtype' X = Σ (X , h) ꞉ 𝓤 / ⟨ G ⟩ , is-embedding h
 
-    f : Subgroup' → Subtype ⟨ G ⟩
-    f ((X , _)  , h  , e , _) = (X , h , e)
+    f₀ : Subgroup' → Subtype ⟨ G ⟩
+    f₀ ((X , _)  , h  , e , _) = (X , h , e)
 
-    g : Subtype ⟨ G ⟩ → Subtype' ⟨ G ⟩
-    g (X , h , e) = ((X , h) , e)
+    f₁ : Subtype ⟨ G ⟩ → Subtype' ⟨ G ⟩
+    f₁ (X , h , e) = ((X , h) , e)
 
-    h : Subtype' ⟨ G ⟩ → 𝓤 / ⟨ G ⟩
-    h ((X , h) , e) = (X , h)
+    f₂ : Subtype' ⟨ G ⟩ → 𝓤 / ⟨ G ⟩
+    f₂ ((X , h) , e) = (X , h)
 
-    by-construction : forgetful-map ≡ h ∘ g ∘ f
+    by-construction : forgetful-map ≡ f₂ ∘ f₁ ∘ f₀
     by-construction = refl _
 
-    f-lc : left-cancellable f
-    f-lc {(X , τ) , h , e , i} {(X , τ') , h , e , i'} (refl (X , h , e)) = δ
+    f₀-lc : left-cancellable f₀
+    f₀-lc {(X , τ) , h , e , i} {(X , τ') , h , e , i'} (refl (X , h , e)) = δ
      where
       p : (τ , i) ≡ (τ' , i')
       p = at-most-one-homomorphic-structure h e (τ , i) (τ' , i')
@@ -6234,20 +6234,20 @@ module subgroup
       δ : ((X , τ) , h , e , i) ≡ ((X , τ') , h , e , i')
       δ = ap φ p
 
-    f-is-embedding : is-embedding f
-    f-is-embedding = lc-maps-into-sets-are-embeddings f f-lc (subtypes-form-set ua ⟨ G ⟩)
+    f₀-is-embedding : is-embedding f₀
+    f₀-is-embedding = lc-maps-into-sets-are-embeddings f₀ f₀-lc (subtypes-form-set ua ⟨ G ⟩)
 
-    g-is-equiv : is-equiv g
-    g-is-equiv = invertibles-are-equivs g ((λ ((X , h) , e) → (X , h , e)) , refl , refl)
+    f₁-is-equiv : is-equiv f₁
+    f₁-is-equiv = invertibles-are-equivs f₁ ((λ ((X , h) , e) → (X , h , e)) , refl , refl)
 
-    g-is-embedding : is-embedding g
-    g-is-embedding = equivs-are-embeddings g g-is-equiv
+    f₁-is-embedding : is-embedding f₁
+    f₁-is-embedding = equivs-are-embeddings f₁ f₁-is-equiv
 
-    h-is-embedding : is-embedding h
-    h-is-embedding = pr₁-is-embedding (λ (X , h) → being-embedding-is-subsingleton gfe h)
+    f₂-is-embedding : is-embedding f₂
+    f₂-is-embedding = pr₁-is-embedding (λ (X , h) → being-embedding-is-subsingleton gfe h)
 
     γ : is-embedding forgetful-map
-    γ = ∘-embedding h-is-embedding (∘-embedding g-is-embedding f-is-embedding)
+    γ = ∘-embedding f₂-is-embedding (∘-embedding f₁-is-embedding f₀-is-embedding)
 
   _≡ₛ_ : Subgroup' →  Subgroup' → 𝓤 ̇
   (H , h , _ ) ≡ₛ (H' , h' , _ ) = Σ f ꞉ (⟨ H ⟩ → ⟨ H' ⟩) , is-equiv f × (h ≡ h' ∘ f)

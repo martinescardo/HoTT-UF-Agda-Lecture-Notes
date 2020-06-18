@@ -10021,7 +10021,7 @@ We begin with the following technical lemma, whose proof uses the Yoneda machine
        → (x₁ , a₁) ≡ (x , a)
        → (y₁ , b₁) ≡ (y , b)
        → (x₁ , y₁) , (a₁ , b₁) ≡ (x , y) , (a , b)
-     p .x₁ .y₁ .a₁ .b₁ (refl .(x₁ , a₁)) (refl .(y₁ , b₁)) = refl ((x₁ , y₁) , (a₁ , b₁))
+     p x₁ y₁ a₁ b₁ (refl (x₁ , a₁)) (refl (y₁ , b₁)) = refl ((x₁ , y₁) , (a₁ , b₁))
 
      δ : (((x , y) , (a , b)) : Σ C) → (x₁ , y₁) , (a₁ , b₁) ≡ ((x , y) , (a , b))
      δ ((x , y) , (a , b)) = p x y a b (φ (x , a)) (ψ (y , b))
