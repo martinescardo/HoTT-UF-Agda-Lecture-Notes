@@ -7542,11 +7542,11 @@ More generally, with the arguments swapped, the projection `Σ A → X`
 is an embedding if `A x` is a subsingleton for every `x : X`:
 
 \begin{code}
-pr₁-embedding : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-              → ((x : X) → is-subsingleton (A x))
-              → is-embedding (λ (σ : Σ A) → pr₁ σ)
+pr₁-is-embedding : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                 → ((x : X) → is-subsingleton (A x))
+                 → is-embedding (λ (σ : Σ A) → pr₁ σ)
 
-pr₁-embedding i x ((x , a) , refl x) ((x , a') , refl x) = γ
+pr₁-is-embedding i x ((x , a) , refl x) ((x , a') , refl x) = γ
  where
   p : a ≡ a'
   p = i x a a'
@@ -7555,7 +7555,7 @@ pr₁-embedding i x ((x , a) , refl x) ((x , a') , refl x) = γ
   γ = ap (λ - → (x , -) , refl x) p
 \end{code}
 
-*Exercise*. Show that the converse of `pr₁-embedding` holds.
+*Exercise*. Show that the converse of `pr₁-is-embedding` holds.
 
 \begin{code}
 equivs-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -9853,7 +9853,7 @@ In the following construction:
      π (s , _) = s
 
      j : is-embedding π
-     j = pr₁-embedding (i X)
+     j = pr₁-is-embedding (i X)
 
      k : {s' t' : S' X} → is-equiv (ap π {s'} {t'})
      k {s'} {t'} = embedding-gives-ap-is-equiv π j s' t'
@@ -10986,7 +10986,7 @@ We abbreviate "closed under the group operations" by "group-closed":
                                                      (λ _ → ∈-is-subsingleton A (inv G x)))))
 
   ⟪⟫-is-embedding : is-embedding ⟪_⟫
-  ⟪⟫-is-embedding = pr₁-embedding being-group-closed-subset-is-subsingleton
+  ⟪⟫-is-embedding = pr₁-is-embedding being-group-closed-subset-is-subsingleton
 \end{code}
 
 Therefore equality of subgroups is equality of their underlying
@@ -11333,7 +11333,7 @@ of maps that are more easily seen to be embeddings.
     g-is-embedding = equivs-are-embeddings g g-is-equiv
 
     h-is-embedding : is-embedding h
-    h-is-embedding = pr₁-embedding (λ (X , h) → being-embedding-is-subsingleton gfe h)
+    h-is-embedding = pr₁-is-embedding (λ (X , h) → being-embedding-is-subsingleton gfe h)
 
     γ : is-embedding forgetful-map
     γ = ∘-embedding h-is-embedding (∘-embedding g-is-embedding f-is-embedding)
@@ -13465,7 +13465,7 @@ again need to show that `is-noetherian` is property rather than data:
  forget-Noether (𝓡 , _) = 𝓡
 
  forget-Noether-is-embedding : is-embedding forget-Noether
- forget-Noether-is-embedding = pr₁-embedding being-noetherian-is-subsingleton
+ forget-Noether-is-embedding = pr₁-is-embedding being-noetherian-is-subsingleton
 \end{code}
 
 Isomorphism of Noetherian rngs:
@@ -13595,7 +13595,7 @@ We now consider commutative Noetherian local rings:
  forget-CNL (𝓡 , _) = 𝓡
 
  forget-CNL-is-embedding : is-embedding forget-CNL
- forget-CNL-is-embedding = pr₁-embedding being-CNL-is-subsingleton
+ forget-CNL-is-embedding = pr₁-is-embedding being-CNL-is-subsingleton
 
 
  NB' : (𝓡 𝓡' : CNL-Ring)

@@ -3781,11 +3781,11 @@ pr₂-embedding A X i x ((a , x) , refl x) ((b , x) , refl x) = p
   p : ((a , x) , refl x) ≡ ((b , x) , refl x)
   p = ap (λ - → ((- , x) , refl x)) (i a b)
 
-pr₁-embedding : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-              → ((x : X) → is-subsingleton (A x))
-              → is-embedding (λ (σ : Σ A) → pr₁ σ)
+pr₁-is-embedding : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                 → ((x : X) → is-subsingleton (A x))
+                 → is-embedding (λ (σ : Σ A) → pr₁ σ)
 
-pr₁-embedding i x ((x , a) , refl x) ((x , a') , refl x) = γ
+pr₁-is-embedding i x ((x , a) , refl x) ((x , a') , refl x) = γ
  where
   p : a ≡ a'
   p = i x a a'
@@ -5153,7 +5153,7 @@ module sip-with-axioms where
      π (s , _) = s
 
      j : is-embedding π
-     j = pr₁-embedding (i X)
+     j = pr₁-is-embedding (i X)
 
      k : {s' t' : S' X} → is-equiv (ap π {s'} {t'})
      k {s'} {t'} = embedding-gives-ap-is-equiv π j s' t'
@@ -5960,7 +5960,7 @@ module subgroup
                                                      (λ _ → ∈-is-subsingleton A (inv G x)))))
 
   ⟪⟫-is-embedding : is-embedding ⟪_⟫
-  ⟪⟫-is-embedding = pr₁-embedding being-group-closed-subset-is-subsingleton
+  ⟪⟫-is-embedding = pr₁-is-embedding being-group-closed-subset-is-subsingleton
 
   ap-⟪⟫ : (S T : Subgroup) → S ≡ T → ⟪ S ⟫ ≡ ⟪ T ⟫
   ap-⟪⟫ S T = ap ⟪_⟫
@@ -6244,7 +6244,7 @@ module subgroup
     g-is-embedding = equivs-are-embeddings g g-is-equiv
 
     h-is-embedding : is-embedding h
-    h-is-embedding = pr₁-embedding (λ (X , h) → being-embedding-is-subsingleton gfe h)
+    h-is-embedding = pr₁-is-embedding (λ (X , h) → being-embedding-is-subsingleton gfe h)
 
     γ : is-embedding forgetful-map
     γ = ∘-embedding h-is-embedding (∘-embedding g-is-embedding f-is-embedding)
@@ -7579,7 +7579,7 @@ module noetherian-ring
  forget-Noether (𝓡 , _) = 𝓡
 
  forget-Noether-is-embedding : is-embedding forget-Noether
- forget-Noether-is-embedding = pr₁-embedding being-noetherian-is-subsingleton
+ forget-Noether-is-embedding = pr₁-is-embedding being-noetherian-is-subsingleton
 
  _≅[NoetherianRng]_ : NoetherianRng → NoetherianRng → 𝓤 ̇
 
@@ -7671,7 +7671,7 @@ module noetherian-ring
  forget-CNL (𝓡 , _) = 𝓡
 
  forget-CNL-is-embedding : is-embedding forget-CNL
- forget-CNL-is-embedding = pr₁-embedding being-CNL-is-subsingleton
+ forget-CNL-is-embedding = pr₁-is-embedding being-CNL-is-subsingleton
 
  NB' : (𝓡 𝓡' : CNL-Ring)
      → (𝓡 ≅[CNL] 𝓡') ≡ (forget-CNL 𝓡 ≅[Ring] forget-CNL 𝓡')
