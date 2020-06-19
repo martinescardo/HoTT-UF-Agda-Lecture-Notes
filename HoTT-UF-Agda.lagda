@@ -2481,7 +2481,6 @@ Given any root, we can find a minimal root.
 
     γ : minimal-root f
     γ = right-fails-gives-left-holds (bounded-ℕ-search (succ n) f) g
-
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -9885,7 +9884,6 @@ In the following construction:
 
      γ : is-equiv (canonical-map ι' ρ' (s , a) (t , b))
      γ = equivs-closed-under-∼ e l
-
 \end{code}
 
 And with this we can formulate and prove what `add-axioms` achieves,
@@ -10351,7 +10349,6 @@ monoid axioms are also property:
  sns-data' = add-axioms
               monoid-axioms' monoid-axioms'-subsingleton
               ∞-magma.sns-data
-
 \end{code}
 
 As promised above, the characterization of equality doesn't refer to
@@ -10882,7 +10879,7 @@ module slice
 
  open sip
 
- private S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
  S X = X → R
 
  sns-data : SNS S (𝓤 ⊔ 𝓥)
@@ -11073,10 +11070,8 @@ It will be convenient to introduce notation for the type of group
 structures satisfying the group axioms:
 
 \begin{code}
-
   T : 𝓤 ̇ → 𝓤 ̇
   T X = Σ ((_·_ , e) , a) ꞉ group-structure X , group-axiom X (_·_ , e)
-
 \end{code}
 
 We use an anonymous module to give common assumptions for the
@@ -11264,7 +11259,8 @@ classifier](HoTT-UF-Agda.html#subtypeclassifier).
    (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ e ꞉ is-embedding h , Σ τ ꞉ T X , is-homomorphism (X , τ) G h) ≃⟨ vi   ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ τ ꞉ T X , Σ e ꞉ is-embedding h , is-homomorphism (X , τ) G h) ≃⟨ vii  ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ τ ꞉ T X , Σ h ꞉ (X → ⟨ G ⟩) , is-embedding h × is-homomorphism (X , τ) G h)       ≃⟨ viii ⟩
-   (Σ H ꞉ Group , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding h × is-homomorphism H G h)                  ■
+   (Σ H ꞉ Group , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding h × is-homomorphism H G h)                  ≃⟨ ix   ⟩
+   Subgroup'                                                                                       ■
 
       where
        φ : Subtype ⟨ G ⟩ → 𝓟 ⟨ G ⟩
@@ -11281,6 +11277,7 @@ classifier](HoTT-UF-Agda.html#subtypeclassifier).
        vi   = Σ-cong (λ X → Σ-cong (λ h → Σ-flip))
        vii  = Σ-cong (λ X → Σ-flip)
        viii = ≃-sym Σ-assoc
+       ix   = Id→Eq _ _ (refl Subgroup')
 \end{code}
 
 In particular, a subgroup induces a genuine group:
@@ -11293,14 +11290,8 @@ In particular, a subgroup induces a genuine group:
 By applying the other projections, the induced group is
 homomorphically embedded into the ambient group.
 
-We now name the alternative type of subgroups and characterize its
-equality in essentially the same way as we did for the slice type.
-
-\begin{code}
-\end{code}
-
 The crucial tool to characterize equality in the alternative type of
-subgroups is the following embedding into the slice type:
+subgroups is the following embedding into the slice type.
 
 \begin{code}
   forgetful-map : Subgroup' → 𝓤 / ⟨ G ⟩
@@ -11358,7 +11349,7 @@ of maps that are more easily seen to be embeddings.
 \end{code}
 
 With this and the characterization of equality in the slice type, we
-get the promised characterization of equality of the alternative types of subgroups.
+get the promised characterization of equality of the alternative type of subgroups.
 
 \begin{code}
   _≡ₛ_ : Subgroup' →  Subgroup' → 𝓤 ̇
@@ -11369,13 +11360,14 @@ get the promised characterization of equality of the alternative types of subgro
                            (forgetful-map S ≡ forgetful-map T) ≃⟨ ii ⟩
                            (S ≡ₛ T)                            ■
    where
-    open slice ⟨ G ⟩
+    open slice ⟨ G ⟩ hiding (S)
     i  = ≃-sym (embedding-criterion-converse forgetful-map forgetful-map-is-embedding S T)
     ii = characterization-of-/-≡ (ua 𝓤) (forgetful-map S) (forgetful-map T)
 \end{code}
 
 The equivalence `f` in the definition of the relation `≡ₛ` is unique
-when it exists. Moreover, the type `S ≡ₛ T` has at most one element:
+when it exists, because `h'` is an embedding and hence is
+left-cancellable. Moreover, the type `S ≡ₛ T` has at most one element:
 
 \begin{code}
   subgroups'-form-a-set : is-set Subgroup'
@@ -11391,7 +11383,6 @@ when it exists. Moreover, the type `S ≡ₛ T` has at most one element:
 
     γ : is-subsingleton (S ≡ₛ T)
     γ = equiv-to-subsingleton (≃-sym (subgroup'-equality S T)) i
-
 \end{code}
 
 Here is an alternative proof that avoids the equivalence
@@ -12830,7 +12821,6 @@ Disjunction and existence are defined as the truncation of `+` and `Σ`:
 
   ∃-is-subsingleton : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → is-subsingleton (∃ A)
   ∃-is-subsingleton = ∥∥-is-subsingleton
-
 \end{code}
 
 The author's slides on [univalent
@@ -13439,7 +13429,6 @@ module noetherian-ring
  open ring {𝓤} ua
  open basic-truncation-development pt hfe
  open ℕ-order
-
 \end{code}
 
 The notion of (two-sided) ideal of a ring `𝓡`, which is an element of
@@ -15656,7 +15645,6 @@ associativities (left or right), this agda file doesn't parse and is
 rejected by Agda.
 
 \begin{code}
-
 infix   0 _∼_
 infixr 50 _,_
 infixr 30 _×_

@@ -5904,7 +5904,7 @@ module slice
 
  open sip
 
- private S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
  S X = X → R
 
  sns-data : SNS S (𝓤 ⊔ 𝓥)
@@ -6189,7 +6189,8 @@ module subgroup
    (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ e ꞉ is-embedding h , Σ τ ꞉ T X , is-homomorphism (X , τ) G h) ≃⟨ vi   ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ τ ꞉ T X , Σ e ꞉ is-embedding h , is-homomorphism (X , τ) G h) ≃⟨ vii  ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ τ ꞉ T X , Σ h ꞉ (X → ⟨ G ⟩) , is-embedding h × is-homomorphism (X , τ) G h)       ≃⟨ viii ⟩
-   (Σ H ꞉ Group , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding h × is-homomorphism H G h)                  ■
+   (Σ H ꞉ Group , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding h × is-homomorphism H G h)                  ≃⟨ ix   ⟩
+   Subgroup'                                                                                       ■
 
       where
        φ : Subtype ⟨ G ⟩ → 𝓟 ⟨ G ⟩
@@ -6206,6 +6207,7 @@ module subgroup
        vi   = Σ-cong (λ X → Σ-cong (λ h → Σ-flip))
        vii  = Σ-cong (λ X → Σ-flip)
        viii = ≃-sym Σ-assoc
+       ix   = Id→Eq _ _ (refl Subgroup')
 
   induced-group : Subgroup → Group
   induced-group S = pr₁ (⌜ characterization-of-the-type-of-subgroups ⌝ S)
@@ -6266,7 +6268,7 @@ module subgroup
                            (forgetful-map S ≡ forgetful-map T) ≃⟨ ii ⟩
                            (S ≡ₛ T)                            ■
    where
-    open slice ⟨ G ⟩
+    open slice ⟨ G ⟩ hiding (S)
     i  = ≃-sym (embedding-criterion-converse forgetful-map forgetful-map-is-embedding S T)
     ii = characterization-of-/-≡ (ua 𝓤) (forgetful-map S) (forgetful-map T)
 
