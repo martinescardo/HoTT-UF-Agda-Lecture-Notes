@@ -1677,15 +1677,15 @@ to-subtype-≡ : {X : 𝓦 ̇ } {A : X → 𝓥 ̇ }
              → x ≡ y
              → (x , a) ≡ (y , b)
 
-pr₁-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-          → ((x : X) → is-singleton (A x))
-          → is-equiv (λ (t : Σ A) → pr₁ t)
+pr₁-is-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+             → ((x : X) → is-singleton (A x))
+             → is-equiv (λ (t : Σ A) → pr₁ t)
 
 pr₁-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
       → ((x : X) → is-singleton (A x))
       → Σ A ≃ X
 
-pr₁-≃ i = pr₁ , pr₁-equiv i
+pr₁-≃ i = pr₁ , pr₁-is-equiv i
 
 ΠΣ-distr-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
            → (Π x ꞉ X , Σ a ꞉ A x , P x a)
@@ -1937,7 +1937,7 @@ to-subtype-≡ = sol
       → (x , a) ≡ (y , b)
   sol {𝓤} {𝓥} {X} {A} {x} {y} {a} {b} s p = to-Σ-≡ (p , s y (transport A p a) b)
 
-pr₁-equiv = sol
+pr₁-is-equiv = sol
  where
   sol : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
       → ((x : X) → is-singleton (A x))
@@ -2103,7 +2103,7 @@ NatΣ-equiv-gives-fiberwise-equiv = sol
       → is-singleton (X × Y)
   sol (x , φ) (y , γ) = (x , y) , δ
    where
-    δ : ∀ z → x , y ≡ z
+    δ : ∀ z → (x , y) ≡ z
     δ (x' , y' ) = to-×-≡ (φ x' , γ y')
 
 ×-is-subsingleton = sol
@@ -2751,7 +2751,7 @@ funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
   f = pr₁
 
   f-is-equiv : is-equiv f
-  f-is-equiv = pr₁-equiv φ
+  f-is-equiv = pr₁-is-equiv φ
 
   g : (X → Σ A) → (X → X)
   g h = f ∘ h
@@ -6025,10 +6025,10 @@ module subgroup
     h-lc = embeddings-are-lc h h-is-embedding
 
    having-group-closed-fiber-is-subsingleton : is-subsingleton (group-closed (fiber h))
-   having-group-closed-fiber-is-subsingleton = being-group-closed-subset-is-subsingleton γ
+   having-group-closed-fiber-is-subsingleton = being-group-closed-subset-is-subsingleton A
     where
-     γ : 𝓟 ⟨ G ⟩
-     γ y = (fiber h y , h-is-embedding y)
+     A : 𝓟 ⟨ G ⟩
+     A y = (fiber h y , h-is-embedding y)
 
    at-most-one-homomorphic-structure : is-subsingleton (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
    at-most-one-homomorphic-structure

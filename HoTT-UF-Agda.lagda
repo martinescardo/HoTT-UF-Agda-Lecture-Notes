@@ -4640,16 +4640,16 @@ to-subtype-≡ : {X : 𝓦 ̇ } {A : X → 𝓥 ̇ }
              → (x , a) ≡ (y , b)
 
 
-pr₁-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-          → ((x : X) → is-singleton (A x))
-          → is-equiv (λ (t : Σ A) → pr₁ t)
+pr₁-is-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+             → ((x : X) → is-singleton (A x))
+             → is-equiv (λ (t : Σ A) → pr₁ t)
 
 
 pr₁-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
       → ((x : X) → is-singleton (A x))
       → Σ A ≃ X
 
-pr₁-≃ i = pr₁ , pr₁-equiv i
+pr₁-≃ i = pr₁ , pr₁-is-equiv i
 
 
 ΠΣ-distr-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
@@ -4945,7 +4945,7 @@ to-subtype-≡ = sol
   sol {𝓤} {𝓥} {X} {A} {x} {y} {a} {b} s p = to-Σ-≡ (p , s y (transport A p a) b)
 
 
-pr₁-equiv = sol
+pr₁-is-equiv = sol
  where
   sol : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
       → ((x : X) → is-singleton (A x))
@@ -5124,7 +5124,7 @@ NatΣ-equiv-gives-fiberwise-equiv = sol
       → is-singleton (X × Y)
   sol (x , φ) (y , γ) = (x , y) , δ
    where
-    δ : ∀ z → x , y ≡ z
+    δ : ∀ z → (x , y) ≡ z
     δ (x' , y' ) = to-×-≡ (φ x' , γ y')
 
 
@@ -6077,7 +6077,7 @@ funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
   f = pr₁
 
   f-is-equiv : is-equiv f
-  f-is-equiv = pr₁-equiv φ
+  f-is-equiv = pr₁-is-equiv φ
 
   g : (X → Σ A) → (X → X)
   g h = f ∘ h
@@ -10932,8 +10932,9 @@ mathematics doesn't make sense unless they are subgroups of the same
 ambient group.  In the same way that in univalent mathematics two
 members of the powerset are equal iff they [have the same
 elements](HoTT-UF-Agda.html#subset-extensionality), two subgroups are
-equal if and only if they have the same elements. This can be
-formulated and proved in two equivalent ways.
+equal if and only if they have the same elements.
+
+The notion of subgroup can be formulated in two equivalent ways.
 
   1. A subgroup is an element of the powerset of the underlying set of
   the group that is closed under the group operations. So the type of
@@ -11084,10 +11085,10 @@ following few lemmas:
     h-lc = embeddings-are-lc h h-is-embedding
 
    having-group-closed-fiber-is-subsingleton : is-subsingleton (group-closed (fiber h))
-   having-group-closed-fiber-is-subsingleton = being-group-closed-subset-is-subsingleton γ
+   having-group-closed-fiber-is-subsingleton = being-group-closed-subset-is-subsingleton A
     where
-     γ : 𝓟 ⟨ G ⟩
-     γ y = (fiber h y , h-is-embedding y)
+     A : 𝓟 ⟨ G ⟩
+     A y = (fiber h y , h-is-embedding y)
 
 
    at-most-one-homomorphic-structure : is-subsingleton (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
@@ -11229,7 +11230,7 @@ Conversely:
      i = gfe (λ x → gfe (pmul x)) , punit
 \end{code}
 
-What is important for our purposes is this:
+What is important for our purposes is that this gives an equivalence:
 
 \begin{code}
    fiber-structure-lemma : group-closed (fiber h)
@@ -11301,7 +11302,7 @@ equality in essentially the same way as we did for the slice type.
             × is-homomorphism H G h
 \end{code}
 
-The crucial tool is the following embedding of the type of subgroups'
+The crucial tool is the following embedding of the alternative type of subgroups
 into the slice type:
 
 \begin{code}
@@ -11360,7 +11361,7 @@ of maps that are more easily seen to be embeddings.
 \end{code}
 
 With this and the characterization of equality in the slice type, we
-get the promised characterization of equality of subgroups'.
+get the promised characterization of equality of the alternative types of subgroups.
 
 \begin{code}
   _≡ₛ_ : Subgroup' →  Subgroup' → 𝓤 ̇
@@ -11397,7 +11398,7 @@ when it exists. Moreover, the type `S ≡ₛ T` has at most one element:
 \end{code}
 
 Here is an alternative proof that avoids the equivalence
-`Subgroup ≃ Subgroup'` used above to show that subgroups' form a set:
+`Subgroup ≃ Subgroup'` used above to show that the alternative type of subgroups is a set:
 
 \begin{code}
   ≡ₛ-is-subsingleton-valued' : (S S' : Subgroup') → is-subsingleton (S ≡ₛ S')
