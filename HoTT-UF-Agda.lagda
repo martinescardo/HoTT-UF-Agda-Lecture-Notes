@@ -59,7 +59,7 @@ computer system [Agda](https://wiki.portal.chalmers.se/agda/pmwiki.php), which i
 Agda allows us to write mathematical definitions, constructions,
 theorems and proofs, for example in number theory, analysis, group
 theory, topology, category theory or programming language theory, checking
-them for logical and mathematical correctness. A pdf version of this file is also available at the [arxiv](https://arxiv.org/abs/1911.00580).
+them for logical and mathematical correctness.
 
 Agda is a constructive mathematical system by default, which amounts
 to saying that it can also be considered as a programming language for
@@ -81,7 +81,7 @@ non-constructive classical axioms can be assumed consistently in univalent mathe
 
 **Keywords.** Univalent mathematics. Univalent foundations. Univalent
   type theory. Univalence axiom. `∞`-Groupoid. Homotopy type. Type
-  theory. Homotopy type theory. Intensional Martin-Löf type
+  theory. Homotopy type theory. HoTT/UF. Intensional Martin-Löf type
   theory. Dependent type theory. Identity type. Type
   universe. Constructive mathematics. Agda. Cubical type
   theory. Cubical Agda. Computer-verified mathematics.
@@ -101,7 +101,8 @@ clarify ambiguities are welcome.  There is also a [pdf
 version](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.pdf)
 with internal links to sections and Agda definitions, which is
 automatically generated from the [html
-version](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html).
+version](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html). And a pdf version is also available at the [arxiv](https://arxiv.org/abs/1911.00580), updated from time to time.
+
 These notes were originally developed for the [Midlands Graduate
 School 2019](http://events.cs.bham.ac.uk/mgs2019/). They will evolve
 for a while.
@@ -2041,7 +2042,7 @@ Perhaps the following is sufficiently self-explanatory given the above:
 decidable : 𝓤 ̇ → 𝓤 ̇
 decidable A = A + ¬ A
 
-has-decidable-equality : (X : 𝓤 ̇ ) → 𝓤 ̇
+has-decidable-equality : 𝓤 ̇ → 𝓤 ̇
 has-decidable-equality X = (x y : X) → decidable (x ≡ y)
 
 𝟚-has-decidable-equality : has-decidable-equality 𝟚
@@ -2092,7 +2093,7 @@ inl-inr-disjoint-images {𝓤} {𝓥} {X} {Y} p = 𝟙-is-not-𝟘 q
   q = ap f p
 \end{code}
 
-If `P or Q` holds and `P` fails, then `Q` holds:
+If `P or Q` holds and `Q` fails, then `P` holds:
 
 \begin{code}
 right-fails-gives-left-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → P + Q → ¬ Q → P
@@ -2208,8 +2209,8 @@ We can show that addition is associative as follows, by induction on
 Notice that the proofs `refl _` should be read as "by definition" or
 "by construction". They are not necessary, because Agda knows the
 definitions and silently expands them when necessary, but we are
-writing them here for the sake of clarity. Elsewhere in these notes,
-we do occasionally rely on silent expansions of definitions. Here is
+writing them here for the sake of clarity.
+Here is
 the version with the silent expansion of definitions, for the sake of
 illustration (the author of these notes can write, but not read it the
 absence of the above verbose version):
@@ -2347,7 +2348,7 @@ In both cases, we proceed by induction on both arguments.
     IH = ≼-gives-≤ x y (z , succ-lc q)
 \end{code}
 
-[Later](HoTT-UF-Agda.html#additionalexercisesswol) we will show that
+[Later](HoTT-UF-Agda.html#additionalexercisessol) we will show that
 `(x ≤ y) ≡ Σ z ꞉ ℕ , x + z ≡ y`, using univalence.
 
 We now develop some generally useful material regarding the order `≤`
@@ -3231,12 +3232,28 @@ from-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
 from-Σ-≡ (refl (x , a)) = (refl x , refl a)
 \end{code}
 
+For the sake of readability, the above two definitions can be equivalently written as follows.
+\begin{code}
+to-Σ-≡-again : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {(x , a) (y , b) : Σ A}
+             → Σ p ꞉ x ≡ y , transport A p a ≡ b
+             → (x , a) ≡ (y , b)
+
+to-Σ-≡-again (refl x , refl a) = refl (x , a)
+
+
+from-Σ-≡-again : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {(x , a) (y , b) : Σ A}
+               → (x , a) ≡ (y , b)
+               → Σ p ꞉ x ≡ y , transport A p a ≡ b
+
+from-Σ-≡-again (refl (x , a)) = (refl x , refl a)
+\end{code}
+
 The above gives the logical equivalence
 
    > `(σ ≡ τ) ⇔ (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ)`.
 
 But this is a very weak statement when the left- and right-hand
-identity types may have multiple elements, which is precisely the
+identity types have multiple elements, which is precisely the
 point of univalent mathematics.
 
 What we want is the lhs and the rhs to be isomorphic, or more
@@ -3249,7 +3266,7 @@ characterization will become an equivalence
    > `(σ ≡ τ) ≃ (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p pr₂ σ ≡ pr₂ τ)`.
 
 But even this is not sufficiently precise, because in general there are
-many equivalences between two types. For example, there are precisely
+multiple equivalences between two types. For example, there are precisely
 two equivalences
 
    > `𝟙 + 𝟙 ≃ 𝟙 + 𝟙`,
@@ -3262,7 +3279,7 @@ above.
 Voevodsky came up with a definition of a type "`f` is an equivalence"
 which is always a subsingleton: a given function `f` can be an
 equivalence in at most one way. In other words, being an equivalence
-is property of `f`, rather than data.
+is property of `f`, rather than data for `f`.
 
 The following special case of `to-Σ-≡` is often useful:
 
@@ -3277,10 +3294,10 @@ We take the opportunity to establish more equations for transport and to define 
 
 \begin{code}
 transport-× : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
-                {x y : X} (p : x ≡ y) {c : A x × B x}
+                {x y : X} (p : x ≡ y) {(a , b) : A x × B x}
 
-            → transport (λ x → A x × B x) p c
-            ≡ (transport A p (pr₁ c) , transport B p (pr₂ c))
+            → transport (λ x → A x × B x) p (a , b)
+            ≡ (transport A p a , transport B p b)
 
 transport-× A B (refl _) = refl _
 
@@ -11136,8 +11153,11 @@ following few lemmas:
                       (h (inv H a) ≡⟨ inv-preservation-lemma H G h pmult a ⟩
                        inv G (h a) ≡⟨ ap (inv G) p                         ⟩
                        inv G x     ∎)
+\end{code}
 
+Conversely:
 
+\begin{code}
    group-closed-fiber-gives-homomorphic-structure : group-closed (fiber h)
                                                   → (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
 
@@ -11407,7 +11427,6 @@ Here is an alternative proof that avoids the equivalence
 
     γ : is-subsingleton (S ≡ₛ S')
     γ = equiv-to-subsingleton δ B-is-subsingleton
-
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)

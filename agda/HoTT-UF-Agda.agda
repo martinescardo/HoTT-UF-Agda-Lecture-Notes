@@ -369,7 +369,7 @@ Id→Funs-agree (refl X) = refl (𝑖𝑑 X)
 decidable : 𝓤 ̇ → 𝓤 ̇
 decidable A = A + ¬ A
 
-has-decidable-equality : (X : 𝓤 ̇ ) → 𝓤 ̇
+has-decidable-equality : 𝓤 ̇ → 𝓤 ̇
 has-decidable-equality X = (x y : X) → decidable (x ≡ y)
 
 𝟚-has-decidable-equality : has-decidable-equality 𝟚
@@ -910,16 +910,28 @@ from-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
 
 from-Σ-≡ (refl (x , a)) = (refl x , refl a)
 
+to-Σ-≡-again : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {(x , a) (y , b) : Σ A}
+             → Σ p ꞉ x ≡ y , transport A p a ≡ b
+             → (x , a) ≡ (y , b)
+
+to-Σ-≡-again (refl x , refl a) = refl (x , a)
+
+from-Σ-≡-again : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {(x , a) (y , b) : Σ A}
+               → (x , a) ≡ (y , b)
+               → Σ p ꞉ x ≡ y , transport A p a ≡ b
+
+from-Σ-≡-again (refl (x , a)) = (refl x , refl a)
+
 to-Σ-≡' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x : X} {a a' : A x}
         → a ≡ a' → Id (Σ A) (x , a) (x , a')
 
 to-Σ-≡' {𝓤} {𝓥} {X} {A} {x} = ap (λ - → (x , -))
 
 transport-× : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
-                {x y : X} (p : x ≡ y) {c : A x × B x}
+                {x y : X} (p : x ≡ y) {(a , b) : A x × B x}
 
-            → transport (λ x → A x × B x) p c
-            ≡ (transport A p (pr₁ c) , transport B p (pr₂ c))
+            → transport (λ x → A x × B x) p (a , b)
+            ≡ (transport A p a , transport B p b)
 
 transport-× A B (refl _) = refl _
 
@@ -5266,7 +5278,7 @@ module sip-join where
        → (x₁ , a₁) ≡ (x , a)
        → (y₁ , b₁) ≡ (y , b)
        → (x₁ , y₁) , (a₁ , b₁) ≡ (x , y) , (a , b)
-     p .x₁ .y₁ .a₁ .b₁ (refl .(x₁ , a₁)) (refl .(y₁ , b₁)) = refl ((x₁ , y₁) , (a₁ , b₁))
+     p x₁ y₁ a₁ b₁ (refl (x₁ , a₁)) (refl (y₁ , b₁)) = refl ((x₁ , y₁) , (a₁ , b₁))
 
      δ : (((x , y) , (a , b)) : Σ C) → (x₁ , y₁) , (a₁ , b₁) ≡ ((x , y) , (a , b))
      δ ((x , y) , (a , b)) = p x y a b (φ (x , a)) (ψ (y , b))
