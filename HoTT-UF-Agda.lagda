@@ -7356,6 +7356,9 @@ Membership and containment for elements of the powerset are defined as follows:
 _∈_ : {X : 𝓤 ̇ } → X → 𝓟 X → 𝓤 ̇
 x ∈ A = A x holds
 
+_∉_ : {X : 𝓤 ̇ } → X → 𝓟 X → 𝓤 ̇
+x ∉ A = ¬(x ∈ A)
+
 _⊆_ : {X : 𝓤 ̇ } → 𝓟 X → 𝓟 X → 𝓤 ̇
 A ⊆ B = ∀ x → x ∈ A → x ∈ B
 
@@ -13420,7 +13423,7 @@ existential quantifier `∃` available, in order to be able to define
 the notion of Noetherian ring.
 
 \begin{code}
-module noetherian-ring
+module noetherian-local-ring
         (pt : subsingleton-truncations-exist)
         {𝓤 : Universe}
         (ua : Univalence)
@@ -13431,55 +13434,54 @@ module noetherian-ring
  open ℕ-order
 \end{code}
 
-The notion of (two-sided) ideal of a ring `𝓡`, which is an element of
-the powerset `𝓟 ⟨ 𝓡 ⟩` of the underlying set `⟨ 𝓡 ⟩` of `𝓡`:
+We first consider left Noetherian rngs and then Noetherian local
+rings.
+
+For this we need the notion of left ideal of a rng `𝓡`, which is an
+element of the powerset `𝓟 ⟨ 𝓡 ⟩` of the underlying set `⟨ 𝓡 ⟩` of `𝓡`:
 
 \begin{code}
- is-ideal : (𝓡 : Rng) → 𝓟 ⟨ 𝓡 ⟩ → 𝓤 ̇
- is-ideal (R , (_+_ , _·_) , _) I = (x y : R) → (x ∈ I → y ∈ I → (x + y) ∈ I)
-                                              × (x ∈ I → (x · y) ∈ I)
-                                              × (y ∈ I → (x · y) ∈ I)
+ is-left-ideal : (𝓡 : Rng) → 𝓟 ⟨ 𝓡 ⟩ → 𝓤 ̇
+ is-left-ideal (R , (_+_ , _·_) , (i , ii , iii , (O , _) , _)) I =
+
+     (O ∈ I)
+   × ((x y : R) → x ∈ I → y ∈ I → (x + y) ∈ I)
+   × ((x y : R) → y ∈ I → (x · y) ∈ I)
+
+
+ is-left-noetherian : (𝓡 : Rng) → 𝓤 ⁺ ̇
+ is-left-noetherian 𝓡 = (I : ℕ → 𝓟 ⟨ 𝓡 ⟩)
+                      → ((n : ℕ) → is-left-ideal 𝓡 (I n))
+                      → ((n : ℕ) → I n ⊆ I (succ n))
+                      → ∃ m ꞉ ℕ , ((n : ℕ) → m ≤ n → I m ≡ I n)
+
+ LNRng : 𝓤 ⁺ ̇
+ LNRng = Σ 𝓡 ꞉ Rng , is-left-noetherian 𝓡
 \end{code}
 
-That of Noetherian rng:
+In order to be able to characterize equality of left Noetherian rngs, we
+again need to show that `is-left-noetherian` is property rather than data:
 
 \begin{code}
- is-noetherian : (𝓡 : Rng) → 𝓤 ⁺ ̇
- is-noetherian 𝓡 = (I : ℕ → 𝓟 ⟨ 𝓡 ⟩)
-                 → ((n : ℕ) → is-ideal 𝓡 (I n))
-                 → ((n : ℕ) → I n ⊆ I (succ n))
-                 → ∃ m ꞉ ℕ , ((n : ℕ) → m ≤ n → I m ≡ I n)
+ being-ln-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-left-noetherian 𝓡)
+ being-ln-is-subsingleton 𝓡 = Π-is-subsingleton fe
+                               (λ I → Π-is-subsingleton fe
+                               (λ _ → Π-is-subsingleton fe
+                               (λ _ → ∃-is-subsingleton)))
 
+ forget-LN : LNRng → Rng
+ forget-LN (𝓡 , _) = 𝓡
 
- NoetherianRng : 𝓤 ⁺ ̇
- NoetherianRng = Σ 𝓡 ꞉ Rng , is-noetherian 𝓡
+ forget-LN-is-embedding : is-embedding forget-LN
+ forget-LN-is-embedding = pr₁-is-embedding being-ln-is-subsingleton
 \end{code}
 
-In order to be able to characterize equality of Noetherian rngs, we
-again need to show that `is-noetherian` is property rather than data:
+Isomorphism of left Noetherian rngs:
 
 \begin{code}
- being-noetherian-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-noetherian 𝓡)
+ _≅[LNRng]_ : LNRng → LNRng → 𝓤 ̇
 
- being-noetherian-is-subsingleton 𝓡 = Π-is-subsingleton fe
-                                      (λ I → Π-is-subsingleton fe
-                                      (λ _ → Π-is-subsingleton fe
-                                      (λ _ → ∃-is-subsingleton)))
-
-
- forget-Noether : NoetherianRng → Rng
- forget-Noether (𝓡 , _) = 𝓡
-
- forget-Noether-is-embedding : is-embedding forget-Noether
- forget-Noether-is-embedding = pr₁-is-embedding being-noetherian-is-subsingleton
-\end{code}
-
-Isomorphism of Noetherian rngs:
-
-\begin{code}
- _≅[NoetherianRng]_ : NoetherianRng → NoetherianRng → 𝓤 ̇
-
- ((R , (_+_ , _·_) , _) , _) ≅[NoetherianRng] ((R' , (_+'_ , _·'_) , _) , _) =
+ ((R , (_+_ , _·_) , _) , _) ≅[LNRng] ((R' , (_+'_ , _·'_) , _) , _) =
 
                              Σ f ꞉ (R → R')
                                  , is-equiv f
@@ -13487,9 +13489,7 @@ Isomorphism of Noetherian rngs:
                                  × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
 
 
- NB : (𝓡 𝓡' : NoetherianRng)
-    → (𝓡 ≅[NoetherianRng] 𝓡') ≡ (forget-Noether 𝓡 ≅[Rng] forget-Noether 𝓡')
-
+ NB : (𝓡 𝓡' : LNRng) → (𝓡 ≅[LNRng] 𝓡') ≡ (forget-LN 𝓡 ≅[Rng] forget-LN 𝓡')
  NB 𝓡 𝓡' = refl _
 \end{code}
 
@@ -13497,54 +13497,42 @@ Again the identity type of Noetherian rngs is in bijection with the
 type of Noetherian rng isomorphisms:
 
 \begin{code}
- characterization-of-nrng-≡ : (𝓡 𝓡' : NoetherianRng) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[NoetherianRng] 𝓡')
- characterization-of-nrng-≡ 𝓡 𝓡' =
-
-   (𝓡 ≡ 𝓡')                               ≃⟨ i  ⟩
-   (forget-Noether 𝓡 ≡ forget-Noether 𝓡') ≃⟨ ii ⟩
-   (𝓡 ≅[NoetherianRng] 𝓡')                ■
-
+ characterization-of-LNRng-≡ : (𝓡 𝓡' : LNRng) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[LNRng] 𝓡')
+ characterization-of-LNRng-≡ 𝓡 𝓡' = (𝓡 ≡ 𝓡')                    ≃⟨ i  ⟩
+                                    (forget-LN 𝓡 ≡ forget-LN 𝓡') ≃⟨ ii ⟩
+                                    (𝓡 ≅[LNRng] 𝓡')              ■
    where
-    i = ≃-sym (embedding-criterion-converse forget-Noether
-                 forget-Noether-is-embedding 𝓡 𝓡')
-    ii = characterization-of-rng-≡ (forget-Noether 𝓡) (forget-Noether 𝓡')
+    i = ≃-sym (embedding-criterion-converse forget-LN
+                 forget-LN-is-embedding 𝓡 𝓡')
+    ii = characterization-of-rng-≡ (forget-LN 𝓡) (forget-LN 𝓡')
 \end{code}
 
-Hence properties of Noetherian rngs are invariant under
+Hence properties of left Noetherian rngs are invariant under
 isomorphism. More generally, we can transport along type-valued
-functions of Noetherian rngs, with values in an arbitrary universe
-`𝓥`, rather than just truth-valued ones:
+functions of Left Noetherian rngs, with values in an arbitrary
+universe `𝓥`, rather than just truth-valued ones:
 
 \begin{code}
- isomorphic-NoetherianRng-transport :
+ isomorphic-LNRng-transport : (A : LNRng → 𝓥 ̇ ) (𝓡 𝓡' : LNRng)
+                            → 𝓡 ≅[LNRng] 𝓡' → A 𝓡 → A 𝓡'
 
-     (A : NoetherianRng → 𝓥 ̇ )
-   → (𝓡 𝓡' : NoetherianRng) → 𝓡 ≅[NoetherianRng] 𝓡' → A 𝓡 → A 𝓡'
-
- isomorphic-NoetherianRng-transport A 𝓡 𝓡' i a = a'
+ isomorphic-LNRng-transport A 𝓡 𝓡' i a = a'
   where
    p : 𝓡 ≡ 𝓡'
-   p = ⌜ ≃-sym (characterization-of-nrng-≡ 𝓡 𝓡') ⌝ i
+   p = ⌜ ≃-sym (characterization-of-LNRng-≡ 𝓡 𝓡') ⌝ i
 
    a' : A 𝓡'
    a' = transport A p a
 \end{code}
 
-In particular, any theorem about a Noetherian rng automatically
-applies to any Noetherian rng isomorphic to it.
+In particular, any theorem about a left Noetherian rng automatically
+applies to any left Noetherian rng isomorphic to it.
 
-We now consider commutative Noetherian local rings as a second example.
-A rng is local if it has a unique maximal ideal:
+One can similarly define right Noetherian rng and Noetherian rng, and
+then obtain the expected characterizations of their identity types
+(exercise).
 
-\begin{code}
- is-local : Rng → 𝓤 ⁺ ̇
- is-local 𝓡 = ∃! I ꞉ 𝓟 ⟨ 𝓡 ⟩ , (is-ideal 𝓡 I → (J : 𝓟 ⟨ 𝓡 ⟩) → is-ideal 𝓡 J → J ⊆ I)
-
- being-local-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-local 𝓡)
- being-local-is-subsingleton 𝓡 = ∃!-is-subsingleton _ fe
-\end{code}
-
-A rng is commutative if its multiplication is:
+We now consider Noetherian local rings.
 
 \begin{code}
  is-commutative : Rng → 𝓤 ̇
@@ -13553,42 +13541,53 @@ A rng is commutative if its multiplication is:
 
  being-commutative-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-commutative 𝓡)
  being-commutative-is-subsingleton (R , (_+_ , _·_) , i , ii-vii) =
-
    Π-is-subsingleton fe
-   (λ x → Π-is-subsingleton fe
-   (λ y → i (x · y) (y · x)))
+    (λ x → Π-is-subsingleton fe
+    (λ y → i (x · y) (y · x)))
 \end{code}
 
-We now consider commutative Noetherian local rings:
+In the presence of commutativity, there is no difference between left
+ideal, right ideal and two-sided ideal, and so one speaks of simply
+ideals. A commutative rng is said to be local if it has a unique
+maximal proper ideal.
 
 \begin{code}
- is-CNL : Ring → 𝓤 ⁺ ̇
- is-CNL (R , (𝟏 , _+_ , _·_) , i-vii , viii) = is-commutative 𝓡
-                                             × is-noetherian 𝓡
-                                             × is-local 𝓡
+ is-Noetherian-Local : Ring → 𝓤 ⁺ ̇
+ is-Noetherian-Local (R , (𝟏 , _+_ , _·_) , i-vii , viii) = is-commutative 𝓡
+                                                          × is-noetherian
+                                                          × is-local
   where
    𝓡 : Rng
    𝓡 = (R , (_+_ , _·_) , i-vii)
 
+   is-ideal      = is-left-ideal 𝓡
+   is-noetherian = is-left-noetherian 𝓡
 
- being-CNL-is-subsingleton : (𝓡 : Ring) → is-subsingleton (is-CNL 𝓡)
- being-CNL-is-subsingleton (R , (𝟏 , _+_ , _·_) , i-vii , viii) =
+   is-proper-ideal : 𝓟 R → 𝓤 ̇
+   is-proper-ideal I = is-ideal I × (∃ x ꞉ ⟨ 𝓡 ⟩ , x ∉ I)
+
+   is-local = ∃! I ꞉ 𝓟 R , is-proper-ideal I
+                         × ((J : 𝓟 R) → is-proper-ideal J → J ⊆ I)
+
+
+ being-NL-is-subsingleton : (𝓡 : Ring) → is-subsingleton (is-Noetherian-Local 𝓡)
+ being-NL-is-subsingleton (R , (𝟏 , _+_ , _·_) , i-vii , viii) =
 
     ×-is-subsingleton (being-commutative-is-subsingleton 𝓡)
-   (×-is-subsingleton (being-noetherian-is-subsingleton 𝓡)
-                      (being-local-is-subsingleton 𝓡))
+   (×-is-subsingleton (being-ln-is-subsingleton 𝓡)
+                      (∃!-is-subsingleton _ fe))
   where
    𝓡 : Rng
    𝓡 = (R , (_+_ , _·_) , i-vii)
 
 
- CNL-Ring : 𝓤 ⁺ ̇
- CNL-Ring = Σ 𝓡 ꞉ Ring , is-CNL 𝓡
+ NL-Ring : 𝓤 ⁺ ̇
+ NL-Ring = Σ 𝓡 ꞉ Ring , is-Noetherian-Local 𝓡
 
 
- _≅[CNL]_ : CNL-Ring → CNL-Ring → 𝓤 ̇
+ _≅[NL]_ : NL-Ring → NL-Ring → 𝓤 ̇
 
- ((R , (𝟏 , _+_ , _·_) , _) , _) ≅[CNL] ((R' , (𝟏' , _+'_ , _·'_) , _) , _) =
+ ((R , (𝟏 , _+_ , _·_) , _) , _) ≅[NL] ((R' , (𝟏' , _+'_ , _·'_) , _) , _) =
 
                                  Σ f ꞉ (R → R')
                                      , is-equiv f
@@ -13597,45 +13596,41 @@ We now consider commutative Noetherian local rings:
                                      × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
 
 
- forget-CNL : CNL-Ring → Ring
- forget-CNL (𝓡 , _) = 𝓡
+ forget-NL : NL-Ring → Ring
+ forget-NL (𝓡 , _) = 𝓡
 
- forget-CNL-is-embedding : is-embedding forget-CNL
- forget-CNL-is-embedding = pr₁-is-embedding being-CNL-is-subsingleton
+ forget-NL-is-embedding : is-embedding forget-NL
+ forget-NL-is-embedding = pr₁-is-embedding being-NL-is-subsingleton
 
 
- NB' : (𝓡 𝓡' : CNL-Ring)
-     → (𝓡 ≅[CNL] 𝓡') ≡ (forget-CNL 𝓡 ≅[Ring] forget-CNL 𝓡')
-
+ NB' : (𝓡 𝓡' : NL-Ring) → (𝓡 ≅[NL] 𝓡') ≡ (forget-NL 𝓡 ≅[Ring] forget-NL 𝓡')
  NB' 𝓡 𝓡' = refl _
 
 
- characterization-of-CNL-ring-≡ : (𝓡 𝓡' : CNL-Ring) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[CNL] 𝓡')
- characterization-of-CNL-ring-≡ 𝓡 𝓡' =
-
-    (𝓡 ≡ 𝓡')                               ≃⟨ i  ⟩
-    (forget-CNL 𝓡 ≡ forget-CNL 𝓡')         ≃⟨ ii ⟩
-    (𝓡 ≅[CNL] 𝓡')                          ■
-
+ characterization-of-NL-ring-≡ : (𝓡 𝓡' : NL-Ring) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[NL] 𝓡')
+ characterization-of-NL-ring-≡ 𝓡 𝓡' = (𝓡 ≡ 𝓡')                     ≃⟨ i  ⟩
+                                       (forget-NL 𝓡 ≡ forget-NL 𝓡') ≃⟨ ii ⟩
+                                       (𝓡 ≅[NL] 𝓡')                 ■
     where
-     i = ≃-sym (embedding-criterion-converse forget-CNL
-                  forget-CNL-is-embedding 𝓡 𝓡')
-     ii = characterization-of-ring-≡ (forget-CNL 𝓡) (forget-CNL 𝓡')
+     i  = ≃-sym (embedding-criterion-converse forget-NL
+                   forget-NL-is-embedding 𝓡 𝓡')
+     ii = characterization-of-ring-≡ (forget-NL 𝓡) (forget-NL 𝓡')
 
 
- isomorphic-CNL-Ring-transport :
+ isomorphic-NL-Ring-transport : (A : NL-Ring → 𝓥 ̇ ) (𝓡 𝓡' : NL-Ring)
+                              → 𝓡 ≅[NL] 𝓡' → A 𝓡 → A 𝓡'
 
-     (A : CNL-Ring → 𝓥 ̇ )
-   → (𝓡 𝓡' : CNL-Ring) → 𝓡 ≅[CNL] 𝓡' → A 𝓡 → A 𝓡'
-
- isomorphic-CNL-Ring-transport A 𝓡 𝓡' i a = a'
+ isomorphic-NL-Ring-transport A 𝓡 𝓡' i a = a'
   where
    p : 𝓡 ≡ 𝓡'
-   p = ⌜ ≃-sym (characterization-of-CNL-ring-≡ 𝓡 𝓡') ⌝ i
+   p = ⌜ ≃-sym (characterization-of-NL-ring-≡ 𝓡 𝓡') ⌝ i
 
    a' : A 𝓡'
    a' = transport A p a
 \end{code}
+
+We remark that alternative definitions of the above notions are
+adopted for the purposes constructive algebra.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="choice"></a> Choice in univalent mathematics
