@@ -8248,7 +8248,7 @@ functions and functional relations to hold for arbitrary types, we
 need to work with *type valued* relations.
 
 More generally, we have a one-to-one corresponce between dependent
-functions `f : (x : X) → A x` and dependent type valued relations `R : (x : X)
+functions `f : (x : X) → A x` and dependent type valued functional relations `R : (x : X)
 → A x → 𝓥`. We take the domain `X` and codomain `A` as parameters for
 a submodule:
 
@@ -11058,11 +11058,16 @@ same elements:
           (f , g)
 \end{code}
 
-We now show that the type of subgroups is equivalent to the type
+We now show that the type of subgroups is equivalent to the following
+type, as an application of the subtype classifier.
 
-   > `Σ H ꞉ Group , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding h × is-homomorphism H G h`
-
-as an application of the subtype classifier.
+\begin{code}
+  Subgroup' : 𝓤 ⁺ ̇
+  Subgroup' = Σ H ꞉ Group
+            , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩)
+            , is-embedding h
+            × is-homomorphism H G h
+\end{code}
 
 It will be convenient to introduce notation for the type of group
 structures satisfying the group axioms:
@@ -11248,10 +11253,7 @@ desired result. We apply the material on the [subtype
 classifier](HoTT-UF-Agda.html#subtypeclassifier).
 
 \begin{code}
-  characterization-of-the-type-of-subgroups :  Subgroup ≃ (Σ H ꞉ Group
-                                                         , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩)
-                                                         , is-embedding h
-                                                         × is-homomorphism H G h)
+  characterization-of-the-type-of-subgroups :  Subgroup ≃ Subgroup'
   characterization-of-the-type-of-subgroups =
 
    Subgroup                                                                                        ≃⟨ i    ⟩
@@ -11295,15 +11297,10 @@ We now name the alternative type of subgroups and characterize its
 equality in essentially the same way as we did for the slice type.
 
 \begin{code}
-  Subgroup' : 𝓤 ⁺ ̇
-  Subgroup' = Σ H ꞉ Group
-            , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩)
-            , is-embedding h
-            × is-homomorphism H G h
 \end{code}
 
-The crucial tool is the following embedding of the alternative type of subgroups
-into the slice type:
+The crucial tool to characterize equality in the alternative type of
+subgroups is the following embedding into the slice type:
 
 \begin{code}
   forgetful-map : Subgroup' → 𝓤 / ⟨ G ⟩

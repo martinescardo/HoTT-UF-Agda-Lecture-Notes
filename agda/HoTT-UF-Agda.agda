@@ -6015,6 +6015,12 @@ module subgroup
                       (Π-is-subsingleton dfe (λ _ → ∈-is-subsingleton ⟪ S ⟫ x))))
           (f , g)
 
+  Subgroup' : 𝓤 ⁺ ̇
+  Subgroup' = Σ H ꞉ Group
+            , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩)
+            , is-embedding h
+            × is-homomorphism H G h
+
   T : 𝓤 ̇ → 𝓤 ̇
   T X = Σ ((_·_ , e) , a) ꞉ group-structure X , group-axiom X (_·_ , e)
 
@@ -6172,10 +6178,7 @@ module subgroup
                              (group-closed-fiber-gives-homomorphic-structure ,
                               homomorphic-structure-gives-group-closed-fiber)
 
-  characterization-of-the-type-of-subgroups :  Subgroup ≃ (Σ H ꞉ Group
-                                                         , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩)
-                                                         , is-embedding h
-                                                         × is-homomorphism H G h)
+  characterization-of-the-type-of-subgroups :  Subgroup ≃ Subgroup'
   characterization-of-the-type-of-subgroups =
 
    Subgroup                                                                                        ≃⟨ i    ⟩
@@ -6206,12 +6209,6 @@ module subgroup
 
   induced-group : Subgroup → Group
   induced-group S = pr₁ (⌜ characterization-of-the-type-of-subgroups ⌝ S)
-
-  Subgroup' : 𝓤 ⁺ ̇
-  Subgroup' = Σ H ꞉ Group
-            , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩)
-            , is-embedding h
-            × is-homomorphism H G h
 
   forgetful-map : Subgroup' → 𝓤 / ⟨ G ⟩
   forgetful-map ((X , _)  , h  , _) = (X , h)
