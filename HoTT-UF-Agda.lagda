@@ -9496,7 +9496,7 @@ module sip where
 
 We consider mathematical structures specified by a function
 
-   > `S : 𝓤 ̇ → 𝓥 ̇ `
+   > `S : 𝓤 → 𝓥`
 
 and we consider types `X : 𝓤` equipped with such structure `s : S X`,
 collected in the type
@@ -9525,9 +9525,9 @@ types `⟨ A ⟩` and `⟨ B ⟩` of `A B : Σ S`.
 
 Our favourable circumstances will be given by data
 
-   > `ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ `
+   > `ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦`,
 
-   > `ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)`
+   > `ρ : (A : Σ S) → ι A A (id-≃ ⟨ A ⟩)`.
 
 The idea is that
 
@@ -9595,12 +9595,12 @@ that `homomorphic σ A B (f , i)` amounts to `f` being a magma
 homomorphism.
 
 We then collect the homomorphic equivalences of `A B : Σ S`, assuming
-that `S` is a standard notion of structure, witnessed by `σ`, in a type
+that `S` is a standard notion of structure witnessed by `σ`, in a type
 
    > `A ≃[ σ ] B`.
 
 Notice that only the first component of `σ`, namely `homomorphic σ`, is
-used in the definition:
+used in the definition. The other two components are used to prove properties of `A ≃[ σ ] B`.
 
 \begin{code}
  _≃[_]_ : {S : 𝓤 ̇ → 𝓥 ̇ } → Σ S → SNS S 𝓦 → Σ S → 𝓤 ⊔ 𝓦 ̇
@@ -10269,9 +10269,7 @@ identity principle automatically shows that identitications of monoids
 are equivalent to bijections that preserve the multiplication, without
 referring to the unit. However, functions that preserve the
 multiplication don't necessarily preserve the unit (exercise), that
-is, are not automatically monoid homomorphisms, and hence our original
-definition is better in the sense that it keeps the unit as structure
-rather than property.
+is, are not automatically monoid homomorphisms.
 
 \begin{code}
  monoid-structure' : 𝓤 ̇ → 𝓤 ̇
@@ -10652,8 +10650,8 @@ to the identity equivalence.
 \end{code}
 
 We now solve this exercise and do a bit more on the way, but in a
-different way as we did for monoids. We first name various projections
-and introduce notation.
+different way as we did for monoids, for the sake of variation. We
+first name various projections and introduce notation.
 
 \begin{code}
  group-structure-of : (G : Group) → group-structure ⟨ G ⟩
@@ -10798,9 +10796,9 @@ inverses:
 \end{code}
 
 The usual notion of group homomorphism is that of
-multiplication-preserving function. But this is known to be equivalent
-to our chosen notion, which reflects the way we constructed groups
-from monoids and by our general structure identity principle.
+multiplication-preserving function. But it is known that a group
+homomorphism in this sense is the same thing as a function that
+preserves both the multiplication and the unit.
 
 \begin{code}
  is-homomorphism : (G H : Group) → (⟨ G ⟩ → ⟨ H ⟩) → 𝓤 ̇
