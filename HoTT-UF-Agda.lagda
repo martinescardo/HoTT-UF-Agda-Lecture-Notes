@@ -10929,7 +10929,9 @@ mathematics doesn't make sense unless they are subgroups of the same
 ambient group.  In the same way that in univalent mathematics two
 members of the powerset are equal iff they [have the same
 elements](HoTT-UF-Agda.html#subset-extensionality), two subgroups are
-equal if and only if they have the same elements.
+equal if and only if they have the same elements. The existence of an
+isomorphism of two subgroups does *not* imply their equality *in the
+type of subgroups*.
 
 The notion of subgroup can be formulated in two equivalent ways.
 
