@@ -345,16 +345,16 @@ by [Dan Grayson](https://faculty.math.illinois.edu/~dan/).
 
 More references as clickable links are given in the course of the notes.
 
-We also have an [Agda development](https://www.cs.bham.ac.uk/~mhe/agda-new/)
+We also have an [Agda development](https://www.cs.bham.ac.uk/~mhe/TypeTopology/)
 of [univalent
-foundations](https://www.cs.bham.ac.uk/~mhe/agda-new/UF.html) which is
+foundations](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.html) which is
 applied to work on [injective
-types](https://www.cs.bham.ac.uk/~mhe/agda-new/InjectiveTypes-article.html),
+types](https://www.cs.bham.ac.uk/~mhe/TypeTopology/InjectiveTypes-article.html),
 [compact (or searchable)
-types](https://www.cs.bham.ac.uk/~mhe/agda-new/Compactness.html),
+types](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Compactness.html),
 [compact
-ordinals](https://www.cs.bham.ac.uk/~mhe/agda-new/Ordinals.html) and
-[more](https://www.cs.bham.ac.uk/~mhe/agda-new/).
+ordinals](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Ordinals.html) and
+[more](https://www.cs.bham.ac.uk/~mhe/TypeTopology/).
 
 [<sub>Table of contents ⇓</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="plan"></a> Choice of material
@@ -1104,7 +1104,7 @@ types that are subsingletons (and this is called [propositional extensionality](
 
 If we are doing applied mathematics and want to actually compute, we
 can define a type for binary notation for the sake of efficiency, and
-of course people have done [that](https://www.cs.bham.ac.uk/~mhe/agda-new/BinaryNaturals.html).
+of course people have done [that](https://www.cs.bham.ac.uk/~mhe/TypeTopology/BinaryNaturals.html).
 Here we are not concerned with
 efficiency but only with understanding how to codify mathematics in
 (univalent) type theory and in Agda.
@@ -7423,7 +7423,7 @@ extensionality are often the only consequences of univalence that are
 needed. A noteworthy exception is the theorem that the type of
 ordinals in a universe is an ordinal in the next universe, which
 requires univalence for sets (see the HoTT book or
-[this](https://www.cs.bham.ac.uk/~mhe/agda-new/OrdinalOfOrdinals.html)).
+[this](https://www.cs.bham.ac.uk/~mhe/TypeTopology/OrdinalOfOrdinals.html)).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="equivconstructions"></a> Some constructions with types of equivalences
@@ -11450,6 +11450,7 @@ development. We hide the notation `⟨_⟩` from the module `sip` because we are
 
 \begin{code}
 module ring {𝓤 : Universe} (ua : Univalence) where
+
  open sip hiding (⟨_⟩)
  open sip-with-axioms
  open sip-join
@@ -11601,7 +11602,7 @@ addition and multiplication, and collect all isomorphisms of two rngs
                            × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
 \end{code}
 
-Then the type of ring identities is in bijection with the type of
+Then the type of rng identities is in bijection with the type of
 ring isomorphisms by the above general machinery:
 
 \begin{code}
@@ -12728,7 +12729,7 @@ record subsingleton-truncations-exist : 𝓤ω where
 \end{code}
 
 This is the approach we adopt in our [personal Agda
-development](https://www.cs.bham.ac.uk/~mhe/agda-new/).
+development](https://www.cs.bham.ac.uk/~mhe/TypeTopology/).
 
 We now assume that subsingleton truncations exist in the next few
 constructions, and we `open` the assumption to make the above fields
@@ -13509,7 +13510,7 @@ type of Noetherian rng isomorphisms:
 
 Hence properties of left Noetherian rngs are invariant under
 isomorphism. More generally, we can transport along type-valued
-functions of Left Noetherian rngs, with values in an arbitrary
+functions of left Noetherian rngs, with values in an arbitrary
 universe `𝓥`, rather than just truth-valued ones:
 
 \begin{code}
@@ -14168,7 +14169,7 @@ Applying the above to the object `Ω 𝓤` of truth-values in the universe
 \end{code}
 
 For more information with Agda code, see
-[this](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Choice.html).
+[this](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF-Choice.html).
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="global-choice"></a> Global choice
@@ -14455,7 +14456,7 @@ PR-is-subsingleton {𝓤} {𝓥} ua =
 \end{code}
 
 *Exercise*. [It is
-possible](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Size.html) to
+possible](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF-Size.html) to
 show that the propositional resizing principle is a subsingleton
 using propositional and functional extensionality instead of
 univalence.
@@ -14549,7 +14550,7 @@ PR-gives-impredicativity₁ pe fe = PR-gives-Impredicativity⁺
 \end{code}
 
 *Exercise*. Excluded middle
-[gives](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Size.html) the
+[gives](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF-Size.html) the
 impredicativity of the first universe, and of all other universes.
 
 We also have that moving `Ω` around universes moves subsingletons around
@@ -14596,7 +14597,7 @@ Impredicativity-gives-PR {𝓤} {𝓥} pe fe (O , e) P i = Q , ε
 \end{code}
 
 *Exercise*. `propext` and `funext` and excluded middle together imply
-[that](https://www.cs.bham.ac.uk/~mhe/agda-new/UF-Size.html) `Ω 𝓤`
+[that](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF-Size.html) `Ω 𝓤`
 has size `𝓤₀`.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -15222,7 +15223,7 @@ excluded middle is [Cantor-Schröder-Bernstein for homotopy types, or
 discussed in [this blog
 post](https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-%e2%88%9e-groupoids/)
 and is [implemented in
-Agda](https://www.cs.bham.ac.uk/~mhe/agda-new/CantorSchroederBernstein.html).
+Agda](https://www.cs.bham.ac.uk/~mhe/TypeTopology/CantorSchroederBernstein.html).
 
 A major omission in these notes is a discussion of higher-inductive
 types.  On the other hand, these notes completely cover the

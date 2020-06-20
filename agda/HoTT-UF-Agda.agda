@@ -6318,6 +6318,7 @@ module subgroup
     γ = equiv-to-subsingleton δ B-is-subsingleton
 
 module ring {𝓤 : Universe} (ua : Univalence) where
+
  open sip hiding (⟨_⟩)
  open sip-with-axioms
  open sip-join
