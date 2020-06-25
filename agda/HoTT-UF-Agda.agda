@@ -3366,9 +3366,9 @@ precomp-invertible fe fe' {X} {Y} {Z} f (g , η , ε) = (g' , η' , ε')
   ε' k = fe' (λ x → ap k (η x))
 
 precomp-is-equiv' : dfunext 𝓥 𝓦 → dfunext 𝓤 𝓦
-                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y)
-                   → is-equiv f
-                   → is-equiv (λ (h : Y → Z) → h ∘ f)
+                  → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y)
+                  → is-equiv f
+                  → is-equiv (λ (h : Y → Z) → h ∘ f)
 
 precomp-is-equiv' fe fe' {X} {Y} {Z} f i = invertibles-are-equivs (_∘ f)
                                             (precomp-invertible fe fe' f
@@ -3376,11 +3376,13 @@ precomp-is-equiv' fe fe' {X} {Y} {Z} f i = invertibles-are-equivs (_∘ f)
 
 dprecomp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
          → Π A → Π (A ∘ f)
+
 dprecomp A f = _∘ f
 
 dprecomp-is-equiv : dfunext 𝓤 𝓦 → dfunext 𝓥 𝓦
                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
                   → is-equiv f → is-equiv (dprecomp A f)
+
 dprecomp-is-equiv fe fe' {X} {Y} A f i = invertibles-are-equivs φ (ψ , ψφ , φψ)
  where
   g = inverse f i
