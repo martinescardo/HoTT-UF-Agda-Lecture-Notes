@@ -3314,7 +3314,7 @@ transport-Σ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦
             → transport (λ - → Σ (B -)) p (a , b)
             ≡ transport A p a , transportd A B (a , b) p b
 
-transport-Σ A B {x} (refl x) {a , b} = refl (a , b)
+transport-Σ A B (refl x) {a , b} = refl (a , b)
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
