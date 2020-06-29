@@ -3302,17 +3302,17 @@ transport-× A B (refl _) = refl _
 
 
 transportd : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
-             {x : X} ((a' , b) : Σ a ꞉ A x , B x a) {y : X} (p : x ≡ y)
-           → B x a' → B y (transport A p a')
+             {x : X} ((a , b) : Σ a ꞉ A x , B x a) {y : X} (p : x ≡ y)
+           → B x a → B y (transport A p a)
 
 transportd A B σ (refl y) = id
 
 
 transport-Σ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
-              {x : X} (y : X) (p : x ≡ y) {(a' , b) : Σ a ꞉ A x , B x a}
+              {x : X} (y : X) (p : x ≡ y) {(a , b) : Σ a ꞉ A x , B x a}
 
-            → transport (λ x → Σ y ꞉ A x , B x y) p (a' , b)
-            ≡ transport A p a' , transportd A B (a' , b) p b
+            → transport (λ x → Σ y ꞉ A x , B x y) p (a , b)
+            ≡ transport A p a , transportd A B (a , b) p b
 
 transport-Σ A B {x} x (refl x) {σ} = refl σ
 \end{code}
