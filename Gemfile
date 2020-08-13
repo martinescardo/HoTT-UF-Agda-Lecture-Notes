@@ -1,4 +1,5 @@
 source "https://rubygems.org"
 
-gem "jekyll", "~> 3.8"
+gem "jekyll", "~> 3.9"
 gem "html-proofer", "~> 3.10"
+gem "kramdown-parser-gfm"

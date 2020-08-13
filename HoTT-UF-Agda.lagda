@@ -13707,7 +13707,7 @@ maximal proper ideal.
 \end{code}
 
 We remark that alternative definitions of the above notions are
-adopted for the purposes constructive algebra.
+adopted for the purposes of constructive algebra.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="choice"></a> Choice in univalent mathematics
