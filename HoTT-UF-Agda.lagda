@@ -1279,7 +1279,7 @@ pr₂ (x , y) = y
 
 We now introduce syntax to be able to write `Σ x ꞉ X , y` instead of
 `Σ λ(x ꞉ X) → y`. For this purpose, we first define a version of `Σ`
-with making the index type explicit.
+making the index type explicit.
 
 \begin{code}
 -Σ : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
@@ -1881,7 +1881,7 @@ choice](https://en.wikipedia.org/wiki/Axiom_of_global_choice) for type
 theory.  However, global choice is inconsistent with univalence [[HoTT
 book](https://homotopytypetheory.org/book/), Theorem 3.2.2], because
 there is no way to choose an element of every non-empty type in a way
-that is invariant under automorphisms. However, the [axiom of
+that is invariant under automorphisms. But the [axiom of
 choice](#choice) *is* consistent with univalent type
 theory, as stated in the [introduction](HoTT-UF-Agda.html#introduction).
 
@@ -8795,7 +8795,7 @@ from a single universe to a pair of universes. We work with two
 symmetrical versions, where the second is derived from the first.
 We use an [anonymous
 module](https://agda.readthedocs.io/en/latest/language/module-system.html#anonymous-modules)
-to assume univalence in the following couple of construction:
+to assume univalence in the following couple of constructions:
 
 \begin{code}
 module _ {𝓤 𝓥 : Universe}
@@ -9325,7 +9325,7 @@ univalence→-again {𝓤} ua Y = equiv-to-singleton (equiv-classification ua Y)
 Show that the retractions into `Y` are classified by
 the type `Σ A ꞉ 𝓤 ̇ , A` of pointed types.
 [(2)](HoTT-UF-Agda.html#surjections-into) After we have
-defined [propositional truncations](HoTT-UF-Agda.html#truncation) and
+defined [propositional truncation](HoTT-UF-Agda.html#truncation) and
 surjections, show that the surjections into `Y` are classified by the
 type `Σ A ꞉ 𝓤 ̇ , ∥ A ∥` of inhabited types.
 
@@ -14434,15 +14434,87 @@ propositional-resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 propositional-resizing 𝓤 𝓥 = (P : 𝓤 ̇ ) → is-subsingleton P → P has-size 𝓥
 \end{code}
 
-Propositional resizing from a universe to a higher universe just
-holds, of course:
+We also consider global propositional resizing:
 
 \begin{code}
-resize-up : (X : 𝓤 ̇ ) → X has-size (𝓤 ⊔ 𝓥)
-resize-up {𝓤} {𝓥} X = (Lift 𝓥 X , ≃-Lift X)
+Propositional-resizing : 𝓤ω
+Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
+\end{code}
 
-resize-up-subsingleton : propositional-resizing 𝓤 (𝓤 ⊔ 𝓥)
-resize-up-subsingleton {𝓤} {𝓥} P i = resize-up {𝓤} {𝓥} P
+Resizing from a universe to a higher universe just holds, of course:
+
+\begin{code}
+upper-resizing : ∀ {𝓤} 𝓥 (X : 𝓤 ̇ ) → X has-size (𝓤 ⊔ 𝓥)
+upper-resizing 𝓥 X = (Lift 𝓥 X , ≃-Lift X)
+\end{code}
+
+Moreover, the notion of size is upper closed:
+
+\begin{code}
+has-size-is-upper : (X : 𝓤 ̇ ) → X has-size 𝓥 → X has-size (𝓥 ⊔ 𝓦)
+has-size-is-upper {𝓤} {𝓥} {𝓦} X (Y , e) =  Z , c
+ where
+  Z : 𝓥 ⊔ 𝓦 ̇
+  Z = Lift 𝓦 Y
+
+  d : Y ≃ Z
+  d = ≃-Lift Y
+
+  c : X ≃ Z
+  c = e ● d
+
+upper-propositional-resizing : propositional-resizing 𝓤 (𝓤 ⊔ 𝓥)
+upper-propositional-resizing {𝓤} {𝓥} P i = upper-resizing 𝓥 P
+\end{code}
+
+We say that a type is small if it has a copy in the first universe:
+
+\begin{code}
+is-small : 𝓤 ̇  → 𝓤 ⊔ 𝓤₁ ̇
+is-small X = X has-size 𝓤₀
+\end{code}
+
+Then propositional resizing is equivalent to saying that all propositions of every universe are small:
+
+\begin{code}
+all-propositions-are-small : ∀ 𝓤 → 𝓤 ⁺ ̇
+all-propositions-are-small 𝓤 = (P : 𝓤 ̇ ) → is-prop P → is-small P
+
+PR-gives-all-propositions-are-small : propositional-resizing 𝓤 𝓤₀
+                                    → all-propositions-are-small 𝓤
+
+PR-gives-all-propositions-are-small PR = PR
+
+
+all-propositions-are-small-gives-PR : all-propositions-are-small 𝓤
+                                    → propositional-resizing 𝓤 𝓥
+
+all-propositions-are-small-gives-PR {𝓤} {𝓥} a P i = γ
+ where
+  δ : P has-size 𝓤₀
+  δ = a P i
+
+  γ : P has-size 𝓥
+  γ = has-size-is-upper P δ
+
+\end{code}
+
+A global version:
+
+\begin{code}
+
+All-propositions-are-small : 𝓤ω
+All-propositions-are-small = ∀ 𝓤 → all-propositions-are-small 𝓤
+
+PR-gives-All-propositions-are-small : Propositional-resizing
+                                    → All-propositions-are-small
+
+PR-gives-All-propositions-are-small PR 𝓤 = PR
+
+All-propositions-are-small-gives-PR : All-propositions-are-small
+                                    → Propositional-resizing
+
+All-propositions-are-small-gives-PR a {𝓤} {𝓥} = all-propositions-are-small-gives-PR (a 𝓤)
 \end{code}
 
 We use the following to work with propositional resizing more abstractly:
@@ -14473,41 +14545,49 @@ from-resize : (ρ : propositional-resizing 𝓤 𝓥)
             → resize ρ P i → P
 
 from-resize ρ P i = ⌜ ≃-sym(pr₂ (ρ P i)) ⌝
-
-
-Propositional-resizing : 𝓤ω
-Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="em-resizing"></a> Excluded middle gives propositional resizing
 
-Propositional resizing is consistent, because it is implied by
+Propositional resizing is consistent because it is implied by
 excluded middle, which is consistent (with or without univalence):
 
 \begin{code}
-EM-gives-PR : EM 𝓤 → propositional-resizing 𝓤 𝓥
-EM-gives-PR {𝓤} {𝓥} em P i = Q (em P i) , e
+EM-gives-all-propositions-are-small : EM 𝓤 → all-propositions-are-small 𝓤
+EM-gives-all-propositions-are-small em P i = γ
  where
-   Q : P + ¬ P → 𝓥 ̇
-   Q (inl p) = Lift 𝓥 𝟙
-   Q (inr n) = Lift 𝓥 𝟘
+   Q : P + ¬ P → 𝓤₀ ̇
+   Q (inl _) = 𝟙
+   Q (inr _) = 𝟘
 
    j : (d : P + ¬ P) → is-subsingleton (Q d)
-   j (inl p) = equiv-to-subsingleton (Lift-≃ 𝟙) 𝟙-is-subsingleton
-   j (inr n) = equiv-to-subsingleton (Lift-≃ 𝟘) 𝟘-is-subsingleton
+   j (inl p) = 𝟙-is-subsingleton
+   j (inr n) = 𝟘-is-subsingleton
 
    f : (d : P + ¬ P) → P → Q d
-   f (inl p) p' = lift ⋆
-   f (inr n) p  = !𝟘 (Lift 𝓥 𝟘) (n p)
+   f (inl _) _ = ⋆
+   f (inr n) p  = !𝟘 𝟘 (n p)
 
    g : (d : P + ¬ P) → Q d → P
-   g (inl p) q = p
-   g (inr n) q = !𝟘 P (lower q)
+   g (inl p) _ = p
+   g (inr _) q = !𝟘 P q
 
    e : P ≃ Q (em P i)
    e = logically-equivalent-subsingletons-are-equivalent
         P (Q (em P i)) i (j (em P i)) (f (em P i) , g (em P i))
+
+   γ : is-small P
+   γ = Q (em P i) , e
+\end{code}
+
+Hence excluded middle implies propositional resizing:
+
+\begin{code}
+EM-gives-PR : EM 𝓤 → propositional-resizing 𝓤 𝓥
+EM-gives-PR {𝓤} {𝓥} em = all-propositions-are-small-gives-PR
+                           (EM-gives-all-propositions-are-small em)
+
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
@@ -14540,15 +14620,38 @@ univalence.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="prop-impred"></a> Propositional impredicativity
 
-We consider two notions of propositional impredicativity:
+We consider binary and unary notions of propositional impredicativity.
+
+`𝓤,𝓥 `-*impredicativity* says that the type of propositions in the universe `𝓤` has a copy in the universe `𝓥`.
 
 \begin{code}
 Impredicativity : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
 Impredicativity 𝓤 𝓥 = (Ω 𝓤) has-size 𝓥
+\end{code}
 
+We say that a  universe `𝓤` is *impredicative* if the type `Ω 𝓤` of propositions, which lives in the universe `𝓤 ⁺`, has a copy in `𝓤` itself:
+
+\begin{code}
 is-impredicative : (𝓤 : Universe) → 𝓤 ⁺ ̇
 is-impredicative 𝓤 = Impredicativity 𝓤 𝓤
+\end{code}
 
+We can rephrase this in terms of a notion of relative smallness. We
+say that a type `X` in a successor universe `𝓤 ⁺` is *relatively
+small* if it has a copy in the universe `𝓤`:
+
+\begin{code}
+is-relatively-small : 𝓤 ⁺ ̇  → 𝓤 ⁺ ̇
+is-relatively-small {𝓤} X = X has-size 𝓤
+
+impredicativity-is-Ω-smallness : ∀ {𝓤} → is-impredicative 𝓤 ≡ is-relatively-small (Ω 𝓤)
+impredicativity-is-Ω-smallness {𝓤} = refl _
+\end{code}
+
+Propositional resizing gives impredicativity, in the presence of
+propositional and functional extensionality:
+
+\begin{code}
 PR-gives-Impredicativity⁺ : global-propext
                           → global-dfunext
                           → propositional-resizing 𝓥 𝓤
@@ -14598,7 +14701,7 @@ PR-gives-Impredicativity⁺ {𝓥} {𝓤} pe fe ρ σ = γ
 \end{code}
 
 Propositional resizing doesn't imply that the first universe 𝓤₀ is
-propositionally impredicative, but it does imply that all other,
+impredicative, but it does imply that all other,
 successor, universes 𝓤 ⁺ are.
 
 \begin{code}
@@ -14607,12 +14710,12 @@ PR-gives-impredicativity⁺ : global-propext
                           → propositional-resizing (𝓤 ⁺) 𝓤
                           → is-impredicative (𝓤 ⁺)
 
-PR-gives-impredicativity⁺ pe fe = PR-gives-Impredicativity⁺
-                                   pe fe (λ P i → resize-up P)
+PR-gives-impredicativity⁺ {𝓤} pe fe = PR-gives-Impredicativity⁺
+                                        pe fe (λ P i → upper-resizing (𝓤 ⁺) P)
 \end{code}
 
 What we get with propositional resizing is that all types of
-subsingletons of any universe 𝓤 are equivalent to Ω 𝓤₀, which lives in
+propositions of any universe 𝓤 are equivalent to Ω 𝓤₀, which lives in
 the second universe 𝓤₁:
 
 \begin{code}
@@ -14621,8 +14724,8 @@ PR-gives-impredicativity₁ : global-propext
                           → propositional-resizing 𝓤 𝓤₀
                           → Impredicativity 𝓤 𝓤₁
 
-PR-gives-impredicativity₁ pe fe = PR-gives-Impredicativity⁺
-                                   pe fe (λ P i → resize-up P)
+PR-gives-impredicativity₁ {𝓤} pe fe = PR-gives-Impredicativity⁺
+                                       pe fe (λ P i → upper-resizing 𝓤 P)
 \end{code}
 
 *Exercise*. Excluded middle

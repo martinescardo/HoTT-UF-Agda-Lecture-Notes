@@ -8233,11 +8233,61 @@ X has-size 𝓥 = Σ Y ꞉ 𝓥 ̇ , X ≃ Y
 propositional-resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 propositional-resizing 𝓤 𝓥 = (P : 𝓤 ̇ ) → is-subsingleton P → P has-size 𝓥
 
-resize-up : (X : 𝓤 ̇ ) → X has-size (𝓤 ⊔ 𝓥)
-resize-up {𝓤} {𝓥} X = (Lift 𝓥 X , ≃-Lift X)
+Propositional-resizing : 𝓤ω
+Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
 
-resize-up-subsingleton : propositional-resizing 𝓤 (𝓤 ⊔ 𝓥)
-resize-up-subsingleton {𝓤} {𝓥} P i = resize-up {𝓤} {𝓥} P
+upper-resizing : ∀ {𝓤} 𝓥 (X : 𝓤 ̇ ) → X has-size (𝓤 ⊔ 𝓥)
+upper-resizing 𝓥 X = (Lift 𝓥 X , ≃-Lift X)
+
+has-size-is-upper : (X : 𝓤 ̇ ) → X has-size 𝓥 → X has-size (𝓥 ⊔ 𝓦)
+has-size-is-upper {𝓤} {𝓥} {𝓦} X (Y , e) =  Z , c
+ where
+  Z : 𝓥 ⊔ 𝓦 ̇
+  Z = Lift 𝓦 Y
+
+  d : Y ≃ Z
+  d = ≃-Lift Y
+
+  c : X ≃ Z
+  c = e ● d
+
+upper-propositional-resizing : propositional-resizing 𝓤 (𝓤 ⊔ 𝓥)
+upper-propositional-resizing {𝓤} {𝓥} P i = upper-resizing 𝓥 P
+
+is-small : 𝓤 ̇  → 𝓤 ⊔ 𝓤₁ ̇
+is-small X = X has-size 𝓤₀
+
+all-propositions-are-small : ∀ 𝓤 → 𝓤 ⁺ ̇
+all-propositions-are-small 𝓤 = (P : 𝓤 ̇ ) → is-prop P → is-small P
+
+PR-gives-all-propositions-are-small : propositional-resizing 𝓤 𝓤₀
+                                    → all-propositions-are-small 𝓤
+
+PR-gives-all-propositions-are-small PR = PR
+
+all-propositions-are-small-gives-PR : all-propositions-are-small 𝓤
+                                    → propositional-resizing 𝓤 𝓥
+
+all-propositions-are-small-gives-PR {𝓤} {𝓥} a P i = γ
+ where
+  δ : P has-size 𝓤₀
+  δ = a P i
+
+  γ : P has-size 𝓥
+  γ = has-size-is-upper P δ
+
+All-propositions-are-small : 𝓤ω
+All-propositions-are-small = ∀ 𝓤 → all-propositions-are-small 𝓤
+
+PR-gives-All-propositions-are-small : Propositional-resizing
+                                    → All-propositions-are-small
+
+PR-gives-All-propositions-are-small PR 𝓤 = PR
+
+All-propositions-are-small-gives-PR : All-propositions-are-small
+                                    → Propositional-resizing
+
+All-propositions-are-small-gives-PR a {𝓤} {𝓥} = all-propositions-are-small-gives-PR (a 𝓤)
 
 resize : propositional-resizing 𝓤 𝓥
        → (P : 𝓤 ̇ ) (i : is-subsingleton P) → 𝓥 ̇
@@ -8262,31 +8312,35 @@ from-resize : (ρ : propositional-resizing 𝓤 𝓥)
 
 from-resize ρ P i = ⌜ ≃-sym(pr₂ (ρ P i)) ⌝
 
-Propositional-resizing : 𝓤ω
-Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
-
-EM-gives-PR : EM 𝓤 → propositional-resizing 𝓤 𝓥
-EM-gives-PR {𝓤} {𝓥} em P i = Q (em P i) , e
+EM-gives-all-propositions-are-small : EM 𝓤 → all-propositions-are-small 𝓤
+EM-gives-all-propositions-are-small em P i = γ
  where
-   Q : P + ¬ P → 𝓥 ̇
-   Q (inl p) = Lift 𝓥 𝟙
-   Q (inr n) = Lift 𝓥 𝟘
+   Q : P + ¬ P → 𝓤₀ ̇
+   Q (inl _) = 𝟙
+   Q (inr _) = 𝟘
 
    j : (d : P + ¬ P) → is-subsingleton (Q d)
-   j (inl p) = equiv-to-subsingleton (Lift-≃ 𝟙) 𝟙-is-subsingleton
-   j (inr n) = equiv-to-subsingleton (Lift-≃ 𝟘) 𝟘-is-subsingleton
+   j (inl p) = 𝟙-is-subsingleton
+   j (inr n) = 𝟘-is-subsingleton
 
    f : (d : P + ¬ P) → P → Q d
-   f (inl p) p' = lift ⋆
-   f (inr n) p  = !𝟘 (Lift 𝓥 𝟘) (n p)
+   f (inl _) _ = ⋆
+   f (inr n) p  = !𝟘 𝟘 (n p)
 
    g : (d : P + ¬ P) → Q d → P
-   g (inl p) q = p
-   g (inr n) q = !𝟘 P (lower q)
+   g (inl p) _ = p
+   g (inr _) q = !𝟘 P q
 
    e : P ≃ Q (em P i)
    e = logically-equivalent-subsingletons-are-equivalent
         P (Q (em P i)) i (j (em P i)) (f (em P i) , g (em P i))
+
+   γ : is-small P
+   γ = Q (em P i) , e
+
+EM-gives-PR : EM 𝓤 → propositional-resizing 𝓤 𝓥
+EM-gives-PR {𝓤} {𝓥} em = all-propositions-are-small-gives-PR
+                           (EM-gives-all-propositions-are-small em)
 
 has-size-is-subsingleton : Univalence
                          → (X : 𝓤 ̇ ) (𝓥 :  Universe)
@@ -8305,6 +8359,12 @@ Impredicativity 𝓤 𝓥 = (Ω 𝓤) has-size 𝓥
 
 is-impredicative : (𝓤 : Universe) → 𝓤 ⁺ ̇
 is-impredicative 𝓤 = Impredicativity 𝓤 𝓤
+
+is-relatively-small : 𝓤 ⁺ ̇  → 𝓤 ⁺ ̇
+is-relatively-small {𝓤} X = X has-size 𝓤
+
+impredicativity-is-Ω-smallness : ∀ {𝓤} → is-impredicative 𝓤 ≡ is-relatively-small (Ω 𝓤)
+impredicativity-is-Ω-smallness {𝓤} = refl _
 
 PR-gives-Impredicativity⁺ : global-propext
                           → global-dfunext
@@ -8358,16 +8418,16 @@ PR-gives-impredicativity⁺ : global-propext
                           → propositional-resizing (𝓤 ⁺) 𝓤
                           → is-impredicative (𝓤 ⁺)
 
-PR-gives-impredicativity⁺ pe fe = PR-gives-Impredicativity⁺
-                                   pe fe (λ P i → resize-up P)
+PR-gives-impredicativity⁺ {𝓤} pe fe = PR-gives-Impredicativity⁺
+                                        pe fe (λ P i → upper-resizing (𝓤 ⁺) P)
 
 PR-gives-impredicativity₁ : global-propext
                           → global-dfunext
                           → propositional-resizing 𝓤 𝓤₀
                           → Impredicativity 𝓤 𝓤₁
 
-PR-gives-impredicativity₁ pe fe = PR-gives-Impredicativity⁺
-                                   pe fe (λ P i → resize-up P)
+PR-gives-impredicativity₁ {𝓤} pe fe = PR-gives-Impredicativity⁺
+                                       pe fe (λ P i → upper-resizing 𝓤 P)
 
 Impredicativity-gives-PR : propext 𝓤
                          → dfunext 𝓤 𝓤
