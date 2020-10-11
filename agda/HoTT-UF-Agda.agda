@@ -4053,7 +4053,7 @@ postcomp-is-embedding fe hfe {Y} {A} g i X = γ
 _↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ↪ Y = Σ f ꞉ (X → Y), is-embedding f
 
-Emb→fun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ↪ Y → X → Y
+Emb→fun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↪ Y) → (X → Y)
 Emb→fun (f , i) = f
 
 𝓨 : {X : 𝓤 ̇ } → X → (X → 𝓤 ̇ )

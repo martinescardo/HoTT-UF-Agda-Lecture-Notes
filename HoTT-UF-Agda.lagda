@@ -7606,8 +7606,13 @@ embeddings](https://lmcs.episciences.org/2027).
 \begin{code}
 is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-embedding f = (y : codomain f) → is-subsingleton (fiber f y)
+\end{code}
 
+This says that for every `y : Y` there is at most one `x : X` with `f
+x ≡ y`, or, more precisely, there is at most one pair `(x,p)`
+with `x : X` and `p : f x ≡ y`.
 
+\begin{code}
 being-embedding-is-subsingleton : global-dfunext
                                 → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                 → is-subsingleton (is-embedding f)
@@ -7898,15 +7903,14 @@ We conclude this section by introducing notation for the type of embeddings.
 _↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ↪ Y = Σ f ꞉ (X → Y), is-embedding f
 
-Emb→fun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ↪ Y → X → Y
+Emb→fun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↪ Y) → (X → Y)
 Emb→fun (f , i) = f
 \end{code}
 
 The following justifies the terminology *subsingleton*:
 
 *Exercise*. [(1)](HoTT-UF-Agda.html#the-subsingletons-are-the-subtypes-of-a-singleton)
- Show that `is-subsingleton X ⇔ (X ↪
- 𝟙)`. [(2)](HoTT-UF-Agda.html#the-subsingletons-are-the-subtypes-of-a-singleton)
+ Show that the type `is-subsingleton X` is logically equivalent to the type `X ↪ 𝟙`. [(2)](HoTT-UF-Agda.html#the-subsingletons-are-the-subtypes-of-a-singleton)
  Hence assuming function extensionality and propositional
  extensionality, conclude that `is-subsingleton X ≡ (X ↪ 𝟙)`.
 
@@ -9811,6 +9815,8 @@ This concludes the module `sip`, and we now consider some examples of uses of th
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="infty-magmas"></a> ∞-Magmas
 
+We now make precise the example outlined above:
+
 \begin{code}
 module ∞-magma {𝓤 : Universe} where
 
@@ -9991,6 +9997,8 @@ examples.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="magmas-sip"></a> Magmas
 
+As discussed above, we get magmas from ∞-magmas by adding an axiom:
+
 \begin{code}
 module magma {𝓤 : Universe} where
 
@@ -10025,6 +10033,9 @@ to the identity equivalence.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="pointed-types"></a> Pointed types
+
+We now discuss equality of pointed types, where a pointed type is a
+type equipped with a designated point.
 
 \begin{code}
 module pointed-type {𝓤 : Universe} where
@@ -10235,6 +10246,11 @@ This concludes the submodule. Some examples of uses of this follow.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="pointed-infty-magmas"></a> Pointed ∞-magmas
 
+Combining pointed types with ∞-magmas we get point ∞-magmas, and from
+the characterization of equality of pointed types and the
+characterization of equality of ∞-magmas we automatically get a
+characterization of the equality of pointed ∞-magmas.
+
 \begin{code}
 module pointed-∞-magma {𝓤 : Universe} where
 
@@ -10268,7 +10284,7 @@ to the identity equivalence.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="monoids-sip"></a> Monoids
 
-In the following example, we combine joins and addition of axioms.
+In the following example, we combine joins and addition of axioms to get a characterization of the equality of monoids as monoid isomorphism.
 
 \begin{code}
 module monoid {𝓤 : Universe} (ua : is-univalent 𝓤) where
@@ -10626,7 +10642,8 @@ follows directly from the general structure of identity principle:
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="groups-sip"></a> Groups
 
-We add an axiom to monoids to get groups.
+We add an axiom to monoids to get groups, so that we get a
+characterization of group equality from that of monoid equality.
 
 \begin{code}
 module group {𝓤 : Universe} (ua : is-univalent 𝓤) where
@@ -10947,6 +10964,8 @@ This completes the solution of the exercise.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="slice-sip"></a> The slice type
+
+We now apply the above machinery to get a characterization of equality in the slice type.
 
 \begin{code}
 module slice
@@ -11757,6 +11776,8 @@ The type of rings with unit:
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="metric-sip"></a> Metric spaces, graphs and ordered structures
 
+We now apply the above machinery to get a characterization of equality of metric spaces, graphs and ordered structures/
+
 \begin{code}
 module generalized-metric-space
         {𝓤 𝓥 : Universe}
@@ -11948,6 +11969,10 @@ Linear functions on certain spaces correspond to special kinds of measures by th
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="selection-sip"></a> Selection spaces
 
+By a selection space we mean a type `X` equipped with a selection
+function, where a selection function is a map `(X → R) → X`, where the
+type `R` is a parameter.
+
 \begin{code}
 module selection-space
         (𝓤 𝓥 : Universe)
@@ -12040,8 +12065,9 @@ Many of the above examples can be written in such a concise form.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="functor-algebras-sip"></a> Functor algebras
 
-In the following, we don't need to know that the functor preserves
-composition or to give coherence data for the identification `𝓕-id`.
+We now characterize equality of functor algebras. In the following, we
+don't need to know that the functor preserves composition or to give
+coherence data for the identification `𝓕-id`.
 
 \begin{code}
 module generalized-functor-algebra
@@ -12099,6 +12125,7 @@ to the identity equivalence.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="infty-preorders-sip"></a> Type-valued preorders
 
+We now characterize equality of generalized preordered sets.
 This example is harder than the previous ones.
 
 A type-valued preorder on a type `X` is a type-valued relation which
@@ -12415,7 +12442,8 @@ Recall that `[_]` is the map that forgets the axioms.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="categories-sip"></a> Categories
 
-By choosing suitable axioms for type-valued preorders, we get categories:
+We now characterize equality of categories.  By choosing suitable
+axioms for type-valued preorders, we get categories:
 
 \begin{code}
 module category
@@ -12599,6 +12627,10 @@ subsingleton-valued property of categories.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="truncation"></a> Subsingleton truncation
+
+The subsingleton truncation of a type `X`, if it exists, is the
+universal solution of the problem of mapping `X` into a subsingleton
+type. The purpose of this section is to make this precise.
 
 #### <a id="vvaproach"> Voevodsky's approach to subsingleton truncation
 
@@ -12909,6 +12941,8 @@ further details about these notions of disjunction and existence.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="images-and-surjections"> Images and surjections
+
+The image of a function `f : X → Y` is the type of `y : Y` for which there exists `x : X` with `f x ≡ y`.
 
 \begin{code}
   image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
@@ -14079,6 +14113,17 @@ extensionality):
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="univalent-choice3"></a> A third formulation of univalent choice
 
+We will see that exiting trunctions in the sense of
+
+   > `(A : X → 𝓥 ̇ ) (x : X) → ∥ A x ∥ → A x`
+
+amounts to global choice and is inconsistent with univalence. However, exiting truncations in an unspecified way, in the sense of
+
+   > `(A : X → 𝓥 ̇ ) → ∥ (x : X) → ∥ A x ∥ → A x ∥`
+
+is consistent and equivalent to the above two versions of univalent
+choice, as we show now.
+
 \begin{code}
   TAC : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → is-set X → ((x : X) → is-set (A x)) → 𝓤 ⊔ 𝓥 ̇
   TAC X A i j = ∥((x : X) → ∥ A x ∥ → A x)∥
@@ -14131,8 +14176,8 @@ following:
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="choice-gives-excluded middle"></a> Univalent choice gives excluded middle
 
-We apply the third formulation to show that choice implies excluded
-middle. We begin with the following lemma.
+We apply the third formulation of univalent choice to show that choice
+implies excluded middle. We begin with the following lemma.
 
 \begin{code}
   decidable-equality-criterion : {X : 𝓤 ̇ } (α : 𝟚 → X)
@@ -14480,10 +14525,10 @@ Then propositional resizing is equivalent to saying that all propositions of eve
 all-propositions-are-small : ∀ 𝓤 → 𝓤 ⁺ ̇
 all-propositions-are-small 𝓤 = (P : 𝓤 ̇ ) → is-prop P → is-small P
 
-PR-gives-all-propositions-are-small : propositional-resizing 𝓤 𝓤₀
-                                    → all-propositions-are-small 𝓤
+all-propositions-are-small-means-PR₀ : all-propositions-are-small 𝓤
+                                     ≡ propositional-resizing 𝓤 𝓤₀
 
-PR-gives-all-propositions-are-small PR = PR
+all-propositions-are-small-means-PR₀ = refl _
 
 
 all-propositions-are-small-gives-PR : all-propositions-are-small 𝓤
@@ -14622,14 +14667,18 @@ univalence.
 
 We consider binary and unary notions of propositional impredicativity.
 
-`𝓤,𝓥 `-*impredicativity* says that the type of propositions in the universe `𝓤` has a copy in the universe `𝓥`.
+The binary notion of impredicativity, for two universes `𝓤` and `𝓥`
+says that the type of propositions in the universe `𝓤` has a copy in
+the universe `𝓥`.
 
 \begin{code}
 Impredicativity : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
-Impredicativity 𝓤 𝓥 = (Ω 𝓤) has-size 𝓥
+Impredicativity 𝓤 𝓥 = Ω 𝓤 has-size 𝓥
 \end{code}
 
-We say that a  universe `𝓤` is *impredicative* if the type `Ω 𝓤` of propositions, which lives in the universe `𝓤 ⁺`, has a copy in `𝓤` itself:
+The unary notion of impredicativity, for one `𝓤`, says that the type
+`Ω 𝓤` of propositions, which lives in the universe `𝓤 ⁺`, has a copy
+in `𝓤` itself:
 
 \begin{code}
 is-impredicative : (𝓤 : Universe) → 𝓤 ⁺ ̇
@@ -14727,6 +14776,20 @@ PR-gives-impredicativity₁ : global-propext
 PR-gives-impredicativity₁ {𝓤} pe fe = PR-gives-Impredicativity⁺
                                        pe fe (λ P i → upper-resizing 𝓤 P)
 \end{code}
+
+We can rephrase this as follows:
+
+\begin{code}
+all-propositions-are-small-gives-impredicativity₁ :
+
+     global-propext
+   → global-dfunext
+   → all-propositions-are-small 𝓤
+   → Ω 𝓤 has-size 𝓤₁
+
+all-propositions-are-small-gives-impredicativity₁ = PR-gives-impredicativity₁
+\end{code}
+
 
 *Exercise*. Excluded middle
 [gives](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF-Size.html) the
