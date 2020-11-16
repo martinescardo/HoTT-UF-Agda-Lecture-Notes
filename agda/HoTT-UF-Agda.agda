@@ -8260,10 +8260,10 @@ is-small X = X has-size 𝓤₀
 all-propositions-are-small : ∀ 𝓤 → 𝓤 ⁺ ̇
 all-propositions-are-small 𝓤 = (P : 𝓤 ̇ ) → is-prop P → is-small P
 
-PR-gives-all-propositions-are-small : propositional-resizing 𝓤 𝓤₀
-                                    → all-propositions-are-small 𝓤
+all-propositions-are-small-means-PR₀ : all-propositions-are-small 𝓤
+                                     ≡ propositional-resizing 𝓤 𝓤₀
 
-PR-gives-all-propositions-are-small PR = PR
+all-propositions-are-small-means-PR₀ = refl _
 
 all-propositions-are-small-gives-PR : all-propositions-are-small 𝓤
                                     → propositional-resizing 𝓤 𝓥
@@ -8355,7 +8355,7 @@ PR-is-subsingleton {𝓤} {𝓥} ua =
   (λ i → has-size-is-subsingleton ua P 𝓥))
 
 Impredicativity : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
-Impredicativity 𝓤 𝓥 = (Ω 𝓤) has-size 𝓥
+Impredicativity 𝓤 𝓥 = Ω 𝓤 has-size 𝓥
 
 is-impredicative : (𝓤 : Universe) → 𝓤 ⁺ ̇
 is-impredicative 𝓤 = Impredicativity 𝓤 𝓤
@@ -8428,6 +8428,15 @@ PR-gives-impredicativity₁ : global-propext
 
 PR-gives-impredicativity₁ {𝓤} pe fe = PR-gives-Impredicativity⁺
                                        pe fe (λ P i → upper-resizing 𝓤 P)
+
+all-propositions-are-small-gives-impredicativity₁ :
+
+     global-propext
+   → global-dfunext
+   → all-propositions-are-small 𝓤
+   → Ω 𝓤 has-size 𝓤₁
+
+all-propositions-are-small-gives-impredicativity₁ = PR-gives-impredicativity₁
 
 Impredicativity-gives-PR : propext 𝓤
                          → dfunext 𝓤 𝓤
