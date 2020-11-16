@@ -111,7 +111,7 @@ for a while.
 The version at *ResearchGate* is usually out of date. Instead see [this](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html), from which an up to date pdf file may be downloaded.
 -->
 
-[How to cite this document](HoTT-UF-Agda.bib).
+[How to cite this document](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes/blob/master/HoTT-UF-Agda.bib).
 
 [<sub>Table of contents ⇓</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="introduction"></a> Introduction
