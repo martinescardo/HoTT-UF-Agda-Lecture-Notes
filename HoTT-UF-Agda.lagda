@@ -2510,12 +2510,11 @@ Agda](https://homotopytypetheory.org/2018/12/06/cubical-agda/).
 
 Voevodsky defined a notion of *contractible type*, which we refer to
 here as *singleton type*. We say that a type is a singleton if there
-is a designated `c : X` with an identification `x ≡ c` for every `x :
-X`.
+is a designated `c : X` that is identified with each `x : X`.
 
 \begin{code}
 is-singleton : 𝓤 ̇ → 𝓤 ̇
-is-singleton X = Σ c ꞉ X , (x : X) → c ≡ x
+is-singleton X = Σ c ꞉ X , ((x : X) → c ≡ x)
 \end{code}
 
 Such an element `c` is sometimes referred to as a *center of

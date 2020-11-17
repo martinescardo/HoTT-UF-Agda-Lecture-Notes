@@ -669,11 +669,11 @@ module basic-arithmetic-and-order where
     γ : minimal-root f
     γ = right-fails-gives-left-holds (bounded-ℕ-search (succ n) f) g
 
+is-singleton : 𝓤 ̇ → 𝓤 ̇
+is-singleton X = Σ c ꞉ X , ((x : X) → c ≡ x)
+
 is-center : (X : 𝓤 ̇ ) → X → 𝓤 ̇
 is-center X c = (x : X) → c ≡ x
-
-is-singleton : 𝓤 ̇ → 𝓤 ̇
-is-singleton X = Σ c ꞉ X , is-center X c
 
 𝟙-is-singleton : is-singleton 𝟙
 𝟙-is-singleton = ⋆ , 𝟙-induction (λ x → ⋆ ≡ x) (refl ⋆)
