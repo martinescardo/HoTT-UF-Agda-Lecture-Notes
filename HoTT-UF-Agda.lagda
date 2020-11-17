@@ -111,7 +111,7 @@ for a while.
 The version at *ResearchGate* is usually out of date. Instead see [this](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html), from which an up to date pdf file may be downloaded.
 -->
 
-[How to cite this document](https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes/blob/master/HoTT-UF-Agda.bib).
+[How to cite this document](https://dblp.uni-trier.de/rec/journals/corr/abs-1911-00580.html?view=bibtex).
 
 [<sub>Table of contents ⇓</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="introduction"></a> Introduction
@@ -906,7 +906,7 @@ When we view `𝟘` as *false*, we can read the definition of
 the *negation* `¬ X` as saying that "`X` implies *false*". With univalence
 we will be able to show that "(*false* → *true*) `≡` *true*", which amounts
 to `(𝟘 → 𝟙) ≡ 𝟙`, which in turn says that there is precisely one function
-`𝟘 → 𝟙`, namely the (vacuous) function.
+`𝟘 → 𝟙`, namely the vacuous function.
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="naturalnumbers"></a> The type `ℕ` of natural numbers
@@ -2508,19 +2508,25 @@ Agda](https://homotopytypetheory.org/2018/12/06/cubical-agda/).
 
 #### <a id="singleton-types"></a> Singleton (or contractible) types
 
-Voevodsky defined a notion of *contractible type*, which we
-refer to here as *singleton type*.
+Voevodsky defined a notion of *contractible type*, which we refer to
+here as *singleton type*. We say that a type is a singleton if there
+is a designated `c : X` with an identification `x ≡ c` for every `x :
+X`.
+
+\begin{code}
+is-singleton : 𝓤 ̇ → 𝓤 ̇
+is-singleton X = Σ c ꞉ X , (x : X) → c ≡ x
+\end{code}
+
+Such an element `c` is sometimes referred to as a *center of
+contraction* of `X`, in connection with homotopy theory.
 
 \begin{code}
 is-center : (X : 𝓤 ̇ ) → X → 𝓤 ̇
 is-center X c = (x : X) → c ≡ x
-
-is-singleton : 𝓤 ̇ → 𝓤 ̇
-is-singleton X = Σ c ꞉ X , is-center X c
 \end{code}
 
-Such an element `c` is called a center of contraction of `X` in
-connection with homotopy theory.
+The canonical singleton type is `𝟙`:
 
 \begin{code}
 𝟙-is-singleton : is-singleton 𝟙
