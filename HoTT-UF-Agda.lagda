@@ -6035,7 +6035,8 @@ postcomp-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {A} nfe nfe' f (g , η , ε) = 
 
 
 postcomp-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
-                  → funext 𝓦 𝓤 → funext 𝓦 𝓥
+                  → funext 𝓦 𝓤
+                  → funext 𝓦 𝓥
                   → (f : X → Y)
                   → is-equiv f
                   → is-equiv (λ (h : A → X) → f ∘ h)
@@ -8833,24 +8834,24 @@ module _ {𝓤 𝓥 : Universe}
  univalence→' : (X : 𝓤 ̇ ) → is-subsingleton (Σ Y ꞉ 𝓥 ̇ , X ≃ Y)
  univalence→' X = s
   where
+   e : (Y : 𝓥 ̇ ) → (X ≃ Y) ≃ (Lift 𝓤 Y ≡ Lift 𝓥 X)
+   e Y = (X ≃ Y)                 ≃⟨ i   ⟩
+         (Y ≃ X)                 ≃⟨ ii  ⟩
+         (Lift 𝓤 Y ≃ Lift 𝓥 X)   ≃⟨ iii ⟩
+         (Lift 𝓤 Y ≡ Lift 𝓥 X)   ■
+    where
+     i   = ≃-Sym fe₀ fe₁ fe
+     ii  = Eq-Eq-cong' fe₁ fe fe₂ fe₁ fe fe fe fe₃
+             fe fe fe fe (≃-Lift Y) (≃-Lift X)
+     iii = ≃-sym (univalence-≃ ua' (Lift 𝓤 Y) (Lift 𝓥 X))
+
+   d : (Σ Y ꞉ 𝓥 ̇ , X ≃ Y) ≃ (Σ Y ꞉ 𝓥 ̇ , Lift 𝓤 Y ≡ Lift 𝓥 X)
+   d = Σ-cong e
+
+   j : is-subsingleton (Σ Y ꞉ 𝓥 ̇ , Lift 𝓤 Y ≡ Lift 𝓥 X)
+   j = Lift-is-embedding ua ua' (Lift 𝓥 X)
+
    abstract
-     e : (Y : 𝓥 ̇ ) → (X ≃ Y) ≃ (Lift 𝓤 Y ≡ Lift 𝓥 X)
-     e Y = (X ≃ Y)                 ≃⟨ i   ⟩
-           (Y ≃ X)                 ≃⟨ ii  ⟩
-           (Lift 𝓤 Y ≃ Lift 𝓥 X)   ≃⟨ iii ⟩
-           (Lift 𝓤 Y ≡ Lift 𝓥 X)   ■
-      where
-       i   = ≃-Sym fe₀ fe₁ fe
-       ii  = Eq-Eq-cong' fe₁ fe fe₂ fe₁ fe fe fe fe₃
-               fe fe fe fe (≃-Lift Y) (≃-Lift X)
-       iii =  ≃-sym (univalence-≃ ua' (Lift 𝓤 Y) (Lift 𝓥 X))
-
-     d : (Σ Y ꞉ 𝓥 ̇ , X ≃ Y) ≃ (Σ Y ꞉ 𝓥 ̇ , Lift 𝓤 Y ≡ Lift 𝓥 X)
-     d = Σ-cong e
-
-     j : is-subsingleton (Σ Y ꞉ 𝓥 ̇ , Lift 𝓤 Y ≡ Lift 𝓥 X)
-     j = Lift-is-embedding ua ua' (Lift 𝓥 X)
-
      s : is-subsingleton (Σ Y ꞉ 𝓥 ̇ , X ≃ Y)
      s = equiv-to-subsingleton d j
 
