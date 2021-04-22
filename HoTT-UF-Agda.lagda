@@ -5414,7 +5414,9 @@ automatic-equiv-functoriality :
       (f : X → Y)
       (g : Y → Z)
 
-    → is-univalent 𝓤 → is-equiv f + is-equiv g → 𝓕 (g ∘ f) ≡ 𝓕 g ∘ 𝓕 f
+    → is-univalent 𝓤
+    → is-equiv f + is-equiv g
+    → 𝓕 (g ∘ f) ≡ 𝓕 g ∘ 𝓕 f
 
 automatic-equiv-functoriality {𝓤} F 𝓕 𝓕-id {X} {Y} {Z} f g ua = γ
   where
@@ -6229,7 +6231,8 @@ taking its total space and the first projection:
   r = to-Σ-≡ (p , q)
 
 
-χε : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
+χε : is-univalent 𝓤
+   → dfunext 𝓤 (𝓤 ⁺)
    → (Y : 𝓤 ̇ ) (A : Y → 𝓤 ̇ ) → χ Y (𝕋 Y A) ≡ A
 
 χε ua fe Y A = fe γ
@@ -6250,7 +6253,8 @@ taking its total space and the first projection:
   γ y = Eq→Id ua _ _ (invertibility-gives-≃ (f y) (g y , η y , ε y))
 
 
-universes-are-map-classifiers : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
+universes-are-map-classifiers : is-univalent 𝓤
+                              → dfunext 𝓤 (𝓤 ⁺)
                               → is-map-classifier 𝓤
 
 universes-are-map-classifiers ua fe Y = invertibles-are-equivs (χ Y)
@@ -6260,7 +6264,8 @@ universes-are-map-classifiers ua fe Y = invertibles-are-equivs (χ Y)
 Therefore we have the following canonical equivalence:
 
 \begin{code}
-map-classification : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
+map-classification : is-univalent 𝓤
+                   → dfunext 𝓤 (𝓤 ⁺)
                    → (Y : 𝓤 ̇ ) → 𝓤 / Y ≃ (Y → 𝓤 ̇ )
 
 map-classification ua fe Y = χ Y , universes-are-map-classifiers ua fe Y
@@ -6303,7 +6308,8 @@ being-singleton-is-subsingleton fe {X} (x , φ) (y , γ) = p
   p = to-subtype-≡ a b
 
 
-being-equiv-is-subsingleton : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+being-equiv-is-subsingleton : dfunext 𝓥 (𝓤 ⊔ 𝓥)
+                            → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                             → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                             → is-subsingleton (is-equiv f)
 
@@ -6325,7 +6331,8 @@ subsingletons-are-retracts-of-logically-equivalent-types i (f , g) = g , f , η
   η x = i (g (f x)) x
 
 
-equivalence-property-is-retract-of-invertibility-data : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+equivalence-property-is-retract-of-invertibility-data : dfunext 𝓥 (𝓤 ⊔ 𝓥)
+                                                      → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                                                       → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                                       → is-equiv f ◁ invertible f
 
@@ -6420,7 +6427,8 @@ We need a version of
 dependent functions with implicit arguments.
 
 \begin{code}
-Π-is-subsingleton' : dfunext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+Π-is-subsingleton' : dfunext 𝓤 𝓥
+                   → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                    → ((x : X) → is-subsingleton (A x))
                    → is-subsingleton ({x : X} → A x)
 
@@ -6811,7 +6819,8 @@ needed:
 \begin{code}
 Π-is-set : hfunext 𝓤 𝓥
          → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-         → ((x : X) → is-set (A x)) → is-set (Π A)
+         → ((x : X) → is-set (A x))
+         → is-set (Π A)
 
 Π-is-set hfe s f g = b
  where
@@ -6858,7 +6867,8 @@ hlevel-relation-is-subsingleton fe (succ n) X =
 Composition of equivalences is associative:
 
 \begin{code}
-●-assoc : dfunext 𝓣 (𝓤 ⊔ 𝓣) → dfunext (𝓤 ⊔ 𝓣) (𝓤 ⊔ 𝓣)
+●-assoc : dfunext 𝓣 (𝓤 ⊔ 𝓣)
+        → dfunext (𝓤 ⊔ 𝓣) (𝓤 ⊔ 𝓣)
         → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {T : 𝓣 ̇ }
           (α : X ≃ Y) (β : Y ≃ Z) (γ : Z ≃ T)
         → α ● (β ● γ) ≡ (α ● β) ● γ
@@ -6873,7 +6883,8 @@ Composition of equivalences is associative:
   q = being-equiv-is-subsingleton fe fe' (h ∘ g ∘ f) _ _
 
 
-≃-sym-involutive : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥) →
+≃-sym-involutive : dfunext 𝓥 (𝓤 ⊔ 𝓥)
+                 → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥) →
                    {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
                  → ≃-sym (≃-sym α) ≡ α
 
@@ -6882,7 +6893,9 @@ Composition of equivalences is associative:
                                    (inversion-involutive f a)
 
 
-≃-sym-is-equiv : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+≃-sym-is-equiv : dfunext 𝓥 (𝓤 ⊔ 𝓥)
+               → dfunext 𝓤 (𝓤 ⊔ 𝓥)
+               → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                → is-equiv (≃-sym {𝓤} {𝓥} {X} {Y})
 
@@ -6891,7 +6904,9 @@ Composition of equivalences is associative:
                                ≃-sym-involutive fe₀ fe₂ ,
                                ≃-sym-involutive fe₁ fe₂)
 
-≃-sym-≃ : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+≃-sym-≃ : dfunext 𝓥 (𝓤 ⊔ 𝓥)
+        → dfunext 𝓤 (𝓤 ⊔ 𝓥)
+        → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
         → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
         → (X ≃ Y) ≃ (Y ≃ X)
 
@@ -6904,7 +6919,8 @@ univalence, we need to show that the hlevels are
 closed under equivalence first.)
 
 \begin{code}
-Π-cong : dfunext 𝓤 𝓥 → dfunext 𝓤 𝓦
+Π-cong : dfunext 𝓤 𝓥
+       → dfunext 𝓤 𝓦
        → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Y' : X → 𝓦 ̇ }
        → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
 
@@ -6967,7 +6983,8 @@ hfunext₂-≃ fe fe' {X} f g =
         (λ x → hfunext-≃ fe' (f x) (g x))
 
 
-precomp-invertible : dfunext 𝓥 𝓦 → dfunext 𝓤 𝓦
+precomp-invertible : dfunext 𝓥 𝓦
+                   → dfunext 𝓤 𝓦
                    → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y)
                    → invertible f
                    → invertible (λ (h : Y → Z) → h ∘ f)
@@ -6993,7 +7010,8 @@ derive function extensionality from univalence. Now we prove it
 assuming function extensionality instead.
 
 \begin{code}
-precomp-is-equiv' : dfunext 𝓥 𝓦 → dfunext 𝓤 𝓦
+precomp-is-equiv' : dfunext 𝓥 𝓦
+                  → dfunext 𝓤 𝓦
                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y)
                   → is-equiv f
                   → is-equiv (λ (h : Y → Z) → h ∘ f)
@@ -7014,9 +7032,11 @@ dprecomp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
 dprecomp A f = _∘ f
 
 
-dprecomp-is-equiv : dfunext 𝓤 𝓦 → dfunext 𝓥 𝓦
+dprecomp-is-equiv : dfunext 𝓤 𝓦
+                  → dfunext 𝓥 𝓦
                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
-                  → is-equiv f → is-equiv (dprecomp A f)
+                  → is-equiv f
+                  → is-equiv (dprecomp A f)
 
 dprecomp-is-equiv fe fe' {X} {Y} A f i = invertibles-are-equivs φ (ψ , ψφ , φψ)
  where
@@ -7056,9 +7076,11 @@ dprecomp-is-equiv fe fe' {X} {Y} A f i = invertibles-are-equivs φ (ψ , ψφ , 
 This amounts to saying that we can also change variables in Π:
 
 \begin{code}
-Π-change-of-variable : dfunext 𝓤 𝓦 → dfunext 𝓥 𝓦
+Π-change-of-variable : dfunext 𝓤 𝓦
+                     → dfunext 𝓥 𝓦
                      → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
-                     → is-equiv f → (Π y ꞉ Y , A y) ≃ (Π x ꞉ X , A (f x))
+                     → is-equiv f
+                     → (Π y ꞉ Y , A y) ≃ (Π x ꞉ X , A (f x))
 
 Π-change-of-variable fe fe' A f i = dprecomp A f , dprecomp-is-equiv fe fe' A f i
 \end{code}
@@ -7071,7 +7093,8 @@ then it has at most one section, and that if it has a section then it
 has at most one retraction.
 
 \begin{code}
-at-most-one-section : dfunext 𝓥 𝓤 → hfunext 𝓥 𝓥
+at-most-one-section : dfunext 𝓥 𝓤
+                    → hfunext 𝓥 𝓥
                     → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → has-retraction f
                     → is-subsingleton (has-section f)
@@ -7106,7 +7129,8 @@ at-most-one-section {𝓥} {𝓤} fe hfe {X} {Y} f (g , gf) (h , fh) = d
   d = singletons-are-subsingletons (has-section f) c (h , fh)
 
 
-at-most-one-retraction : hfunext 𝓤 𝓤 → dfunext 𝓥 𝓤
+at-most-one-retraction : hfunext 𝓤 𝓤
+                       → dfunext 𝓥 𝓤
                        → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                        → has-section f
                        → is-subsingleton (has-retraction f)
@@ -7141,7 +7165,9 @@ at-most-one-retraction {𝓤} {𝓥} hfe fe' {X} {Y} f (g , fg) (h , hf) = d
   d = singletons-are-subsingletons (has-retraction f) c (h , hf)
 
 
-being-joyal-equiv-is-subsingleton : hfunext 𝓤 𝓤 → hfunext 𝓥 𝓥 → dfunext 𝓥 𝓤
+being-joyal-equiv-is-subsingleton : hfunext 𝓤 𝓤
+                                  → hfunext 𝓥 𝓥
+                                  → dfunext 𝓥 𝓤
                                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                   → (f : X → Y)
                                   → is-subsingleton (is-joyal-equiv f)
@@ -7160,7 +7186,9 @@ property. This is because the type `is-hae f` is equivalent to the type
 where the equality is in the type `fiber f (f x)`.
 
 \begin{code}
-being-hae-is-subsingleton : dfunext 𝓥 𝓤 → hfunext 𝓥 𝓥 → dfunext 𝓤 (𝓥 ⊔ 𝓤)
+being-hae-is-subsingleton : dfunext 𝓥 𝓤
+                          → hfunext 𝓥 𝓥
+                          → dfunext 𝓤 (𝓥 ⊔ 𝓤)
                           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                           → is-subsingleton (is-hae f)
 
@@ -7237,7 +7265,9 @@ generally:
                                (λ p n → n p)
 
 
-EM-is-subsingleton : dfunext (𝓤 ⁺) 𝓤 → dfunext 𝓤 𝓤 → dfunext 𝓤 𝓤₀
+EM-is-subsingleton : dfunext (𝓤 ⁺) 𝓤
+                   → dfunext 𝓤 𝓤
+                   → dfunext 𝓤 𝓤₀
                    → is-subsingleton (EM 𝓤)
 
 EM-is-subsingleton fe⁺ fe fe₀ = Π-is-subsingleton fe⁺
@@ -7274,7 +7304,8 @@ univalence-gives-propext ua {P} {Q} i j f g = Eq→Id ua P Q γ
 Under the additional hypothesis of function extensionality, the converse of the above holds. We need a lemma for that.
 
 \begin{code}
-Id-from-subsingleton : propext 𝓤 → dfunext 𝓤 𝓤
+Id-from-subsingleton : propext 𝓤
+                     → dfunext 𝓤 𝓤
                      → (P : 𝓤 ̇ )
                      → is-subsingleton P
                      → (X : 𝓤 ̇ ) → is-subsingleton (P ≡ X)
@@ -7302,7 +7333,8 @@ Id-from-subsingleton {𝓤} pe fe P i = Hedberg P (λ X → h X , k X)
    k p q = ap g (j (f p) (f q))
 
 
-subsingleton-univalence : propext 𝓤 → dfunext 𝓤 𝓤
+subsingleton-univalence : propext 𝓤
+                        → dfunext 𝓤 𝓤
                         → (P : 𝓤 ̇ )
                         → is-subsingleton P
                         → (X : 𝓤 ̇ ) → is-equiv (Id→Eq P X)
@@ -7334,8 +7366,11 @@ subsingleton-univalence pe fe P i X = γ
   γ = invertibles-are-equivs (Id→Eq P X) (eqtoid , η , ε)
 
 
-subsingleton-univalence-≃ : propext 𝓤 → dfunext 𝓤 𝓤
-                          → (X P : 𝓤 ̇ ) → is-subsingleton P → (P ≡ X) ≃ (P ≃ X)
+subsingleton-univalence-≃ : propext 𝓤
+                          → dfunext 𝓤 𝓤
+                          → (X P : 𝓤 ̇ )
+                          → is-subsingleton P
+                          → (P ≡ X) ≃ (P ≃ X)
 
 subsingleton-univalence-≃ pe fe X P i = Id→Eq P X ,
                                         subsingleton-univalence pe fe P i X
@@ -7407,7 +7442,9 @@ With this and Hedberg, we get that `Ω` is a set:
 Hence powersets, even of types that are not sets, are always sets.
 
 \begin{code}
-powersets-are-sets : hfunext 𝓤 (𝓥 ⁺) → dfunext 𝓥 𝓥 → propext 𝓥
+powersets-are-sets : hfunext 𝓤 (𝓥 ⁺)
+                   → dfunext 𝓥 𝓥
+                   → propext 𝓥
                    → {X : 𝓤 ̇ } → is-set (X → Ω 𝓥)
 
 powersets-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-a-set fe' pe)
@@ -7476,7 +7513,9 @@ equivalent to `X`, which may not be a set.
 Propositional and functional extensionality give the usual extensionality condition for the powerset:
 
 \begin{code}
-subset-extensionality : propext 𝓤 → dfunext 𝓤 𝓤 → dfunext 𝓤 (𝓤 ⁺)
+subset-extensionality : propext 𝓤
+                      → dfunext 𝓤 𝓤
+                      → dfunext 𝓤 (𝓤 ⁺)
                       → {X : 𝓤 ̇ } {A B : 𝓟 X}
                       → A ⊆ B → B ⊆ A → A ≡ B
 
@@ -7516,7 +7555,8 @@ We first prove some
 properties of equivalence symmetrization and composition:
 
 \begin{code}
-id-≃-left : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+id-≃-left : dfunext 𝓥 (𝓤 ⊔ 𝓥)
+          → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
           → id-≃ X ● α ≡ α
 
@@ -7546,16 +7586,21 @@ id-≃-left fe fe' α = to-subtype-≡ (being-equiv-is-subsingleton fe fe') (ref
 We then transfer the above to equivalence types:
 
 \begin{code}
-≃-Sym : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+≃-Sym : dfunext 𝓥 (𝓤 ⊔ 𝓥)
+      → dfunext 𝓤 (𝓤 ⊔ 𝓥)
+      → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
       → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
       → (X ≃ Y) ≃ (Y ≃ X)
 
 ≃-Sym fe₀ fe₁ fe₂ = ≃-sym , ≃-sym-is-equiv fe₀ fe₁ fe₂
 
 
-≃-Comp : dfunext 𝓦 (𝓥 ⊔ 𝓦) → dfunext (𝓥 ⊔ 𝓦) (𝓥 ⊔ 𝓦 )
-       → dfunext 𝓥 𝓥 → dfunext 𝓦 (𝓤 ⊔ 𝓦)
-       → dfunext (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓦 ) → dfunext 𝓤 𝓤
+≃-Comp : dfunext 𝓦 (𝓥 ⊔ 𝓦)
+       → dfunext (𝓥 ⊔ 𝓦) (𝓥 ⊔ 𝓦 )
+       → dfunext 𝓥 𝓥
+       → dfunext 𝓦 (𝓤 ⊔ 𝓦)
+       → dfunext (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓦 )
+       → dfunext 𝓤 𝓤
        → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (Z : 𝓦 ̇ )
        → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
 
@@ -7576,10 +7621,18 @@ We then transfer the above to equivalence types:
 Using this we get the following self-congruence property of equivalences:
 
 \begin{code}
-Eq-Eq-cong' : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓤
-            → dfunext 𝓥 (𝓥 ⊔ 𝓦) → dfunext (𝓥 ⊔ 𝓦) (𝓥 ⊔ 𝓦) → dfunext 𝓦 𝓦
-            → dfunext 𝓦 (𝓥 ⊔ 𝓦) → dfunext 𝓥 𝓥 → dfunext 𝓦 (𝓦 ⊔ 𝓣)
-            → dfunext (𝓦 ⊔ 𝓣) (𝓦 ⊔ 𝓣) → dfunext 𝓣 𝓣 → dfunext 𝓣 (𝓦 ⊔ 𝓣)
+Eq-Eq-cong' : dfunext 𝓥 (𝓤 ⊔ 𝓥)
+            → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+            → dfunext 𝓤 𝓤
+            → dfunext 𝓥 (𝓥 ⊔ 𝓦)
+            → dfunext (𝓥 ⊔ 𝓦) (𝓥 ⊔ 𝓦)
+            → dfunext 𝓦 𝓦
+            → dfunext 𝓦 (𝓥 ⊔ 𝓦)
+            → dfunext 𝓥 𝓥
+            → dfunext 𝓦 (𝓦 ⊔ 𝓣)
+            → dfunext (𝓦 ⊔ 𝓣) (𝓦 ⊔ 𝓣)
+            → dfunext 𝓣 𝓣
+            → dfunext 𝓣 (𝓦 ⊔ 𝓣)
             → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
             → X ≃ A → Y ≃ B → (X ≃ Y) ≃ (A ≃ B)
 
@@ -7593,7 +7646,7 @@ Eq-Eq-cong' fe₀ fe₁ fe₂ fe₃ fe₄ fe₅ fe₆ fe₇ fe₈ fe₉ fe₁₀
 \end{code}
 
 The above shows why global function extensionality would be a better
-assumption in practice.
+assumption in practice, and so we define:
 
 \begin{code}
 Eq-Eq-cong : global-dfunext
@@ -7617,7 +7670,7 @@ is-embedding f = (y : codomain f) → is-subsingleton (fiber f y)
 \end{code}
 
 This says that for every `y : Y` there is at most one `x : X` with `f
-x ≡ y`, or, more precisely, there is at most one pair `(x,p)`
+x ≡ y`, or, more precisely, there is at most one pair `(x , p)`
 with `x : X` and `p : f x ≡ y`.
 
 \begin{code}
@@ -7668,7 +7721,8 @@ pr₁-is-embedding i x ((x , a) , refl x) ((x , a') , refl x) = γ
 \begin{code}
 equivs-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                         (f : X → Y)
-                      → is-equiv f → is-embedding f
+                      → is-equiv f
+                      → is-embedding f
 
 equivs-are-embeddings f i y = singletons-are-subsingletons (fiber f y) (i y)
 
@@ -7679,7 +7733,9 @@ id-is-embedding {𝓤} {X} = equivs-are-embeddings id (id-is-equiv X)
 
 ∘-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
               {f : X → Y} {g : Y → Z}
-            → is-embedding g  → is-embedding f → is-embedding (g ∘ f)
+            → is-embedding g
+            → is-embedding f
+            → is-embedding (g ∘ f)
 
 ∘-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} d e = h
  where
@@ -7998,7 +8054,8 @@ the transport natural transformation induced by `A` and `x`:
 𝓝 A x a y p = transport A p a
 
 
-yoneda-η : dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
+yoneda-η : dfunext 𝓤 (𝓤 ⊔ 𝓥)
+         → dfunext 𝓤 𝓥
          → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
          → 𝓝 A x ∘ 𝓔 A x ∼ id
 
@@ -8025,7 +8082,8 @@ is-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } �
 is-fiberwise-equiv τ = ∀ x → is-equiv (τ x)
 
 
-𝓔-is-equiv : dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
+𝓔-is-equiv : dfunext 𝓤 (𝓤 ⊔ 𝓥)
+           → dfunext 𝓤 𝓥
            → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
            → is-fiberwise-equiv (𝓔 A)
 
@@ -8033,7 +8091,8 @@ is-fiberwise-equiv τ = ∀ x → is-equiv (τ x)
                          (𝓝 A x , yoneda-η fe fe' A x , yoneda-ε A x)
 
 
-𝓝-is-equiv : dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
+𝓝-is-equiv : dfunext 𝓤 (𝓤 ⊔ 𝓥)
+           → dfunext 𝓤 𝓥
            → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
            → is-fiberwise-equiv (𝓝 A)
 
@@ -8047,7 +8106,8 @@ which says that natural transformations from `𝓨 x` to `A` are in
 canonical bijection with elements of `A x`:
 
 \begin{code}
-Yoneda-Lemma : dfunext 𝓤 (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓥
+Yoneda-Lemma : dfunext 𝓤 (𝓤 ⊔ 𝓥)
+             → dfunext 𝓤 𝓥
              → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
              → Nat (𝓨 x) A ≃ A x
 
@@ -8759,6 +8819,11 @@ lower-dfunext 𝓦 𝓣 𝓤 𝓥 fe {X} {A} {f} {g} h = p
   p = ap (λ f' x → lower (f' (lift x))) p'
 \end{code}
 
+This could have been used above to remove a number of function
+extensionality hypothesis. But also it would have required to present
+the material of this section before we wanted to for learning
+purposes.
+
 Secondly, a function from a universe to a higher universe is an
 embedding provided it maps any type to an equivalent type and the two
 universes are univalent:
@@ -8852,8 +8917,8 @@ module _ {𝓤 𝓥 : Universe}
    j = Lift-is-embedding ua ua' (Lift 𝓥 X)
 
    abstract
-     s : is-subsingleton (Σ Y ꞉ 𝓥 ̇ , X ≃ Y)
-     s = equiv-to-subsingleton d j
+    s : is-subsingleton (Σ Y ꞉ 𝓥 ̇ , X ≃ Y)
+    s = equiv-to-subsingleton d j
 
 
  univalence→'-dual : (Y : 𝓤 ̇ ) → is-subsingleton (Σ X ꞉ 𝓥 ̇ , X ≃ Y)
@@ -9243,13 +9308,15 @@ mc-gives-sc {𝓤} s P Y = γ
 Therefore we have the following canonical equivalence:
 
 \begin{code}
-χ-special-is-equiv : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
+χ-special-is-equiv : is-univalent 𝓤
+                   → dfunext 𝓤 (𝓤 ⁺)
                    → (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ )
                    → is-equiv (χ-special P Y)
 
 χ-special-is-equiv {𝓤} ua fe P Y = mc-gives-sc (universes-are-map-classifiers ua fe) P Y
 
-special-map-classifier : is-univalent 𝓤 → dfunext 𝓤 (𝓤 ⁺)
+special-map-classifier : is-univalent 𝓤
+                       → dfunext 𝓤 (𝓤 ⁺)
                        → (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ )
                        → 𝓤 /[ P ] Y ≃ (Y → Σ P)
 
