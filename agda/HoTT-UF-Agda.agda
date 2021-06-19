@@ -420,7 +420,7 @@ positive-not-zero x p = 𝟙-is-not-𝟘 (g p)
   g = ap f
 
 pred : ℕ → ℕ
-pred 0 = 0
+pred 0        = 0
 pred (succ n) = n
 
 succ-lc : {x y : ℕ} → succ x ≡ succ y → x ≡ y
@@ -560,15 +560,15 @@ module basic-arithmetic-and-order where
   ≤-refl (succ n) = ≤-refl n
 
   ≤-trans : (l m n : ℕ) → l ≤ m → m ≤ n → l ≤ n
-  ≤-trans zero m n p q = ⋆
-  ≤-trans (succ l) zero n p q = !𝟘 (succ l ≤ n) p
-  ≤-trans (succ l) (succ m) zero p q = q
+  ≤-trans zero     m        n        p q = ⋆
+  ≤-trans (succ l) zero     n        p q = !𝟘 (succ l ≤ n) p
+  ≤-trans (succ l) (succ m) zero     p q = q
   ≤-trans (succ l) (succ m) (succ n) p q = ≤-trans l m n p q
 
   ≤-anti : (m n : ℕ) → m ≤ n → n ≤ m → m ≡ n
-  ≤-anti zero zero p q = refl zero
-  ≤-anti zero (succ n) p q = !𝟘 (zero ≡ succ n) q
-  ≤-anti (succ m) zero p q = !𝟘 (succ m ≡ zero) p
+  ≤-anti zero     zero     p q = refl zero
+  ≤-anti zero     (succ n) p q = !𝟘 (zero ≡ succ n) q
+  ≤-anti (succ m) zero     p q = !𝟘 (succ m ≡ zero) p
   ≤-anti (succ m) (succ n) p q = ap succ (≤-anti m n p q)
 
   ≤-succ : (n : ℕ) → n ≤ succ n
@@ -579,12 +579,12 @@ module basic-arithmetic-and-order where
   zero-minimal n = ⋆
 
   unique-minimal : (n : ℕ) → n ≤ zero → n ≡ zero
-  unique-minimal zero p = refl zero
+  unique-minimal zero     p = refl zero
   unique-minimal (succ n) p = !𝟘 (succ n ≡ zero) p
 
   ≤-split : (m n : ℕ) → m ≤ succ n → (m ≤ n) + (m ≡ succ n)
-  ≤-split zero n l = inl l
-  ≤-split (succ m) zero l = inr (ap succ (unique-minimal m l))
+  ≤-split zero     n        l = inl l
+  ≤-split (succ m) zero     l = inr (ap succ (unique-minimal m l))
   ≤-split (succ m) (succ n) l = +-recursion inl (inr ∘ ap succ) (≤-split m n l)
 
   _<_ : ℕ → ℕ → 𝓤₀ ̇
@@ -593,9 +593,9 @@ module basic-arithmetic-and-order where
   infix 10 _<_
 
   not-<-gives-≥ : (m n : ℕ) → ¬(n < m) → m ≤ n
-  not-<-gives-≥ zero n u = zero-minimal n
-  not-<-gives-≥ (succ m) zero = dni (zero < succ m) (zero-minimal m)
-  not-<-gives-≥ (succ m) (succ n) = not-<-gives-≥ m n
+  not-<-gives-≥ zero     n        u = zero-minimal n
+  not-<-gives-≥ (succ m) zero     u = dni (zero < succ m) (zero-minimal m) u
+  not-<-gives-≥ (succ m) (succ n) u = not-<-gives-≥ m n u
 
   bounded-∀-next : (A : ℕ → 𝓤 ̇ ) (k : ℕ)
                  → A k
