@@ -8211,7 +8211,7 @@ module choice
     γ (inr n) s = !𝟘 X (∥∥-recursion 𝟘-is-subsingleton n s)
 
   global-∥∥-choice-gives-all-types-are-sets : global-∥∥-choice 𝓤
-                                            → (X : 𝓤 ̇ ) → is-set  X
+                                            → (X : 𝓤 ̇ ) → is-set X
 
   global-∥∥-choice-gives-all-types-are-sets {𝓤} c X =
     types-with-wconstant-≡-endomaps-are-sets X
@@ -8286,7 +8286,7 @@ module choice
       (Global-Choice-gives-Global-∥∥-Choice g)
 
   global-choice-gives-all-types-are-sets : global-choice 𝓤
-                                         → (X : 𝓤 ̇ ) → is-set  X
+                                         → (X : 𝓤 ̇ ) → is-set X
 
   global-choice-gives-all-types-are-sets {𝓤} c X = hedberg (λ x y → c (x ≡ y))
 

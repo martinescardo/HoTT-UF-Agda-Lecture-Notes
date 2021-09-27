@@ -14411,7 +14411,7 @@ this local module).
 
 
   global-∥∥-choice-gives-all-types-are-sets : global-∥∥-choice 𝓤
-                                            → (X : 𝓤 ̇ ) → is-set  X
+                                            → (X : 𝓤 ̇ ) → is-set X
 
   global-∥∥-choice-gives-all-types-are-sets {𝓤} c X =
     types-with-wconstant-≡-endomaps-are-sets X
@@ -14509,7 +14509,7 @@ different argument that works with a single, arbitrary universe.
 
 \begin{code}
   global-choice-gives-all-types-are-sets : global-choice 𝓤
-                                         → (X : 𝓤 ̇ ) → is-set  X
+                                         → (X : 𝓤 ̇ ) → is-set X
 
   global-choice-gives-all-types-are-sets {𝓤} c X = hedberg (λ x y → c (x ≡ y))
 \end{code}
