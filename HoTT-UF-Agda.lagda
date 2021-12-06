@@ -7384,13 +7384,13 @@ Conversely, if propositional univalence holds, then full propositional extension
 
 \begin{code}
 prop-univalence-gives-propext : prop-univalence 𝓤 → propext 𝓤
-prop-univalence-gives-propext sua {P} {Q} i j f g = δ
+prop-univalence-gives-propext pu {P} {Q} i j f g = δ
  where
   γ : P ≃ Q
   γ = logically-equivalent-subsingletons-are-equivalent P Q i j (f , g)
 
   δ : P ≡ Q
-  δ = inverse (Id→Eq P Q) (sua P i Q) γ
+  δ = inverse (Id→Eq P Q) (pu P i Q) γ
 \end{code}
 
 To show that propositional univalence implies that the propositions form an exponential ideal, we first need some lemmas.
@@ -7404,7 +7404,7 @@ prop-≃-induction 𝓤 𝓥 = (P : 𝓤 ̇ )
 
 prop-J-equiv : prop-univalence 𝓤
              → (𝓥 : Universe) → prop-≃-induction 𝓤 𝓥
-prop-J-equiv {𝓤} sua 𝓥 P i A a X e = γ
+prop-J-equiv {𝓤} pu 𝓥 P i A a X e = γ
  where
   A' : (X : 𝓤 ̇ ) → P ≡ X → 𝓥 ̇
   A' X q = A X (Id→Eq P X q)
@@ -7413,13 +7413,13 @@ prop-J-equiv {𝓤} sua 𝓥 P i A a X e = γ
   f = ℍ P A' a
 
   r : P ≡ X
-  r = inverse (Id→Eq P X) (sua P i X) e
+  r = inverse (Id→Eq P X) (pu P i X) e
 
   g : A X (Id→Eq P X r)
   g = f X r
 
   γ : A X (id e)
-  γ = transport (A X) (inverses-are-sections (Id→Eq P X) (sua P i X) e) g
+  γ = transport (A X) (inverses-are-sections (Id→Eq P X) (pu P i X) e) g
 
 prop-precomp-is-equiv : prop-univalence 𝓤
                       → (X Y Z : 𝓤 ̇ )
@@ -7427,8 +7427,8 @@ prop-precomp-is-equiv : prop-univalence 𝓤
                       → (f : X → Y)
                       → is-equiv f
                       → is-equiv (λ (g : Y → Z) → g ∘ f)
-prop-precomp-is-equiv {𝓤} sua X Y Z i f f-is-equiv =
-   prop-J-equiv sua 𝓤 X i (λ _ e → is-equiv (λ g → g ∘ ⌜ e ⌝))
+prop-precomp-is-equiv {𝓤} pu X Y Z i f f-is-equiv =
+   prop-J-equiv pu 𝓤 X i (λ _ e → is-equiv (λ g → g ∘ ⌜ e ⌝))
      (id-is-equiv (X → Z)) Y (f , f-is-equiv)
 \end{code}
 
@@ -7440,7 +7440,7 @@ prop-univalence-gives-props-are-exponential-ideal : prop-univalence 𝓤
                                                   → is-prop P
                                                   → is-prop (X → P)
 
-prop-univalence-gives-props-are-exponential-ideal {𝓤} sua X P i f₀ f₁ = γ
+prop-univalence-gives-props-are-exponential-ideal {𝓤} pu X P i f₀ f₁ = γ
  where
   Δ : 𝓤 ̇
   Δ = Σ p₀ ꞉ P , Σ p₁ ꞉ P , p₀ ≡ p₁
@@ -7465,7 +7465,7 @@ prop-univalence-gives-props-are-exponential-ideal {𝓤} sua X P i f₀ f₁ = �
   φ π = π ∘ δ
 
   φ-is-equiv : is-equiv φ
-  φ-is-equiv = prop-precomp-is-equiv sua P Δ P i δ δ-is-equiv
+  φ-is-equiv = prop-precomp-is-equiv pu P Δ P i δ δ-is-equiv
 
   p : φ π₀ ≡ φ π₁
   p = refl (𝑖𝑑 P)
