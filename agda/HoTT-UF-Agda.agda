@@ -3645,11 +3645,11 @@ Id-is-prop {𝓤} pe fe P i = Hedberg P (λ X → h X , k X)
    k : wconstant h
    k p q = ap g (j (f p) (f q))
 
-propext-and-funext-give-prop-univalence : propext 𝓤
-                                        → dfunext 𝓤 𝓤
-                                        → prop-univalence 𝓤
+propext-and-dfunext-give-prop-univalence : propext 𝓤
+                                         → dfunext 𝓤 𝓤
+                                         → prop-univalence 𝓤
 
-propext-and-funext-give-prop-univalence pe fe P i X = γ
+propext-and-dfunext-give-prop-univalence pe fe P i X = γ
  where
   l : P ≃ X → is-subsingleton X
   l e = equiv-to-subsingleton (≃-sym e) i
@@ -3716,7 +3716,7 @@ prop-precomp-is-equiv : prop-univalence 𝓤
                       → is-equiv f
                       → is-equiv (λ (g : Y → Z) → g ∘ f)
 prop-precomp-is-equiv {𝓤} sua X Y Z i f f-is-equiv =
-   prop-J-equiv sua 𝓤 X i (λ W e → is-equiv (λ g → g ∘ ⌜ e ⌝))
+   prop-J-equiv sua 𝓤 X i (λ _ e → is-equiv (λ g → g ∘ ⌜ e ⌝))
      (id-is-equiv (X → Z)) Y (f , f-is-equiv)
 
 prop-univalence-gives-props-are-exponential-ideal : prop-univalence 𝓤
