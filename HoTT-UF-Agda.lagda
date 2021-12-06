@@ -427,7 +427,10 @@ to practice univalent mathematics should consult the above references.
      1. [Unique existence in univalent mathematics](HoTT-UF-Agda.html#unique-existence)
      1. [Universal property of the natural numbers](HoTT-UF-Agda.html#nnt)
      1. [More consequences of function extensionality](HoTT-UF-Agda.html#morefunextuses)
-     1. [Propositional extensionality and the powerset](HoTT-UF-Agda.html#propositionalextensionality)
+     1. [Propositional extensionality](HoTT-UF-Agda.html#propositionalextensionality)
+        1. [The propositional extensionality axiom](HoTT-UF-Agda.html#propositionalextensionalityaxiom)
+        1. [Propositional extensionality, function extensionality and propositional univalence](HoTT-UF-Agda.html#propextfunextpropunivalence)
+        1. [Propositional extensionality and the powerset](HoTT-UF-Agda.html#powerset)
      1. [Some constructions with types of equivalences](HoTT-UF-Agda.html#equivconstructions)
      1. [Type embeddings](HoTT-UF-Agda.html#embeddings)
      1. [The Yoneda Lemma for types](HoTT-UF-Agda.html#yoneda)
@@ -7276,12 +7279,16 @@ EM-is-subsingleton fe⁺ fe fe₀ = Π-is-subsingleton fe⁺
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="propositionalextensionality"></a> Propositional extensionality and the powerset
+### <a id="propositionalextensionality"></a> Propositional extensionality
 
 We have been using the mathematical terminology "subsingleton", but
 tradition in the formulation of the next notion demands the logical
-terminology "proposition". Propositional extensionality says that any
-two logically equivalent propositions are equal:
+terminology "proposition". We now discuss the propositional extensionality axiom, its relation to univalence for propositions, and its use for dealing with powersets.
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="propositionalextensionalityaxiom"></a> The propositional extensionality axiom
+
+Propositional extensionality says that any two logically equivalent propositions are equal:
 
 \begin{code}
 propext : ∀ 𝓤  → 𝓤 ⁺ ̇
@@ -7301,45 +7308,52 @@ univalence-gives-propext ua {P} {Q} i j f g = Eq→Id ua P Q γ
   γ = logically-equivalent-subsingletons-are-equivalent P Q i j (f , g)
 \end{code}
 
-Under the additional hypothesis of function extensionality, the converse of the above holds. We need a lemma for that.
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="propextfunextpropunivalence"></a> Propositional extensionality, function extensionality and propositional univalence
+
+We now show that the following form of propositional univalence is implied by propositional and functional extensionality, and also discuss the converse.
 
 \begin{code}
-Id-from-subsingleton : propext 𝓤
-                     → dfunext 𝓤 𝓤
-                     → (P : 𝓤 ̇ )
-                     → is-subsingleton P
-                     → (X : 𝓤 ̇ ) → is-subsingleton (P ≡ X)
+prop-univalence : (𝓤 : Universe) → 𝓤 ⁺ ̇
+prop-univalence 𝓤 = (P : 𝓤 ̇ ) → is-prop P → (X : 𝓤 ̇ ) → is-equiv (Id→Eq P X)
+\end{code}
 
-Id-from-subsingleton {𝓤} pe fe P i = Hedberg P (λ X → h X , k X)
+We first need a lemma.
+
+\begin{code}
+Id-is-prop : propext 𝓤
+           → dfunext 𝓤 𝓤
+           → (P : 𝓤 ̇ )
+           → is-prop P
+           → (X : 𝓤 ̇ ) → is-prop (P ≡ X)
+
+Id-is-prop {𝓤} pe fe P i = Hedberg P (λ X → h X , k X)
  where
   module _ (X : 𝓤 ̇ ) where
-   f : P ≡ X → is-subsingleton X × (P ⇔ X)
-   f p = transport is-subsingleton p i , Id→fun p , (Id→fun (p ⁻¹))
+   f : P ≡ X → is-prop X × (P ⇔ X)
+   f p = transport is-prop p i , Id→fun p , (Id→fun (p ⁻¹))
 
-   g : is-subsingleton X × (P ⇔ X) → P ≡ X
+   g : is-prop X × (P ⇔ X) → P ≡ X
    g (l , φ , ψ) = pe i l φ ψ
 
    h : P ≡ X → P ≡ X
    h = g ∘ f
 
-   j : is-subsingleton (is-subsingleton X × (P ⇔ X))
+   j : is-prop (is-prop X × (P ⇔ X))
    j = ×-is-subsingleton'
         ((λ (_ : P ⇔ X) → being-subsingleton-is-subsingleton fe) ,
-         (λ (l : is-subsingleton X) → ×-is-subsingleton
-                                       (Π-is-subsingleton fe (λ p → l))
-                                       (Π-is-subsingleton fe (λ x → i))))
-
+         (λ (l : is-prop X) → ×-is-subsingleton
+                               (Π-is-subsingleton fe (λ p → l))
+                               (Π-is-subsingleton fe (λ x → i))))
    k : wconstant h
    k p q = ap g (j (f p) (f q))
 
+propext-and-funext-give-prop-univalence : propext 𝓤
+                                        → dfunext 𝓤 𝓤
+                                        → prop-univalence 𝓤
 
-subsingleton-univalence : propext 𝓤
-                        → dfunext 𝓤 𝓤
-                        → (P : 𝓤 ̇ )
-                        → is-subsingleton P
-                        → (X : 𝓤 ̇ ) → is-equiv (Id→Eq P X)
-
-subsingleton-univalence pe fe P i X = γ
+propext-and-funext-give-prop-univalence pe fe P i X = γ
  where
   l : P ≃ X → is-subsingleton X
   l e = equiv-to-subsingleton (≃-sym e) i
@@ -7360,21 +7374,116 @@ subsingleton-univalence pe fe P i X = γ
   ε e = m (Id→Eq P X (eqtoid e)) e
 
   η : (q : P ≡ X) → eqtoid (Id→Eq P X q) ≡ q
-  η q = Id-from-subsingleton pe fe P i X (eqtoid (Id→Eq P X q)) q
+  η q = Id-is-prop pe fe P i X (eqtoid (Id→Eq P X q)) q
 
   γ : is-equiv (Id→Eq P X)
   γ = invertibles-are-equivs (Id→Eq P X) (eqtoid , η , ε)
-
-
-subsingleton-univalence-≃ : propext 𝓤
-                          → dfunext 𝓤 𝓤
-                          → (X P : 𝓤 ̇ )
-                          → is-subsingleton P
-                          → (P ≡ X) ≃ (P ≃ X)
-
-subsingleton-univalence-≃ pe fe X P i = Id→Eq P X ,
-                                        subsingleton-univalence pe fe P i X
 \end{code}
+
+Conversely, if propositional univalence holds, then full propositional extensionality and a restricted form of function extensionality holds, namely that the propositions for an exponential ideal:
+
+\begin{code}
+prop-univalence-gives-propext : prop-univalence 𝓤 → propext 𝓤
+prop-univalence-gives-propext sua {P} {Q} i j f g = δ
+ where
+  γ : P ≃ Q
+  γ = logically-equivalent-subsingletons-are-equivalent P Q i j (f , g)
+
+  δ : P ≡ Q
+  δ = inverse (Id→Eq P Q) (sua P i Q) γ
+\end{code}
+
+To show that propositional univalence implies that the propositions form an exponential ideal, we first need some lemmas.
+
+\begin{code}
+prop-≃-induction : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+prop-≃-induction 𝓤 𝓥 = (P : 𝓤 ̇ )
+                     → is-prop P
+                     → (A : (X : 𝓤 ̇ ) → P ≃ X → 𝓥 ̇ )
+                     → A P (id-≃ P) → (X : 𝓤 ̇ ) (e : P ≃ X) → A X e
+
+prop-J-equiv : prop-univalence 𝓤
+             → (𝓥 : Universe) → prop-≃-induction 𝓤 𝓥
+prop-J-equiv {𝓤} sua 𝓥 P i A a X e = γ
+ where
+  A' : (X : 𝓤 ̇ ) → P ≡ X → 𝓥 ̇
+  A' X q = A X (Id→Eq P X q)
+
+  f : (X : 𝓤 ̇ ) (q : P ≡ X) → A' X q
+  f = ℍ P A' a
+
+  r : P ≡ X
+  r = inverse (Id→Eq P X) (sua P i X) e
+
+  g : A X (Id→Eq P X r)
+  g = f X r
+
+  γ : A X (id e)
+  γ = transport (A X) (inverses-are-sections (Id→Eq P X) (sua P i X) e) g
+
+prop-precomp-is-equiv : prop-univalence 𝓤
+                      → (X Y Z : 𝓤 ̇ )
+                      → is-prop X
+                      → (f : X → Y)
+                      → is-equiv f
+                      → is-equiv (λ (g : Y → Z) → g ∘ f)
+prop-precomp-is-equiv {𝓤} sua X Y Z i f f-is-equiv =
+   prop-J-equiv sua 𝓤 X i (λ W e → is-equiv (λ g → g ∘ ⌜ e ⌝))
+     (id-is-equiv (X → Z)) Y (f , f-is-equiv)
+\end{code}
+
+We now adapt the proof that univalence implies function extensionality using the above lemmas.
+
+\begin{code}
+prop-univalence-gives-props-are-exponential-ideal : prop-univalence 𝓤
+                                                  → (X P : 𝓤 ̇ )
+                                                  → is-prop P
+                                                  → is-prop (X → P)
+
+prop-univalence-gives-props-are-exponential-ideal {𝓤} sua X P i f₀ f₁ = γ
+ where
+  Δ : 𝓤 ̇
+  Δ = Σ p₀ ꞉ P , Σ p₁ ꞉ P , p₀ ≡ p₁
+
+  δ : P → Δ
+  δ p = (p , p , refl p)
+
+  π₀ π₁ : Δ → P
+  π₀ (p₀ , p₁ , p) = p₀
+  π₁ (p₀ , p₁ , p) = p₁
+
+  δ-is-equiv : is-equiv δ
+  δ-is-equiv = invertibles-are-equivs δ (π₀ , η , ε)
+   where
+    η : (p : P) → π₀ (δ p) ≡ p
+    η p = refl p
+
+    ε : (d : Δ) → δ (π₀ d) ≡ d
+    ε (p , p , refl p) = refl (p , p , refl p)
+
+  φ : (Δ → P) → (P → P)
+  φ π = π ∘ δ
+
+  φ-is-equiv : is-equiv φ
+  φ-is-equiv = prop-precomp-is-equiv sua P Δ P i δ δ-is-equiv
+
+  p : φ π₀ ≡ φ π₁
+  p = refl (𝑖𝑑 P)
+
+  q : π₀ ≡ π₁
+  q = equivs-are-lc φ φ-is-equiv p
+
+  h : f₀ ∼ f₁
+  h x = i (f₀ x) (f₁ x)
+
+  γ : f₀ ≡ f₁
+  γ = ap (λ π x → π (f₀ x , f₁ x , h x)) q
+\end{code}
+
+*Open problem*. Does propositional univalence imply full function extensionality? To establish this, it is enough to show that it implies that the type `(x : X) → P x` is a proposition for every `X : 𝓤` and every family `P : X → 𝓤` of propositions, because this clearly implies `vvfunext`, which, as we have seen, implies all forms of function extensionality that we have discussed so far.
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="powerset"></a> Propositional extensionality and the powerset
 
 We also need a version of propositional extensionality for the type
 `Ω 𝓤` of subsingletons in a given universe `𝓤`,

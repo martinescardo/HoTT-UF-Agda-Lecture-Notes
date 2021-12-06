@@ -3615,41 +3615,41 @@ univalence-gives-propext ua {P} {Q} i j f g = Eq→Id ua P Q γ
   γ : P ≃ Q
   γ = logically-equivalent-subsingletons-are-equivalent P Q i j (f , g)
 
-Id-from-subsingleton : propext 𝓤
-                     → dfunext 𝓤 𝓤
-                     → (P : 𝓤 ̇ )
-                     → is-subsingleton P
-                     → (X : 𝓤 ̇ ) → is-subsingleton (P ≡ X)
+prop-univalence : (𝓤 : Universe) → 𝓤 ⁺ ̇
+prop-univalence 𝓤 = (P : 𝓤 ̇ ) → is-prop P → (X : 𝓤 ̇ ) → is-equiv (Id→Eq P X)
 
-Id-from-subsingleton {𝓤} pe fe P i = Hedberg P (λ X → h X , k X)
+Id-is-prop : propext 𝓤
+           → dfunext 𝓤 𝓤
+           → (P : 𝓤 ̇ )
+           → is-prop P
+           → (X : 𝓤 ̇ ) → is-prop (P ≡ X)
+
+Id-is-prop {𝓤} pe fe P i = Hedberg P (λ X → h X , k X)
  where
   module _ (X : 𝓤 ̇ ) where
-   f : P ≡ X → is-subsingleton X × (P ⇔ X)
-   f p = transport is-subsingleton p i , Id→fun p , (Id→fun (p ⁻¹))
+   f : P ≡ X → is-prop X × (P ⇔ X)
+   f p = transport is-prop p i , Id→fun p , (Id→fun (p ⁻¹))
 
-   g : is-subsingleton X × (P ⇔ X) → P ≡ X
+   g : is-prop X × (P ⇔ X) → P ≡ X
    g (l , φ , ψ) = pe i l φ ψ
 
    h : P ≡ X → P ≡ X
    h = g ∘ f
 
-   j : is-subsingleton (is-subsingleton X × (P ⇔ X))
+   j : is-prop (is-prop X × (P ⇔ X))
    j = ×-is-subsingleton'
         ((λ (_ : P ⇔ X) → being-subsingleton-is-subsingleton fe) ,
-         (λ (l : is-subsingleton X) → ×-is-subsingleton
-                                       (Π-is-subsingleton fe (λ p → l))
-                                       (Π-is-subsingleton fe (λ x → i))))
-
+         (λ (l : is-prop X) → ×-is-subsingleton
+                               (Π-is-subsingleton fe (λ p → l))
+                               (Π-is-subsingleton fe (λ x → i))))
    k : wconstant h
    k p q = ap g (j (f p) (f q))
 
-subsingleton-univalence : propext 𝓤
-                        → dfunext 𝓤 𝓤
-                        → (P : 𝓤 ̇ )
-                        → is-subsingleton P
-                        → (X : 𝓤 ̇ ) → is-equiv (Id→Eq P X)
+propext-and-funext-give-prop-univalence : propext 𝓤
+                                        → dfunext 𝓤 𝓤
+                                        → prop-univalence 𝓤
 
-subsingleton-univalence pe fe P i X = γ
+propext-and-funext-give-prop-univalence pe fe P i X = γ
  where
   l : P ≃ X → is-subsingleton X
   l e = equiv-to-subsingleton (≃-sym e) i
@@ -3670,19 +3670,98 @@ subsingleton-univalence pe fe P i X = γ
   ε e = m (Id→Eq P X (eqtoid e)) e
 
   η : (q : P ≡ X) → eqtoid (Id→Eq P X q) ≡ q
-  η q = Id-from-subsingleton pe fe P i X (eqtoid (Id→Eq P X q)) q
+  η q = Id-is-prop pe fe P i X (eqtoid (Id→Eq P X q)) q
 
   γ : is-equiv (Id→Eq P X)
   γ = invertibles-are-equivs (Id→Eq P X) (eqtoid , η , ε)
 
-subsingleton-univalence-≃ : propext 𝓤
-                          → dfunext 𝓤 𝓤
-                          → (X P : 𝓤 ̇ )
-                          → is-subsingleton P
-                          → (P ≡ X) ≃ (P ≃ X)
+prop-univalence-gives-propext : prop-univalence 𝓤 → propext 𝓤
+prop-univalence-gives-propext sua {P} {Q} i j f g = δ
+ where
+  γ : P ≃ Q
+  γ = logically-equivalent-subsingletons-are-equivalent P Q i j (f , g)
 
-subsingleton-univalence-≃ pe fe X P i = Id→Eq P X ,
-                                        subsingleton-univalence pe fe P i X
+  δ : P ≡ Q
+  δ = inverse (Id→Eq P Q) (sua P i Q) γ
+
+prop-≃-induction : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+prop-≃-induction 𝓤 𝓥 = (P : 𝓤 ̇ )
+                     → is-prop P
+                     → (A : (X : 𝓤 ̇ ) → P ≃ X → 𝓥 ̇ )
+                     → A P (id-≃ P) → (X : 𝓤 ̇ ) (e : P ≃ X) → A X e
+
+prop-J-equiv : prop-univalence 𝓤
+             → (𝓥 : Universe) → prop-≃-induction 𝓤 𝓥
+prop-J-equiv {𝓤} sua 𝓥 P i A a X e = γ
+ where
+  A' : (X : 𝓤 ̇ ) → P ≡ X → 𝓥 ̇
+  A' X q = A X (Id→Eq P X q)
+
+  f : (X : 𝓤 ̇ ) (q : P ≡ X) → A' X q
+  f = ℍ P A' a
+
+  r : P ≡ X
+  r = inverse (Id→Eq P X) (sua P i X) e
+
+  g : A X (Id→Eq P X r)
+  g = f X r
+
+  γ : A X (id e)
+  γ = transport (A X) (inverses-are-sections (Id→Eq P X) (sua P i X) e) g
+
+prop-precomp-is-equiv : prop-univalence 𝓤
+                      → (X Y Z : 𝓤 ̇ )
+                      → is-prop X
+                      → (f : X → Y)
+                      → is-equiv f
+                      → is-equiv (λ (g : Y → Z) → g ∘ f)
+prop-precomp-is-equiv {𝓤} sua X Y Z i f f-is-equiv =
+   prop-J-equiv sua 𝓤 X i (λ W e → is-equiv (λ g → g ∘ ⌜ e ⌝))
+     (id-is-equiv (X → Z)) Y (f , f-is-equiv)
+
+prop-univalence-gives-props-are-exponential-ideal : prop-univalence 𝓤
+                                                  → (X P : 𝓤 ̇ )
+                                                  → is-prop P
+                                                  → is-prop (X → P)
+
+prop-univalence-gives-props-are-exponential-ideal {𝓤} sua X P i f₀ f₁ = γ
+ where
+  Δ : 𝓤 ̇
+  Δ = Σ p₀ ꞉ P , Σ p₁ ꞉ P , p₀ ≡ p₁
+
+  δ : P → Δ
+  δ p = (p , p , refl p)
+
+  π₀ π₁ : Δ → P
+  π₀ (p₀ , p₁ , p) = p₀
+  π₁ (p₀ , p₁ , p) = p₁
+
+  δ-is-equiv : is-equiv δ
+  δ-is-equiv = invertibles-are-equivs δ (π₀ , η , ε)
+   where
+    η : (p : P) → π₀ (δ p) ≡ p
+    η p = refl p
+
+    ε : (d : Δ) → δ (π₀ d) ≡ d
+    ε (p , p , refl p) = refl (p , p , refl p)
+
+  φ : (Δ → P) → (P → P)
+  φ π = π ∘ δ
+
+  φ-is-equiv : is-equiv φ
+  φ-is-equiv = prop-precomp-is-equiv sua P Δ P i δ δ-is-equiv
+
+  p : φ π₀ ≡ φ π₁
+  p = refl (𝑖𝑑 P)
+
+  q : π₀ ≡ π₁
+  q = equivs-are-lc φ φ-is-equiv p
+
+  h : f₀ ∼ f₁
+  h x = i (f₀ x) (f₁ x)
+
+  γ : f₀ ≡ f₁
+  γ = ap (λ π x → π (f₀ x , f₁ x , h x)) q
 
 Ω : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Ω 𝓤 = Σ P ꞉ 𝓤 ̇ , is-subsingleton P
