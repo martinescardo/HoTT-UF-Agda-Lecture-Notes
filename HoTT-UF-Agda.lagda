@@ -6099,10 +6099,10 @@ funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
   r (h , p) x = transport A (happly (f ∘ h) (𝑖𝑑 X) p x) (pr₂ (h x))
 
   s : Π A → (Σ h ꞉ (X → Σ A), f ∘ h ≡ 𝑖𝑑 X)
-  s φ = (λ x → x , φ x) , refl (𝑖𝑑 X)
+  s ψ = (λ x → x , ψ x) , refl (𝑖𝑑 X)
 
-  η : ∀ φ → r (s φ) ≡ φ
-  η φ = refl (r (s φ))
+  η : ∀ ψ → r (s ψ) ≡ ψ
+  η ψ = refl (r (s ψ))
 
   γ : is-singleton (Π A)
   γ = retract-of-singleton (r , s , η) i
