@@ -6009,9 +6009,35 @@ dfunext-gives-vvfunext fe {X} {A} i = γ
 
   γ : is-singleton (Π A)
   γ = f , c
+
+vvfunext-gives-hfunext : vvfunext 𝓤 𝓥 → hfunext 𝓤 𝓥
+vvfunext-gives-hfunext vfe {X} {Y} f = γ
+ where
+  a : (x : X) → is-singleton (Σ y ꞉ Y x , f x ≡ y)
+  a x = singleton-types'-are-singletons (Y x) (f x)
+
+  c : is-singleton (Π x ꞉ X , Σ y ꞉ Y x , f x ≡ y)
+  c = vfe a
+
+  ρ : (Σ g ꞉ Π Y , f ∼ g) ◁ (Π x ꞉ X , Σ y ꞉ Y x , f x ≡ y)
+  ρ = ≃-gives-▷ ΠΣ-distr-≃
+
+  d : is-singleton (Σ g ꞉ Π Y , f ∼ g)
+  d = retract-of-singleton ρ c
+
+  e : (Σ g ꞉ Π Y , f ≡ g) → (Σ g ꞉ Π Y , f ∼ g)
+  e = NatΣ (happly f)
+
+  i : is-equiv e
+  i = maps-of-singletons-are-equivs e (singleton-types'-are-singletons (Π Y) f) d
+
+  γ : (g : Π Y) → is-equiv (happly f g)
+  γ = NatΣ-equiv-gives-fiberwise-equiv (happly f) i
 \end{code}
 
-We need some lemmas to get `hfunext` from `vvfunext`:
+And finally the seemingly rather weak, non-dependent version `funext`
+implies the seemingly strongest version, which closes the circle of
+logical equivalences. We first need some lemmas.
 
 \begin{code}
 postcomp-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
@@ -6051,37 +6077,6 @@ postcomp-is-equiv fe fe' f e =
   (λ h → f ∘ h)
   (postcomp-invertible fe fe' f (equivs-are-invertible f e))
 
-
-vvfunext-gives-hfunext : vvfunext 𝓤 𝓥 → hfunext 𝓤 𝓥
-vvfunext-gives-hfunext vfe {X} {Y} f = γ
- where
-  a : (x : X) → is-singleton (Σ y ꞉ Y x , f x ≡ y)
-  a x = singleton-types'-are-singletons (Y x) (f x)
-
-  c : is-singleton (Π x ꞉ X , Σ y ꞉ Y x , f x ≡ y)
-  c = vfe a
-
-  ρ : (Σ g ꞉ Π Y , f ∼ g) ◁ (Π x ꞉ X , Σ y ꞉ Y x , f x ≡ y)
-  ρ = ≃-gives-▷ ΠΣ-distr-≃
-
-  d : is-singleton (Σ g ꞉ Π Y , f ∼ g)
-  d = retract-of-singleton ρ c
-
-  e : (Σ g ꞉ Π Y , f ≡ g) → (Σ g ꞉ Π Y , f ∼ g)
-  e = NatΣ (happly f)
-
-  i : is-equiv e
-  i = maps-of-singletons-are-equivs e (singleton-types'-are-singletons (Π Y) f) d
-
-  γ : (g : Π Y) → is-equiv (happly f g)
-  γ = NatΣ-equiv-gives-fiberwise-equiv (happly f) i
-\end{code}
-
-And finally the seemingly rather weak, non-dependent version `funext`
-implies the seemingly strongest version, which closes the circle of
-logical equivalences.
-
-\begin{code}
 funext-gives-vvfunext : funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓤 → vvfunext 𝓤 𝓥
 funext-gives-vvfunext {𝓤} {𝓥} fe fe' {X} {A} φ = γ
  where
