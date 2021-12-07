@@ -7611,10 +7611,10 @@ prop-precomp-is-equiv {𝓤} pu X Y Z i f f-is-equiv =
 We now apply the above lemmas to adapt the above proof that univalence implies function extensionality in order to obtain the following.
 
 \begin{code}
-prop-univalence-gives-props-are-exponential-ideal : prop-univalence 𝓤
+prop-univalence-gives-props-form-exponential-ideal : prop-univalence 𝓤
                                                   → props-form-exponential-ideal 𝓤
 
-prop-univalence-gives-props-are-exponential-ideal {𝓤} pu X A A-is-prop = γ
+prop-univalence-gives-props-form-exponential-ideal {𝓤} pu X A A-is-prop = γ
  where
   Δ : 𝓤 ̇
   Δ = Σ a₀ ꞉ A , Σ a₁ ꞉ A , a₀ ≡ a₁
@@ -7939,7 +7939,7 @@ characterization-of-propositional-univalence {𝓤} = α , β
   α₂ : prop-univalence 𝓤 → props-are-closed-under-Π 𝓤
   α₂ pu = prop-vvfunext-gives-props-are-closed-under-Π
               (props-form-exponential-ideal-gives-vvfunext
-                    (prop-univalence-gives-props-are-exponential-ideal pu))
+                    (prop-univalence-gives-props-form-exponential-ideal pu))
 
   α : prop-univalence 𝓤 → propext 𝓤 × props-are-closed-under-Π 𝓤
   α pu =  α₁ pu , α₂ pu
@@ -7958,7 +7958,7 @@ second-propositional-function-extensionality-agreement {𝓤} pe = α , β
               (props-form-exponential-ideal-gives-vvfunext pei)
 
   β : props-are-closed-under-Π 𝓤 → props-form-exponential-ideal 𝓤
-  β c = prop-univalence-gives-props-are-exponential-ideal
+  β c = prop-univalence-gives-props-form-exponential-ideal
             (propext-and-props-are-closed-under-Π-give-prop-univalence pe c)
 \end{code}
 
