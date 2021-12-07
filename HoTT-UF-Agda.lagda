@@ -7658,16 +7658,16 @@ To prove the converse, we first establish the first propositional function exten
 
 \begin{code}
 props-are-closed-under-Π-gives-prop-vvfunext : props-are-closed-under-Π 𝓤 → prop-vvfunext 𝓤
-props-are-closed-under-Π-gives-prop-vvfunext fe {X} {A} X-is-prop A-is-prop-valued = γ
+props-are-closed-under-Π-gives-prop-vvfunext c {X} {A} X-is-prop A-is-prop-valued = γ
  where
   f : Π A
   f x = center (A x) (A-is-prop-valued x)
 
-  c : (g : Π A) → f ≡ g
-  c = fe X-is-prop (λ (x : X) → singletons-are-subsingletons (A x) (A-is-prop-valued x)) f
+  d : (g : Π A) → f ≡ g
+  d = c X-is-prop (λ (x : X) → singletons-are-subsingletons (A x) (A-is-prop-valued x)) f
 
   γ : is-singleton (Π A)
-  γ = f , c
+  γ = f , d
 
 prop-vvfunext-gives-prop-hfunext : prop-vvfunext 𝓤 → prop-hfunext 𝓤
 prop-vvfunext-gives-prop-hfunext vfe {X} {Y} X-is-prop f = γ
@@ -7698,7 +7698,6 @@ prop-hfunext-gives-props-are-closed-under-Π hfe {X} {A} X-is-prop A-is-prop-val
  where
   γ : f ≡ g
   γ = inverse (happly f g) (hfe X-is-prop f g) (λ x → A-is-prop-valued x (f x) (g x))
-
 \end{code}
 
 With this we can now fulfill the first promise:
@@ -7792,13 +7791,13 @@ Id-of-props-is-prop {𝓤} pe vfe P i = Hedberg P (λ X → h X , k X)
    k : wconstant h
    k p q = ap g (j (f p) (f q))
 
-being-equiv-with-prop-domain-is-prop : props-are-closed-under-Π 𝓤
-                                     → {X Y : 𝓤 ̇ }
-                                     → is-prop X
-                                     → is-prop Y
-                                     → (f : X → Y) → is-prop (is-equiv f)
+being-equiv-of-props-is-prop : props-are-closed-under-Π 𝓤
+                             → {X Y : 𝓤 ̇ }
+                             → is-prop X
+                             → is-prop Y
+                             → (f : X → Y) → is-prop (is-equiv f)
 
-being-equiv-with-prop-domain-is-prop c i j f = c j (λ y → being-singleton-is-prop c)
+being-equiv-of-props-is-prop c i j f = c j (λ y → being-singleton-is-prop c)
 \end{code}
 
 Armed with the above lemmas, we are now in a position to show that propositional extensionality and propositional function extensionality together imply propositional univalence.
@@ -7823,7 +7822,7 @@ propext-and-props-are-closed-under-Π-give-prop-univalence pe c A i X = γ
   m (f₀ , k₀) (f₁ , k₁) = δ
     where
      j : (f : A → X) → is-prop (is-equiv f)
-     j = being-equiv-with-prop-domain-is-prop c i
+     j = being-equiv-of-props-is-prop c i
               (equiv-to-subsingleton (≃-sym (f₀ , k₀)) i)
 
      p : f₀ ≡ f₁
@@ -7849,12 +7848,12 @@ We now need some lemmas to prove the converse. The next two have already been pr
 
 \begin{code}
 prop-postcomp-invertible : {X Y A : 𝓤 ̇ }
-                    → props-form-exponential-ideal 𝓤
-                    → is-prop X
-                    → is-prop Y
-                    → (f : X → Y)
-                    → invertible f
-                    → invertible (λ (h : A → X) → f ∘ h)
+                         → props-form-exponential-ideal 𝓤
+                         → is-prop X
+                         → is-prop Y
+                         → (f : X → Y)
+                         → invertible f
+                         → invertible (λ (h : A → X) → f ∘ h)
 
 prop-postcomp-invertible {𝓤} {X} {Y} {A} pei i j f (g , η , ε) = γ
  where
@@ -7875,12 +7874,12 @@ prop-postcomp-invertible {𝓤} {X} {Y} {A} pei i j f (g , η , ε) = γ
 
 
 prop-postcomp-is-equiv : {X Y A : 𝓤 ̇ }
-                  → props-form-exponential-ideal 𝓤
-                  → is-prop X
-                  → is-prop Y
-                  → (f : X → Y)
-                  → is-equiv f
-                  → is-equiv (λ (h : A → X) → f ∘ h)
+                       → props-form-exponential-ideal 𝓤
+                       → is-prop X
+                       → is-prop Y
+                       → (f : X → Y)
+                       → is-equiv f
+                       → is-equiv (λ (h : A → X) → f ∘ h)
 
 prop-postcomp-is-equiv pei i j f e =
  invertibles-are-equivs

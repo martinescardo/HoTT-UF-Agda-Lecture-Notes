@@ -3820,10 +3820,10 @@ prop-precomp-is-equiv {𝓤} pu X Y Z i f f-is-equiv =
    prop-J-equiv pu 𝓤 X i (λ _ e → is-equiv (λ g → g ∘ ⌜ e ⌝))
      (id-is-equiv (X → Z)) Y (f , f-is-equiv)
 
-prop-univalence-gives-props-are-exponential-ideal : prop-univalence 𝓤
+prop-univalence-gives-props-form-exponential-ideal : prop-univalence 𝓤
                                                   → props-form-exponential-ideal 𝓤
 
-prop-univalence-gives-props-are-exponential-ideal {𝓤} pu X A A-is-prop = γ
+prop-univalence-gives-props-form-exponential-ideal {𝓤} pu X A A-is-prop = γ
  where
   Δ : 𝓤 ̇
   Δ = Σ a₀ ꞉ A , Σ a₁ ꞉ A , a₀ ≡ a₁
@@ -3863,16 +3863,16 @@ prop-univalence-gives-props-are-exponential-ideal {𝓤} pu X A A-is-prop = γ
   γ f₀ f₁ = ap (λ π x → π (f₀ x , f₁ x , h f₀ f₁ x)) q
 
 props-are-closed-under-Π-gives-prop-vvfunext : props-are-closed-under-Π 𝓤 → prop-vvfunext 𝓤
-props-are-closed-under-Π-gives-prop-vvfunext fe {X} {A} X-is-prop A-is-prop-valued = γ
+props-are-closed-under-Π-gives-prop-vvfunext c {X} {A} X-is-prop A-is-prop-valued = γ
  where
   f : Π A
   f x = center (A x) (A-is-prop-valued x)
 
-  c : (g : Π A) → f ≡ g
-  c = fe X-is-prop (λ (x : X) → singletons-are-subsingletons (A x) (A-is-prop-valued x)) f
+  d : (g : Π A) → f ≡ g
+  d = c X-is-prop (λ (x : X) → singletons-are-subsingletons (A x) (A-is-prop-valued x)) f
 
   γ : is-singleton (Π A)
-  γ = f , c
+  γ = f , d
 
 prop-vvfunext-gives-prop-hfunext : prop-vvfunext 𝓤 → prop-hfunext 𝓤
 prop-vvfunext-gives-prop-hfunext vfe {X} {Y} X-is-prop f = γ
@@ -3984,13 +3984,13 @@ Id-of-props-is-prop {𝓤} pe vfe P i = Hedberg P (λ X → h X , k X)
    k : wconstant h
    k p q = ap g (j (f p) (f q))
 
-being-equiv-with-prop-domain-is-prop : props-are-closed-under-Π 𝓤
-                                     → {X Y : 𝓤 ̇ }
-                                     → is-prop X
-                                     → is-prop Y
-                                     → (f : X → Y) → is-prop (is-equiv f)
+being-equiv-of-props-is-prop : props-are-closed-under-Π 𝓤
+                             → {X Y : 𝓤 ̇ }
+                             → is-prop X
+                             → is-prop Y
+                             → (f : X → Y) → is-prop (is-equiv f)
 
-being-equiv-with-prop-domain-is-prop c i j f = c j (λ y → being-singleton-is-prop c)
+being-equiv-of-props-is-prop c i j f = c j (λ y → being-singleton-is-prop c)
 
 propext-and-props-are-closed-under-Π-give-prop-univalence : propext 𝓤
                                                           → props-are-closed-under-Π 𝓤
@@ -4011,7 +4011,7 @@ propext-and-props-are-closed-under-Π-give-prop-univalence pe c A i X = γ
   m (f₀ , k₀) (f₁ , k₁) = δ
     where
      j : (f : A → X) → is-prop (is-equiv f)
-     j = being-equiv-with-prop-domain-is-prop c i
+     j = being-equiv-of-props-is-prop c i
               (equiv-to-subsingleton (≃-sym (f₀ , k₀)) i)
 
      p : f₀ ≡ f₁
@@ -4033,12 +4033,12 @@ propext-and-props-are-closed-under-Π-give-prop-univalence pe c A i X = γ
   γ = invertibles-are-equivs (Id→Eq A X) (eqtoid , η , ε)
 
 prop-postcomp-invertible : {X Y A : 𝓤 ̇ }
-                    → props-form-exponential-ideal 𝓤
-                    → is-prop X
-                    → is-prop Y
-                    → (f : X → Y)
-                    → invertible f
-                    → invertible (λ (h : A → X) → f ∘ h)
+                         → props-form-exponential-ideal 𝓤
+                         → is-prop X
+                         → is-prop Y
+                         → (f : X → Y)
+                         → invertible f
+                         → invertible (λ (h : A → X) → f ∘ h)
 
 prop-postcomp-invertible {𝓤} {X} {Y} {A} pei i j f (g , η , ε) = γ
  where
@@ -4058,12 +4058,12 @@ prop-postcomp-invertible {𝓤} {X} {Y} {A} pei i j f (g , η , ε) = γ
   γ = (g' , η' , ε')
 
 prop-postcomp-is-equiv : {X Y A : 𝓤 ̇ }
-                  → props-form-exponential-ideal 𝓤
-                  → is-prop X
-                  → is-prop Y
-                  → (f : X → Y)
-                  → is-equiv f
-                  → is-equiv (λ (h : A → X) → f ∘ h)
+                       → props-form-exponential-ideal 𝓤
+                       → is-prop X
+                       → is-prop Y
+                       → (f : X → Y)
+                       → is-equiv f
+                       → is-equiv (λ (h : A → X) → f ∘ h)
 
 prop-postcomp-is-equiv pei i j f e =
  invertibles-are-equivs
@@ -4114,7 +4114,7 @@ characterization-of-propositional-univalence {𝓤} = α , β
   α₂ : prop-univalence 𝓤 → props-are-closed-under-Π 𝓤
   α₂ pu = prop-vvfunext-gives-props-are-closed-under-Π
               (props-form-exponential-ideal-gives-vvfunext
-                    (prop-univalence-gives-props-are-exponential-ideal pu))
+                    (prop-univalence-gives-props-form-exponential-ideal pu))
 
   α : prop-univalence 𝓤 → propext 𝓤 × props-are-closed-under-Π 𝓤
   α pu =  α₁ pu , α₂ pu
@@ -4129,7 +4129,7 @@ second-propositional-function-extensionality-agreement {𝓤} pe = α , β
               (props-form-exponential-ideal-gives-vvfunext pei)
 
   β : props-are-closed-under-Π 𝓤 → props-form-exponential-ideal 𝓤
-  β c = prop-univalence-gives-props-are-exponential-ideal
+  β c = prop-univalence-gives-props-form-exponential-ideal
             (propext-and-props-are-closed-under-Π-give-prop-univalence pe c)
 
 id-≃-left : dfunext 𝓥 (𝓤 ⊔ 𝓥)
