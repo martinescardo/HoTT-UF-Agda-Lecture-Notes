@@ -4122,6 +4122,16 @@ characterization-of-propositional-univalence {𝓤} = α , β
   β : propext 𝓤 × props-are-closed-under-Π 𝓤 → prop-univalence 𝓤
   β (pe , fe) = propext-and-props-are-closed-under-Π-give-prop-univalence pe fe
 
+propext-and-props-closed-under-Π-give-props-form-exponential-ideal :
+
+    propext 𝓤
+  → props-are-closed-under-Π 𝓤
+  → props-form-exponential-ideal 𝓤
+
+propext-and-props-closed-under-Π-give-props-form-exponential-ideal pe c =
+  prop-univalence-gives-props-form-exponential-ideal
+      (propext-and-props-are-closed-under-Π-give-prop-univalence pe c)
+
 second-propositional-function-extensionality-agreement {𝓤} pe = α , β
  where
   α : props-form-exponential-ideal 𝓤 → props-are-closed-under-Π 𝓤
@@ -4129,8 +4139,7 @@ second-propositional-function-extensionality-agreement {𝓤} pe = α , β
               (props-form-exponential-ideal-gives-vvfunext pei)
 
   β : props-are-closed-under-Π 𝓤 → props-form-exponential-ideal 𝓤
-  β c = prop-univalence-gives-props-form-exponential-ideal
-            (propext-and-props-are-closed-under-Π-give-prop-univalence pe c)
+  β = propext-and-props-closed-under-Π-give-props-form-exponential-ideal pe
 
 id-≃-left : dfunext 𝓥 (𝓤 ⊔ 𝓥)
           → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
