@@ -3821,7 +3821,7 @@ prop-precomp-is-equiv {𝓤} pu X Y Z i f f-is-equiv =
      (id-is-equiv (X → Z)) Y (f , f-is-equiv)
 
 prop-univalence-gives-props-form-exponential-ideal : prop-univalence 𝓤
-                                                  → props-form-exponential-ideal 𝓤
+                                                   → props-form-exponential-ideal 𝓤
 
 prop-univalence-gives-props-form-exponential-ideal {𝓤} pu X A A-is-prop = γ
  where

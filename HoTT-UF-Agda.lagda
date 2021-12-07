@@ -7543,7 +7543,7 @@ second-propositional-function-extensionality-agreement :
 
 The proof is again postponed, and this time there is a twist: we use a detour via propositional univalence to prove this.
 
-*Question.* Does propositional function extensionality, perhaps in the presence of propositional extensionality, imply full function extensionality?
+*Question.* Does propositional function extensionality, in any of the above four incrnations, perhaps in the presence of propositional extensionality, imply full function extensionality?
 
 Notice that `props-form-exponential-ideal` requires `A` to be a proposition, but not `X`, whereas `prop-hfunext` requires `X` to be a proposition but not `A x`, while the other two versions require both `X` and `A(x)` to be propositions, and yet all versions are equivalent under propositional extensionality. Given this, a positive answer to the above question is not unlikely. We leave this as an open problem.
 
