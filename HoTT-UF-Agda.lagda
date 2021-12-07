@@ -429,8 +429,8 @@ to practice univalent mathematics should consult the above references.
      1. [More consequences of function extensionality](HoTT-UF-Agda.html#morefunextuses)
      1. [Propositional extensionality](HoTT-UF-Agda.html#propositionalextensionality)
         1. [The propositional extensionality axiom](HoTT-UF-Agda.html#propositionalextensionalityaxiom)
-        1. [Propositional extensionality, function extensionality and propositional univalence](HoTT-UF-Agda.html#propextfunextpropunivalence)
         1. [Propositional extensionality and the powerset](HoTT-UF-Agda.html#powerset)
+        1. [A characterization of propositional univalence](HoTT-UF-Agda.html#propextfunextpropunivalence)
      1. [Some constructions with types of equivalences](HoTT-UF-Agda.html#equivconstructions)
      1. [Type embeddings](HoTT-UF-Agda.html#embeddings)
      1. [The Yoneda Lemma for types](HoTT-UF-Agda.html#yoneda)
@@ -6047,7 +6047,7 @@ postcomp-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
                     → invertible f
                     → invertible (λ (h : A → X) → f ∘ h)
 
-postcomp-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {A} nfe nfe' f (g , η , ε) = γ
+postcomp-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {A} fe fe' f (g , η , ε) = γ
  where
   f' : (A → X) → (A → Y)
   f' h = f ∘ h
@@ -6056,10 +6056,10 @@ postcomp-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {A} nfe nfe' f (g , η , ε) = 
   g' k = g ∘ k
 
   η' : (h : A → X) → g' (f' h) ≡ h
-  η' h = nfe (η ∘ h)
+  η' h = fe (η ∘ h)
 
   ε' : (k : A → Y) → f' (g' k) ≡ k
-  ε' k = nfe' (ε ∘ k)
+  ε' k = fe' (ε ∘ k)
 
   γ : invertible f'
   γ = (g' , η' , ε')
@@ -6285,8 +6285,7 @@ prove some generally useful lemmas first.
 
 
 being-singleton-is-subsingleton : dfunext 𝓤 𝓤
-                                → {X : 𝓤 ̇ }
-                                → is-subsingleton (is-singleton X)
+                                → {X : 𝓤 ̇ } → is-subsingleton (is-singleton X)
 
 being-singleton-is-subsingleton fe {X} (x , φ) (y , γ) = p
  where
@@ -7303,180 +7302,6 @@ univalence-gives-propext ua {P} {Q} i j f g = Eq→Id ua P Q γ
   γ = logically-equivalent-subsingletons-are-equivalent P Q i j (f , g)
 \end{code}
 
-
-[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
-### <a id="propextfunextpropunivalence"></a> Propositional extensionality, function extensionality and propositional univalence
-
-We now show that the following form of propositional univalence is implied by propositional and functional extensionality, and also discuss the converse.
-
-\begin{code}
-prop-univalence : (𝓤 : Universe) → 𝓤 ⁺ ̇
-prop-univalence 𝓤 = (P : 𝓤 ̇ ) → is-prop P → (X : 𝓤 ̇ ) → is-equiv (Id→Eq P X)
-\end{code}
-
-We first need a lemma.
-
-\begin{code}
-Id-is-prop : propext 𝓤
-           → dfunext 𝓤 𝓤
-           → (P : 𝓤 ̇ )
-           → is-prop P
-           → (X : 𝓤 ̇ ) → is-prop (P ≡ X)
-
-Id-is-prop {𝓤} pe fe P i = Hedberg P (λ X → h X , k X)
- where
-  module _ (X : 𝓤 ̇ ) where
-   f : P ≡ X → is-prop X × (P ⇔ X)
-   f p = transport is-prop p i , Id→fun p , (Id→fun (p ⁻¹))
-
-   g : is-prop X × (P ⇔ X) → P ≡ X
-   g (l , φ , ψ) = pe i l φ ψ
-
-   h : P ≡ X → P ≡ X
-   h = g ∘ f
-
-   j : is-prop (is-prop X × (P ⇔ X))
-   j = ×-is-subsingleton'
-        ((λ (_ : P ⇔ X) → being-subsingleton-is-subsingleton fe) ,
-         (λ (l : is-prop X) → ×-is-subsingleton
-                               (Π-is-subsingleton fe (λ p → l))
-                               (Π-is-subsingleton fe (λ x → i))))
-   k : wconstant h
-   k p q = ap g (j (f p) (f q))
-
-propext-and-dfunext-give-prop-univalence : propext 𝓤
-                                         → dfunext 𝓤 𝓤
-                                         → prop-univalence 𝓤
-
-propext-and-dfunext-give-prop-univalence pe fe P i X = γ
- where
-  l : P ≃ X → is-subsingleton X
-  l e = equiv-to-subsingleton (≃-sym e) i
-
-  eqtoid : P ≃ X → P ≡ X
-  eqtoid e = pe i (equiv-to-subsingleton (≃-sym e) i)
-                  ⌜ e ⌝ ⌜ ≃-sym e ⌝
-
-  m : is-subsingleton (P ≃ X)
-  m (f , k) (f' , k') = to-subtype-≡
-                          (being-equiv-is-subsingleton fe fe)
-                          (fe (λ x → j (f x) (f' x)))
-    where
-     j : is-subsingleton X
-     j = equiv-to-subsingleton (≃-sym (f , k)) i
-
-  ε : (e : P ≃ X) → Id→Eq P X (eqtoid e) ≡ e
-  ε e = m (Id→Eq P X (eqtoid e)) e
-
-  η : (q : P ≡ X) → eqtoid (Id→Eq P X q) ≡ q
-  η q = Id-is-prop pe fe P i X (eqtoid (Id→Eq P X q)) q
-
-  γ : is-equiv (Id→Eq P X)
-  γ = invertibles-are-equivs (Id→Eq P X) (eqtoid , η , ε)
-\end{code}
-
-Conversely, if propositional univalence holds, then full propositional extensionality holds and a restricted form of function extensionality holds, namely that the propositions for an exponential ideal.
-
-\begin{code}
-prop-univalence-gives-propext : prop-univalence 𝓤 → propext 𝓤
-prop-univalence-gives-propext pu {P} {Q} i j f g = δ
- where
-  γ : P ≃ Q
-  γ = logically-equivalent-subsingletons-are-equivalent P Q i j (f , g)
-
-  δ : P ≡ Q
-  δ = inverse (Id→Eq P Q) (pu P i Q) γ
-\end{code}
-
-To show that propositional univalence implies that the propositions form an exponential ideal, we first need some lemmas.
-
-\begin{code}
-prop-≃-induction : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
-prop-≃-induction 𝓤 𝓥 = (P : 𝓤 ̇ )
-                     → is-prop P
-                     → (A : (X : 𝓤 ̇ ) → P ≃ X → 𝓥 ̇ )
-                     → A P (id-≃ P) → (X : 𝓤 ̇ ) (e : P ≃ X) → A X e
-
-prop-J-equiv : prop-univalence 𝓤
-             → (𝓥 : Universe) → prop-≃-induction 𝓤 𝓥
-prop-J-equiv {𝓤} pu 𝓥 P i A a X e = γ
- where
-  A' : (X : 𝓤 ̇ ) → P ≡ X → 𝓥 ̇
-  A' X q = A X (Id→Eq P X q)
-
-  f : (X : 𝓤 ̇ ) (q : P ≡ X) → A' X q
-  f = ℍ P A' a
-
-  r : P ≡ X
-  r = inverse (Id→Eq P X) (pu P i X) e
-
-  g : A X (Id→Eq P X r)
-  g = f X r
-
-  γ : A X (id e)
-  γ = transport (A X) (inverses-are-sections (Id→Eq P X) (pu P i X) e) g
-
-prop-precomp-is-equiv : prop-univalence 𝓤
-                      → (X Y Z : 𝓤 ̇ )
-                      → is-prop X
-                      → (f : X → Y)
-                      → is-equiv f
-                      → is-equiv (λ (g : Y → Z) → g ∘ f)
-prop-precomp-is-equiv {𝓤} pu X Y Z i f f-is-equiv =
-   prop-J-equiv pu 𝓤 X i (λ _ e → is-equiv (λ g → g ∘ ⌜ e ⌝))
-     (id-is-equiv (X → Z)) Y (f , f-is-equiv)
-\end{code}
-
-We now adapt the above proof that univalence implies function extensionality using the above lemmas.
-
-\begin{code}
-prop-univalence-gives-props-are-exponential-ideal : prop-univalence 𝓤
-                                                  → (X P : 𝓤 ̇ )
-                                                  → is-prop P
-                                                  → is-prop (X → P)
-
-prop-univalence-gives-props-are-exponential-ideal {𝓤} pu X P i f₀ f₁ = γ
- where
-  Δ : 𝓤 ̇
-  Δ = Σ p₀ ꞉ P , Σ p₁ ꞉ P , p₀ ≡ p₁
-
-  δ : P → Δ
-  δ p = (p , p , refl p)
-
-  π₀ π₁ : Δ → P
-  π₀ (p₀ , p₁ , p) = p₀
-  π₁ (p₀ , p₁ , p) = p₁
-
-  δ-is-equiv : is-equiv δ
-  δ-is-equiv = invertibles-are-equivs δ (π₀ , η , ε)
-   where
-    η : (p : P) → π₀ (δ p) ≡ p
-    η p = refl p
-
-    ε : (d : Δ) → δ (π₀ d) ≡ d
-    ε (p , p , refl p) = refl (p , p , refl p)
-
-  φ : (Δ → P) → (P → P)
-  φ π = π ∘ δ
-
-  φ-is-equiv : is-equiv φ
-  φ-is-equiv = prop-precomp-is-equiv pu P Δ P i δ δ-is-equiv
-
-  p : φ π₀ ≡ φ π₁
-  p = refl (𝑖𝑑 P)
-
-  q : π₀ ≡ π₁
-  q = equivs-are-lc φ φ-is-equiv p
-
-  h : f₀ ∼ f₁
-  h x = i (f₀ x) (f₁ x)
-
-  γ : f₀ ≡ f₁
-  γ = ap (λ π x → π (f₀ x , f₁ x , h x)) q
-\end{code}
-
-*Open problem*. Does propositional univalence imply full function extensionality? To establish this, it is enough to show that it implies that the type `(x : X) → P x` is a proposition for every `X : 𝓤` and every family `P : X → 𝓤` of propositions, because this clearly implies `vvfunext`, which, as we have seen, implies all forms of function extensionality that we have discussed so far.
-
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="powerset"></a> Propositional extensionality and the powerset
 
@@ -7651,6 +7476,495 @@ needed. A noteworthy exception is the theorem that the type of
 ordinals in a universe is an ordinal in the next universe, which
 requires univalence for sets (see the HoTT book or
 [this](https://www.cs.bham.ac.uk/~mhe/TypeTopology/OrdinalOfOrdinals.html)).
+
+[<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
+### <a id="propextfunextpropunivalence"></a> A characterization of propositional univalence
+
+This section is not needed anywhere else and can be safely skipped. We characterize propositional univalence in terms of propositional extensionality and a restricted form of functional extensionality.
+
+By propositional extensionality we mean any of the following two equivalent notion.
+
+\begin{code}
+prop-univalence prop-univalence' : (𝓤 : Universe) → 𝓤 ⁺ ̇
+prop-univalence  𝓤 = (A : 𝓤 ̇ ) → is-prop A → (X : 𝓤 ̇ ) → is-equiv (Id→Eq A X)
+prop-univalence' 𝓤 = (A : 𝓤 ̇ ) → is-prop A → (X : 𝓤 ̇ ) → is-prop X → is-equiv (Id→Eq A X)
+
+prop-univalence-agreement : prop-univalence' 𝓤 ⇔ prop-univalence 𝓤
+prop-univalence-agreement = (λ pu' A i X e → pu' A i X (equiv-to-subsingleton (≃-sym e) i) e) ,
+                            (λ pu  A i X _ → pu  A i X)
+\end{code}
+
+The restricted form of function extensionality is given by any of the following four notions, which are equivalent under propositional extensionality and have the following types:
+
+\begin{code}
+
+props-form-exponential-ideal
+ props-are-closed-under-Π
+ prop-vvfunext
+ prop-hfunext : ∀ 𝓤 → 𝓤 ⁺ ̇
+
+\end{code}
+
+They are defined as follows.
+
+\begin{code}
+
+props-form-exponential-ideal 𝓤 = (X A : 𝓤 ̇ ) → is-prop A → is-prop (X → A)
+
+props-are-closed-under-Π 𝓤 = {X : 𝓤 ̇ } {A : X → 𝓤 ̇ }
+                           → is-prop X
+                           → ((x : X) → is-prop (A x))
+                           → is-prop (Π A)
+
+prop-vvfunext 𝓤 = {X : 𝓤 ̇ } {A : X → 𝓤 ̇ }
+                → is-prop X
+                → ((x : X) → is-singleton (A x))
+                → is-singleton (Π A)
+
+prop-hfunext 𝓤 = {X : 𝓤 ̇ } {A : X → 𝓤 ̇ }
+               → is-prop X
+               → (f g : Π A) → is-equiv (happly f g)
+\end{code}
+
+The last three agree unconditionally:
+
+\begin{code}
+first-propositional-function-extensionality-agreement :
+
+    (props-are-closed-under-Π 𝓤 → prop-vvfunext 𝓤)
+  × (prop-vvfunext 𝓤            → prop-hfunext 𝓤)
+  × (prop-hfunext 𝓤             → props-are-closed-under-Π 𝓤)
+\end{code}
+
+The proof is postponed. Moreover, as already mentioned, the four of them agree under propositional extensionality.
+
+\begin{code}
+second-propositional-function-extensionality-agreement :
+
+    propext 𝓤 → (props-form-exponential-ideal 𝓤 ⇔ props-are-closed-under-Π 𝓤)
+\end{code}
+
+The proof is again postponed, and this time there is a twist: we use a detour via propositional univalence to prove this.
+
+*Question.* Does propositional function extensionality, perhaps in the presence of propositional extensionality, imply full function extensionality?
+
+Notice that `props-form-exponential-ideal` requires `A` to be a proposition, but not `X`, whereas `prop-hfunext` requires `X` to be a proposition but not `A x`, while the other two versions require both `X` and `A(x)` to be propositions, and yet all versions are equivalent under propositional extensionality. Given this, a positive answer to the above question is not unlikely. We leave this as an open problem.
+
+The following is the main theorem of this section, where the notion `props-form-an-exponential-ideal` plays a crucial role.
+
+\begin{code}
+characterization-of-propositional-univalence : prop-univalence 𝓤
+                                             ⇔ (propext 𝓤 × props-are-closed-under-Π 𝓤)
+\end{code}
+
+The remainder of this section is devoted to prove this, which has the second propositional functional extensionality agreement, but relies on the first agreement.
+
+It is direct that propositional univalence implies propositional extensionality.
+
+\begin{code}
+prop-univalence-gives-propext : prop-univalence 𝓤 → propext 𝓤
+prop-univalence-gives-propext pu {P} {Q} i j f g = δ
+ where
+  γ : P ≃ Q
+  γ = logically-equivalent-subsingletons-are-equivalent P Q i j (f , g)
+
+  δ : P ≡ Q
+  δ = inverse (Id→Eq P Q) (pu P i Q) γ
+\end{code}
+
+To show that propositional univalence implies that the propositions form an exponential ideal, we first need some lemmas.
+
+\begin{code}
+prop-≃-induction : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+prop-≃-induction 𝓤 𝓥 = (P : 𝓤 ̇ )
+                     → is-prop P
+                     → (A : (X : 𝓤 ̇ ) → P ≃ X → 𝓥 ̇ )
+                     → A P (id-≃ P) → (X : 𝓤 ̇ ) (e : P ≃ X) → A X e
+
+prop-J-equiv : prop-univalence 𝓤
+             → (𝓥 : Universe) → prop-≃-induction 𝓤 𝓥
+prop-J-equiv {𝓤} pu 𝓥 P i A a X e = γ
+ where
+  A' : (X : 𝓤 ̇ ) → P ≡ X → 𝓥 ̇
+  A' X q = A X (Id→Eq P X q)
+
+  f : (X : 𝓤 ̇ ) (q : P ≡ X) → A' X q
+  f = ℍ P A' a
+
+  r : P ≡ X
+  r = inverse (Id→Eq P X) (pu P i X) e
+
+  g : A X (Id→Eq P X r)
+  g = f X r
+
+  γ : A X (id e)
+  γ = transport (A X) (inverses-are-sections (Id→Eq P X) (pu P i X) e) g
+
+prop-precomp-is-equiv : prop-univalence 𝓤
+                      → (X Y Z : 𝓤 ̇ )
+                      → is-prop X
+                      → (f : X → Y)
+                      → is-equiv f
+                      → is-equiv (λ (g : Y → Z) → g ∘ f)
+prop-precomp-is-equiv {𝓤} pu X Y Z i f f-is-equiv =
+   prop-J-equiv pu 𝓤 X i (λ _ e → is-equiv (λ g → g ∘ ⌜ e ⌝))
+     (id-is-equiv (X → Z)) Y (f , f-is-equiv)
+\end{code}
+
+We now apply the above lemmas to adapt the above proof that univalence implies function extensionality in order to obtain the following.
+
+\begin{code}
+prop-univalence-gives-props-are-exponential-ideal : prop-univalence 𝓤
+                                                  → props-form-exponential-ideal 𝓤
+
+prop-univalence-gives-props-are-exponential-ideal {𝓤} pu X A A-is-prop = γ
+ where
+  Δ : 𝓤 ̇
+  Δ = Σ a₀ ꞉ A , Σ a₁ ꞉ A , a₀ ≡ a₁
+
+  δ : A → Δ
+  δ a = (a , a , refl a)
+
+  π₀ π₁ : Δ → A
+  π₀ (a₀ , a₁ , a) = a₀
+  π₁ (a₀ , a₁ , a) = a₁
+
+  δ-is-equiv : is-equiv δ
+  δ-is-equiv = invertibles-are-equivs δ (π₀ , η , ε)
+   where
+    η : (a : A) → π₀ (δ a) ≡ a
+    η a = refl a
+
+    ε : (d : Δ) → δ (π₀ d) ≡ d
+    ε (a , a , refl a) = refl (a , a , refl a)
+
+  φ : (Δ → A) → (A → A)
+  φ π = π ∘ δ
+
+  φ-is-equiv : is-equiv φ
+  φ-is-equiv = prop-precomp-is-equiv pu A Δ A A-is-prop δ δ-is-equiv
+
+  p : φ π₀ ≡ φ π₁
+  p = refl (𝑖𝑑 A)
+
+  q : π₀ ≡ π₁
+  q = equivs-are-lc φ φ-is-equiv p
+
+  h : (f₀ f₁ : X → A) → f₀ ∼ f₁
+  h f₀ f₁ x = A-is-prop (f₀ x) (f₁ x)
+
+  γ : (f₀ f₁ : X → A) → f₀ ≡ f₁
+  γ f₀ f₁ = ap (λ π x → π (f₀ x , f₁ x , h f₀ f₁ x)) q
+\end{code}
+
+To prove the converse, we first establish the first propositional function extensionality agreement, in a number of steps. For this purpose we adapt some proofs regarding the various notions of (full) function extensionality.
+
+\begin{code}
+props-are-closed-under-Π-gives-prop-vvfunext : props-are-closed-under-Π 𝓤 → prop-vvfunext 𝓤
+props-are-closed-under-Π-gives-prop-vvfunext fe {X} {A} X-is-prop A-is-prop-valued = γ
+ where
+  f : Π A
+  f x = center (A x) (A-is-prop-valued x)
+
+  c : (g : Π A) → f ≡ g
+  c = fe X-is-prop (λ (x : X) → singletons-are-subsingletons (A x) (A-is-prop-valued x)) f
+
+  γ : is-singleton (Π A)
+  γ = f , c
+
+prop-vvfunext-gives-prop-hfunext : prop-vvfunext 𝓤 → prop-hfunext 𝓤
+prop-vvfunext-gives-prop-hfunext vfe {X} {Y} X-is-prop f = γ
+ where
+  a : (x : X) → is-singleton (Σ y ꞉ Y x , f x ≡ y)
+  a x = singleton-types'-are-singletons (Y x) (f x)
+
+  c : is-singleton (Π x ꞉ X , Σ y ꞉ Y x , f x ≡ y)
+  c = vfe X-is-prop a
+
+  ρ : (Σ g ꞉ Π Y , f ∼ g) ◁ (Π x ꞉ X , Σ y ꞉ Y x , f x ≡ y)
+  ρ = ≃-gives-▷ ΠΣ-distr-≃
+
+  d : is-singleton (Σ g ꞉ Π Y , f ∼ g)
+  d = retract-of-singleton ρ c
+
+  e : (Σ g ꞉ Π Y , f ≡ g) → (Σ g ꞉ Π Y , f ∼ g)
+  e = NatΣ (happly f)
+
+  i : is-equiv e
+  i = maps-of-singletons-are-equivs e (singleton-types'-are-singletons (Π Y) f) d
+
+  γ : (g : Π Y) → is-equiv (happly f g)
+  γ = NatΣ-equiv-gives-fiberwise-equiv (happly f) i
+
+prop-hfunext-gives-props-are-closed-under-Π : prop-hfunext 𝓤 → props-are-closed-under-Π 𝓤
+prop-hfunext-gives-props-are-closed-under-Π hfe {X} {A} X-is-prop A-is-prop-valued f g = γ
+ where
+  γ : f ≡ g
+  γ = inverse (happly f g) (hfe X-is-prop f g) (λ x → A-is-prop-valued x (f x) (g x))
+
+\end{code}
+
+With this we can now fulfill the first promise:
+
+\begin{code}
+first-propositional-function-extensionality-agreement =
+  props-are-closed-under-Π-gives-prop-vvfunext ,
+  prop-vvfunext-gives-prop-hfunext ,
+  prop-hfunext-gives-props-are-closed-under-Π
+\end{code}
+
+We have already proved the following lemma `being-prop-is-prop`, as `being-subsingleton-is-subsingleton`, but under the stronger assumption `vvfunext`. The proof is almost, but not literally, the same, and needs some of the above lemmas.
+
+\begin{code}
+prop-vvfunext-gives-props-are-closed-under-Π : prop-vvfunext 𝓤 → props-are-closed-under-Π 𝓤
+prop-vvfunext-gives-props-are-closed-under-Π vfe =
+    prop-hfunext-gives-props-are-closed-under-Π (prop-vvfunext-gives-prop-hfunext vfe)
+
+being-prop-is-prop : prop-vvfunext 𝓤
+                   → {X : 𝓤 ̇ } → is-prop (is-prop X)
+
+being-prop-is-prop vfe {X} i j = γ
+ where
+  k : is-set X
+  k = subsingletons-are-sets X i
+
+  a : (x y : X) → i x y ≡ j x y
+  a x y = k x y (i x y) (j x y)
+
+  b : (x : X) → i x ≡ j x
+  b x = prop-vvfunext-gives-props-are-closed-under-Π vfe i
+            (subsingletons-are-sets X i x) (i x) (j x)
+
+  c : (x : X) → is-prop ((y : X) → x ≡ y)
+  c x = singletons-are-subsingletons ((y : X) → x ≡ y)
+            (vfe i (λ y → pointed-subsingletons-are-singletons (x ≡ y) (i x y) (k x y)))
+
+  γ : i ≡ j
+  γ = prop-vvfunext-gives-props-are-closed-under-Π vfe i c i j
+\end{code}
+
+Similarly, we have already proved the following, as `being-singleton-is-subsingleton`, under the stronger assumption `dfunext`.
+
+\begin{code}
+being-singleton-is-prop : props-are-closed-under-Π 𝓤
+                        →  {X : 𝓤 ̇ } → is-prop (is-singleton X)
+
+being-singleton-is-prop c {X} (x , φ) (y , γ) = p
+ where
+  i : is-subsingleton X
+  i = singletons-are-subsingletons X (y , γ)
+
+  s : is-set X
+  s = subsingletons-are-sets X i
+
+  a : (z : X) → is-subsingleton ((t : X) → z ≡ t)
+  a z = c i (λ x → s z x)
+
+  b : x ≡ y
+  b = φ y
+
+  p : (x , φ) ≡ (y , γ)
+  p = to-subtype-≡ a b
+
+Id-of-props-is-prop : propext 𝓤
+                    → prop-vvfunext 𝓤
+                    → (P : 𝓤 ̇ )
+                    → is-prop P
+                    → (X : 𝓤 ̇ ) → is-prop (P ≡ X)
+
+Id-of-props-is-prop {𝓤} pe vfe P i = Hedberg P (λ X → h X , k X)
+ where
+  module _ (X : 𝓤 ̇ ) where
+   f : P ≡ X → is-prop X × (P ⇔ X)
+   f p = transport is-prop p i , Id→fun p , (Id→fun (p ⁻¹))
+
+   g : is-prop X × (P ⇔ X) → P ≡ X
+   g (l , φ , ψ) = pe i l φ ψ
+
+   h : P ≡ X → P ≡ X
+   h = g ∘ f
+
+   j : is-prop (is-prop X × (P ⇔ X))
+   j = ×-is-subsingleton'
+        ((λ (_ : P ⇔ X) → being-prop-is-prop vfe) ,
+         (λ (l : is-prop X)
+               → ×-is-subsingleton
+                  (prop-vvfunext-gives-props-are-closed-under-Π vfe i (λ _ → l))
+                  (prop-vvfunext-gives-props-are-closed-under-Π vfe l (λ _ → i))))
+
+   k : wconstant h
+   k p q = ap g (j (f p) (f q))
+
+being-equiv-with-prop-domain-is-prop : props-are-closed-under-Π 𝓤
+                                     → {X Y : 𝓤 ̇ }
+                                     → is-prop X
+                                     → is-prop Y
+                                     → (f : X → Y) → is-prop (is-equiv f)
+
+being-equiv-with-prop-domain-is-prop c i j f = c j (λ y → being-singleton-is-prop c)
+\end{code}
+
+Armed with the above lemmas, we are now in a position to show that propositional extensionality and propositional function extensionality together imply propositional univalence.
+
+\begin{code}
+propext-and-props-are-closed-under-Π-give-prop-univalence : propext 𝓤
+                                                          → props-are-closed-under-Π 𝓤
+                                                          → prop-univalence 𝓤
+
+propext-and-props-are-closed-under-Π-give-prop-univalence pe c A i X = γ
+ where
+  l : A ≃ X → is-subsingleton X
+  l e = equiv-to-subsingleton (≃-sym e) i
+
+  eqtoid : A ≃ X → A ≡ X
+  eqtoid e = pe i
+                (equiv-to-subsingleton (≃-sym e) i)
+                ⌜ e ⌝
+                ⌜ ≃-sym e ⌝
+
+  m : is-subsingleton (A ≃ X)
+  m (f₀ , k₀) (f₁ , k₁) = δ
+    where
+     j : (f : A → X) → is-prop (is-equiv f)
+     j = being-equiv-with-prop-domain-is-prop c i
+              (equiv-to-subsingleton (≃-sym (f₀ , k₀)) i)
+
+     p : f₀ ≡ f₁
+     p = c i (λ (a : A) → l (f₁ , k₁)) f₀ f₁
+
+     δ : (f₀ , k₀) ≡ (f₁ , k₁)
+     δ = to-subtype-≡ j p
+
+  ε : (e : A ≃ X) → Id→Eq A X (eqtoid e) ≡ e
+  ε e = m (Id→Eq A X (eqtoid e)) e
+
+  η : (q : A ≡ X) → eqtoid (Id→Eq A X q) ≡ q
+  η q = Id-of-props-is-prop pe
+          (props-are-closed-under-Π-gives-prop-vvfunext c)
+          A i X
+          (eqtoid (Id→Eq A X q)) q
+
+  γ : is-equiv (Id→Eq A X)
+  γ = invertibles-are-equivs (Id→Eq A X) (eqtoid , η , ε)
+\end{code}
+
+We now need some lemmas to prove the converse. The next two have already been proved under different hypotheses.
+
+\begin{code}
+prop-postcomp-invertible : {X Y A : 𝓤 ̇ }
+                    → props-form-exponential-ideal 𝓤
+                    → is-prop X
+                    → is-prop Y
+                    → (f : X → Y)
+                    → invertible f
+                    → invertible (λ (h : A → X) → f ∘ h)
+
+prop-postcomp-invertible {𝓤} {X} {Y} {A} pei i j f (g , η , ε) = γ
+ where
+  f' : (A → X) → (A → Y)
+  f' h = f ∘ h
+
+  g' : (A → Y) → (A → X)
+  g' k = g ∘ k
+
+  η' : (h : A → X) → g' (f' h) ≡ h
+  η' h = pei A X i (g' (f' h)) h
+
+  ε' : (k : A → Y) → f' (g' k) ≡ k
+  ε' k = pei A Y j (f' (g' k)) k
+
+  γ : invertible f'
+  γ = (g' , η' , ε')
+
+
+prop-postcomp-is-equiv : {X Y A : 𝓤 ̇ }
+                  → props-form-exponential-ideal 𝓤
+                  → is-prop X
+                  → is-prop Y
+                  → (f : X → Y)
+                  → is-equiv f
+                  → is-equiv (λ (h : A → X) → f ∘ h)
+
+prop-postcomp-is-equiv pei i j f e =
+ invertibles-are-equivs
+  (λ h → f ∘ h)
+  (prop-postcomp-invertible pei i j f (equivs-are-invertible f e))
+\end{code}
+
+The following shows that `props-form-exponential-ideal` is stronger than `prop-vvfunext` (and perhaps properly stronger in the absence of propositional extensionality).
+
+\begin{code}
+props-form-exponential-ideal-gives-vvfunext : props-form-exponential-ideal 𝓤 → prop-vvfunext 𝓤
+props-form-exponential-ideal-gives-vvfunext {𝓤} pei {X} {A} X-is-prop φ = γ
+ where
+  f : Σ A → X
+  f = pr₁
+
+  A-is-prop-valued : (x : X) → is-prop (A x)
+  A-is-prop-valued x = singletons-are-subsingletons (A x) (φ x)
+
+  k : is-prop (Σ A)
+  k = Σ-is-subsingleton X-is-prop A-is-prop-valued
+
+  f-is-equiv : is-equiv f
+  f-is-equiv = pr₁-is-equiv φ
+
+  g : (X → Σ A) → (X → X)
+  g h = f ∘ h
+
+  e : is-equiv g
+  e = prop-postcomp-is-equiv pei k X-is-prop f f-is-equiv
+
+  i : is-singleton (Σ h ꞉ (X → Σ A), f ∘ h ≡ 𝑖𝑑 X)
+  i = e (𝑖𝑑 X)
+
+  r : (Σ h ꞉ (X → Σ A), f ∘ h ≡ 𝑖𝑑 X) → Π A
+  r (h , p) x = transport A (happly (f ∘ h) (𝑖𝑑 X) p x) (pr₂ (h x))
+
+  s : Π A → (Σ h ꞉ (X → Σ A), f ∘ h ≡ 𝑖𝑑 X)
+  s ψ = (λ x → x , ψ x) , refl (𝑖𝑑 X)
+
+  η : ∀ ψ → r (s ψ) ≡ ψ
+  η ψ = refl (r (s ψ))
+
+  γ : is-singleton (Π A)
+  γ = retract-of-singleton (r , s , η) i
+
+\end{code}
+
+And with this we can complete the proof of the main theorem of this section, formulated above in Agda.
+
+\begin{code}
+characterization-of-propositional-univalence {𝓤} = α , β
+ where
+  α₁ : prop-univalence 𝓤 → propext 𝓤
+  α₁ = prop-univalence-gives-propext
+
+  α₂ : prop-univalence 𝓤 → props-are-closed-under-Π 𝓤
+  α₂ pu = prop-vvfunext-gives-props-are-closed-under-Π
+              (props-form-exponential-ideal-gives-vvfunext
+                    (prop-univalence-gives-props-are-exponential-ideal pu))
+
+  α : prop-univalence 𝓤 → propext 𝓤 × props-are-closed-under-Π 𝓤
+  α pu =  α₁ pu , α₂ pu
+
+  β : propext 𝓤 × props-are-closed-under-Π 𝓤 → prop-univalence 𝓤
+  β (pe , fe) = propext-and-props-are-closed-under-Π-give-prop-univalence pe fe
+\end{code}
+
+And we can also fulfill the second promise again using `prop-univalence-gives-props-are-exponential-ideal`.
+
+\begin{code}
+second-propositional-function-extensionality-agreement {𝓤} pe = α , β
+ where
+  α : props-form-exponential-ideal 𝓤 → props-are-closed-under-Π 𝓤
+  α pei = prop-vvfunext-gives-props-are-closed-under-Π
+              (props-form-exponential-ideal-gives-vvfunext pei)
+
+  β : props-are-closed-under-Π 𝓤 → props-form-exponential-ideal 𝓤
+  β c = prop-univalence-gives-props-are-exponential-ideal
+            (propext-and-props-are-closed-under-Π-give-prop-univalence pe c)
+\end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="equivconstructions"></a> Some constructions with types of equivalences
