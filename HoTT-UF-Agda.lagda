@@ -7547,7 +7547,7 @@ The proof is again postponed, and this time there is a twist: we use a detour vi
 
 *Discussion.* Notice that `props-form-exponential-ideal` requires `A` to be a proposition, but not `X`, whereas `prop-hfunext` requires `X` to be a proposition but not `A x`, while the other two versions require both `X` and `A(x)` to be propositions, and yet all versions are equivalent under propositional extensionality. Given this, a positive answer to the above question is not unlikely. We leave this as an open problem.
 
-The following is the main theorem of this section, where the notion `props-form-an-exponential-ideal` plays a crucial role.
+The following is the main theorem of this section, where the notion `props-form-an-exponential-ideal` plays a crucial role in its proof.
 
 \begin{code}
 characterization-of-propositional-univalence : prop-univalence 𝓤
@@ -7766,8 +7766,11 @@ being-singleton-is-prop c {X} (x , φ) (y , γ) = p
 
   p : (x , φ) ≡ (y , γ)
   p = to-subtype-≡ a b
+\end{code}
 
+The following hasn't occurred above in any form, and is crucial for the main theorem of this section.
 
+\begin{code}
 Id-of-props-is-prop : propext 𝓤
                     → prop-vvfunext 𝓤
                     → (P : 𝓤 ̇ )
