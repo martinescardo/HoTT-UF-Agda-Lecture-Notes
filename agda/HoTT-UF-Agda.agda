@@ -4132,14 +4132,18 @@ propext-and-props-closed-under-Π-give-props-form-exponential-ideal pe c =
   prop-univalence-gives-props-form-exponential-ideal
       (propext-and-props-are-closed-under-Π-give-prop-univalence pe c)
 
-second-propositional-function-extensionality-agreement {𝓤} pe = α , β
- where
-  α : props-form-exponential-ideal 𝓤 → props-are-closed-under-Π 𝓤
-  α pei = prop-vvfunext-gives-props-are-closed-under-Π
-              (props-form-exponential-ideal-gives-vvfunext pei)
+props-form-exponential-ideal-gives-props-are-closed-under-Π :
 
-  β : props-are-closed-under-Π 𝓤 → props-form-exponential-ideal 𝓤
-  β = propext-and-props-closed-under-Π-give-props-form-exponential-ideal pe
+    props-form-exponential-ideal 𝓤
+  → props-are-closed-under-Π 𝓤
+
+props-form-exponential-ideal-gives-props-are-closed-under-Π pei =
+     prop-vvfunext-gives-props-are-closed-under-Π
+         (props-form-exponential-ideal-gives-vvfunext pei)
+
+second-propositional-function-extensionality-agreement {𝓤} pe =
+  props-form-exponential-ideal-gives-props-are-closed-under-Π ,
+  propext-and-props-closed-under-Π-give-props-form-exponential-ideal pe
 
 id-≃-left : dfunext 𝓥 (𝓤 ⊔ 𝓥)
           → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)

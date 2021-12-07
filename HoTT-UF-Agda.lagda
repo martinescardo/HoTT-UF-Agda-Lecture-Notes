@@ -7578,6 +7578,7 @@ prop-≃-induction 𝓤 𝓥 = (P : 𝓤 ̇ )
                      → (A : (X : 𝓤 ̇ ) → P ≃ X → 𝓥 ̇ )
                      → A P (id-≃ P) → (X : 𝓤 ̇ ) (e : P ≃ X) → A X e
 
+
 prop-J-equiv : prop-univalence 𝓤
              → (𝓥 : Universe) → prop-≃-induction 𝓤 𝓥
 prop-J-equiv {𝓤} pu 𝓥 P i A a X e = γ
@@ -7596,6 +7597,7 @@ prop-J-equiv {𝓤} pu 𝓥 P i A a X e = γ
 
   γ : A X (id e)
   γ = transport (A X) (inverses-are-sections (Id→Eq P X) (pu P i X) e) g
+
 
 prop-precomp-is-equiv : prop-univalence 𝓤
                       → (X Y Z : 𝓤 ̇ )
@@ -7669,6 +7671,7 @@ props-are-closed-under-Π-gives-prop-vvfunext c {X} {A} X-is-prop A-is-prop-valu
   γ : is-singleton (Π A)
   γ = f , d
 
+
 prop-vvfunext-gives-prop-hfunext : prop-vvfunext 𝓤 → prop-hfunext 𝓤
 prop-vvfunext-gives-prop-hfunext vfe {X} {Y} X-is-prop f = γ
  where
@@ -7693,6 +7696,7 @@ prop-vvfunext-gives-prop-hfunext vfe {X} {Y} X-is-prop f = γ
   γ : (g : Π Y) → is-equiv (happly f g)
   γ = NatΣ-equiv-gives-fiberwise-equiv (happly f) i
 
+
 prop-hfunext-gives-props-are-closed-under-Π : prop-hfunext 𝓤 → props-are-closed-under-Π 𝓤
 prop-hfunext-gives-props-are-closed-under-Π hfe {X} {A} X-is-prop A-is-prop-valued f g = γ
  where
@@ -7715,6 +7719,7 @@ We have already proved the following lemma `being-prop-is-prop`, as `being-subsi
 prop-vvfunext-gives-props-are-closed-under-Π : prop-vvfunext 𝓤 → props-are-closed-under-Π 𝓤
 prop-vvfunext-gives-props-are-closed-under-Π vfe =
     prop-hfunext-gives-props-are-closed-under-Π (prop-vvfunext-gives-prop-hfunext vfe)
+
 
 being-prop-is-prop : prop-vvfunext 𝓤
                    → {X : 𝓤 ̇ } → is-prop (is-prop X)
@@ -7762,6 +7767,7 @@ being-singleton-is-prop c {X} (x , φ) (y , γ) = p
   p : (x , φ) ≡ (y , γ)
   p = to-subtype-≡ a b
 
+
 Id-of-props-is-prop : propext 𝓤
                     → prop-vvfunext 𝓤
                     → (P : 𝓤 ̇ )
@@ -7790,6 +7796,7 @@ Id-of-props-is-prop {𝓤} pe vfe P i = Hedberg P (λ X → h X , k X)
 
    k : wconstant h
    k p q = ap g (j (f p) (f q))
+
 
 being-equiv-of-props-is-prop : props-are-closed-under-Π 𝓤
                              → {X Y : 𝓤 ̇ }
@@ -7969,6 +7976,7 @@ props-form-exponential-ideal-gives-props-are-closed-under-Π :
 props-form-exponential-ideal-gives-props-are-closed-under-Π pei =
      prop-vvfunext-gives-props-are-closed-under-Π
          (props-form-exponential-ideal-gives-vvfunext pei)
+
 
 second-propositional-function-extensionality-agreement {𝓤} pe =
   props-form-exponential-ideal-gives-props-are-closed-under-Π ,
