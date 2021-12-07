@@ -7497,18 +7497,15 @@ prop-univalence-agreement = (λ pu' A i X e → pu' A i X (equiv-to-subsingleton
 The restricted form of function extensionality is given by any of the following four notions, which are equivalent under propositional extensionality and have the following types:
 
 \begin{code}
-
 props-form-exponential-ideal
  props-are-closed-under-Π
  prop-vvfunext
  prop-hfunext : ∀ 𝓤 → 𝓤 ⁺ ̇
-
 \end{code}
 
 They are defined as follows.
 
 \begin{code}
-
 props-form-exponential-ideal 𝓤 = (X A : 𝓤 ̇ ) → is-prop A → is-prop (X → A)
 
 props-are-closed-under-Π 𝓤 = {X : 𝓤 ̇ } {A : X → 𝓤 ̇ }
@@ -7929,7 +7926,6 @@ props-form-exponential-ideal-gives-vvfunext {𝓤} pei {X} {A} X-is-prop φ = γ
 
   γ : is-singleton (Π A)
   γ = retract-of-singleton (r , s , η) i
-
 \end{code}
 
 And with this we can complete the proof of the main theorem of this section, formulated above in Agda.
