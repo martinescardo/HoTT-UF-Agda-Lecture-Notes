@@ -7935,8 +7935,11 @@ props-form-exponential-ideal-gives-vvfunext {𝓤} pei {X} {A} X-is-prop φ = γ
 
   γ : is-singleton (Π A)
   γ = retract-of-singleton (r , s , η) i
+\end{code}
 
+Here are some corollaries of the above.
 
+\begin{code}
 prop-univalence-gives-props-are-closed-under-Π : prop-univalence 𝓤 → props-are-closed-under-Π 𝓤
 prop-univalence-gives-props-are-closed-under-Π pu =
     prop-vvfunext-gives-props-are-closed-under-Π
