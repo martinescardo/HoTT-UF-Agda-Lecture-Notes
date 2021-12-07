@@ -7543,7 +7543,7 @@ second-propositional-function-extensionality-agreement :
 
 The proof is again postponed, and this time there is a twist: we use a detour via propositional univalence to prove this.
 
-*Question.* Does propositional function extensionality, in any of the above four incrnations, perhaps in the presence of propositional extensionality, imply full function extensionality?
+*Question.* Does propositional function extensionality, in any of the above four incarnations, perhaps in the presence of propositional extensionality, imply full function extensionality?
 
 Notice that `props-form-exponential-ideal` requires `A` to be a proposition, but not `X`, whereas `prop-hfunext` requires `X` to be a proposition but not `A x`, while the other two versions require both `X` and `A(x)` to be propositions, and yet all versions are equivalent under propositional extensionality. Given this, a positive answer to the above question is not unlikely. We leave this as an open problem.
 
@@ -7950,6 +7950,17 @@ characterization-of-propositional-univalence {𝓤} = α , β
 And we can also fulfill the second promise again using `prop-univalence-gives-props-are-exponential-ideal`.
 
 \begin{code}
+propext-and-props-closed-under-Π-give-props-form-exponential-ideal :
+
+    propext 𝓤
+  → props-are-closed-under-Π 𝓤
+  → props-form-exponential-ideal 𝓤
+
+propext-and-props-closed-under-Π-give-props-form-exponential-ideal pe c =
+  prop-univalence-gives-props-form-exponential-ideal
+      (propext-and-props-are-closed-under-Π-give-prop-univalence pe c)
+
+
 second-propositional-function-extensionality-agreement {𝓤} pe = α , β
  where
   α : props-form-exponential-ideal 𝓤 → props-are-closed-under-Π 𝓤
@@ -7957,8 +7968,7 @@ second-propositional-function-extensionality-agreement {𝓤} pe = α , β
               (props-form-exponential-ideal-gives-vvfunext pei)
 
   β : props-are-closed-under-Π 𝓤 → props-form-exponential-ideal 𝓤
-  β c = prop-univalence-gives-props-form-exponential-ideal
-            (propext-and-props-are-closed-under-Π-give-prop-univalence pe c)
+  β = propext-and-props-closed-under-Π-give-props-form-exponential-ideal pe
 \end{code}
 
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
