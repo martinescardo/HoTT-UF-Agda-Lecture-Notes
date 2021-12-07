@@ -7482,7 +7482,7 @@ requires univalence for sets (see the HoTT book or
 
 This section is not needed anywhere else and can be safely skipped. We characterize propositional univalence in terms of propositional extensionality and a restricted form of function extensionality.
 
-By propositional extensionality we mean any of the following two equivalent notions.
+By propositional univalence mean any of the following two equivalent notions.
 
 \begin{code}
 prop-univalence prop-univalence' : (𝓤 : Universe) → 𝓤 ⁺ ̇
