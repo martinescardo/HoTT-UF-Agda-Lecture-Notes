@@ -7612,7 +7612,7 @@ We now apply the above lemmas to adapt the above proof that univalence implies f
 
 \begin{code}
 prop-univalence-gives-props-form-exponential-ideal : prop-univalence 𝓤
-                                                  → props-form-exponential-ideal 𝓤
+                                                   → props-form-exponential-ideal 𝓤
 
 prop-univalence-gives-props-form-exponential-ideal {𝓤} pu X A A-is-prop = γ
  where
