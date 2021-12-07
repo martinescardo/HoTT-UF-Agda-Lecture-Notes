@@ -7480,7 +7480,7 @@ requires univalence for sets (see the HoTT book or
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 ### <a id="propextfunextpropunivalence"></a> A characterization of propositional univalence
 
-This section is not needed anywhere else and can be safely skipped. We characterize propositional univalence in terms of propositional extensionality and a restricted form of functional extensionality.
+This section is not needed anywhere else and can be safely skipped. We characterize propositional univalence in terms of propositional extensionality and a restricted form of function extensionality.
 
 By propositional extensionality we mean any of the following two equivalent notion.
 
@@ -7494,7 +7494,7 @@ prop-univalence-agreement = (λ pu' A i X e → pu' A i X (equiv-to-subsingleton
                             (λ pu  A i X _ → pu  A i X)
 \end{code}
 
-The restricted form of function extensionality is given by any of the following four notions, which are equivalent under propositional extensionality and have the following types:
+The restricted form of function extensionality is given by any of the following four notions, which are equivalent under propositional extensionality and have the following type:
 
 \begin{code}
 props-form-exponential-ideal
@@ -7554,7 +7554,7 @@ characterization-of-propositional-univalence : prop-univalence 𝓤
                                              ⇔ (propext 𝓤 × props-are-closed-under-Π 𝓤)
 \end{code}
 
-The remainder of this section is devoted to prove this, which has the second propositional functional extensionality agreement, but relies on the first agreement.
+The remainder of this section is devoted to prove this, which has the second propositional function extensionality agreement, but relies on the first agreement.
 
 It is direct that propositional univalence implies propositional extensionality.
 
