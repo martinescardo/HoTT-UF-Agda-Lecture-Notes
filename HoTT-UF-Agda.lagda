@@ -7545,7 +7545,7 @@ The proof is again postponed, and this time there is a twist: we use a detour vi
 
 *Question.* Does propositional function extensionality, in any of the above four incarnations, perhaps in the presence of propositional extensionality, imply full function extensionality?
 
-Notice that `props-form-exponential-ideal` requires `A` to be a proposition, but not `X`, whereas `prop-hfunext` requires `X` to be a proposition but not `A x`, while the other two versions require both `X` and `A(x)` to be propositions, and yet all versions are equivalent under propositional extensionality. Given this, a positive answer to the above question is not unlikely. We leave this as an open problem.
+*Discussion.* Notice that `props-form-exponential-ideal` requires `A` to be a proposition, but not `X`, whereas `prop-hfunext` requires `X` to be a proposition but not `A x`, while the other two versions require both `X` and `A(x)` to be propositions, and yet all versions are equivalent under propositional extensionality. Given this, a positive answer to the above question is not unlikely. We leave this as an open problem.
 
 The following is the main theorem of this section, where the notion `props-form-an-exponential-ideal` plays a crucial role.
 
