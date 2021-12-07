@@ -7935,29 +7935,15 @@ props-form-exponential-ideal-gives-vvfunext {𝓤} pei {X} {A} X-is-prop φ = γ
 
   γ : is-singleton (Π A)
   γ = retract-of-singleton (r , s , η) i
-\end{code}
 
-And with this we can complete the proof of the main theorem of this section, formulated above in Agda.
 
-\begin{code}
 prop-univalence-gives-props-are-closed-under-Π : prop-univalence 𝓤 → props-are-closed-under-Π 𝓤
 prop-univalence-gives-props-are-closed-under-Π pu =
     prop-vvfunext-gives-props-are-closed-under-Π
         (props-form-exponential-ideal-gives-vvfunext
               (prop-univalence-gives-props-form-exponential-ideal pu))
 
-characterization-of-propositional-univalence {𝓤} = α , β
- where
-  α : prop-univalence 𝓤 → propext 𝓤 × props-are-closed-under-Π 𝓤
-  α pu =  prop-univalence-gives-propext pu , prop-univalence-gives-props-are-closed-under-Π pu
 
-  β : propext 𝓤 × props-are-closed-under-Π 𝓤 → prop-univalence 𝓤
-  β (pe , fe) = propext-and-props-are-closed-under-Π-give-prop-univalence pe fe
-\end{code}
-
-And we can also fulfill the second promise again using `prop-univalence-gives-props-are-exponential-ideal`.
-
-\begin{code}
 propext-and-props-closed-under-Π-give-props-form-exponential-ideal :
 
     propext 𝓤
@@ -7977,8 +7963,23 @@ props-form-exponential-ideal-gives-props-are-closed-under-Π :
 props-form-exponential-ideal-gives-props-are-closed-under-Π pei =
      prop-vvfunext-gives-props-are-closed-under-Π
          (props-form-exponential-ideal-gives-vvfunext pei)
+\end{code}
 
+And with this we can complete the proof of the main theorem of this section, formulated above in Agda.
 
+\begin{code}
+characterization-of-propositional-univalence {𝓤} = α , β
+ where
+  α : prop-univalence 𝓤 → propext 𝓤 × props-are-closed-under-Π 𝓤
+  α pu =  prop-univalence-gives-propext pu , prop-univalence-gives-props-are-closed-under-Π pu
+
+  β : propext 𝓤 × props-are-closed-under-Π 𝓤 → prop-univalence 𝓤
+  β (pe , fe) = propext-and-props-are-closed-under-Π-give-prop-univalence pe fe
+\end{code}
+
+And we can also fulfill the second promise again using `prop-univalence-gives-props-are-exponential-ideal`.
+
+\begin{code}
 second-propositional-function-extensionality-agreement {𝓤} pe =
   props-form-exponential-ideal-gives-props-are-closed-under-Π ,
   propext-and-props-closed-under-Π-give-props-form-exponential-ideal pe
