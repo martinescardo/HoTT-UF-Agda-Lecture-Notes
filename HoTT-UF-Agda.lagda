@@ -1282,8 +1282,8 @@ pr₂ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → (z : Σ Y) → Y (pr₁ z)
 pr₂ (x , y) = y
 \end{code}
 
-We now introduce syntax to be able to write `Σ x ꞉ X , y` instead of
-`Σ λ(x ꞉ X) → y`. For this purpose, we first define a version of `Σ`
+We now introduce syntax to be able to write `Σ x ꞉ X , Y` instead of
+`Σ λ(x ꞉ X) → Y`. For this purpose, we first define a version of `Σ`
 making the index type explicit.
 
 \begin{code}
@@ -2199,7 +2199,7 @@ We can show that addition is associative as follows, by induction on
 \begin{code}
   +-assoc : (x y z : ℕ) → (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
 
-  +-assoc x y zero     = (x ∔ y) ∔ 0 ≡⟨ refl _ ⟩
+  +-assoc x y 0        = (x ∔ y) ∔ 0 ≡⟨ refl _ ⟩
                          x ∔ (y ∔ 0) ∎
 
   +-assoc x y (succ z) = (x ∔ y) ∔ succ z   ≡⟨ refl _     ⟩
