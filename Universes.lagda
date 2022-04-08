@@ -17,7 +17,7 @@ only after doing some [MLTT in Agda](HoTT-UF-Agda.html#mlttinagda) and [HoTT/UF 
 Agda](HoTT-UF-Agda.html#uminagda).
 
 \begin{code}
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module Universes where
 

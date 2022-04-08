@@ -443,7 +443,7 @@ module basic-arithmetic-and-order where
 
   +-assoc : (x y z : ℕ) → (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
 
-  +-assoc x y zero     = (x ∔ y) ∔ 0 ≡⟨ refl _ ⟩
+  +-assoc x y 0        = (x ∔ y) ∔ 0 ≡⟨ refl _ ⟩
                          x ∔ (y ∔ 0) ∎
 
   +-assoc x y (succ z) = (x ∔ y) ∔ succ z   ≡⟨ refl _     ⟩

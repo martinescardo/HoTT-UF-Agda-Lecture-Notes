@@ -569,7 +569,7 @@ We don't use any Agda library. For pedagogical purposes, we start from
 scratch, and here are our first two lines of code:
 
 \begin{code}
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 module HoTT-UF-Agda where
 \end{code}
