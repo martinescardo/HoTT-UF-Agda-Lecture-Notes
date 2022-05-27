@@ -3303,7 +3303,7 @@ We take the opportunity to establish more equations for transport and to define 
 
 \begin{code}
 transport-× : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
-                {x y : X} (p : x ≡ y) {(a , b) : A x × B x}
+              {x y : X} (p : x ≡ y) {(a , b) : A x × B x}
 
             → transport (λ x → A x × B x) p (a , b)
             ≡ (transport A p a , transport B p b)
@@ -3933,7 +3933,7 @@ datum. Voevodsky's insight is that a general notion of equivalence can
 be formulated in MLTT by requiring the fibers to be singletons. It is
 important here that not only the `x : X` with `f x ≡ y` is unique, but
 also that the identification datum `p : f x ≡ y` is unique. This is
-similar to, or even a generalization of the categorical
+similar to, or even a generalization, of the categorical
 notion of "uniqueness up to a unique isomorphism".
 
 \begin{code}
@@ -4123,7 +4123,7 @@ minute in the checking of this file for correctness in the uses of
    γ : is-equiv (g ∘ f)
    γ = invertibles-are-equivs (g ∘ f)
          (∘-invertible (equivs-are-invertible g i)
-         (equivs-are-invertible f j))
+                       (equivs-are-invertible f j))
 \end{code}
 
 Because we have made the above definition abstract, we don't have
@@ -4195,13 +4195,15 @@ Examples:
 Σ-flip : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → Y → 𝓦 ̇ }
        → (Σ x ꞉ X , Σ y ꞉ Y , A x y) ≃ (Σ y ꞉ Y , Σ x ꞉ X , A x y)
 
-Σ-flip = invertibility-gives-≃ (λ (x , y , p) → (y , x , p))
+Σ-flip = invertibility-gives-≃
+          (λ (x , y , p) → (y , x , p))
           ((λ (y , x , p) → (x , y , p)) , refl , refl)
 
 ×-comm : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
        → (X × Y) ≃ (Y × X)
 
-×-comm = invertibility-gives-≃ (λ (x , y) → (y , x))
+×-comm = invertibility-gives-≃
+          (λ (x , y) → (y , x))
           ((λ (y , x) → (x , y)) , refl , refl)
 \end{code}
 
@@ -5578,7 +5580,8 @@ equivalences.
 \begin{code}
 transport-ap-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                  {x x' : X} (a : x' ≡ x) (b : f x' ≡ f x)
-               → (transport (λ - → f - ≡ f x) a b ≡ refl (f x)) ≃ (ap f a ≡ b)
+               → (transport (λ - → f - ≡ f x) a b ≡ refl (f x))
+               ≃ (ap f a ≡ b)
 
 transport-ap-≃ f (refl x) b = γ
  where
@@ -6335,7 +6338,8 @@ equivalence-property-is-retract-of-invertibility-data : dfunext 𝓥 (𝓤 ⊔ �
 
 equivalence-property-is-retract-of-invertibility-data fe fe' f =
   subsingletons-are-retracts-of-logically-equivalent-types
-   (being-equiv-is-subsingleton fe fe' f) (equivs-are-invertible f , invertibles-are-equivs f)
+   (being-equiv-is-subsingleton fe fe' f)
+   (equivs-are-invertible f , invertibles-are-equivs f)
 \end{code}
 
 We now return to our main concern in this section.
@@ -6506,7 +6510,7 @@ or simply
 
    > `∃! A`,
 
-requires that not only the `x : X` but also the `a : A x` to be
+requires that not only the point `x : X` but also the datum `a : A x` to be
 unique. More precisely, we require that there is a unique *pair* `(x ,
 a) : Σ A`.
 
@@ -6523,7 +6527,6 @@ isomorphism.
 -∃! X Y = ∃! Y
 
 syntax -∃! A (λ x → b) = ∃! x ꞉ A , b
-
 
 
 ∃!-is-subsingleton : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
@@ -6547,10 +6550,9 @@ unique-existence-gives-weak-unique-existence A s = center (Σ A) s , u
 The converse holds if each `A x` is a subsingleton:
 
 \begin{code}
-weak-unique-existence-gives-unique-existence-sometimes : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) →
+weak-unique-existence-gives-unique-existence-sometimes : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
 
-    ((x : X) → is-subsingleton (A x))
-
+  →  ((x : X) → is-subsingleton (A x))
   → ((Σ x ꞉ X , A x) × ((x y : X) → A x → A y → x ≡ y))
   → (∃! x ꞉ X , A x)
 
@@ -6584,7 +6586,7 @@ univalence is not needed.  Function extensionality suffices.
 \begin{code}
 ℕ-is-nno : hfunext 𝓤₀ 𝓤
          → (Y : 𝓤 ̇ ) (y₀ : Y) (g : Y → Y)
-         → ∃! h ꞉ (ℕ → Y), (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)
+         → ∃! h ꞉ (ℕ → Y), (h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)
 
 ℕ-is-nno {𝓤} hfe Y y₀ g = γ
  where
@@ -6603,7 +6605,7 @@ is a retract of the type
 and hence, by function extensionality, we also have a retraction if we
 replace pointwise equality `∼` by equality `≡`.  Thus the type
 
-   > `Σ h ꞉ ℕ → Y , (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h)`
+   > `Σ h ꞉ ℕ → Y , (h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)`
 
 is a retract of the singleton type
 
@@ -6611,92 +6613,64 @@ is a retract of the singleton type
 
 and therefore is itself a singleton, as required.
 
-Now we do this in Agda. We need both versions `hfunext` and `dfunext`
-of function extensionality, where we have taken the first as an
-assumption:
-
-\begin{code}
-  fe : dfunext 𝓤₀ 𝓤
-  fe = hfunext-gives-dfunext hfe
-\end{code}
-
-We first establish the following retraction (which is automatically an
-equivalence, but we don't need this fact).
+Now we do this in Agda. We first establish the following retraction
+(which is automatically an equivalence, but we don't need this fact).
 
 \begin{code}
   lemma₀ : (h : ℕ → Y) → ((h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)) ◁ (h ∼ ℕ-iteration Y y₀ g)
   lemma₀ h = r , s , η
    where
     s : (h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h) → h ∼ ℕ-iteration Y y₀ g
-    s (p , K) 0 = p
+    s (p , K) 0        = p
     s (p , K) (succ n) = h (succ n)                  ≡⟨ K n                ⟩
                          g (h n)                     ≡⟨ ap g (s (p , K) n) ⟩
-                         g (ℕ-iteration Y y₀ g n)    ≡⟨ refl _             ⟩
                          ℕ-iteration Y y₀ g (succ n) ∎
 \end{code}
 
 The above section `s` is defined by induction on natural numbers, but
-the following retraction `r` is defined directly. Above and below, the
-identifications `refl _` are included for the sake of clarity. This
-adds some extra steps to the proof of the retraction property (some of
-which could be silent, but we choose to make explicit by further uses
-of `refl _`).
+the following retraction `r` is defined directly.
 
 \begin{code}
     r : codomain s → domain s
     r H = H 0 , (λ n → h (succ n)                  ≡⟨ H (succ n)     ⟩
-                       ℕ-iteration Y y₀ g (succ n) ≡⟨ refl _         ⟩
                        g (ℕ-iteration Y y₀ g n)    ≡⟨ ap g ((H n)⁻¹) ⟩
                        g (h n )                    ∎)
-
-    remark : ∀ n H → pr₂ (r H) n ≡ H (succ n) ∙ (refl _ ∙ ap g ((H n)⁻¹))
-    remark n H = refl _
 \end{code}
 
 The retraction property doesn't need induction on natural numbers:
 
 \begin{code}
     η : (z : (h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h)) → r (s z) ≡ z
-    η (p , K) = q
+    η (p , K) = v
      where
-      v = λ n →
-       s (p , K) (succ n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))                  ≡⟨ refl _ ⟩
-       K n ∙  ap g (s (p , K) n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))           ≡⟨ i   n  ⟩
-       K n ∙  ap g (s (p , K) n) ∙  ap g ((s (p , K) n) ⁻¹)                    ≡⟨ ii  n  ⟩
-       K n ∙ (ap g (s (p , K) n) ∙  ap g ((s (p , K) n) ⁻¹))                   ≡⟨ iii n  ⟩
-       K n ∙ (ap g (s (p , K) n) ∙ (ap g  (s (p , K) n))⁻¹)                    ≡⟨ iv  n  ⟩
-       K n ∙ refl _                                                            ≡⟨ refl _ ⟩
+      i = λ n →
+       K n ∙  ap g (s (p , K) n) ∙  ap g ((s (p , K) n) ⁻¹)                    ≡⟨ ii  n ⟩
+       K n ∙ (ap g (s (p , K) n) ∙  ap g ((s (p , K) n) ⁻¹))                   ≡⟨ iii n ⟩
+       K n ∙ (ap g (s (p , K) n) ∙ (ap g  (s (p , K) n))⁻¹)                    ≡⟨ iv  n ⟩
        K n                                                                     ∎
         where
-         i   = λ n → ap (K n ∙ ap g (s (p , K) n) ∙_)
-                        (refl-left {_} {_} {_} {_} {ap g ((s (p , K) n)⁻¹)})
          ii  = λ n → ∙assoc (K n) (ap g (s (p , K) n)) (ap g ((s (p , K) n)⁻¹))
          iii = λ n → ap (λ - → K n ∙ (ap g (s (p , K) n) ∙ -)) (ap⁻¹ g (s (p , K) n) ⁻¹)
          iv  = λ n → ap (K n ∙_) (⁻¹-right∙ (ap g (s (p , K) n)))
 
-      q = r (s (p , K))                                                      ≡⟨ refl _ ⟩
-          p , (λ n → s (p , K) (succ n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))) ≡⟨ vi     ⟩
-          p , K                                                              ∎
-       where
-         vi = ap (p ,_) (fe v)
+      v : (p , (λ n → s (p , K) (succ n) ∙ ap g ((s (p , K) n)⁻¹))) ≡ (p , K)
+      v = ap (p ,_) (hfunext-gives-dfunext hfe i)
 
-
-  lemma₁ = λ h → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h) ◁⟨ i h      ⟩
-                 (h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h) ◁⟨ lemma₀ h ⟩
-                 (h ∼ ℕ-iteration Y y₀ g)        ◁⟨ ii h     ⟩
+  lemma₁ = λ h → (h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h) ◁⟨ lemma₀ h ⟩
+                 (h ∼ ℕ-iteration Y y₀ g)        ◁⟨ i h      ⟩
                  (h ≡ ℕ-iteration Y y₀ g)        ◀
    where
-    i  = λ h → Σ-retract (λ _ → ≃-gives-◁ (happly (h ∘ succ) (g ∘ h) , hfe _ _))
-    ii = λ h → ≃-gives-▷ (happly h (ℕ-iteration Y y₀ g) , hfe _ _)
+    i = λ h → ≃-gives-▷ (happly h (ℕ-iteration Y y₀ g) , hfe _ _)
 
-  lemma₂ : (Σ h ꞉ (ℕ → Y), (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h))
+  lemma₂ : (Σ h ꞉ (ℕ → Y), (h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h))
          ◁ (Σ h ꞉ (ℕ → Y), h ≡ ℕ-iteration Y y₀ g)
 
   lemma₂ = Σ-retract lemma₁
 
-  γ : is-singleton (Σ h ꞉ (ℕ → Y), (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h))
-  γ = retract-of-singleton lemma₂
-                           (singleton-types-are-singletons (ℕ → Y) (ℕ-iteration Y y₀ g))
+  γ : is-singleton (Σ h ꞉ (ℕ → Y), (h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h))
+  γ = retract-of-singleton
+       lemma₂
+       (singleton-types-are-singletons (ℕ → Y) (ℕ-iteration Y y₀ g))
 \end{code}
 
 This concludes the proof of `ℕ-is-nno`. We say that `ℕ` is a [natural
@@ -6712,7 +6686,7 @@ module finite-types (hfe : hfunext 𝓤₀ 𝓤₁) where
 
  fin :  ∃! Fin ꞉ (ℕ → 𝓤₀ ̇ )
                , (Fin 0 ≡ 𝟘)
-               × (Fin ∘ succ ≡ λ n → Fin n + 𝟙)
+               × ((n : ℕ) → Fin (succ  n) ≡ Fin n + 𝟙)
 
  fin = ℕ-is-nno hfe (𝓤₀ ̇ ) 𝟘 (_+ 𝟙)
 
@@ -6753,7 +6727,7 @@ and the examples
 
 *Exercise*. Assume univalence. The equation
 
-   > `Fin ∘ succ ≡ λ n → Fin n + 𝟙`
+   > `Fin (succ n) ≡ Fin n + 𝟙`
 
 holds in multiple ways, because `Fin n` has `n!`
 automorphisms. Construct an involutive fiberwise equivalence
@@ -6765,10 +6739,10 @@ different from `refl Fin`. Consider
 
    > `∃! Fin' ꞉ ℕ → 𝓤₀ ̇ , (Fin' 0 ≡ 𝟘) × (Fin' ∘ succ ≡ λ n → 𝟙 + Fin' n)`
 
-and show that `Fin' ∘ succ ≡ λ n → Fin' n + 𝟙` so that `Fin'`
+and show that `Fin' (succ n) ≡ Fin' n + 𝟙` so that `Fin'`
 satisfies the defining equations of `Fin`, although not judgmentally,
 and hence `Fin' ≡ Fin` by the univeral property of `Fin`. But there are
-many equalities `Fin' ≡ Fin`. Which one do we get by the universal
+many equalities `Fin' n ≡ Fin n`. Which one do we get by the universal
 property? Show that the type `Fin n` has decidable equality and hence
 is a set.
 

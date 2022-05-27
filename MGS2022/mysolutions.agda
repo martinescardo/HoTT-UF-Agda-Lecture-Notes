@@ -20,6 +20,12 @@ _*_ : ℕ → ℕ → ℕ
 zero * y = zero
 succ x * y = y ∔ x * y -- (1 + x) * y = y + x * y
 
+distr : (x y z : ℕ) → x * (y ∔ z) ≡ x * y ∔ x * z
+distr x y z = {!!}
+
+comm : (x y : ℕ) → x ∔ y ≡ y ∔ x
+comm x y = {!!}
+
 infixl 20 _∔_
 infixl 21 _*_
 
@@ -50,6 +56,34 @@ data is-odd₃ : ℕ → 𝓤₀ ̇ where
  base-case : is-odd₃ 1
  inductive-step : {x : ℕ} → is-odd₃ x
                           → is-odd₃ (2 ∔ x)
+convert₃ : (x : ℕ) → is-odd' x → is-odd₃ x
+convert₃ .(2 * y ∔ 1) (y , refl .(2 * y ∔ 1)) = {!!}
+
+convert' : (x : ℕ) → is-odd₃ x → is-odd' x
+convert' .1 base-case = {!!}
+convert' .(2 ∔ x) (inductive-step {x} o) = goal
+ where
+  IH : is-odd' x
+  IH = convert' x o
+  y : ℕ
+  y = pr₁ IH
+  p : x ≡ 2 * y ∔ 1
+  p = pr₂ IH
+  y' : ℕ
+  y' = 1 ∔ y
+  r : 2 ∔ x ≡ 2 ∔ (2 * y ∔ 1)
+  r = ap (2 ∔_) p
+  s : 2 ∔ (2 * y ∔ 1) ≡ 2 ∔ (1 ∔ 2 * y)
+  s = ap (2 ∔_) (comm (2 * y) 1)
+  t : 2 ∔ x ≡ 2 ∔ (1 ∔ 2 * y)
+  t = r ∙ s
+  -- 2 * (y + 1) = 2 * y + 2 * 1 = 2 * y + 2
+  q : 2 * (1 ∔ y) ≡ 2 ∔ 2 * y
+  q = distr 2 1 y
+  p' : 2 ∔ x ≡ 2 * y' ∔ 1
+  p' = distr 2 {!y!} {!!}
+  goal : is-odd' (2 ∔ x)
+  goal = y' , p'
 
 deepest-theorem₃ : is-odd₃ 5
 deepest-theorem₃ = inductive-step
@@ -256,3 +290,50 @@ ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x x' :
     → x ≡ x' → y ≡ y' → f x y ≡ f x'
 
 -}
+
+-- \Mii \Mid
+
+-- type "∼" as "\sim"
+
+ex1 : {X : 𝓤 ̇ } {x x' : X}
+    → ap (𝑖𝑑 X) ∼ 𝑖𝑑 (x ≡ x')
+ex1 {𝓤} {X} {x} {.x} (refl .x) = refl (refl x)
+
+-- ∘ is "\comp"
+
+app : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (x x' : X)
+      (f : X → Y)
+    → x ≡ x' → f x ≡ f x'
+app x .x f (refl .x) = refl (f x)
+
+
+ex2 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+      (f : X → Y) (g : Y → Z)
+      {x x' : X}
+      (p : x ≡ x')
+    → ap (g ∘ f) p ≡ (ap g ∘ ap f) p
+ex2 {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f g {x} {.x} (refl .x) = refl (refl (g (f x)))
+
+ex2-1 : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+      (f : X → Y) (g : Y → Z)
+      {x x' : X}
+    → app x x' (g ∘ f)
+    ∼ (app (f x) (f x') g ∘ app x x' f)
+ex2-1 f g {x} {.x} (refl .x) = refl (refl (g (f x)))
+
+ex2-bad : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+      (f : X → Y) (g : Y → Z)
+      {x x' : X}
+    → ap (g ∘ f) {x} {x'}
+    ∼ (ap g ∘ ap f)
+ex2-bad f g {x} {.x} (refl .x) = refl (refl (g (f x)))
+
+is-singl : 𝓤 ̇ → 𝓤 ̇
+is-singl X = Σ x ꞉ X , ((y : X) → x ≡ y)
+
+single : {X : 𝓤 ̇} → X → 𝓤 ̇
+single {𝓤} {X} x = Σ y ꞉ X , x ≡ y
+
+ex3 : {X : 𝓤 ̇} (x : X)
+    → is-singl (single x)
+ex3 x = (x , refl x) , {!!}
