@@ -9,7 +9,7 @@ Sources to generate the lecture notes available at
 
    > https://arxiv.org/abs/1911.00580
 
-Agda [2.6.2.1](https://agda.readthedocs.io/en/v2.6.2.1/getting-started/installation.html) is required. Consult the [installation instructions](INSTALL.md) to help you set up Agda and Emacs for the Midlands Graduate School.
+Agda [2.6.2.1](https://agda.readthedocs.io/en/v2.6.2.1/getting-started/installation.html) or higher is required. Consult the [installation instructions](INSTALL.md) to help you set up Agda and Emacs for the Midlands Graduate School.
 
 * The (literate) `*.lagda` files are used to generate the `html` pages with the script `./build`.
 
