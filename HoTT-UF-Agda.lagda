@@ -369,8 +369,7 @@ to practice univalent mathematics should consult the above references.
 
 ### <a id="contents"></a> Table of contents
 
-  1. [Front matter](HoTT-UF-Agda.html#lecturenotes)
-     1. [Title, abstract, keywords and about](HoTT-UF-Agda.html#lecturenotes)
+  1. [Introduction to Homotopy Type Theory and Univalent Foundations (HoTT/UF) with Agda](HoTT-UF-Agda.html#lecturenotes)
      1. [Introduction](HoTT-UF-Agda.html#introduction)
      1. [Homotopy type theory](HoTT-UF-Agda.html#homotopytypetheory)
      1. [General references](HoTT-UF-Agda.html#generalreferences)
@@ -645,7 +644,7 @@ in Agda code. We have that the universe `𝓤₀` is a type in the universe
 
    > `𝓤₂ ̇` &nbsp;&nbsp;    `: 𝓤₃ ̇`
 
-   > `       ⋮ `
+   > `⋮`
 
 The assumption that `𝓤₀ : 𝓤₀` or that any universe is in itself or a
 smaller universe [gives rise to a
@@ -717,7 +716,7 @@ type `𝟙` satisfy a given property `A`.
 
   1. The type `A(x)`, which we will write simply `A x`, doesn't need
      to be a [truth value](HoTT-UF-Agda.html#subsingletonsandsets).
-     It can be any type. We will meet examples shortly.
+     It can be any type. We will see examples shortly.
 
   1. In MLTT, mathematical statements are types, such as
 
@@ -1336,10 +1335,9 @@ X × Y = Σ x ꞉ X , Y
 \end{code}
 
 We have seen by way of examples that the function type symbol `→`
-represents logical implication, and that a dependent function type
-`(x : X) → A x` represents a universal quantification.
-
-We have the following uses of `Σ`.
+represents logical implication, and that a dependent function type `(x
+: X) → A x` represents a universal quantification. We have the
+following uses of `Σ`.
 
   1. The binary cartesian product represents conjunction "and". If the
      types `A` and `B` stand for mathematical statements, then the
@@ -8297,7 +8295,7 @@ embedding-with-section-is-equiv f i (g , η) y = pointed-subsingletons-are-singl
                                                  (fiber f y) (g y , η y) (i y)
 \end{code}
 
-Later we will see that a necessary and sufficient condition for an embedding to be an equivalence is that it is as surjection.
+Later we will see that a necessary and sufficient condition for an embedding to be an equivalence is that it is a surjection.
 
 If a type `Y` is embedded into `Z`, then the function type `X → Y` is
 embedded into `X → Z`. More generally, if `A x` is embedded into `B x`
@@ -9234,7 +9232,7 @@ lower-dfunext 𝓦 𝓣 𝓤 𝓥 fe {X} {A} {f} {g} h = p
 \end{code}
 
 This could have been used above to remove a number of function
-extensionality hypothesis. But also it would have required to present
+extensionality hypotheses. But also it would have required to present
 the material of this section before we wanted to for learning
 purposes.
 
@@ -9599,7 +9597,7 @@ such as `is-singleton`, `is-subsingleton`, `is-set` and `_is-of-hlevel n`.
 
 We may hope to have that if `A` is a global property of types, then,
 in the presence of univalence, for any `X : 𝓤` and `Y : 𝓥`, if `A X` holds
-then so does `A Y`.  However, because we have a type of universes, or
+then so does `A Y` if `X ≃ Y`.  However, because we have a type of universes, or
 universe levels, we may define e.g. `A {𝓤} X = (𝓤 ≡ 𝓤₀)`, which violates
 this hope. To get this conclusion, we need an assumption on `A`. We
 say that `A` is cumulative if it is preserved by the embedding `Lift`
@@ -11025,7 +11023,8 @@ on the homomorphism `f` but also on the homomorphism data `h` for `f`:
 
 \begin{code}
  respect-assoc : {X A : 𝓤 ̇ } (_·_ : X → X → X) (_*_ : A → A → A)
-               → associative _·_ → associative _*_
+               → associative _·_
+               → associative _*_
                → (f : X → A) → homomorphic _·_ _*_ f → 𝓤 ̇
 
  respect-assoc _·_ _*_ α β f h  =  fα ≡ βf
@@ -11484,7 +11483,7 @@ module slice
 
 
  _≅_  : 𝓤 / R → 𝓤 / R → 𝓤 ⊔ 𝓥 ̇
- (X , g) ≅ (Y , h) = Σ f ꞉ (X → Y), is-equiv f × (g ≡ h ∘ f )
+ (X , g) ≅ (Y , h) = Σ f ꞉ (X → Y), is-equiv f × (g ≡ h ∘ f)
 
 
  characterization-of-/-≡ : is-univalent 𝓤 → (A B : 𝓤 / R) → (A ≡ B) ≃ (A ≅ B)
@@ -11498,7 +11497,7 @@ to the identity equivalence.
 [<sub>Table of contents ⇑</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="subgroups-sip"></a> Subgroups
 
-It is common mathematical practice to regard isomorphic groups to be
+It is common mathematical practice to regard isomorphic groups as
 the same, which is a theorem in univalent mathematics, with the notion
 of sameness articulated by the identity type, as shown above.
 However, for some purposes, we may wish to consider two groups to be
@@ -13141,7 +13140,8 @@ function extensionality.
 A type can be pointed in many ways, but inhabited in at most one way:
 
 \begin{code}
-inhabitation-is-subsingleton : global-dfunext → (X : 𝓤 ̇ )
+inhabitation-is-subsingleton : global-dfunext
+                             → (X : 𝓤 ̇ )
                              → is-subsingleton (is-inhabited X)
 
 inhabitation-is-subsingleton fe X =
