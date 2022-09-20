@@ -1336,8 +1336,8 @@ X × Y = Σ x ꞉ X , Y
 \end{code}
 
 We have seen by way of examples that the function type symbol `→`
-represents logical implication, and that a dependent function type `(x
-: X) → A x` represents a universal quantification. We have the
+represents logical implication, and that a dependent function type `(x : X) → A x`
+represents a universal quantification. We have the
 following uses of `Σ`.
 
   1. The binary cartesian product represents conjunction "and". If the
@@ -13647,7 +13647,8 @@ x` is a fixed point of `f`, and hence from any element of `X` we get a
 fixed point of `f`:
 
 \begin{code}
-to-fix : {X : 𝓤 ̇ } (f : X → X) → wconstant f
+to-fix : {X : 𝓤 ̇ } (f : X → X)
+       → wconstant f
        → X → fix f
 
 to-fix f κ x = f x , κ (f x) x
@@ -14666,7 +14667,7 @@ implies excluded middle. We begin with the following lemma.
   decidable-equality-criterion : {X : 𝓤 ̇ } (α : 𝟚 → X)
                                → ((x : X) → (∃ n ꞉ 𝟚 , α n ＝ x)
                                           → (Σ n ꞉ 𝟚 , α n ＝ x))
-                               → decidable(α ₀ ＝ α ₁)
+                               → decidable (α ₀ ＝ α ₁)
 
   decidable-equality-criterion α c = γ d
    where

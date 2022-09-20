@@ -32,7 +32,7 @@ pdf/all/HoTT-UF-Agda.pdf : _site/HoTT-UF-Agda.html
 	$(info )
 	$(info This will likely give errors which can be ignored...)
 	$(info )
-	google-chrome --headless --print-to-pdf="pdf/all/HoTT-UF-Agda.pdf" _site/HoTT-UF-Agda.html
+	google-chrome --headless --print-to-pdf="pdf/all/HoTT-UF-Agda-large.pdf" _site/HoTT-UF-Agda.html
 	ps2pdf pdf/all/HoTT-UF-Agda-large.pdf pdf/all/HoTT-UF-Agda.pdf
 
 agda/HoTT-UF-Agda.agda :  HoTT-UF-Agda.lagda
