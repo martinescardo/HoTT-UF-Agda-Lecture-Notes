@@ -333,11 +333,11 @@ absurdity³-is-absurdity {𝓤} {A} = firstly , secondly
   secondly : ¬ A → ¬¬¬ A
   secondly = dni (¬ A)
 
-_≢_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
-x ≢ y = ¬(x ＝ y)
+_≠_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
+x ≠ y = ¬(x ＝ y)
 
-≢-sym : {X : 𝓤 ̇ } {x y : X} → x ≢ y → y ≢ x
-≢-sym {𝓤} {X} {x} {y} u = λ (p : y ＝ x) → u (p ⁻¹)
+≠-sym : {X : 𝓤 ̇ } {x y : X} → x ≠ y → y ≠ x
+≠-sym {𝓤} {X} {x} {y} u = λ (p : y ＝ x) → u (p ⁻¹)
 
 Id→Fun : {X Y : 𝓤 ̇ } → X ＝ Y → X → Y
 Id→Fun {𝓤} = transport (𝑖𝑑 (𝓤 ̇ ))
@@ -350,10 +350,10 @@ Id→Funs-agree : {X Y : 𝓤 ̇ } (p : X ＝ Y)
 
 Id→Funs-agree (refl X) = refl (𝑖𝑑 X)
 
-𝟙-is-not-𝟘 : 𝟙 ≢ 𝟘
+𝟙-is-not-𝟘 : 𝟙 ≠ 𝟘
 𝟙-is-not-𝟘 p = Id→Fun p ⋆
 
-₁-is-not-₀ : ₁ ≢ ₀
+₁-is-not-₀ : ₁ ≠ ₀
 ₁-is-not-₀ p = 𝟙-is-not-𝟘 q
  where
   f : 𝟚 → 𝓤₀ ̇
@@ -374,15 +374,15 @@ has-decidable-equality X = (x y : X) → decidable (x ＝ y)
 
 𝟚-has-decidable-equality : has-decidable-equality 𝟚
 𝟚-has-decidable-equality ₀ ₀ = inl (refl ₀)
-𝟚-has-decidable-equality ₀ ₁ = inr (≢-sym ₁-is-not-₀)
+𝟚-has-decidable-equality ₀ ₁ = inr (≠-sym ₁-is-not-₀)
 𝟚-has-decidable-equality ₁ ₀ = inr ₁-is-not-₀
 𝟚-has-decidable-equality ₁ ₁ = inl (refl ₁)
 
-not-zero-is-one : (n : 𝟚) → n ≢ ₀ → n ＝ ₁
+not-zero-is-one : (n : 𝟚) → n ≠ ₀ → n ＝ ₁
 not-zero-is-one ₀ f = !𝟘 (₀ ＝ ₁) (f (refl ₀))
 not-zero-is-one ₁ f = refl ₁
 
-inl-inr-disjoint-images : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y} → inl x ≢ inr y
+inl-inr-disjoint-images : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y} → inl x ≠ inr y
 inl-inr-disjoint-images {𝓤} {𝓥} {X} {Y} p = 𝟙-is-not-𝟘 q
  where
   f : X + Y → 𝓤₀ ̇
@@ -409,7 +409,7 @@ module twin-primes where
                                            × is-prime p
                                            × is-prime (p ∔ 2)
 
-positive-not-zero : (x : ℕ) → succ x ≢ 0
+positive-not-zero : (x : ℕ) → succ x ≠ 0
 positive-not-zero x p = 𝟙-is-not-𝟘 (g p)
  where
   f : ℕ → 𝓤₀ ̇
@@ -428,7 +428,7 @@ succ-lc = ap pred
 
 ℕ-has-decidable-equality : has-decidable-equality ℕ
 ℕ-has-decidable-equality 0 0               = inl (refl 0)
-ℕ-has-decidable-equality 0 (succ y)        = inr (≢-sym (positive-not-zero y))
+ℕ-has-decidable-equality 0 (succ y)        = inr (≠-sym (positive-not-zero y))
 ℕ-has-decidable-equality (succ x) 0        = inr (positive-not-zero x)
 ℕ-has-decidable-equality (succ x) (succ y) = f (ℕ-has-decidable-equality x y)
  where
@@ -616,7 +616,7 @@ module basic-arithmetic-and-order where
   root f = Σ n ꞉ ℕ , f n ＝ 0
 
   _has-no-root<_ : (ℕ → ℕ) → ℕ → 𝓤₀ ̇
-  f has-no-root< k = (n : ℕ) → n < k → f n ≢ 0
+  f has-no-root< k = (n : ℕ) → n < k → f n ≠ 0
 
   is-minimal-root : (ℕ → ℕ) → ℕ → 𝓤₀ ̇
   is-minimal-root f m = (f m ＝ 0) × (f has-no-root< m)
@@ -642,7 +642,7 @@ module basic-arithmetic-and-order where
   minimal-root-is-root f (m , p , _) = m , p
 
   bounded-ℕ-search : ∀ k f → (minimal-root f) + (f has-no-root< k)
-  bounded-ℕ-search zero f = inr (λ n → !𝟘 (f n ≢ 0))
+  bounded-ℕ-search zero f = inr (λ n → !𝟘 (f n ≠ 0))
   bounded-ℕ-search (succ k) f = +-recursion φ γ (bounded-ℕ-search k f)
    where
     A : ℕ → (ℕ → ℕ) → 𝓤₀ ̇
@@ -657,8 +657,8 @@ module basic-arithmetic-and-order where
       γ₀ : f k ＝ 0 → A (succ k) f
       γ₀ p = inl (k , p , u)
 
-      γ₁ : f k ≢ 0 → A (succ k) f
-      γ₁ v = inr (bounded-∀-next (λ n → f n ≢ 0) k v u)
+      γ₁ : f k ≠ 0 → A (succ k) f
+      γ₁ v = inr (bounded-∀-next (λ n → f n ≠ 0) k v u)
 
   root-gives-minimal-root : ∀ f → root f → minimal-root f
   root-gives-minimal-root f (n , p) = γ
@@ -1543,7 +1543,7 @@ module example-of-a-nonset (ua : is-univalent 𝓤₀) where
  e₀ = id-≃ 𝟚
  e₁ = swap₂ , swap₂-is-equiv
 
- e₀-is-not-e₁ : e₀ ≢ e₁
+ e₀-is-not-e₁ : e₀ ≠ e₁
  e₀-is-not-e₁ p = ₁-is-not-₀ r
   where
    q : id ＝ swap₂
@@ -1556,7 +1556,7 @@ module example-of-a-nonset (ua : is-univalent 𝓤₀) where
  p₀ = Eq→Id ua 𝟚 𝟚 e₀
  p₁ = Eq→Id ua 𝟚 𝟚 e₁
 
- p₀-is-not-p₁ : p₀ ≢ p₁
+ p₀-is-not-p₁ : p₀ ≠ p₁
  p₀-is-not-p₁ q = e₀-is-not-e₁ r
   where
    r = e₀            ＝⟨ (inverses-are-sections (Id→Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₀)⁻¹ ⟩
@@ -2496,7 +2496,8 @@ half-adjoint-condition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equ
 half-adjoint-condition f e = pr₂ (pr₂ (pr₂ (equivs-are-haes f e)))
 
 Σ-change-of-variable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ ) (f : X → Y)
-                     → is-equiv f → (Σ y ꞉ Y , A y) ≃ (Σ x ꞉ X , A (f x))
+                     → is-equiv f
+                     → (Σ y ꞉ Y , A y) ≃ (Σ x ꞉ X , A (f x))
 
 Σ-change-of-variable {𝓤} {𝓥} {𝓦} {X} {Y} A f i = γ
  where
@@ -4838,7 +4839,7 @@ module μ-operator (fe : dfunext 𝓤₀ 𝓤₀) where
 
  μ-property₁ : (f : ℕ → ℕ) (i : is-defined μ f)
              → (f (μ [ f , i ]) ＝ 0)
-             × ((n : ℕ) → n < μ [ f , i ] → f n ≢ 0)
+             × ((n : ℕ) → n < μ [ f , i ] → f n ≠ 0)
 
  μ-property₁ f = pr₂
 
@@ -7826,7 +7827,7 @@ module find-hidden-root where
 
  μρ-root-minimal f m p n q = not-<-gives-≥ (μρ-root f (m , p)) n γ
   where
-   φ : ¬(f n ≢ 0) → ¬(n < μρ-root f (m , p))
+   φ : ¬(f n ≠ 0) → ¬(n < μρ-root f (m , p))
    φ = contrapositive (pr₂(pr₂ (root-gives-minimal-root f (m , p))) n)
 
    γ : ¬ (n < μρ-root f (m , p))
@@ -9400,7 +9401,7 @@ module surjection-classifier
                                   (univalence-gives-dfunext' (ua 𝓤) (ua (𝓤 ⁺)))
                                   ∥_∥
 
-positive-cantors-diagonal : (e : ℕ → (ℕ → ℕ)) → Σ α ꞉ (ℕ → ℕ), ((n : ℕ) → α ≢ e n)
+positive-cantors-diagonal : (e : ℕ → (ℕ → ℕ)) → Σ α ꞉ (ℕ → ℕ), ((n : ℕ) → α ≠ e n)
 
 cantors-diagonal : ¬(Σ e ꞉ (ℕ → (ℕ → ℕ)) , ((α : ℕ → ℕ) → Σ n ꞉ ℕ , α ＝ e n))
 
@@ -9424,25 +9425,25 @@ SN-gives-DNE : SN 𝓤 → DNE 𝓤
 
 DNE-gives-SN : DNE 𝓤 → SN 𝓤
 
-succ-no-fixed-point : (n : ℕ) → succ n ≢ n
+succ-no-fixed-point : (n : ℕ) → succ n ≠ n
 succ-no-fixed-point 0        = positive-not-zero 0
 succ-no-fixed-point (succ n) = γ
  where
-  IH : succ n ≢ n
+  IH : succ n ≠ n
   IH = succ-no-fixed-point n
 
-  γ : succ (succ n) ≢ succ n
+  γ : succ (succ n) ≠ succ n
   γ p = IH (succ-lc p)
 
 positive-cantors-diagonal = sol
  where
-  sol : (e : ℕ → (ℕ → ℕ)) → Σ α ꞉ (ℕ → ℕ), ((n : ℕ) → α ≢ e n)
+  sol : (e : ℕ → (ℕ → ℕ)) → Σ α ꞉ (ℕ → ℕ), ((n : ℕ) → α ≠ e n)
   sol e = (α , φ)
    where
     α : ℕ → ℕ
     α n = succ(e n n)
 
-    φ : (n : ℕ) → α ≢ e n
+    φ : (n : ℕ) → α ≠ e n
     φ n p = succ-no-fixed-point (e n n) q
      where
       q = succ (e n n)  ＝⟨ refl (α n)       ⟩
@@ -9457,7 +9458,7 @@ cantors-diagonal = sol
     α : ℕ → ℕ
     α = pr₁ (positive-cantors-diagonal e)
 
-    φ : (n : ℕ) → α ≢ e n
+    φ : (n : ℕ) → α ≠ e n
     φ = pr₂ (positive-cantors-diagonal e)
 
     b : Σ n ꞉ ℕ , α ＝ e n
