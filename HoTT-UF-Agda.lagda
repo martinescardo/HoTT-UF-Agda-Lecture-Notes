@@ -3922,7 +3922,7 @@ datum. Voevodsky's insight is that a general notion of equivalence can
 be formulated in MLTT by requiring the fibers to be singletons. It is
 important here that not only the `x : X` with `f x ＝ y` is unique, but
 also that the identification datum `p : f x ＝ y` is unique. This is
-similar to, or even a generalization, of the categorical
+similar to, or even a generalization of, the categorical
 notion of "uniqueness up to a unique isomorphism".
 
 \begin{code}
