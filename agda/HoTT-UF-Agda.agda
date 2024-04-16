@@ -730,14 +730,14 @@ EM-gives-EM' em X s = γ (em X s)
  where
   γ : X + ¬ X → is-singleton X + is-empty X
   γ (inl x) = inl (pointed-subsingletons-are-singletons X x s)
-  γ (inr x) = inr x
+  γ (inr ν) = inr ν
 
 EM'-gives-EM : EM' 𝓤 → EM 𝓤
 EM'-gives-EM em' X s = γ (em' X s)
  where
   γ : is-singleton X + is-empty X → X + ¬ X
   γ (inl i) = inl (center X i)
-  γ (inr x) = inr x
+  γ (inr e) = inr e
 
 no-unicorns : ¬(Σ X ꞉ 𝓤 ̇ , is-subsingleton X × ¬(is-singleton X) × ¬(is-empty X))
 no-unicorns (X , i , f , g) = c
@@ -1563,7 +1563,7 @@ module example-of-a-nonset (ua : is-univalent 𝓤₀) where
        Id→Eq 𝟚 𝟚 p₁  ＝⟨ inverses-are-sections (Id→Eq 𝟚 𝟚) (ua 𝟚 𝟚) e₁     ⟩
        e₁            ∎
 
- 𝓤₀-is-not-a-set : ¬(is-set (𝓤₀ ̇ ))
+ 𝓤₀-is-not-a-set : ¬ (is-set (𝓤₀ ̇ ))
  𝓤₀-is-not-a-set s = p₀-is-not-p₁ q
   where
    q : p₀ ＝ p₁

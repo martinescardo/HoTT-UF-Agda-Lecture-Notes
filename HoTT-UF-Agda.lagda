@@ -6741,7 +6741,7 @@ is a set.
 
 \begin{code}
 being-subsingleton-is-subsingleton : dfunext 𝓤 𝓤
-                                   →  {X : 𝓤 ̇ }
+                                   → {X : 𝓤 ̇ }
                                    → is-subsingleton (is-subsingleton X)
 
 being-subsingleton-is-subsingleton fe {X} i j = c
