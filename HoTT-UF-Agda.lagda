@@ -4004,7 +4004,7 @@ singleton.
 
   1. Next we have that the type `Σ x ꞉ X , f x ＝ y₀` is a retract
      of the type `Σ y ꞉ Y , f (g y) ＝ y₀` by `Σ-reindexing-retract`
-     using the assumption that `η` exibits `g` as a section of `f`,
+     using the assumption that `η` exhibits `g` as a section of `f`,
      which in turn is a retract of the type `Σ y ꞉ Y , y ＝ y₀` by
      applying `Σ` to both sides of the retraction `(f (g y) ＝ y₀) ◁ (y
      ＝ y₀)` of the previous step.
