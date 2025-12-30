@@ -3174,7 +3174,7 @@ module finite-types (hfe : hfunext 𝓤₀ 𝓤₁) where
  Fin-equation₃ = refl _
 
 being-subsingleton-is-subsingleton : dfunext 𝓤 𝓤
-                                   →  {X : 𝓤 ̇ }
+                                   → {X : 𝓤 ̇ }
                                    → is-subsingleton (is-subsingleton X)
 
 being-subsingleton-is-subsingleton fe {X} i j = c
