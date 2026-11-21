@@ -22,13 +22,13 @@ Agda](HoTT-UF-Agda.html#uminagda).
 module Universes where
 
 open import Agda.Primitive public
- renaming (
-            Level to Universe -- We speak of universes rather than of levels.
-          ; lzero to 𝓤₀       -- Our first universe is called 𝓤₀
-          ; lsuc to _⁺        -- The universe after 𝓤 is 𝓤 ⁺
-          ; Setω to 𝓤ω        -- There is a universe 𝓤ω strictly above 𝓤₀, 𝓤₁, ⋯ , 𝓤ₙ, ⋯
-          )
- using    (_⊔_)               -- Least upper bound of two universes, e.g. 𝓤₀ ⊔ 𝓤₁ is 𝓤₁
+ renaming
+  ( Level to Universe -- We speak of universes rather than of levels.
+  ; lzero to 𝓤₀       -- Our first universe is called 𝓤₀
+  ; lsuc to _⁺        -- The universe after 𝓤 is 𝓤 ⁺
+  ; Setω to 𝓤ω        -- There is a universe 𝓤ω strictly above 𝓤₀, 𝓤₁, ⋯ , 𝓤ₙ, ⋯
+  )
+ using (_⊔_)          -- Least upper bound of two universes, e.g. 𝓤₀ ⊔ 𝓤₁ is 𝓤₁
 \end{code}
 
 The elements of `Universe` are universe names. Given a name `𝓤`, the
@@ -48,13 +48,13 @@ these notes.
 \begin{code}
 Type = λ ℓ → Set ℓ
 
-_̇   : (𝓤 : Universe) → Type (𝓤 ⁺)
+_̇ : (𝓤 : Universe) → Type (𝓤 ⁺)
 
-𝓤 ̇  = Type 𝓤
+𝓤 ̇ = Type 𝓤
 \end{code}
 
 This says that given the universe level `𝓤`, we get the type universe
-`𝓤 ̇`&nbsp;, which lives in the next next type universe universe `𝓤 ⁺`. So
+`𝓤 ̇`&nbsp;, which lives in the next next type universe universe `𝓤 ⁺`. So
 the superscript dot notation is just a (postfix) synonym for (prefix)
 `Type`, which is just a synonym for `Set`, which means type in Agda.
 
@@ -76,7 +76,7 @@ _⁺⁺ : Universe → Universe
 The following is sometimes useful:
 
 \begin{code}
-universe-of : {𝓤 : Universe} (X : 𝓤 ̇ ) → Universe
+universe-of : {𝓤 : Universe} (X : 𝓤 ̇ ) → Universe
 universe-of {𝓤} X = 𝓤
 \end{code}
 
