@@ -7571,7 +7571,6 @@ record subsingleton-truncations-exist : 𝓤ω where
   ∣_∣                  : {𝓤 : Universe} {X : 𝓤 ̇ } → X → ∥ X ∥
   ∥∥-recursion         : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {P : 𝓥 ̇ }
                        → is-subsingleton P → (X → P) → ∥ X ∥ → P
- infix 0 ∥_∥
 
 module basic-truncation-development
         (pt  : subsingleton-truncations-exist)
@@ -9598,7 +9597,6 @@ infixr 50 _,_
 infixr 30 _×_
 infixr 20 _+_
 infixl 70 _∘_
-infix   0 Id
 infix   0 _＝_
 infix  10 _⇔_
 infixl 30 _∙_

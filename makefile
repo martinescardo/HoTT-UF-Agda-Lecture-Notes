@@ -1,14 +1,27 @@
 # agda 2.6.1, jekyll, ghc and google-chrome need to be installed in the system
 
+# Google Chrome is the command google-chrome on Linux and an application
+# bundle on macOS. Another browser can be given with make CHROME=...
+
+ifeq ($(shell uname -s),Darwin)
+CHROME ?= "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+else
+CHROME ?= google-chrome
+endif
+
+# Where the lecture notes are published.
+
+DEST ?= ~/martinescardo.github.io/HoTT-UF-in-Agda-Lecture-Notes
+
 install : _site/HoTT-UF-Agda.html pdf/all/HoTT-UF-Agda.pdf agda/HoTT-UF-Agda.agda additionally
-	cp _site/index.html ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-	cp _site/HoTT-UF-Agda.html ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-	cp _site/Universes.html ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-	cp _site/Agda.Primitive.html ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-	cp -r _site/css ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-	cp _site/LICENSE ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-	cp pdf/all/HoTT-UF-Agda.pdf ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-	chmod -R a+r ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
+	cp _site/index.html $(DEST)/
+	cp _site/HoTT-UF-Agda.html $(DEST)/
+	cp _site/Universes.html $(DEST)/
+	cp _site/Agda.Primitive.html $(DEST)/
+	cp -r _site/css $(DEST)/
+	cp _site/LICENSE $(DEST)/
+	cp pdf/all/HoTT-UF-Agda.pdf $(DEST)/
+	chmod -R a+r $(DEST)/
 	./additionally
 
 additionally :
@@ -32,7 +45,7 @@ pdf/all/HoTT-UF-Agda.pdf : _site/HoTT-UF-Agda.html
 	$(info )
 	$(info This will likely give errors which can be ignored...)
 	$(info )
-	google-chrome --headless --print-to-pdf="pdf/all/HoTT-UF-Agda-large.pdf" _site/HoTT-UF-Agda.html
+	$(CHROME) --headless --print-to-pdf="pdf/all/HoTT-UF-Agda-large.pdf" _site/HoTT-UF-Agda.html
 	ps2pdf pdf/all/HoTT-UF-Agda-large.pdf pdf/all/HoTT-UF-Agda.pdf
 
 agda/HoTT-UF-Agda.agda :  HoTT-UF-Agda.lagda

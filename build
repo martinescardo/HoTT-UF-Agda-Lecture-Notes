@@ -2,15 +2,15 @@
 
 ./generatehtml
 ./illiterate
-jekyll build
+bundle exec jekyll build
 mkdir -p previous-version
 rm -rf previous-version/*
-mv ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/* previous-version/
-cp -a  _site/index.html          ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-cp -a  _site/HoTT-UF-Agda.html   ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-cp -a  _site/Universes.html      ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-cp -a  _site/Agda.Primitive.html ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-cp -a  _site/css                 ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-cp -a  _site/LICENSE             ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
+mv ~/martinescardo.github.io/HoTT-UF-in-Agda-Lecture-Notes/* previous-version/
+cp -a  _site/index.html          ~/martinescardo.github.io/HoTT-UF-in-Agda-Lecture-Notes/
+cp -a  _site/HoTT-UF-Agda.html   ~/martinescardo.github.io/HoTT-UF-in-Agda-Lecture-Notes/
+cp -a  _site/Universes.html      ~/martinescardo.github.io/HoTT-UF-in-Agda-Lecture-Notes/
+cp -a  _site/Agda.Primitive.html ~/martinescardo.github.io/HoTT-UF-in-Agda-Lecture-Notes/
+cp -a  _site/css                 ~/martinescardo.github.io/HoTT-UF-in-Agda-Lecture-Notes/
+cp -a  _site/LICENSE             ~/martinescardo.github.io/HoTT-UF-in-Agda-Lecture-Notes/
 echo "Now will generate pdf from HTML"
 ./generatepdf
