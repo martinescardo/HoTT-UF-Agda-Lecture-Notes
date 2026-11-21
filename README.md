@@ -1,6 +1,6 @@
 # Introduction to univalent foundations of mathematics with Agda
 
-There is a modular version of the monolotic Agda files here at [https://www.cs.bham.ac.uk/~mhe/TypeTopology/MGS](TypeTopology) also available via [https://github.com/martinescardo/TypeTopology/tree/master/source/MGS](github).
+There is a modular version of the monolithic Agda files in [TypeTopology](https://martinescardo.github.io/TypeTopology/MGS.index.html), also available via [github](https://github.com/martinescardo/TypeTopology/tree/master/source/MGS).
 
 This repository has the sources to generate the lecture notes available at
 

@@ -104,7 +104,7 @@ automatically generated from the [html
 version](https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html). And a pdf version is also available at the [arxiv](https://arxiv.org/abs/1911.00580), updated from time to time.
 
 These notes were originally developed for the [Midlands Graduate
-School 2019](http://events.cs.bham.ac.uk/mgs2019/). They will evolve
+School 2019](https://web.archive.org/web/20210323095454/http://events.cs.bham.ac.uk/mgs2019/). They will evolve
 for a while.
 
 <!--
@@ -198,7 +198,7 @@ fair amount of univalent mathematics before we formulate or assume the
 univalence axiom.
 
 All of (4)-(6) crucially rely on Martin-Löf's identity
-type. [Initially](https://faculty.math.illinois.edu/~dan/Papers/ITP-talk.pdf), Voevodsky thought that a new concept would be needed
+type. [Initially](https://web.archive.org/web/20221128173824/http://faculty.math.illinois.edu/~dan/Papers/ITP-talk.pdf), Voevodsky thought that a new concept would be needed
 in the type theory to achieve (4)-(6) and hence (1) and (3) above. But
 he eventually discovered that Martin-Löf's identity type is precisely
 what he needed.
@@ -211,7 +211,7 @@ original expositions by Martin-Löf), and, regarding (3), the identity
 type was imagined/conceived as having at most one element, even if
 MLTT cannot prove or disprove this statement, as was eventually
 shown by
-[Hofmann](https://www.tcs.ifi.lmu.de/mitarbeiter/martin-hofmann) and
+[Hofmann](https://web.archive.org/web/20230130053027/https://www.tcs.ifi.lmu.de/mitarbeiter/martin-hofmann) and
 [Streicher](https://en.wikipedia.org/wiki/Thomas_Streicher) with their
 [groupoid model of types](https://ieeexplore.ieee.org/document/316071)
 in the early 1990's.
@@ -284,7 +284,7 @@ homotopy types, automatically. We will not discuss how to do homotopy
 theory using univalent type theory in these notes. We refer the reader
 to the HoTT book as a starting point.
 
-A common compromise is to refer to the subject as [HoTT/UF](https://cas.oslo.no/hott-uf/).
+A common compromise is to refer to the subject as [HoTT/UF](https://web.archive.org/web/20230604143450/https://cas.oslo.no/hott-uf/).
 
 [<sub>Table of contents ⇓</sub>](HoTT-UF-Agda.html#contents)
 #### <a id="generalreferences"></a> General references
@@ -336,10 +336,10 @@ Additional expository material:
 
    - [An introduction to univalent foundations for mathematicians](https://www.ams.org/journals/bull/2018-55-04/S0273-0979-2018-01616-9/), a paper at the [Bulletin of the
 AMS](https://www.ams.org/publications/journals/journalsframework/bull)
-by [Dan Grayson](https://faculty.math.illinois.edu/~dan/).
-   - [Voevodsky's Memorial talk](https://faculty.math.illinois.edu/~dan/Talks/Voevodsky-memorial-talk.pdf)
-by [Dan Grayson](https://faculty.math.illinois.edu/~dan/).
-   - [Univalent foundations - an introduction](https://benediktahrens.net/talks/6WFT.pdf) by Benedikt Ahrens.
+by [Dan Grayson](https://web.archive.org/web/20230708154634/https://faculty.math.illinois.edu/~dan/).
+   - [Voevodsky's Memorial talk](https://www.ias.edu/sites/default/files/video/Voevodsky-memorial-talk.pdf)
+by [Dan Grayson](https://web.archive.org/web/20230708154634/https://faculty.math.illinois.edu/~dan/).
+   - [Univalent foundations - an introduction](https://web.archive.org/web/20210123192217/http://benediktahrens.net/talks/6WFT.pdf) by Benedikt Ahrens.
    - [Introduction to Homotopy Type Theory](https://github.com/EgbertRijke/HoTT-Intro) by Egbert Rijke.
    - [A course on homotopy (type) theory](http://math.andrej.com/2019/05/08/a-course-on-homotopy-type-theory/) by Andrej Bauer and Jaka Smrekar.
   - [15-819 Homotopy Type Theory](https://www.cs.cmu.edu/~rwh/courses/hott/) by Bob Harper.
@@ -352,9 +352,9 @@ We also have an [Agda development](https://www.cs.bham.ac.uk/~mhe/TypeTopology/)
 of [univalent
 foundations](https://www.cs.bham.ac.uk/~mhe/TypeTopology/UF.html) which is
 applied to work on [injective
-types](https://www.cs.bham.ac.uk/~mhe/TypeTopology/InjectiveTypes-article.html),
+types](https://www.cs.bham.ac.uk/~mhe/TypeTopology/InjectiveTypes.Article.html),
 [compact (or searchable)
-types](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Compactness.html),
+types](https://www.cs.bham.ac.uk/~mhe/TypeTopology/TypeTopology.CompactTypes.html),
 [compact
 ordinals](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Ordinals.html) and
 [more](https://www.cs.bham.ac.uk/~mhe/TypeTopology/).
@@ -1109,7 +1109,7 @@ types that are subsingletons (and this is called [propositional extensionality](
 
 If we are doing applied mathematics and want to actually compute, we
 can define a type for binary notation for the sake of efficiency, and
-of course people have done [that](https://www.cs.bham.ac.uk/~mhe/TypeTopology/BinaryNaturals.html).
+of course people have done [that](https://www.cs.bham.ac.uk/~mhe/TypeTopology/Naturals.Binary.html).
 Here we are not concerned with
 efficiency but only with understanding how to codify mathematics in
 (univalent) type theory and in Agda.
@@ -9377,7 +9377,7 @@ universe above that of `X`:
 *Exercise*. [Formulate and prove](HoTT-UF-Agda.html#someexercisessol) the equations for `𝔾↑-≃` and `ℍ↑-≃`
  corresponding to those for `𝔾-≃` and `ℍ-≃`.
 
-The difference with [`ℍ-≃`](HoTT-UF-Agda.html-ℍ-≃) is that here, to get
+The difference with [`ℍ-≃`](HoTT-UF-Agda.html#ℍ-≃) is that here, to get
 the conclusion, we need to assume
 
    > `A (Lift 𝓥 X) (≃-Lift X)`
