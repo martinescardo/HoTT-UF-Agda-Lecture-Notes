@@ -11,7 +11,7 @@ exclude:
   - "*.hi"
   - "*.o"
   - "README.md"
-  - "INSTALL.md"
+  - "JEKYLL.md"
   - "build"
   - "buildlocally"
   - "buildloop"

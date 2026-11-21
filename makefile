@@ -1,4 +1,4 @@
-# agda 2.6.1, jekyll, ghc and google-chrome need to be installed in the system
+# See "Building the notes" in README.md for what needs to be installed.
 
 # Google Chrome is the command google-chrome on Linux and an application
 # bundle on macOS. Another browser can be given with make CHROME=...
@@ -36,7 +36,7 @@ _site/HoTT-UF-Agda.html : HoTT-UF-Agda.lagda
 	cp html/HoTT-UF-Agda.tex index.md
 	mv html/HoTT-UF-Agda.tex HoTT-UF-Agda.md
 	mv html/Universes.tex    Universes.md
-	time agda --html Universes.lagda
+	time agda --html --css=css/Agda.css Universes.lagda
 	mv html/Agda.Primitive.html Agda.Primitive.html
 	$(info If the following fails you may need to run `bundler update`)
 	bundle exec jekyll build

@@ -2,5 +2,8 @@
 
 ./generatehtml
 ./illiterate
-jekyll build
-htmlproofer --assume-extension ./_site
+bundle exec jekyll build
+# html-proofer 5 checks anchors without href and http links by default;
+# its check of internal #anchors fails on Agda's anchors, so it is off.
+
+bundle exec htmlproofer --allow-missing-href --no-enforce-https --no-check-internal-hash ./_site

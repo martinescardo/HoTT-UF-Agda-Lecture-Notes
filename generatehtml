@@ -11,5 +11,5 @@ cp html/HoTT-UF-Agda.tex    index.md
 mv html/HoTT-UF-Agda.tex    HoTT-UF-Agda.md
 mv html/Universes.tex       Universes.md
 
-agda --html Universes.lagda
+agda --html --css=css/Agda.css Universes.lagda
 mv html/Agda.Primitive.html Agda.Primitive.html
